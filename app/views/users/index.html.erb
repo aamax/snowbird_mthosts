@@ -1,0 +1,137 @@
+<div ng-controller='UserCtrl'>
+  <h1>Snowbird Mountain Hosts</h1>
+  <input type="text" class="searchbox" name="s" value="" ng-model="user_filter" placeholder='Enter User Filter here'/>
+  <span ng-show='current_is_admin()'>
+    <a href="#" class='btn btn-info' ng-click='newUser()'>New <i class='icon-male icon-large icon-white'></i></a> <br/>
+  </span>
+
+  <br/>
+  <table class='table table-striped'>
+    <tbody>
+    <tr>
+      <td>
+        <a href='#' ng-click='showUser(current_user)'>{{ current_user.name }}
+                <span ng-show='current_user.nickname != ""'>
+                  - {{ current_user.nickname }}
+                </span>
+          <br/>
+          <img ng-src='{{ gravatar_path(current_user, 120, "r", "") }}'/>
+        </a>
+      </td>
+
+      <td>
+        <strong>Home Phone:</strong> {{ current_user.home_phone }}<br/>
+        <strong>Cell Phone:</strong> {{ current_user.cell_phone }}<br/>
+        <strong>Email:</strong> <a href='mailto:{{ current_user.email }}'>{{ current_user.email }}</a><br/>
+        <strong>Alt Email:</strong> {{ current_user.alt_email }}<br/>
+        <strong>Address:</strong>
+        <ul>
+          <li>{{ current_user.street }}</li>
+          <li>{{ current_user.city }}
+            <div ng-hide='current_user.city == undefined'>,</div>
+            {{ current_user.state }} {{ current_user.zip }}
+          </li>
+        </ul>
+      </td>
+      <td>
+        <h4>Shift Information:</h4>
+
+        <div class='indent_box'>
+          <strong>Total: </strong> <br/>
+          <strong>Worked: </strong> <br/>
+          <strong>Pending: </strong> <br/>
+        </div>
+      </td>
+      <td>
+        <strong>seniority group</strong><br/>
+
+        <div ng-show='current_user.roles.length > 0' class='role_list'>
+          <br/>
+          <strong>Roles:</strong> <br/>
+          <ul ng-repeat='r in current_user.roles'>
+            <li>
+              {{ r.name }}
+            </li>
+
+          </ul>
+        </div>
+        <strong>active:</strong> {{ current_user.active_user }} <br/>
+
+      </td>
+      <td>
+        <a href="#" ng-click='showUser(current_user)' class='btn btn-warning'><i class='icon-wrench icon-large icon-white'></i></a>
+        <br/>
+      </td>
+
+    </tr>
+    <tr ng-repeat='user in hostIndexList | filter:user_filter | orderBy:user.name'>
+        <td>
+          <a href='#' ng-click='showUser(user)'>{{ user.name }}
+                <span ng-show='user.nickname != ""'>
+                  - {{ user.nickname }}
+                </span>
+            <br/>
+            <img ng-src='{{ gravatar_path(user, 120, "r", "") }}'/>
+          </a>
+        </td>
+
+        <td>
+          <strong>Home Phone:</strong> {{ user.home_phone }}<br/>
+          <strong>Cell Phone:</strong> {{ user.cell_phone }}<br/>
+          <strong>Email:</strong> <a href='mailto:{{ user.email }}'>{{ user.email }}</a><br/>
+          <strong>Alt Email:</strong> {{ user.alt_email }}<br/>
+          <strong>Address:</strong>
+          <ul>
+            <li>{{ user.street }}</li>
+            <li>{{ user.city }}
+              <div ng-hide='user.city == undefined'>,</div>
+              {{ user.state }} {{ user.zip }}
+            </li>
+          </ul>
+        </td>
+        <td>
+          <h4>Shift Information:</h4>
+
+          <div class='indent_box'>
+            <strong>Total: </strong> <br/>
+            <strong>Worked: </strong> <br/>
+            <strong>Pending: </strong> <br/>
+          </div>
+        </td>
+        <td>
+          <strong>seniority group</strong><br/>
+
+          <div ng-show='user.roles.length > 0' class='role_list'>
+            <br/>
+            <strong>Roles:</strong> <br/>
+            <ul ng-repeat='r in user.roles'>
+              <li>
+                {{ r.name }}
+              </li>
+
+            </ul>
+          </div>
+          <strong>active:</strong> {{ user.active_user }} <br/>
+
+        </td>
+        <td>
+          <div ng-show="user.is_current_user || current_is_admin()">
+            <a href="#" ng-click='showUser(user)' class='btn btn-warning'><i class='icon-wrench icon-large icon-white'></i></a>
+            <br/>
+            <br/>
+
+            <div ng-hide='(!current_is_admin() || (current_user.id == user.id))'>
+              <a href="#" class='btn btn-danger'><i class='icon-remove icon-large icon-white' ng-click='deleteUser(user)'></i></a>
+              <br/>
+            </div>
+          </div>
+        </td>
+
+    </tr>
+    </tbody>
+  </table>
+
+  <%= render "/shared/user_modal" %>
+</div>
+
+

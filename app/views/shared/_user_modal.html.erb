@@ -1,0 +1,69 @@
+<div ng-controller='UserModalCtrl'>
+<div id="user_modal_section">
+
+  <div class="edit_user_modal modal hide fade" id="editUserModal">
+    <div class="modal-body">
+      {{ setupUser(true) }}
+
+      <img ng-src='{{ gravatar_path(user, 120, "r", "") }}' /><br/><br/>
+
+      <strong>Name: </strong>
+      <input type="text" ng-model="user.name" placeholder="User Name" class='name_edit' required ng-disabled='showForm'/> <br/>
+      <strong>Nick Name: </strong>
+      <input type="text" ng-model="user.nickname" placeholder="Nick Name" class='nick_edit' ng-disabled='showForm'/>
+        <br/>
+
+        <strong>Address: </strong><br/>
+        <input type="text" ng-model="user.street" placeholder="Street Name" class='street_edit' ng-disabled='showForm'/><br/>
+        <input type="text" ng-model="user.city" placeholder="City" class='city_edit' ng-disabled='showForm'/>,
+        <input type="text" ng-model="user.state" placeholder="State" class='state_edit'  ng-disabled='showForm'/>
+        <input type="text" ng-model="user.zip" placeholder="Zip" class='zip_edit'  ng-disabled='showForm'/><br/><br/>
+
+        <strong>Home Phone: </strong>
+      <input type="text" ng-model="user.home_phone" placeholder="Home Phone" class='phone_edit'  ng-disabled='showForm'/><br/>
+        <strong>Cell Phone: </strong>
+      <input type="text" ng-model="user.cell_phone" placeholder="Cell Phone" class='phone_edit' ng-disabled='showForm' /><br/>
+        <strong>Email: </strong>
+      <input type="text" ng-model="user.email" placeholder="Email" required class='email_edit' ng-disabled='showForm'/><br/>
+        <strong>alt Email: </strong>
+      <input type="text" ng-model="user.alt_email" placeholder="alternate Email" class='email_edit' ng-disabled='showForm' /><br/>
+        <strong>Active?: </strong>
+      <input type="checkbox" ng-model="user.active_user" placeholder="Active User"  ng-disabled='showForm'/>
+        &nbsp;&nbsp;&nbsp;
+        <strong>Confirmed: </strong>
+      <input type="checkbox" ng-model="user.confirmed" placeholder="Confirmed"  ng-disabled='showForm'/><br/>
+
+        <div ng-show='current_is_admin()'>
+          <strong>Notes: </strong><br/>
+          <textarea ng-model="user.notes" placeholder="Notes" class='notes_edit'></textarea><br/> <br/>
+        </div>
+
+        <strong>Start Year: </strong>
+      <input type="text" ng-model="user.start_year" placeholder="Start Year" class='year_edit'  ng-disabled='showForm'/><br/>
+
+      <input type='password' ng-model='password' placeholder='Password' ng-disabled='showForm' /><br/>
+      <input type='password-confirmation' ng-model='password_confirmation' placeholder='Password Confirmation'
+             ng-disabled='showForm' /><br/>
+
+        <strong>seniority: </strong> TODO<br/>
+        <strong>roles: </strong> TODO<br/>
+        <strong>Surveys: </strong> TODO<br/>
+        <strong>shift summary info: </strong> TODO<br/>
+
+        <hr/>
+        <button type="button" class="btn btn-small btn-warning" ng-click="dismiss('cancel')">Cancel</button>
+        <button class="btn btn-small btn-success" ng-click="dismiss('ok')" ng-disabled='showForm' >Save
+        </button>
+
+
+
+      <br/>
+      shift summary <br/>
+      able to delete shifts <br/>
+
+      <br/><br/><br/>
+    </div>
+  </div>
+</div>
+
+</div>

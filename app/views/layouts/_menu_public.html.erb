@@ -1,0 +1,26 @@
+<% unless params[:controller] == "sessions" %>
+    <div class="nav-collapse collapse">
+      <ul class="nav pull-right">
+        <li><%= link_to 'About The Hosts', '/about' %></li>
+
+        <li class='dropdown'>
+          <a class="dropdown-toggle" href="#" data-toggle="dropdown" id="sign-in-menu">Sign In<strong class="caret"></strong></a>
+          <ul class='dropdown-menu'>
+
+
+
+
+            <li class='login_menu'>
+              <div class = 'login_header'> Enter Credential Below </div>
+              <form accept-charset="UTF-8" action="/sessions" method="post">
+                <input class="login_ctrl" placeholder="Username" id="email" name="email">
+                <input class="login_ctrl" type="password" placeholder="Password" id="password" name="password">
+                <input class="btn btn-primary login_btn" type="submit" id="sign-in" value="Sign In">
+              </form>
+            </li>
+
+          </ul>
+        </li>
+      </ul>
+    </div>
+<% end %>

@@ -1,0 +1,120 @@
+.menu {
+  height: 30px;
+}
+
+.float_right {
+  float: right;
+}
+
+a.home_menu {
+  float: left;
+  margin-left: 75px;
+}
+
+
+
+.top_menu a {
+  color: navy;
+  font-size: 18px;
+}
+.top_menu {
+  width: 100%;
+  background-color: #7fcbe6;
+  height: 27px;
+  padding-top:5px;
+  padding-bottom:5px;
+  margin-bottom: 0px;
+  padding-left: 50px;
+  padding-right: 50px;
+
+  a {
+    padding-left:15px;
+    padding-right:15px;
+  }
+  a:visited {
+    color: #0000ea;
+  }
+  a:hover {
+    font-weight: bold;
+    text-decoration: underline;
+    color: #004600;
+  }
+
+}
+
+.footer_menu {
+  width: 100%;
+  background-color: #b3da9c;
+  height: 50px;
+  padding-top:5px;
+  padding-bottom:5px;
+  margin-top: 0px;
+  padding-left: 50px;
+  padding-right: 50px;
+
+  a {
+    padding-left:15px;
+    padding-right:15px;
+    color: navy;
+    font-size: 12px;
+  }
+  a:visited {
+    color: #0000ea;
+  }
+  a:hover {
+    font-weight: bold;
+    text-decoration: underline;
+  }
+
+  a.footer_logo {
+    padding-right: 100px;
+    padding-left: 100px;
+    img {
+      height: 50px;
+    }
+  }
+}
+
+li.login_menu {
+  width: 250px;
+
+  .login_ctrl {
+    margin-top: 25px;
+    margin-left: 10px;
+    line-height: 150%;
+    width: 200px;
+  }
+
+  a {
+    float:right;
+    margin-right:75px;
+  }
+
+  .login_btn {
+    float: right;
+    padding-right: 50px;
+    width: 50px;
+    margin-right: 25px;
+    background-color: lightblue;
+  }
+
+  .login_header {
+    background-color: #0000ed;
+    color: white;
+    text-align: center;
+    padding: 5px;
+    font-weight: bold;
+  }
+}
+
+.header_section {
+  margin-bottom: 5px;
+}
+
+a.logout_menu {
+  float:right;
+  margin-right:75px;
+}
+
+
+

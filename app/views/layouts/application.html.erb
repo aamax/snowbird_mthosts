@@ -1,25 +1,53 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= content_for?(:title) ? yield(:title) : "Mthost" %></title>
-    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "Mthost" %>">
-    <%= stylesheet_link_tag "application", :media => "all" %>
-    <%= javascript_include_tag "application" %>
-    <%= csrf_meta_tags %>
-    <%= yield(:head) %>
-  </head>
-  <body class="<%= controller_name %> <%= action_name %>">
-    <div id="container" class="container">
-      <header>
-        <%= render 'layouts/navigation' %>
-        <%= render 'layouts/messages' %>
-      </header>
-      <div id="main" role="main">
-        <%= yield %>
+<html ng-app="mthosts">
+<head>
+  <title>Snowbird Mountain Host Site<%= @title.nil? ? "" : " | #{@title}" %></title>
+
+
+  <%= stylesheet_link_tag "application", :media => "all" %>
+  <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+
+  <%= javascript_include_tag "application" %>
+  <%= include_gon %>
+
+  <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/js/bootstrap.min.js"></script>
+
+  <%= csrf_meta_tags %>
+  <%= favicon_link_tag 'logo.jpg' %>
+</head>
+<body>
+<header>
+  <%= render :partial => '/layouts/menu' %>
+  <%= render :partial => '/layouts/header' %>
+  <%= render 'layouts/messages' %>
+</header>
+
+<div class='container'>
+  <% if flash.alert %>
+      <div class="container-fluid">
+        <div class="alert alert-error">
+          <a class="close" data-dismiss="alert">×</a>
+          <%= flash.alert %>
+        </div>
       </div>
-      <footer>
-      </footer>
-    </div> <!--! end of #container -->
-  </body>
+  <% end %>
+
+  <% if flash.notice %>
+      <div class="container-fluid flash_notice">
+        <div class="alert alert-success">
+          <a class="close" data-dismiss="alert">×</a>
+          <%= flash.notice %>
+        </div>
+      </div>
+  <% end %>
+
+  <div class='main_body'>
+    <%= yield %>
+  </div>
+</div>
+
+<%= render :partial => '/layouts/footer' %>
+
+</body>
 </html>

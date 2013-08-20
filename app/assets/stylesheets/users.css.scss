@@ -1,0 +1,91 @@
+// Place all the styles related to the Users controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.role_list ul {
+  list-style-type: circle;
+}
+
+.searchbox {
+  border:0px; /*important*/
+  background-color:transparent; /*important*/
+  width:256px;
+  height:28px;
+  margin-top: 7px !important;
+}
+
+.indent_box {
+  margin-left: 10px;
+}
+
+#editUserModal {
+  position:fixed;
+  top:5px;
+  left:5px !important;
+  margin-left: 5px !important;
+  width: 98% !important;
+  height: 98% !important;
+  max-height: 98% ;
+
+  .modal-body {
+    width: 98% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    background-color: white !important;
+  }
+}
+
+#user_modal_section {
+  .zip_edit {
+    width: 8em;
+  }
+
+  .state_edit {
+    width: 3em;
+  }
+
+  .name_edit {
+    width: 20em;
+  }
+
+  .street_edit {
+    width: 40em;
+  }
+
+  .nick_edit {
+    width: 8em;
+  }
+
+  .city_edit {
+    width: 25em;
+  }
+
+  .phone_edit {
+    width: 8em;
+  }
+
+  .email_edit {
+    width: 15em;
+  }
+
+  .year_edit {
+    width: 6em;
+  }
+
+  .notes_edit {
+    width: 50em;
+    height: 10em;
+    vertical-align: top;
+  }
+}
+
+
+//.edit_user_modal_window {
+//  position:fixed;
+//  top:5px;
+//  left:5px;
+//  width: 100% !important;
+//  height: 100% !important;
+//  max-height: 100%;
+//}
+

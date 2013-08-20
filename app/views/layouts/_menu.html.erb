@@ -1,0 +1,21 @@
+<!-- start of bootstrap_js nav -->
+<div class="navbar menu" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+  <div class="navbar-inner">
+    <div class="container">
+      <div style='float: left;'>
+        <%= link_to image_tag("logo.gif", width: "50", style: "padding-top: 3px;"), root_path %>
+      </div>
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-list-ul" style="color: black;"></span>
+      </a>
+
+      <% if current_user.nil? %>
+          <%= render "layouts/menu_public" %>
+      <% else %>
+          <%= render "layouts/menu_private" %>
+      <% end %>
+
+    </div>
+  </div>
+</div>
+<!-- end of bootstrap_js nav -->
