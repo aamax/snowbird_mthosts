@@ -3,6 +3,8 @@ Mthost::Application.routes.draw do
 
   resources :users
 
+  post '/users/save_new', :to => 'users#save_new'
+
   resources :pages
 
   match '/show_contact_info', :to => "pages#show_contact_info"

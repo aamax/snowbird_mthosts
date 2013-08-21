@@ -1,7 +1,8 @@
 class PagesController < ApplicationController
+  before_filter :authenticate_user!
+
   def show
     pg_id = params[:id]
-
     if current_user
       pg_id ||= 'home'
       @title = pg_id

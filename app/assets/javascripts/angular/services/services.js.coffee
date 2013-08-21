@@ -33,3 +33,12 @@ angular.module("UserServices", []).factory "userResource", ($resource, $rootScop
 
   setIsShowForm: (value) ->
     _isShowForm = value
+
+  saveNewUser: (usr) ->
+    u = _hosts.save(usr, ->
+      _loadedHosts.push(u)
+    )
+    u
+
+  getUserResource: ->
+    _hosts

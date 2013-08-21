@@ -27,6 +27,8 @@ gem 'bootstrap-will_paginate'
 gem 'nokogiri'
 gem 'ng-rails-csrf', :git => "git://github.com/xrd/ng-rails-csrf.git" #helps rails csrf with angular
 gem 'ngmin-rails'
+gem 'font-awesome-rails'
+gem 'angularjs-rails'
 
 gem 'gon'
 

@@ -4,6 +4,9 @@
 
   $scope.setupUser = () ->
     $scope.user = userResource.getCurrentUser()
+    if $scope.user
+      $scope.user.password = ''
+      $scope.user.password_confirmation = ''
     $scope.showForm = userResource.getIsShowForm()
     ""
 
