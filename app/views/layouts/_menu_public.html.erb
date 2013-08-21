@@ -7,8 +7,8 @@
           <ul class='dropdown-menu'>
             <li class='login_menu'>
               <div class = 'login_header'> Enter Credential Below </div>
-              <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
 
+              <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
                 <input class="login_ctrl" placeholder="Username" autofocus="autofocus" id="user_email" name="user[email]" type="email" >
                 <input class='login_ctrl' id="user_password" name="user[password]" type="password" placeholder="Password">
                 <input class="btn btn-primary login_btn" type="submit" id="sign-in" value="Sign In">
@@ -17,12 +17,10 @@
                   <% end -%>
                   <a href="/users/password/new">Forgot your password?</a>
               <% end %>
+
             </li>
           </ul>
         </li>
-
-
-
       </ul>
     </div>
 <% end %>
