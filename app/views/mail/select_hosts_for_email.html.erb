@@ -1,0 +1,56 @@
+<script type="text/javascript">
+  	function ClearAll() {
+		var form=document.getElementById("recipients");
+
+		// Loop through all the form fields
+		for (var i = 0; i < form.elements.length; i++) {
+			if (form.elements[i].type == "checkbox") {
+				//document.write(form.elements[i].value);
+				form.elements[i].checked = false;
+			}
+		}	  	
+  	}
+
+	function SelectAll() {
+		var form=document.getElementById("recipients");
+
+		// Loop through all the form fields
+		for (var i = 0; i < form.elements.length; i++) {
+			if (form.elements[i].type == "checkbox") {
+				//document.write(form.elements[i].value);
+				form.elements[i].checked = true;
+			}
+		}	  	
+	}
+</script>
+
+<h1>Select Email Recipients</h1>
+
+<%= form_for(:recipients, :url => "/send_custom_mail/", :html => {:name => "recipients", :id => "recipients"}) do |f| %>
+
+	<table class="table">
+	  <% iCnt = 0 %>
+	
+	  <% @users.each do |user| %>
+      	<% iCnt = iCnt + 1 %>
+ 		<% if iCnt == 0 %>
+		  <tr class="row">
+		<% end %>
+		<td>
+			
+		<%= f.label user.name %>
+		<%= f.check_box user.id %>
+		
+		</td>
+		<% if iCnt == 4 %>
+			</tr>
+			<% iCnt = 0 %>
+		<% end %>
+	  <% end %>
+	</table>  
+	<div class="actions">
+		<input type="button" onclick="ClearAll();" value="ClearAll" />
+		<input type="button" value="SelectAll" onclick="SelectAll();" />
+		<%= f.submit('Compose Email') %>
+	</div>
+<% end %>

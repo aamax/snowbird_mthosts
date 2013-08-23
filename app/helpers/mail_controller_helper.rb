@@ -1,0 +1,2 @@
+module MailControllerHelper
+end

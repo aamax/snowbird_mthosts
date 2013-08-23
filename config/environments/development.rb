@@ -17,21 +17,19 @@ Mthost::Application.configure do
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
   config.action_mailer.delivery_method = :smtp
   # change to true to allow email to be sent during development
-  config.action_mailer.perform_deliveries = false
+  config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.default :charset => "utf-8"
 
   config.action_mailer.smtp_settings = {
-    address: "smtp.gmail.com",
-    port: 587,
-    domain: "example.com",
-    authentication: "plain",
-    enable_starttls_auto: true,
-    user_name: ENV["GMAIL_USERNAME"],
-    password: ENV["GMAIL_PASSWORD"]
+      :address        => 'smtp.gmail.com',
+      :port           => '587',
+      :authentication => :plain,
+      user_name: ENV["GMAIL_USERNAME"],
+      password: ENV["GMAIL_PASSWORD"],
+      :domain         => 'localhost',
+      :enable_starttls_auto => true
   }
-
-
 
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log
@@ -52,3 +50,16 @@ Mthost::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 end
+
+#ActionMailer::Base.smtp_settings = {
+#    :address        => 'smtp.gmail.com',
+#    :port           => '587',
+#    :authentication => :plain,
+#    :user_name      => 'snowbirdhosts',
+#    :password       => 'snowhosties',
+#    :domain         => 'localhost',
+#    :enable_starttls_auto => true
+#}
+#ActionMailer::Base.delivery_method = :smtp
+
+HOST_SENDER = "snowbirdhosts@gmail.com"

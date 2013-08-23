@@ -46,4 +46,11 @@ class User < ActiveRecord::Base
   attr_accessible :name, :email, :password, :password_confirmation, :remember_me, :street, :city, :state, :zip,
                   :home_phone, :cell_phone, :alt_email, :start_year, :notes, :confirmed, :active_user, :nickname
 
+  scope :active_users, -> {where(active_user: true)}
+  scope :inactive_users, -> {where(active_user: false)}
+  scope :non_confirmed_users, -> {where(confirmed: false)}
+  scope :rookies, -> {where(start_year: CURRENT_YEAR)}
+  scope :group1, -> {where("(start_year < ?) and (start_year >= ?)", CURRENT_YEAR, GROUP1_YEAR)}
+  scope :group2, -> {where("(start_year < ?) and (start_year >= ?)", GROUP1_YEAR, GROUP2_YEAR)}
+  scope :group3, -> {where("(start_year <= ?)", GROUP3_YEAR)}
 end
