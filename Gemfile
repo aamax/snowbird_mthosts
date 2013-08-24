@@ -7,7 +7,7 @@ group :assets do
 end
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-
+#gem 'bootstrap-sass', '~> 2.3.2.1'
 gem "pg", ">= 0.14.1"
 gem "minitest-spec-rails", ">= 4.3.8", :group => :test
 gem "minitest-wscolor", ">= 0.0.3", :group => :test

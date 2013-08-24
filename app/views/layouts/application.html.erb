@@ -5,22 +5,22 @@
 
 
   <%= stylesheet_link_tag "application", :media => "all" %>
-  <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
-  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+  <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+  <link href="//netdna.bootstrapcdn.com//twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 
   <%= javascript_include_tag "application" %>
   <%= include_gon %>
-
-  <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/js/bootstrap.min.js"></script>
+  <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
 
   <%= csrf_meta_tags %>
   <%= favicon_link_tag 'logo.jpg' %>
 </head>
 <body>
-<header>
-  <%= render :partial => '/layouts/menu' %>
-  <%= render :partial => '/layouts/header' %>
-</header>
+  <header>
+    <%= render :partial => '/layouts/menu' %>
+    <%= render :partial => '/layouts/header' %>
+  </header>
 
 <div class='container'>
   <% if flash.alert %>
