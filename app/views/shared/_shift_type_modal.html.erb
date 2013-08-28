@@ -1,0 +1,29 @@
+<div ng-controller='ShiftTypeModalCtrl'>
+  <div id="shift_type_modal_section">
+
+    <div class="edit_shift_type_modal modal hide fade" id="editShiftTypeModal">
+      <div class='modal-header'>
+        <h1>Shift Type Editor</h1>
+      </div>
+      <div class="modal-body">
+        {{ setupShiftType(true) }}
+        <strong>Short Name:</strong>
+        <input type="text" ng-model="shiftType.short_name" placeholder="Short Name" class='short_name_edit' required ng-disabled='showForm'/> <br/>
+        <strong>Description:</strong>
+        <input type="text" ng-model="shiftType.description" placeholder="Description" class='description_edit' required ng-disabled='showForm'/> <br/>
+        <strong>Start Time:</strong>
+        <input type="text" ng-model="shiftType.start_time" placeholder="Start Time" class='start_time_edit' required ng-disabled='showForm'/> <br/>
+        <strong>End Time:</strong>
+        <input type="text" ng-model="shiftType.end_time" placeholder="End Time" class='end_time_edit' required ng-disabled='showForm'/> <br/>
+        <strong>Notes:</strong>
+        <input type="text" ng-model="shiftType.tasks" placeholder="Notes" class='tasks_edit' required ng-disabled='showForm'/> <br/>
+
+        <hr/>
+        <button type="button" class="btn btn-small btn-warning" ng-click="dismiss('cancel')">Cancel</button>
+        <button class="btn btn-small btn-success" ng-click="dismiss('ok')" ng-disabled='showForm' >Save
+        </button>
+
+      </div>
+    </div>
+  </div>
+</div>

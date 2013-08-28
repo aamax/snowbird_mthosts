@@ -1,0 +1,52 @@
+<div ng-controller='ShiftTypeCtrl'>
+  <div ng-controller='ShiftTypeCtrl'>
+    <h1>Snowbird Mountain Host: Shift Types</h1>
+    <input type="text" class="searchbox" name="s" value="" ng-model="shift_type_filter" placeholder='Enter Shift Type Filter here'/>
+  <span ng-show='current_is_admin'>
+    <a href="#" class='btn btn-info' ng-click='newShiftType()'>New <i class='icon-male icon-large icon-white'></i></a> <br/>
+  </span>
+
+    <br/>
+    <table class='table table-striped'>
+      <thead>
+        <th>ShortName</th>
+        <th>Description</th>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Notes</th>
+      </thead>
+      <tbody>
+      <tr ng-repeat="st in shiftTypeList | orderBy:'short_name'">
+        <td>
+          {{ st.short_name }}
+        </td>
+        <td>
+          {{ st.description }}
+        </td>
+        <td>
+          {{ st.start_time }}
+        </td>
+        <td>
+          {{ st.end_time }}
+        </td>
+        <td>
+          {{ st.tasks }}
+        </td>
+        <td>
+          <div ng-show="current_is_admin">
+            <a href="#" ng-click='showShiftType(st)' class='btn btn-warning'><i class='icon-wrench icon-large icon-white'></i></a>
+            <br/>
+            <br/>
+
+            <a href="#" class='btn btn-danger'><i class='icon-remove icon-large icon-white' ng-click='deleteShiftType(st)'></i></a>
+              <br/>
+          </div>
+        </td>
+
+      </tr>
+      </tbody>
+    </table>
+
+    <%= render "/shared/shift_type_modal" %>
+  </div>
+ </div>

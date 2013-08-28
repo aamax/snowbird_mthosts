@@ -1,4 +1,4 @@
-@UserCtrl = ($scope, $resource, userResource, md5) ->
+@UserCtrl = ($scope, $resource, userResource) ->
   userResource.loadUsers() if userResource.getUsers().length == 0
   $scope.current_user = gon.current_user
 
@@ -57,7 +57,7 @@
 
     userResource.setCurrentUser(user)
     isShow = true
-    if $scope.current_is_admin || ($scope.current_user.id == user.id)
+    if $scope.current_is_admin() || ($scope.current_user.id == user.id)
       isShow = false
     userResource.setIsShowForm(isShow)
     $scope.toggleModal("show")

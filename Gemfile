@@ -34,7 +34,6 @@ gem 'gon'
 
 group :development do
   #gem 'debugger'
-
   gem 'annotate', :git => 'git://github.com/ctran/annotate_models.git'
 end
 

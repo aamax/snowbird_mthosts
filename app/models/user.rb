@@ -37,9 +37,9 @@
 class User < ActiveRecord::Base
   rolify
   # Include default devise modules. Others available are:
-  # :token_authenticatable, :confirmable,
+  # :token_authenticatable, :confirmable, :registerable,
   # :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, #:registerable,
+  devise :database_authenticatable,
          :recoverable, :rememberable, :trackable, :validatable
 
   # Setup accessible (or protected) attributes for your model
@@ -53,4 +53,6 @@ class User < ActiveRecord::Base
   scope :group1, -> {where("(start_year < ?) and (start_year >= ?)", CURRENT_YEAR, GROUP1_YEAR)}
   scope :group2, -> {where("(start_year < ?) and (start_year >= ?)", GROUP1_YEAR, GROUP2_YEAR)}
   scope :group3, -> {where("(start_year <= ?)", GROUP3_YEAR)}
+
+
 end

@@ -64,7 +64,7 @@
       </td>
 
     </tr>
-    <tr ng-repeat='user in hostIndexList | filter:user_filter | orderBy:user.name'>
+    <tr ng-repeat="user in hostIndexList | filter:user_filter | orderBy:'name'">
         <td>
           <a href='#' ng-click='showUser(user)'>{{ user.name }}
                 <span ng-show='user.nickname != ""'>

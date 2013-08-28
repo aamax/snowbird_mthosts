@@ -2,7 +2,9 @@ angular.module("mthosts", ["ngResource",
                         "ng-rails-csrf",
                         "UserServices",
                         'md5',
-                        'ui-gravatar'])
+                        'ui-gravatar',
+                        "ShiftTypeServices",
+                        'ShiftServices'])
 
 angular.module("UserServices", []).factory "userResource", ($resource, $rootScope, $http, md5) ->
   _loadedHosts    = []

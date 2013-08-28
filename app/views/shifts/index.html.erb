@@ -1,0 +1,58 @@
+<div ng-controller='ShiftCtrl'>
+  <div ng-controller='ShiftCtrl'>
+    <h1>Snowbird Mountain Host: Shifts</h1>
+    <input type="text" class="searchbox" name="s" value="" ng-model="shift_filter" placeholder='Enter Shift Filter here'/>
+  <span ng-show='current_is_admin'>
+    <a href="#" class='btn btn-info' ng-click='newShift()'>New <i class='icon-male icon-large icon-white'></i></a> <br/>
+  </span>
+
+    <br/>
+
+
+    <hr/>TODO - update table fields and contents to Model structure<hr/>
+
+
+    <table class='table table-striped'>
+      <thead>
+
+      <th>ShortName</th>
+      <th>Description</th>
+      <th>Start Time</th>
+      <th>End Time</th>
+      <th>Notes</th>
+      </thead>
+      <tbody>
+      <tr ng-repeat="s in shiftList | orderBy:'short_name'">
+        <td>
+          {{ s.short_name }}
+        </td>
+        <td>
+          {{ s.description }}
+        </td>
+        <td>
+          {{ s.start_time }}
+        </td>
+        <td>
+          {{ s.end_time }}
+        </td>
+        <td>
+          {{ s.tasks }}
+        </td>
+        <td>
+          <div ng-show="current_is_admin">
+            <a href="#" ng-click='showShift(s)' class='btn btn-warning'><i class='icon-wrench icon-large icon-white'></i></a>
+            <br/>
+            <br/>
+
+            <a href="#" class='btn btn-danger'><i class='icon-remove icon-large icon-white' ng-click='deleteShift(s)'></i></a>
+            <br/>
+          </div>
+        </td>
+
+      </tr>
+      </tbody>
+    </table>
+
+    <%= render "/shared/shift_modal" %>
+  </div>
+</div>
