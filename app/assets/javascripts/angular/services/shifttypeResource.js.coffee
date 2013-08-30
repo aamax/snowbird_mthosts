@@ -1,4 +1,4 @@
-angular.module("ShiftTypeServices", []).factory "shiftTypeResource", ($resource, $rootScope, $http) ->
+angular.module("ShiftTypeServices", []).factory "shiftTypeResource", ($resource, $rootScope) ->
   _loadedShiftTypes    = []
   _currShiftType = undefined
   _isShowForm = true
