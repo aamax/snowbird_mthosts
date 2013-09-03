@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130824233916) do
+ActiveRecord::Schema.define(:version => 20130827012028) do
 
   create_table "roles", :force => true do |t|
     t.string   "name"
@@ -32,6 +32,16 @@ ActiveRecord::Schema.define(:version => 20130824233916) do
     t.string   "tasks"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
+  end
+
+  create_table "shifts", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "shift_type_id",                  :null => false
+    t.integer  "shift_status_id", :default => 1, :null => false
+    t.date     "shift_date"
+    t.string   "day_of_week"
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
   end
 
   create_table "users", :force => true do |t|

@@ -9,19 +9,11 @@ class ShiftsController < ApplicationController
     gon.current_user = aUser
     gon.current_is_admin = current_user.has_role? :admin
 
-    object = respond_to do |format|
-      format.html
-      format.json  {render json: @shifts}
-    end
-    object
+    respond_with @shifts
   end
 
   def show
-    object = respond_to do |format|
-      format.html
-      format.json  {render json: @shift}
-    end
-    object
+    respond_with @shift
   end
 
   def destroy
@@ -37,18 +29,14 @@ class ShiftsController < ApplicationController
 
   def create
     s_params = setShiftParamsForUpdate(params)
-    # TODO update with Shift Model structure
-    @shift = Shift.create(short_name: params['short_name'], description: params['description'],
-                                   start_time: params['start_time'], end_time: params['end_time'],
-                                   tasks: params['tasks'])
+    @shift = Shift.create(s_params)
     respond_with @shift
   end
 
   private
-  # TODO update with Shift Model structure
   def setShiftParamsForUpdate(params)
-    retval = {short_name: params[:short_name], description: params[:description], start_time: params[:start_time],
-              end_time: params[:end_time], tasks: params[:tasks]}
+    retval = {user_id: params['user_id'], shift_type_id: params['shift_type_id'],
+              shift_status_id: params['shift_status_id'], shift_date: params['shift_date']}
     retval
   end
 end

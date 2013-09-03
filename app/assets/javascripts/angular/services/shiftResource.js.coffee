@@ -1,8 +1,8 @@
-angular.module("ShiftServices", []).factory "shiftResource", ($resource, $rootScope, $http) ->
+angular.module("ShiftServices", []).factory "shiftResource", ($resource, $rootScope) ->
   _loadedShifts    = []
   _currShift = undefined
   _isShowForm = true
-  _shifts = $resource('/shifts/:id', {id: '@id'}, {update: {method: 'put'}})
+  _shifts = $resource('/shifts/:id:format', {id: '@id'}, {update: {method: 'put'}, destroy: {method: 'post'}}, format: 'json')
 
   loadShifts: ->
     _loadedShifts = _shifts.query( ->

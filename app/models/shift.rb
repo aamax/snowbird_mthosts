@@ -1,6 +1,20 @@
+# == Schema Information
+#
+# Table name: shifts
+#
+#  id              :integer          not null, primary key
+#  user_id         :integer
+#  shift_type_id   :integer          not null
+#  shift_status_id :integer          default(1), not null
+#  shift_date      :date
+#  day_of_week     :string(255)
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#
+
 class Shift < ActiveRecord::Base
-  attr_accessible :user_id, :shifttype_id, :shift_status, :shift_date, :dayofweek
-  attr_accessor :can_select
+  attr_accessible :user_id, :shift_type_id, :shift_status_id, :shift_date, :day_of_week
+  attr_accessor :can_select#, :shift_type_short_name, :shift_type_description
 
   before_save :set_day_of_week
 
@@ -23,14 +37,15 @@ class Shift < ActiveRecord::Base
   #      worked = 1
   #      pending = 1
   #      missed = -1
-  scope :currentuserworked, lambda{ |userid| where :user_id => userid, :shift_status => 1}.where("shift_date <= #{Date.today}")
-  scope :currentuserpending, lambda{|userid| where  :user_id => userid, :shift_status => 1}.where("shift_date > #{Date.today}")
+  # TODO fix for scope usage in shift reporting...
+  #scope :currentuserworked, lambda{ |userid| where :user_id => userid, :shift_status => 1}.where("shift_date <= #{Date.today}")
+  #scope :currentuserpending, lambda{|userid| where  :user_id => userid, :shift_status => 1}.where("shift_date > #{Date.today}")
   scope :currentusermissed, lambda{|userid| where :user_id => userid, :shift_status => -1}
   scope :distinctDates, :select => ('distinct on (shift_date) shift_date, shift_type_id')
 
   def status_string
-    value = "Worked" if ((self.shift_status == 1) && (self.shift_date <= Date.today))
-    value = "Pending" if ((self.shift_status == 1) && (self.shift_date > Date.today))
+    value = "Worked" if ((self.shift_status_id == 1) && (self.shift_date <= Date.today))
+    value = "Pending" if ((self.shift_status_id == 1) && (self.shift_date > Date.today))
     value ||= "Missed"
     value
   end
@@ -40,7 +55,7 @@ class Shift < ActiveRecord::Base
   end
 
   def status_operation
-    self.shift_status == 1 ? value = "Missed" : value = "Worked"
+    self.shift_status_id == 1 ? value = "Missed" : value = "Worked"
     value
   end
 
@@ -60,8 +75,16 @@ class Shift < ActiveRecord::Base
     ['P1', 'P2', 'P3', 'P4', 'C1', 'C2', 'G5', 'G6', 'G7', 'G8', 'TL'].include? self.shifttype.shortname[0..1]
   end
 
+  #def shift_type_description
+  #  self.shift_type.description
+  #end
+  #
+  #def shift_type_short_name
+  #  self.shift_type.short_name
+  #end
+
   private
-  def perform_before_save
-    self.dayofweek = self.shift_date.strftime("%a")
+  def set_day_of_week
+    self.day_of_week = self.shift_date.strftime("%a")
   end
 end

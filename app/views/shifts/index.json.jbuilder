@@ -1,9 +1,10 @@
-# TODO update with Shift Model structure
-json.array!(@shift_types) do |st|
-  json.id           st.id
-  json.short_name   st.name
-  json.description  st.description
-  json.start_time   st.start_time
-  json.end_time     st.end_time
-  json.tasks        st.tasks
+json.array!(@shifts) do |s|
+  json.user_id                s.user.id
+  json.user_name              s.user.name
+  json.shift_type_id          s.shift_type.id
+  json.shift_type_short_name  s.shift_type.short_name
+  json.shift_type_description s.shift_type.description
+  json.status           s.status_string
+  json.shift_date             s.shift_date
+  json.day_of_week            s.day_of_week
 end

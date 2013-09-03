@@ -49,9 +49,9 @@ namespace :db do
   end
 
 
-  desc "populate users"
+  desc "populate shift types"
   task :load_shift_types => :environment do
-    # clear out users
+    # clear out shift types
     puts "purging existing shift types from system..."
     ActiveRecord::Base.connection.execute("TRUNCATE TABLE shift_types RESTART IDENTITY;")
 
@@ -79,6 +79,39 @@ namespace :db do
     else
       puts "shift type loader file not found"
     end
+  end
+
+  desc "populate shifts"
+  task :load_shifts => :environment do
+    # clear out shifts
+    puts "purging existing shifts from system..."
+    ActiveRecord::Base.connection.execute("TRUNCATE TABLE shifts RESTART IDENTITY;")
+
+    s = Shift.create!(:user_id => User.first.id, :shift_type_id => ShiftType.first.id, :shift_status_id => 1, :shift_date => '2013-11-15')
+    puts "added shift #{s.id}"
+    # # load up file
+    # filename = "lib/data/shift_type_data.csv"
+    # 
+    # if File.exists?(filename)
+    #   puts "loading shift type data..."
+    #   CSV.foreach(filename, :headers => true) do |row|
+    #     hash = row.to_hash
+    # 
+    #     sdarr = hash['starttime'].split(' ')
+    #     edarr = hash['endtime'].split(' ')
+    #     st = {
+    #         short_name: hash["shortname"], description: hash["description"], start_time: sdarr[1],
+    #         end_time: edarr[1], tasks: hash['speedcontrol']
+    #     }
+    # 
+    #     if !ShiftType.create(st)
+    #       puts "failed: #{st}"
+    #     end
+    #   end
+    #   puts "done loading shift data"
+    # else
+    #   puts "shift loader file not found"
+    # end
   end
 
 end

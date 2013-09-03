@@ -2,50 +2,57 @@
   <div ng-controller='ShiftCtrl'>
     <h1>Snowbird Mountain Host: Shifts</h1>
     <input type="text" class="searchbox" name="s" value="" ng-model="shift_filter" placeholder='Enter Shift Filter here'/>
-  <span ng-show='current_is_admin'>
-    <a href="#" class='btn btn-info' ng-click='newShift()'>New <i class='icon-male icon-large icon-white'></i></a> <br/>
-  </span>
-
+      <span ng-show='current_is_admin'>
+        <a href="#" class='btn btn-info' ng-click='newShift()'>New <i class='icon-male icon-large icon-white'></i></a> <br/>
+      </span>
     <br/>
+    <hr/>
 
-
-    <hr/>TODO - update table fields and contents to Model structure<hr/>
+    <!--json.user_id                s.user.id-->
+    <!--json.user_name              s.user.name-->
+    <!--json.shift_type_id          s.shift_type.id-->
+    <!--json.shift_type_short_name  s.shift_type.short_name-->
+    <!--json.shift_type_description s.shift_type.description-->
+    <!--json.shift_status           s.shift_status-->
+    <!--json.shift_date             s.shift_date-->
+    <!--json.day_of_week            s.day_of_week-->
 
 
     <table class='table table-striped'>
       <thead>
 
-      <th>ShortName</th>
-      <th>Description</th>
-      <th>Start Time</th>
-      <th>End Time</th>
-      <th>Notes</th>
+      <th>Date</th>
+      <th>Host</th>
+      <th>Job</th>
+	  <th>Status</th>
+      <th>Options</th>
       </thead>
       <tbody>
-      <tr ng-repeat="s in shiftList | orderBy:'short_name'">
+      <tr ng-repeat="s in shiftList ">
         <td>
-          {{ s.short_name }}
+          {{ s.shift_date }}
         </td>
         <td>
-          {{ s.description }}
+          {{ s.user_name }}
         </td>
         <td>
-          {{ s.start_time }}
+          {{ s.shift_type_short_name + " - " +  s.shift_type_description }}
         </td>
         <td>
-          {{ s.end_time }}
-        </td>
-        <td>
-          {{ s.tasks }}
+          {{ s.status }}
         </td>
         <td>
           <div ng-show="current_is_admin">
-            <a href="#" ng-click='showShift(s)' class='btn btn-warning'><i class='icon-wrench icon-large icon-white'></i></a>
-            <br/>
-            <br/>
-
-            <a href="#" class='btn btn-danger'><i class='icon-remove icon-large icon-white' ng-click='deleteShift(s)'></i></a>
-            <br/>
+            <a href="#" class='btn btn-danger'><i class='icon-trash icon-large icon-white' ng-click='deleteShift(s)' title='delete shift'></i></a>
+          </div>
+		  <div ng-show="true">
+            <a href="#" class='btn btn-info'><i class='icon-check-sign icon-large icon-white' ng-click='selectShift(s)' title='select shift'></i></a>
+		  </div>
+          <div ng-show="true">
+            <a href="#" class='btn btn-info'><i class='icon-cut icon-large icon-white' ng-click='selectShift(s)' title='de-select shift'></i></a>
+          </div>
+          <div ng-show="true">
+            <a href="#" class='btn btn-info'><i class='icon-lock icon-large icon-white' ng-click='selectShift(s)' title='un-selectable shift'></i></a>
           </div>
         </td>
 

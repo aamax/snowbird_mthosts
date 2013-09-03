@@ -1,5 +1,5 @@
 @ShiftCtrl = ($scope, $resource, shiftResource) ->
-  shiftList = shiftResource.loadShifts()
+  $scope.shiftList = shiftResource.loadShifts()
   $scope.current_user = gon.current_user
   $scope.current_is_admin = gon.current_is_admin
 
@@ -8,16 +8,17 @@
     shift = {short_name: '', description: '', start_time: '', end_time: '', tasks: ''}
     shift
 
-  $scope.$on "shiftLoaded", ->
+  $scope.$on "shiftsLoaded", ->
     $scope.shiftList = shiftResource.getShifts()
 
   $scope.deleteShift = (s) ->
-    $scope.shift = s
-    $scope.shift.$delete()
-
-    idx = $scope.shiftList.indexOf(s)
-    $scope.shiftList.splice(idx, 1)
-    $scope.shift = $scope.shiftList[0]
+    delete_shift = confirm('Are you sure you want to delete this shift?');
+    if (delete_shift)
+      $scope.shift = s
+      $scope.shift.$delete()
+      idx = $scope.shiftList.indexOf(s)
+      $scope.shiftList.splice(idx, 1)
+      $scope.shift = $scope.shiftList[0]
 
   $scope.showShift = (s) ->
     if typeof s == 'object'
