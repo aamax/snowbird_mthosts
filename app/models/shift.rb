@@ -75,16 +75,16 @@ class Shift < ActiveRecord::Base
     ['P1', 'P2', 'P3', 'P4', 'C1', 'C2', 'G5', 'G6', 'G7', 'G8', 'TL'].include? self.shifttype.shortname[0..1]
   end
 
-  #def shift_type_description
-  #  self.shift_type.description
-  #end
-  #
-  #def shift_type_short_name
-  #  self.shift_type.short_name
-  #end
+  def can_select(current_user)
+    # TODO code logic to show or not show the select button for a shift
+    # based on user role, seniority, and date
+    true
+  end
+
 
   private
   def set_day_of_week
     self.day_of_week = self.shift_date.strftime("%a")
   end
+
 end

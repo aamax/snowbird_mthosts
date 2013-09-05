@@ -8,16 +8,6 @@
     <br/>
     <hr/>
 
-    <!--json.user_id                s.user.id-->
-    <!--json.user_name              s.user.name-->
-    <!--json.shift_type_id          s.shift_type.id-->
-    <!--json.shift_type_short_name  s.shift_type.short_name-->
-    <!--json.shift_type_description s.shift_type.description-->
-    <!--json.shift_status           s.shift_status-->
-    <!--json.shift_date             s.shift_date-->
-    <!--json.day_of_week            s.day_of_week-->
-
-
     <table class='table table-striped'>
       <thead>
 
@@ -33,7 +23,14 @@
           {{ s.shift_date }}
         </td>
         <td>
-          {{ s.user_name }}
+
+          <span ng-show="showDeSelectUser(s)" >
+             <a href="#" class='btn btn-warning'><i class='icon-cut icon-large icon-white' ng-click='deSelectShift(s)' title='de-select shift'></i></a>
+                &nbsp;&nbsp;{{ s.user_name }}
+          </span>
+          <span ng-show="s.user_name == '' && s.can_select">
+             <a href="#" class='btn btn-select'><i class='icon-male icon-large icon-white' ng-click='selectShift(s)' title='select shift'></i></a>
+          </span>
         </td>
         <td>
           {{ s.shift_type_short_name + " - " +  s.shift_type_description }}
@@ -42,18 +39,9 @@
           {{ s.status }}
         </td>
         <td>
-          <div ng-show="current_is_admin">
+          <span ng-show="current_is_admin">
             <a href="#" class='btn btn-danger'><i class='icon-trash icon-large icon-white' ng-click='deleteShift(s)' title='delete shift'></i></a>
-          </div>
-		  <div ng-show="true">
-            <a href="#" class='btn btn-info'><i class='icon-check-sign icon-large icon-white' ng-click='selectShift(s)' title='select shift'></i></a>
-		  </div>
-          <div ng-show="true">
-            <a href="#" class='btn btn-info'><i class='icon-cut icon-large icon-white' ng-click='selectShift(s)' title='de-select shift'></i></a>
-          </div>
-          <div ng-show="true">
-            <a href="#" class='btn btn-info'><i class='icon-lock icon-large icon-white' ng-click='selectShift(s)' title='un-selectable shift'></i></a>
-          </div>
+          </span>
         </td>
 
       </tr>

@@ -17,7 +17,7 @@ class ShiftsController < ApplicationController
   end
 
   def destroy
-    ShiftType.destroy(params[:id])
+    Shift.destroy(params[:id])
     respond_with @shift
   end
 
@@ -39,4 +39,6 @@ class ShiftsController < ApplicationController
               shift_status_id: params['shift_status_id'], shift_date: params['shift_date']}
     retval
   end
+
+
 end

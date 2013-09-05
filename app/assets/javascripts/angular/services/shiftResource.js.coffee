@@ -2,7 +2,7 @@ angular.module("ShiftServices", []).factory "shiftResource", ($resource, $rootSc
   _loadedShifts    = []
   _currShift = undefined
   _isShowForm = true
-  _shifts = $resource('/shifts/:id:format', {id: '@id'}, {update: {method: 'put'}, destroy: {method: 'post'}}, format: 'json')
+  _shifts = $resource('/shifts/:id', {id: '@id'}, {update: {method: 'put'} })
 
   loadShifts: ->
     _loadedShifts = _shifts.query( ->

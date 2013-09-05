@@ -4,11 +4,13 @@ DEFAULT_PASSWORD = "password"
 
 namespace :db do
 
-  desc "populate users"
+  desc "load all data"
   task :load_all_data => :environment do
     Rake::Task['db:load_users'].invoke
 
     Rake::Task['db:load_shift_types'].invoke
+
+    Rake::Task['db:load_shifts'].invoke
   end
 
   desc "populate users"
@@ -87,32 +89,57 @@ namespace :db do
     puts "purging existing shifts from system..."
     ActiveRecord::Base.connection.execute("TRUNCATE TABLE shifts RESTART IDENTITY;")
 
-    s = Shift.create!(:user_id => User.first.id, :shift_type_id => ShiftType.first.id, :shift_status_id => 1, :shift_date => '2013-11-15')
-    puts "added shift #{s.id}"
-    # # load up file
-    # filename = "lib/data/shift_type_data.csv"
-    # 
-    # if File.exists?(filename)
-    #   puts "loading shift type data..."
-    #   CSV.foreach(filename, :headers => true) do |row|
-    #     hash = row.to_hash
-    # 
-    #     sdarr = hash['starttime'].split(' ')
-    #     edarr = hash['endtime'].split(' ')
-    #     st = {
-    #         short_name: hash["shortname"], description: hash["description"], start_time: sdarr[1],
-    #         end_time: edarr[1], tasks: hash['speedcontrol']
-    #     }
-    # 
-    #     if !ShiftType.create(st)
-    #       puts "failed: #{st}"
-    #     end
-    #   end
-    #   puts "done loading shift data"
-    # else
-    #   puts "shift loader file not found"
-    # end
+    # load up file
+    filename = "lib/data/shift_data.csv"
+    userfile = 'lib/data/hostdata.csv'
+    typefile = 'lib/data/shift_type_data.csv'
+
+    if File.exists?(filename)
+       puts "loading shift data..."
+       CSV.foreach(filename, :headers => true) do |row|
+         hash = row.to_hash
+
+         iUser = getIDFromFile(userfile, hash["user_id"], 'user')
+         iType = getIDFromFile(typefile, hash["shifttype_id"], 'type')
+         if ((iType == -1) || (iUser == -1))
+          next
+         end
+         dt = hash['shift_date'].to_date() + 1.year
+
+         st = {
+             user_id: iUser, shift_type_id: iType,
+             shift_status_id: hash["shift_status"],
+             shift_date: hash['shift_date']
+         }
+
+         if !Shift.create(st)
+           puts "failed: #{st}"
+         end
+       end
+       puts "done loading shift data"
+    else
+       puts "shift loader file not found"
+    end
   end
+
+  def getIDFromFile(fname, id, t)
+    CSV.foreach(fname, :headers => true) do |row|
+      hash = row.to_hash
+
+      #puts "id: #{id} type: #{t} fname: #{fname} hash: #{hash}"
+      if hash["id"].to_s == id.to_s
+
+        obj = User.find_by_email(hash["email"]) if t == 'user'
+        obj = ShiftType.find_by_short_name(hash["shortname"]) if t == 'type'
+        idx = obj.id unless obj.nil?
+        idx ||= -1
+        return idx
+      end
+    end
+    return -1
+  end
+
+
 
 end
 

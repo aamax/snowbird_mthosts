@@ -4,6 +4,8 @@
 
     <li><%= link_to "Hosts", users_path %></li>
 
+    <li><%= link_to "Shifts", shifts_path %></li>
+
     <li class="dropdown">
       <%= link_to "Documents", "#", :class => "dropdown-toggle", :data => {:toggle => "dropdown"}, :id => "document_menu" %>
 
@@ -40,19 +42,7 @@
 
           <ul class="dropdown-menu" padding-left="20px">
             <li><%= link_to "Manage Shift Types", shift_types_path %></li>
-            <li><%= link_to "Manage Shifts", shifts_path %></li>
-
-            <li class="dropdown">
-              <%= link_to "Shift Admin", "#", :class=>'dropdown-toggle', :data => {:toggle => "dropdown"}, :id => "admin_menu" %>
-              <ul class='dropdown-menu' padding-left="20px">
-                <li>Manage Shift Types</li>
-                <li>Manage Shifts</li>
-              </ul>
-            </li>
-            <li><%= link_to "admin menu item 2", "#" %></li>
-            <li><%= link_to "admin menu item 3", "#" %></li>
-            <li><%= link_to "admin menu item 4", "#" %></li>
-
+            <li><%= link_to "Manage Shifts", "#" %></li>
           </ul>
         </li>
     <% end %>

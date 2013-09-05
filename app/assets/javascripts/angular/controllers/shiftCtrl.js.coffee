@@ -16,6 +16,7 @@
     if (delete_shift)
       $scope.shift = s
       $scope.shift.$delete()
+
       idx = $scope.shiftList.indexOf(s)
       $scope.shiftList.splice(idx, 1)
       $scope.shift = $scope.shiftList[0]
@@ -58,3 +59,8 @@
         $scope.shiftList.push(data)
       )
 
+  $scope.showDeSelectUser = (shift) ->
+    shift.user_name != ''
+
+  $scope.showSelectUser = (shift) ->
+    shift.user_name == '' && shift.can_select
