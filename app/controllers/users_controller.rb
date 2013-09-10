@@ -16,6 +16,8 @@ class UsersController < ApplicationController
 
       u['is_admin'] = u.has_role? :admin
       u['roles'] = u.roles
+      u['seniority'] = u.seniority
+      u['shifts'] = u.shifts
     end
     object = respond_to do |format|
       format.html
@@ -25,6 +27,11 @@ class UsersController < ApplicationController
   end
 
   def show
+    gon.current_user = current_user
+    gon.user_to_show = @user
+    @user['is_admin'] = @user.has_role? :admin
+    @user['roles'] = @user.roles
+
     object = respond_to do |format|
       format.html
       format.json  {render json: @user}
@@ -44,8 +51,19 @@ class UsersController < ApplicationController
 
   def update
     user_params = setUserParamsForUpdate(params)
-    @user.update_attributes(user_params)
-    respond_with @user
+    if user_params[:password].blank?
+      user_params.except!(:password)
+      user_params.except!(:password_confirmation)
+    end
+    if !@user.update_attributes(user_params)
+      flash[:alert] = "Error saving user: #{@user.errors.messages}"
+    end
+
+    object = respond_to do |format|
+      format.html { redirect_to :back }
+      format.json  {render json: @user}
+    end
+    object
   end
 
   def save_new
@@ -63,12 +81,15 @@ class UsersController < ApplicationController
   private
 
   def setUserParamsForUpdate(params)
-    retval = {name: params[:name], email: params[:email], street: params[:street], city: params[:city],
-              state: params[:state], zip: params[:zip], home_phone: params[:home_phone], cell_phone: params[:cell_phone],
-              alt_email: params[:alt_email], start_year: params[:start_year], notes: params[:notes],
-              confirmed: params[:confirmed], active_user: params[:active_user], nickname: params[:nickname]}
-    if params[:password]
-      retval[:password] = params[:password]
+    retval = params[:user]
+    unless params[:email].nil?
+      retval = {name: params[:name], email: params[:email], street: params[:street], city: params[:city],
+                state: params[:state], zip: params[:zip], home_phone: params[:home_phone], cell_phone: params[:cell_phone],
+                alt_email: params[:alt_email], start_year: params[:start_year], notes: params[:notes],
+                confirmed: params[:confirmed], active_user: params[:active_user], nickname: params[:nickname]}
+      if params[:password]
+        retval[:password] = params[:password]
+      end
     end
     retval
   end

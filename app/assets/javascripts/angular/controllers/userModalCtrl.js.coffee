@@ -1,5 +1,13 @@
 @UserModalCtrl = ($scope, $resource, userResource, md5) ->
   $scope.user = userResource.getCurrentUser()
+  if (($scope.user == undefined) && (window.location.pathname != '/users'))
+    userResource.setCurrentUser(gon.user_to_show)
+    angular.element('#editUserModal').modal('show')
+    $scope.is_direct_access = true
+    userResource.setIsShowForm(false)
+  else
+    $scope.is_direct_access = false
+
   $scope.showForm = true
 
   $scope.setupUser = () ->
@@ -25,3 +33,11 @@
         userResource.setCurrentUser($scope.user)
         $scope.$parent.$broadcast "userUpdate"
         $scope.toggleModal('hide')
+
+#  $scope.toggleModal = (action = "toggle") ->
+#    angular.element('#editUserModal').modal(action)
+#    if ($scope.is_direct_access == true)
+#      if (document.referrer.replace(document.location.origin, '') == '/users')
+#        self.location = '/users.html'
+#      else
+#      history.go(-1)

@@ -1,53 +1,111 @@
-<div ng-controller='ShiftCtrl'>
-  <div ng-controller='ShiftCtrl'>
-    <h1>Snowbird Mountain Host: Shifts</h1>
-    <input type="text" class="searchbox" name="s" value="" ng-model="shift_filter" placeholder='Enter Shift Filter here'/>
-      <span ng-show='current_is_admin'>
-        <a href="#" class='btn btn-info' ng-click='newShift()'>New <i class='icon-male icon-large icon-white'></i></a> <br/>
-      </span>
-    <br/>
-    <hr/>
+<h1>Snowbird Mountain Host: Shifts</h1>
 
-    <table class='table table-striped'>
-      <thead>
+<div class="shift_page_header">
+  <div class="shift_page_filter">
+    <div class='row'>
+      <div class='span3'>
+        <br/>
+        <button type="button" class="btn btn-mini" data-toggle="collapse" data-target="#shift_filter" >
+          Open Filter:&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
+        </button>
+      </div>
+      <div class='span9'>
+        <%= will_paginate @shifts %>
+      </div>
+    </div>
 
-      <th>Date</th>
-      <th>Host</th>
-      <th>Job</th>
-	  <th>Status</th>
-      <th>Options</th>
-      </thead>
-      <tbody>
-      <tr ng-repeat="s in shiftList ">
-        <td>
-          {{ s.shift_date }}
-        </td>
-        <td>
-
-          <span ng-show="showDeSelectUser(s)" >
-             <a href="#" class='btn btn-warning'><i class='icon-cut icon-large icon-white' ng-click='deSelectShift(s)' title='de-select shift'></i></a>
-                &nbsp;&nbsp;{{ s.user_name }}
-          </span>
-          <span ng-show="s.user_name == '' && s.can_select">
-             <a href="#" class='btn btn-select'><i class='icon-male icon-large icon-white' ng-click='selectShift(s)' title='select shift'></i></a>
-          </span>
-        </td>
-        <td>
-          {{ s.shift_type_short_name + " - " +  s.shift_type_description }}
-        </td>
-        <td>
-          {{ s.status }}
-        </td>
-        <td>
-          <span ng-show="current_is_admin">
-            <a href="#" class='btn btn-danger'><i class='icon-trash icon-large icon-white' ng-click='deleteShift(s)' title='delete shift'></i></a>
-          </span>
-        </td>
-
-      </tr>
-      </tbody>
-    </table>
-
-    <%= render "/shared/shift_modal" %>
+    <div id="shift_filter" class="collapse out">
+        <h4>Filter:</h4>
+      shifts i can select: (default checked)<br/>
+      day of week<br/>
+      date<br/>
+      shift type: <br/>
+      host: <br/>
+      active: (default checked)
+    </div>
   </div>
+  <hr/>
 </div>
+
+<%
+   curr_date = ""
+%>
+<div class="shift_page_body">
+    <% @shifts.each do |s| %>
+      <% if curr_date != s.shift_date  %>
+           <% if curr_date != ''  %>
+              </table>
+              </div>
+           <% end %>
+
+            <button type="button" class="btn btn-mini" data-toggle="collapse"
+              data-target=<%= "#date_#{curr_date}" %>>
+                <%="#{s.shift_date} &nbsp;&nbsp;-&nbsp;&nbsp;Total: #{getShiftTotal(s.shift_date)} / Available: #{getSelectedShifts(s.shift_date)}".html_safe %>
+            </button>
+          <br/>
+
+            <div id='<%= "date_#{curr_date}" %>' class="collapse out">
+          <table class='table table-striped'>
+            <tr >
+              <th>Host</th>
+              <th>Select/Drop</th>
+              <th>Code</th>
+              <th>Description</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+              <th>Notes</th>
+              <th>Admin</th>
+            </tr>
+      <% end %>
+      <tr>
+        <td>
+          <% unless s.user_id.nil? %>
+            <a href=<%= user_path(s.user_id) %>><%= s.user.name %></a>
+          <% end %>
+        </td>
+        <td class="align-center">
+          <% if s.can_select current_user %>
+              <a href=<%= "select_shift/#{s.id}" %>><i class="icon-male btn btn-primary" title="select shift"></i></a>
+          <% end %>
+          <% if s.can_drop current_user %>
+              <a href=<%= "drop_shift/#{s.id}" %>><i class="icon-warning-sign btn btn-warning" title="drop shift"></i></a>
+          <% end %>
+        </td>
+        <td class="align-center"><a href="shiftcard" target='_blank'><%= s.shift_type.short_name[0..1] %></a></td>
+        <td><a href="shiftcard" target='_blank'><%= s.shift_type.description %></a></td>
+        <td class="align-center"><%= s.shift_type.start_time %></td>
+        <td class="align-center"><%= s.shift_type.end_time %></td>
+        <td><%= s.shift_type.tasks %></td>
+        <td class="align-center">
+          <% if current_user.has_role? :admin %>
+              <a href=<%= edit_shift_path(s.id) %>><i class="icon-wrench btn btn-info" title="edit shift"></i></a>
+
+              <%= link_to "<i class='icon-trash btn btn-danger'></i>".html_safe, s, :method => :delete,
+                          :confirm => "You sure you want to delete this shift?",
+                          :title => "Delete #{s.id}" %>
+          <% end %>
+
+        </td>
+      </tr>
+      <% if curr_date != s.shift_date  %>
+            <% curr_date = s.shift_date %>
+      <% end %>
+    <% end %>
+
+    <% if @shifts.length > 0 %>
+      </table>
+    </div>
+  <% end %>
+</div>
+<br/>
+
+
+
+
+
+
+<div class="shift_page_footer">
+  <hr/>
+  <%= will_paginate @shifts %>
+</div>
+

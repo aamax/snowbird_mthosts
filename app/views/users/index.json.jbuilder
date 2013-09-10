@@ -16,4 +16,5 @@ json.array!(@users) do |user|
   json.is_current_user user.is_current_user
   json.is_admin     user.has_role? :admin
   json.roles        user.roles
+  json.seniority    user.seniority
 end

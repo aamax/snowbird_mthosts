@@ -6,6 +6,7 @@ namespace :db do
 
   desc "load all data"
   task :load_all_data => :environment do
+    Rake::Task['db:setup_sys_config'].invoke
     Rake::Task['db:load_users'].invoke
 
     Rake::Task['db:load_shift_types'].invoke
@@ -13,7 +14,31 @@ namespace :db do
     Rake::Task['db:load_shifts'].invoke
   end
 
-  desc "populate users"
+  desc "populate sys config settings"
+  task :setup_sys_config => :environment do
+    puts "setting up sys config values"
+    puts "purging existing sys config record from system..."
+    ActiveRecord::Base.connection.execute("TRUNCATE TABLE sys_configs RESTART IDENTITY;")
+    c = SysConfig.new
+    #c.season_year = 2013
+    #c.group_1_year = 2012
+    #c.group_2_year = 2011
+    #c.group_3_year = 2008
+    #c.season_start_date = Date.new(2013,12,15)
+    #c.bingo_start_date = Date.new(2013,11,10)
+    c.season_year = 2012
+    c.group_1_year = 2011
+    c.group_2_year = 2012
+    c.group_3_year = 2007
+    c.season_start_date = Date.new(2012,12,15)
+    c.bingo_start_date = Date.new(2012,11,10)
+
+    if !c.save
+      puts "error saving config record #{c.errors.messages}"
+    end
+  end
+
+    desc "populate users"
   task :load_users => :environment do
     # clear out users
     puts "purging existing users from system..."

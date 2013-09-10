@@ -29,8 +29,8 @@ class Shift < ActiveRecord::Base
   validates :shift_date, :presence => true,
             :format => { :with => date_regex }
 
-  default_scope :order => "shift_date asc, shift_type_id asc", :conditions => "shift_date >= '#{SEASON_START}'"
-  scope :last_year, where("shifts.shift_date < '#{SEASON_START}'").order("shifts.shift_date")
+  default_scope :order => "shift_date asc, shift_type_id asc", :conditions => "shift_date >= '#{SysConfig.first.season_start_date}'"
+  scope :last_year, where("shifts.shift_date < '#{SysConfig.first.season_start_date}'").order("shifts.shift_date")
   scope :currentuser, lambda{|userid| where :user_id => userid}
 
   # shift status values:
@@ -76,9 +76,25 @@ class Shift < ActiveRecord::Base
   end
 
   def can_select(current_user)
-    # TODO code logic to show or not show the select button for a shift
-    # based on user role, seniority, and date
-    true
+    retval = false
+    if self.user_id.nil?
+      # TODO add logic for shift selection bingo here...
+
+      retval = true
+    end
+    retval
+  end
+
+  def can_drop(current_user)
+    retval = false
+    unless self.user_id.nil?
+      if (current_user.has_role? :admin)
+        retval = true
+      elsif ((current_user.id == self.user_id) && (self.shift_date > Date.today + 13.days))
+        retval = true
+      end
+    end
+    retval
   end
 
 

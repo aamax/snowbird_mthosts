@@ -45,23 +45,58 @@
       <input type='password' ng-model='password_confirmation' placeholder='Password Confirmation'
              ng-disabled='showForm' /><br/>
 
-        <strong>seniority: </strong> TODO<br/>
-        <strong>roles: </strong> TODO<br/>
-        <strong>Surveys: </strong> TODO<br/>
-        <strong>shift summary info: </strong> TODO<br/>
+      <strong>seniority: </strong> {{ user.seniority }}
+      <div ng-show='user.roles.length > 0'>
+        <h5>Roles:</h5>
+        <ul>
+          <li ng-repeat='role in user.roles'>{{role.name}}</li>
+        </ul>
+      </div>
+
+      <h5>shift summary info: </h5>
+      <table class='table table-striped'>
+        <tr>
+          <th>Date</th>
+          <th>DOW</th>
+          <th>Shift</th>
+          <th>Status</th>
+          <th>Tools</th>
+        </tr>
+
+
+            <tr ng-repeat='s in user.shifts'>
+              <td>{{ s.shift_date }}</td>
+
+              <td>{{ s.day_of_week }}</td>
+              <td>{{ s.shift_type.short_name[0..1] + " - " + s.shift_type.description }}</td>
+              <td>{{ s.shift_type.tasks }}</td>
+              <td>
+
+                <% if (s.user_id == current_user.id &&
+                    s.shift_date.to_date >= Date.today + 14.days) ||
+                    (current_user.has_role?(:admin) && s.shift_date.to_date > Date.today)
+                %>
+                    <%= link_to "clear <i class='icon-warning-sign btn btn-warning' title='drop shift'></i>".html_safe, clearfromuser_path + "?userid=" + object.user_id.to_s +
+                        "&shiftid=" + object.id.to_s,
+                                :confirm => "You sure you want to drop this shift?",
+                                :class => "btn",
+                                :title => "Clear Shift"
+                    %>
+                <% end %>
+
+                <% if s.can_drop current_user %>
+                    <a href=<%= "drop_shift/#{s.id}" %>><i class="icon-warning-sign btn btn-warning" title="drop shift"></i></a>
+                <% end %>
+              </td>
+            </tr>
+
+      </table>
+      <br/>
 
         <hr/>
         <button type="button" class="btn btn-small btn-warning" ng-click="dismiss('cancel')">Cancel</button>
         <button class="btn btn-small btn-success" ng-click="dismiss('ok')" ng-disabled='showForm' >Save
         </button>
-
-
-
-      <br/>
-      shift summary <br/>
-      able to delete shifts <br/>
-
-      <br/><br/><br/>
     </div>
   </div>
 </div>

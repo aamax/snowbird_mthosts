@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130827012028) do
+ActiveRecord::Schema.define(:version => 20130909022043) do
 
   create_table "roles", :force => true do |t|
     t.string   "name"
@@ -42,6 +42,17 @@ ActiveRecord::Schema.define(:version => 20130827012028) do
     t.string   "day_of_week"
     t.datetime "created_at",                     :null => false
     t.datetime "updated_at",                     :null => false
+  end
+
+  create_table "sys_configs", :force => true do |t|
+    t.integer  "season_year"
+    t.integer  "group_1_year"
+    t.integer  "group_2_year"
+    t.integer  "group_3_year"
+    t.date     "season_start_date"
+    t.date     "bingo_start_date"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "users", :force => true do |t|

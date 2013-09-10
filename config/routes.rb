@@ -19,6 +19,9 @@ Mthost::Application.routes.draw do
   match '/deliver_mail', :to => "mail#deliver_mail"
   match '/send_mail/:address', :to => "mail#send_mail"
 
+  get '/drop_shift/:id', :to => 'shifts#drop_shift'
+  get '/select_shift/:id', :to => 'shifts#select_shift'
+
   root :to => "pages#show"
 
   # catchall route to get pages

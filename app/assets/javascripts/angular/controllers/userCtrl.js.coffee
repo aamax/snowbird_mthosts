@@ -1,4 +1,4 @@
-@UserCtrl = ($scope, $resource, userResource) ->
+@UserCtrl = ($scope, $resource, $window, userResource) ->
   userResource.loadUsers() if userResource.getUsers().length == 0
   $scope.current_user = gon.current_user
 
@@ -54,13 +54,13 @@
       $.each $scope.hostList, (index, obj) ->
         if obj.id == user.id
           user = obj
-
-    userResource.setCurrentUser(user)
-    isShow = true
-    if $scope.current_is_admin() || ($scope.current_user.id == user.id)
-      isShow = false
-    userResource.setIsShowForm(isShow)
-    $scope.toggleModal("show")
+#    userResource.setCurrentUser(user)
+#    isShow = true
+#    if $scope.current_is_admin() || ($scope.current_user.id == user.id)
+#      isShow = false
+#    userResource.setIsShowForm(isShow)
+#    $scope.toggleModal("show")
+    $window.location = "/users/#{user.id}"
 
   $scope.newUser = () ->
     if $scope.current_is_admin()

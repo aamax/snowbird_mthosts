@@ -10,7 +10,8 @@
     <tbody>
     <tr>
       <td>
-        <a href='#' ng-click='showUser(current_user)'>{{ current_user.name }}
+        <a href='#' ng-click='showUser(current_user)'>
+          {{ current_user.name }}
                 <span ng-show='current_user.nickname != ""'>
                   - {{ current_user.nickname }}
                 </span>
@@ -131,7 +132,9 @@
     </tbody>
   </table>
 
-  <%= render "/shared/user_modal" %>
+  <%= #render "user_modal"
+  ""
+  %>
 </div>
 
 

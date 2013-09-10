@@ -1,0 +1,94 @@
+<%= form_for @user, url: {action: "update", method: :put}, html: {class: "nifty_form"} do |f| %>
+    <%= gravatar_image_tag(@user.email, :alt => @user.name) %><br/>   <br/>
+    <strong>Name: </strong> <%= f.text_field :name, :placeholder => 'Name', class: 'name_edit' %>     <br/>
+
+    <strong>Address: </strong><br/>
+    <%= f.text_field :street, :placeholder => 'Street Name', class: 'street_edit' %> <br/>
+    <%= f.text_field :city, :placeholder => 'City', class: 'city_edit' %>,
+    <%= f.text_field :state, :placeholder => 'State', class: 'state_edit' %>
+    <%= f.text_field :zip, :placeholder => 'Zip', class: 'zip_edit' %>   <br/>
+
+
+    <strong>Home Phone: </strong>
+    <%= f.phone_field :home_phone, :placeholder => 'Home Phone', class: 'phone_edit' %> <br/>
+    <strong>Cell Phone: </strong>
+    <%= f.phone_field :cell_phone, :placeholder => 'Cell Phone', class: 'phone_edit' %> <br/>
+    <strong>Email: </strong>
+    <%= f.email_field :email, :placeholder => 'Email', class: 'email_edit' %> <br/>
+    <strong>Alt Email: </strong>
+    <%= f.email_field :alt_email, :placeholder => 'Alternate Email', class: 'email_edit' %> <br/>
+
+    <strong>Active?: </strong>
+    <%= f.check_box :active_user, :placeholder => "active", class: 'active_edit' %>
+
+    &nbsp;&nbsp;&nbsp;
+    <strong>Confirmed? </strong>
+    <%= f.check_box :confirmed, :placeholder => "confirmed", class: 'active_edit' %><br/>
+
+    <% if current_user.has_role? :admin %>
+      <br/>
+      <strong>Notes: </strong><br/>
+      <%= f.text_area :notes, class: 'notes_edit', placeholder: 'Admin Notes' %> <br/>
+    <% end %>
+
+    <strong>Start Year: </strong>
+    <%= f.text_field :start_year, :placeholder => 'Start Year', class: 'year_edit' %> <br/><br/>
+
+    <%= f.password_field :password, class: 'password_edit', placeholder: 'Password' %> <br/>
+    <%= f.password_field :password_confirmation, class: 'password_edit', placeholder: 'Password Confirmation' %> <br/><br/>
+
+    <strong>seniority: </strong> <%= @user.seniority %><br/>
+    <% if @user.roles.length > 0 %>
+        <h5>Roles:</h5>
+        <ul>
+          <% @user.roles.each do |r| %>
+              <li><%= r.name %></li>
+          <% end %>
+
+        </ul>
+    <% end %>
+
+    <strong>Surveys: </strong> TODO<br/><br/>
+
+    <h5>shift summary info: </h5>
+    <table class='table table-striped'>
+      <tr>
+        <th>Date</th>
+        <th>DOW</th>
+        <th>Shift</th>
+        <th>Status</th>
+        <th>Tools</th>
+      </tr>
+      <% @user.shifts.each do |s| %>
+          <tr>
+            <td><%= s.shift_date %></td>
+            <td><%= s.day_of_week %></td>
+            <td><%= "#{s.shift_type.short_name[0..1]} - #{s.shift_type.description}" %></td>
+            <td><%= s.shift_type.tasks %></td>
+            <td>
+
+              <% if (s.user_id == current_user.id &&
+                  s.shift_date.to_date >= Date.today + 14.days) ||
+                  (current_user.has_role?(:admin) && s.shift_date.to_date > Date.today)
+              %>
+              <%= link_to "clear <i class='icon-warning-sign btn btn-warning' title='drop shift'></i>".html_safe, clearfromuser_path + "?userid=" + object.user_id.to_s +
+                  "&shiftid=" + object.id.to_s,
+                          :confirm => "You sure you want to drop this shift?",
+                          :class => "btn",
+                          :title => "Clear Shift"
+              %>
+              <% end %>
+
+              <% if s.can_drop current_user %>
+                  <a href=<%= "drop_shift/#{s.id}" %>><i class="icon-warning-sign btn btn-warning" title="drop shift"></i></a>
+              <% end %>
+            </td>
+          </tr>
+      <% end %>
+    </table>
+    <br/>
+
+    <%= f.submit "Update", id: 'user_form_submit' %>
+    <%= link_to "Cancel", users_path, class: "btn btn-warning" %>
+<% end %>
+

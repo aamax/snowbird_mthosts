@@ -6,6 +6,9 @@
 
     <li><%= link_to "Shifts", shifts_path %></li>
 
+     <li><a href=<%= "/users/#{@current_user.id}" %>>Profile</a></li>
+
+
     <li class="dropdown">
       <%= link_to "Documents", "#", :class => "dropdown-toggle", :data => {:toggle => "dropdown"}, :id => "document_menu" %>
 
@@ -42,7 +45,7 @@
 
           <ul class="dropdown-menu" padding-left="20px">
             <li><%= link_to "Manage Shift Types", shift_types_path %></li>
-            <li><%= link_to "Manage Shifts", "#" %></li>
+            <li><%= link_to "Shift Creation Wizard", "#" %></li>
           </ul>
         </li>
     <% end %>

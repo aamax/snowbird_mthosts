@@ -1,0 +1,81 @@
+<h1><%= "#{@title}" %></h1>
+
+<%= form_for(@shift) do |f| %>
+    <% params[:filter].each do |key, value| %>
+        <%= f.hidden_field "filter[#{key}]", :value => value %>
+    <% end if params[:filter] %>
+
+    <%= render 'shared/error_messages', :object => f.object %>
+    <br />
+    <div class="field">
+      <%= f.label "Host Name" %><br />
+      <%= collection_select(:shift, :user_id,
+                            @userlist, :id, :name,
+                            options = {:selected => @shift.user_id.to_i, :prompt => "UnSet"})
+      %>
+    </div>
+
+    <div class="row">
+      <div class= "span2">
+        <strong>Shift Date: </strong>
+      </div>
+      <div class="span3">
+        <%= @ShiftTypeDT %>
+      </div>
+    </div>
+    <br/>
+
+    <div class="row">
+      <div class= "span2">
+        <strong>Shift Name: </strong>
+      </div>
+      <div class="span3">
+        <%= @ShiftTypeSN %>
+      </div>
+    </div>
+    <br/>
+
+    <div class="row">
+      <div class= "span2">
+        <strong>Description: </strong>
+      </div>
+      <div class="span3">
+        <%= @ShiftTypeD %>
+      </div>
+    </div>
+    <br/>
+
+    <div class="row">
+      <div class= "span2">
+        <strong>Start Time: </strong>
+      </div>
+      <div class="span3">
+        <%= @ShiftTypeST %>
+      </div>
+    </div>
+    <br/>
+
+    <div class="row">
+      <div class= "span2">
+        <strong>End Time: </strong>
+      </div>
+      <div class="span3">
+        <%= @ShiftTypeET %>
+      </div>
+    </div>
+    <br/>
+
+    <div class="row">
+      <div class= "span2">
+        <strong>Speed Control: </strong>
+      </div>
+      <div class="span3">
+        <%= @ShiftTypeSC %>
+      </div>
+    </div>
+    <br/>
+
+    <div class="actions">
+      <%= f.submit "Submit" %>
+    </div>
+<% end %>
