@@ -39,8 +39,7 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable, :registerable,
   # :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable,
-         :recoverable, :rememberable, :trackable, :validatable
+  devise :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :name, :email, :password, :password_confirmation, :remember_me, :street, :city, :state, :zip,
@@ -51,18 +50,39 @@ class User < ActiveRecord::Base
   scope :active_users, -> {where(active_user: true)}
   scope :inactive_users, -> {where(active_user: false)}
   scope :non_confirmed_users, -> {where(confirmed: false)}
-  scope :rookies, -> {where(start_year: SysConfig.first.season_year)}
-  scope :group1, -> {where("(start_year < ?) and (start_year >= ?)", SysConfig.first.season_year, SysConfig.first.group_1_year)}
-  scope :group2, -> {where("(start_year < ?) and (start_year >= ?)", SysConfig.first.group_1_year, SysConfig.first.group_2_year)}
-  scope :group3, -> {where("(start_year <= ?)", SysConfig.first.group3_year)}
 
+  scope :rookies, -> {where("start_year = #{SysConfig.first.season_year} and active_user = true")}
+  scope :group1, -> {where("(start_year < ?) and (start_year >= ?) and (active_user = true)", SysConfig.first.season_year, SysConfig.first.group_1_year)}
+  scope :group2, -> {where("(start_year < ?) and (start_year >= ?) and (active_user = true)", SysConfig.first.group_1_year, SysConfig.first.group_2_year)}
+  scope :group3, -> {where("(start_year < ?) and (active_user = true)", SysConfig.first.group_2_year)}
+
+  before_destroy :clear_shifts_on_destroy
 
   def seniority
-    config = SysConfig.first
-    retval = "Rookie" if self.start_year == config.season_year
-    retval = "Freshman" if self.start_year <= config.group_1_year
-    retval = "Junior" if self.start_year <= config.group_2_year
-    retval = "Senior" if self.start_year <= config.group_3_year
+    if self.active_user != true
+      retval = 'InActive'
+    else
+      config = SysConfig.first
+      retval = "Rookie" if self.start_year == config.season_year
+      retval = "Freshman" if (self.start_year == config.season_year) && (self.start_year < config.group_1_year)
+      retval = "Junior" if (self.start_year >= config.group_2_year) && (self.start_year < config.group_1_year)
+      retval = "Senior" if self.start_year < config.group_2_year
+    end
     retval
+  end
+
+  def shifts_worked
+    worked = shifts
+    worked.delete_if {|s| (s.shift_date > Date.today) || (s.shift_status_id == -1) }
+    worked
+  end
+
+  private
+
+  def clear_shifts_on_destroy
+    self.shifts.each do |s|
+      s.user_id = nil
+      s.save
+    end
   end
 end

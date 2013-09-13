@@ -1,0 +1,73 @@
+<% params[:filter].each do |key, value| %>
+    <%= f.hidden_field "filter[#{key}]", :value => value %>
+<% end if params[:filter] %>
+
+<%= render 'shared/error_messages', :object => f.object %>
+<br />
+<div class="field">
+  <%= f.label "Host: " %>
+  <%= collection_select(:shift, :user_id,
+                        @userlist, :id, :name,
+                        options = {:selected => @shift.user_id.to_i, :prompt => "UnSet"})
+  %>
+</div>
+
+<div class="row">
+  <div class= "span2">
+    <strong>Shift Date: </strong>
+  </div>
+  <div class="span3">
+    <%= @shift.shift_date %>
+  </div>
+</div>
+<br/>
+
+<div class="row">
+  <div class= "span2">
+    <strong>Shift Name: </strong>
+  </div>
+  <div class="span3">
+    <%= @shift.shift_type.short_name[0..1] %>
+  </div>
+</div>
+<br/>
+
+<div class="row">
+  <div class= "span2">
+    <strong>Description: </strong>
+  </div>
+  <div class="span3">
+    <%= @shift.shift_type.description %>
+  </div>
+</div>
+<br/>
+
+<div class="row">
+  <div class= "span2">
+    <strong>Start Time: </strong>
+  </div>
+  <div class="span3">
+    <%= @shift.shift_type.start_time %>
+  </div>
+</div>
+<br/>
+
+<div class="row">
+  <div class= "span2">
+    <strong>End Time: </strong>
+  </div>
+  <div class="span3">
+    <%= @shift.shift_type.end_time %>
+  </div>
+</div>
+<br/>
+
+<div class="row">
+  <div class= "span2">
+    <strong>Notes: </strong>
+  </div>
+  <div class="span3">
+    <%= @shift.shift_type.tasks %>
+  </div>
+</div>
+<br/>

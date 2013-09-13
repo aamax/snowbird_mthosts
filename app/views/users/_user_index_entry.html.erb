@@ -1,0 +1,40 @@
+<td class='centered'>
+  <input type='hidden' value='<%= object.name %>'>
+
+  <a href='<%= user_path(object) %>'>
+    <%= "#{object.name} - #{object.nickname}" %><br/>
+    <%= gravatar_image_tag(object.email, :alt => object.name) %>
+  </a> <br/>
+  <%= link_to object.email, "send_mail/#{object.email}" %><br/>
+</td>
+
+<td>
+  <strong>Address:</strong><br/>
+  <%= object.street %> <br/>
+  <%= object.city %>, <%= object.state %> <%= object.zip %><br/> <br/>
+  <strong>Home Phone:</strong> <%= object.home_phone %><br/>
+  <strong>Cell Phone:</strong> <%= object.cell_phone %>
+
+</td>
+
+<td>
+  <strong>Scheduled Shifts: </strong><%= object.shifts.length %> <br/>
+  <strong>Shifts Worked: </strong> <%= object.shifts_worked.length %> <br/>
+</td>
+<td>
+  <strong>Start Date:</strong> <%= object.start_year %> <br/>
+  <strong>Seniority:</strong> <%= object.seniority %>
+</td>
+
+<td>
+  <% if ((current_user.has_role? :admin) || (current_user.id == object.id)) %>
+      <a href='<%= edit_user_path(object) %>'><i class='icon-wrench icon-large icon_blue icon_obj'></i></a>
+  <% end %>
+
+  <% if ((current_user.has_role? :admin) && (object.id != current_user.id)) %>
+      <a href='<%= user_path(object) %>' data-method='delete' data-confirm="You sure you want to delete this Host?" title='Delete Host'>
+        <i class='icon-trash icon-large icon_red icon_obj'></i>
+      </a>
+  <% end %>
+
+</td>

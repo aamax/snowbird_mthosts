@@ -3,6 +3,26 @@
 *= require_tree .
 */
 
+body {
+    padding-top: 40px;
+}
+
+.centered {
+    text-align: center !important;
+}
+
+.icon_obj {
+    padding-right: 15px;
+}
+
+.icon_red {
+    color: red;
+}
+
+.icon_blue {
+    color: blue;
+}
+
 
 
 

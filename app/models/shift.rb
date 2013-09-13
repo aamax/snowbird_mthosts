@@ -12,6 +12,8 @@
 #  updated_at      :datetime         not null
 #
 
+# if shift status = -1   ->  missed shift
+
 class Shift < ActiveRecord::Base
   attr_accessible :user_id, :shift_type_id, :shift_status_id, :shift_date, :day_of_week
   attr_accessor :can_select#, :shift_type_short_name, :shift_type_description
@@ -32,14 +34,15 @@ class Shift < ActiveRecord::Base
   default_scope :order => "shift_date asc, shift_type_id asc", :conditions => "shift_date >= '#{SysConfig.first.season_start_date}'"
   scope :last_year, where("shifts.shift_date < '#{SysConfig.first.season_start_date}'").order("shifts.shift_date")
   scope :currentuser, lambda{|userid| where :user_id => userid}
+  scope :assigned, where("shifts.user_id is not null").order("shifts.shift_date")
+  scope :un_assigned, where("shifts.user_id is null").order("shifts.shift_date")
 
   # shift status values:
   #      worked = 1
   #      pending = 1
   #      missed = -1
-  # TODO fix for scope usage in shift reporting...
-  #scope :currentuserworked, lambda{ |userid| where :user_id => userid, :shift_status => 1}.where("shift_date <= #{Date.today}")
-  #scope :currentuserpending, lambda{|userid| where  :user_id => userid, :shift_status => 1}.where("shift_date > #{Date.today}")
+  scope :currentuserworked, lambda{ |userid| where("user_id = #{userid} and shift_status = 1 and shift_date <= #{Date.today}")}
+  scope :currentuserpending, lambda{|userid| where("user_id = #{userid} and shift_status = 1 and shift_date > #{Date.today}") }
   scope :currentusermissed, lambda{|userid| where :user_id => userid, :shift_status => -1}
   scope :distinctDates, :select => ('distinct on (shift_date) shift_date, shift_type_id')
 

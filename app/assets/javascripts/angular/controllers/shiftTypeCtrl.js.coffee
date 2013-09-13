@@ -28,7 +28,7 @@
     if $scope.current_is_admin
       isShow = false
     shiftTypeResource.setIsShowForm(isShow)
-    $scope.toggleModal("show")
+    $scope.toggleModal("edit")
 
   $scope.toggleModal = (action = "toggle") ->
     angular.element('#editShiftTypeModal').modal(action)
@@ -37,7 +37,7 @@
     if $scope.current_is_admin
       shiftTypeResource.setCurrentShiftType($scope.initializeShiftType())
       shiftTypeResource.setIsShowForm(false)
-      $scope.toggleModal("show")
+      $scope.toggleModal("edit")
     else
       alert('must be administrator to add new shift type. Sorry!')
 

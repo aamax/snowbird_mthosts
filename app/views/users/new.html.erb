@@ -1,0 +1,5 @@
+<%= form_for @user, url: {action: "create", method: :post}, html: {class: "nifty_form"} do |f| %>
+    <%= render "form", f: f %>
+    <%= f.submit "Save", id: 'user_form_submit', class: 'btn btn-success' %>
+    <%= link_to "Cancel", users_path, class: "btn btn-warning" %>
+<% end %>

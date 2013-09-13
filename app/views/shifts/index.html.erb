@@ -15,6 +15,11 @@
     </div>
 
     <div id="shift_filter" class="collapse out">
+      <h4>Shift Stats:</h4>
+      Total Shifts:  <%= Shift.all.length %><br/>
+      Open Shifts:   <%= Shift.un_assigned.length %><br/>
+      Assigned Shifts:   <%= Shift.assigned.length %><br/>
+
         <h4>Filter:</h4>
       shifts i can select: (default checked)<br/>
       day of week<br/>

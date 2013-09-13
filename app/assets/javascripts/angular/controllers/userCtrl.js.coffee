@@ -66,7 +66,7 @@
     if $scope.current_is_admin()
       userResource.setCurrentUser($scope.initializeUser())
       userResource.setIsShowForm(false)
-      $scope.toggleModal("show")
+      $scope.toggleModal("edit")
     else
       alert('must be administrator to add new users. Sorry!')
 

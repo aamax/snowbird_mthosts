@@ -5,7 +5,7 @@ Mthost::Application.routes.draw do
   resources :mail
   resources :shift_types
   resources :shifts
-
+  resources :shift_collections
 
   post '/users/save_new', :to => 'users#save_new'
 

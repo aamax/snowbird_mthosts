@@ -2,7 +2,7 @@
   $scope.user = userResource.getCurrentUser()
   if (($scope.user == undefined) && (window.location.pathname != '/users'))
     userResource.setCurrentUser(gon.user_to_show)
-    angular.element('#editUserModal').modal('show')
+    angular.element('#editUserModal').modal('edit')
     $scope.is_direct_access = true
     userResource.setIsShowForm(false)
   else

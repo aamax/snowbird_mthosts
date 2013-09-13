@@ -427,7 +427,7 @@ angular.module('$strap.directives').factory('$modal', [
                                 $modal.modal(name);
                             };
                             angular.forEach([
-                                'show',
+                                'edit',
                                 'hide'
                             ], function (name) {
                                 scope[name] = function () {
@@ -436,7 +436,7 @@ angular.module('$strap.directives').factory('$modal', [
                             });
                             scope.dismiss = scope.hide;
                             angular.forEach([
-                                'show',
+                                'edit',
                                 'shown',
                                 'hide',
                                 'hidden'
@@ -456,7 +456,7 @@ angular.module('$strap.directives').factory('$modal', [
                                 $modal.remove();
                             });
                             if (options.show) {
-                                $modal.modal('show');
+                                $modal.modal('edit');
                             }
                             return $modal;
                         });
@@ -540,7 +540,7 @@ angular.module('$strap.directives').directive('bsPopover', [
                         template = template.data;
                     }
                     if (!!attr.unique) {
-                        element.on('show', function (ev) {
+                        element.on('edit', function (ev) {
                             $('.popover.in').each(function () {
                                 var $this = $(this), popover = $this.data('popover');
                                 if (popover && !popover.$element.is(element)) {
@@ -577,7 +577,7 @@ angular.module('$strap.directives').directive('bsPopover', [
                         popover(name);
                     };
                     angular.forEach([
-                        'show',
+                        'edit',
                         'hide'
                     ], function (name) {
                         scope[name] = function () {
@@ -586,7 +586,7 @@ angular.module('$strap.directives').directive('bsPopover', [
                     });
                     scope.dismiss = scope.hide;
                     angular.forEach([
-                        'show',
+                        'edit',
                         'shown',
                         'hide',
                         'hidden'
@@ -631,7 +631,7 @@ angular.module('$strap.directives').directive('bsTabs', [
     '$compile',
     '$timeout',
     function ($parse, $compile, $timeout) {
-        var template = '<div class="tabs">' + '<ul class="nav nav-tabs">' + '<li ng-repeat="pane in panes" ng-class="{active:pane.active}">' + '<a data-target="#{{pane.id}}" data-index="{{$index}}" data-toggle="tab">{{pane.title}}</a>' + '</li>' + '</ul>' + '<div class="tab-content" ng-transclude>' + '</div>';
+        var template = '<div class="tabs">' + '<ul class="nav nav-tabs">' + '<li ng-repeat="pane in panes" ng-class="{active:pane.active}">' + '<a data-target="#{{pane.id}}" data-angular_index="{{$angular_index}}" data-toggle="tab">{{pane.title}}</a>' + '</li>' + '</ul>' + '<div class="tab-content" ng-transclude>' + '</div>';
         return {
             restrict: 'A',
             require: '?ngModel',
@@ -669,10 +669,10 @@ angular.module('$strap.directives').directive('bsTabs', [
                         }
                     });
                     if (controller) {
-                        iElement.on('show', function (ev) {
+                        iElement.on('edit', function (ev) {
                             var $target = $(ev.target);
                             scope.$apply(function () {
-                                controller.$setViewValue($target.data('index'));
+                                controller.$setViewValue($target.data('angular_index'));
                             });
                         });
                         scope.$watch(iAttrs.ngModel, function (newValue, oldValue) {
@@ -682,7 +682,7 @@ angular.module('$strap.directives').directive('bsTabs', [
                             setTimeout(function () {
                                 var $next = $($tabs[0].querySelectorAll('li')[newValue * 1]);
                                 if (!$next.hasClass('active')) {
-                                    $next.children('a').tab('show');
+                                    $next.children('a').tab('edit');
                                 }
                             });
                         });
@@ -746,7 +746,7 @@ angular.module('$strap.directives').directive('bsTooltip', [
                     }
                 });
                 if (!!attrs.unique) {
-                    element.on('show', function (ev) {
+                    element.on('edit', function (ev) {
                         $('.tooltip.in').each(function () {
                             var $this = $(this), tooltip = $this.data('tooltip');
                             if (tooltip && !tooltip.$element.is(element)) {
