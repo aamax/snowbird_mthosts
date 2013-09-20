@@ -1,9 +1,6 @@
-<h1>Snowbird Mountain Hosts</h1>
-<div class="row">
 <% if current_user.has_role? :admin %>
+    <div class='row'>
       <div class="span2">
-    <%= link_to "Create User <i class='icon-male icon-large icon-white'></i>".html_safe, new_user_path, class: "btn btn-info" %>
-    <br/>
         Rookies: <%= User.rookies.length %> <br/>
 
         Freshmen: <%= User.group1.length %> <br/>
@@ -11,6 +8,15 @@
         Junior: <%= User.group2.length %> <br/>
 
         Senior: <%= User.group3.length %> <br/>
+      </div>
+    </div>
+<% end %>
+
+<h1>Snowbird Mountain Hosts</h1>
+<div class="row">
+<% if current_user.has_role? :admin %>
+      <div class="span2">
+    <%= link_to "Create New User <i class='icon-male icon-large icon-white'></i>".html_safe, new_user_path, class: "btn btn-info" %>
       </div>
   <% end %>
       <div class='span9'>

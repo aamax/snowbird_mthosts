@@ -16,5 +16,6 @@
 
 FactoryGirl.define do
   factory :shift do
+    shift_status_id     1
   end
 end

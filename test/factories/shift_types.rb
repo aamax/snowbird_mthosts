@@ -16,5 +16,9 @@
 
 FactoryGirl.define do
   factory :shift_type do
+    short_name   'P1'
+    description  'Peruvian'
+    start_time   '08:00'
+    end_time     '16:00'
   end
 end

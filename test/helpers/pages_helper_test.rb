@@ -2,8 +2,8 @@ require "test_helper"
 
 class PagesHelperTest < ActionView::TestCase
 
-  def test_sanity
-    assert true
-  end
+  #def test_sanity
+  #  assert true
+  #end
 
 end

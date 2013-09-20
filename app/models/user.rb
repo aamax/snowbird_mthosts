@@ -77,6 +77,46 @@ class User < ActiveRecord::Base
     worked
   end
 
+  def team_leader?
+    self.has_role? :team_leader
+  end
+
+  def admin?
+    self.has_role? :admin
+  end
+
+  def rookie?
+    self.start_year == SysConfig.first.season_year
+  end
+
+  def group_3?
+    self.start_year < SysConfig.first.group_2_year
+  end
+
+  def group_2?
+    (self.start_year >= SysConfig.first.group_2_year) && (self.start_year < SysConfig.first.group_1_year)
+  end
+
+  def group_1?
+    (self.start_year >= SysConfig.first.group_1_year) && (self.start_year != SysConfig.first.season_year)
+  end
+
+  def shadow_count
+    iCnt = 0
+    self.shifts.each do |s|
+      iCnt += 1 if s.shadow?
+    end
+    iCnt
+  end
+
+  def round_one_type_count
+    iCnt = 0
+    self.shifts.each do |s|
+      iCnt += 1 if s.round_one_rookie_shift?
+    end
+    iCnt
+  end
+
   private
 
   def clear_shifts_on_destroy

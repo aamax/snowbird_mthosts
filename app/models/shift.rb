@@ -31,8 +31,8 @@ class Shift < ActiveRecord::Base
   validates :shift_date, :presence => true,
             :format => { :with => date_regex }
 
-  default_scope :order => "shift_date asc, shift_type_id asc", :conditions => "shift_date >= '#{SysConfig.first.season_start_date}'"
-  scope :last_year, where("shifts.shift_date < '#{SysConfig.first.season_start_date}'").order("shifts.shift_date")
+  default_scope :order => "shift_date asc, shift_type_id asc", :conditions => "shift_date >= '#{Date.new(2013,9,1)}'"
+  scope :last_year, where("shifts.shift_date < '#{Date.new(2013,9,1)}'").order("shifts.shift_date")
   scope :currentuser, lambda{|userid| where :user_id => userid}
   scope :assigned, where("shifts.user_id is not null").order("shifts.shift_date")
   scope :un_assigned, where("shifts.user_id is null").order("shifts.shift_date")
@@ -62,30 +62,117 @@ class Shift < ActiveRecord::Base
     value
   end
 
+  def short_name
+    self.shift_type.short_name[0..1]
+  end
+
   def shadow?
-    self.shifttype.shortname[0..1] == "SH"
+    self.short_name[0..1] == "SH"
   end
 
   def team_leader?
-    self.shifttype.shortname[0..1] == "TL"
+    self.short_name[0..1] == "TL"
   end
 
   def round_one_rookie_shift?
-    ['G1','G2','G3','G4','C3','C4'].include? self.shifttype.shortname[0..1]
+    ['G1','G2','G3','G4','C3','C4'].include? self.short_name
   end
 
   def standard_shift?
-    ['P1', 'P2', 'P3', 'P4', 'C1', 'C2', 'G5', 'G6', 'G7', 'G8', 'TL'].include? self.shifttype.shortname[0..1]
+    ['P1', 'P2', 'P3', 'P4', 'C1', 'C2', 'G5', 'G6', 'G7', 'G8', 'TL'].include? self.short_name[0..1]
   end
 
-  def can_select(current_user)
+  def can_select(test_user)
     retval = false
     if self.user_id.nil?
-      # TODO add logic for shift selection bingo here...
+      # if user is already working this day
+      rookie_training_shifts = []
+      shadow_shifts = []
+      max_shadow_date = nil
+      max_rookie_shift_date = nil
+      bingo_start = SysConfig.first.bingo_start_date
+      round = get_current_round(bingo_start, Date.today, test_user)
+
+      if self.team_leader?
+        return test_user.team_leader? ? true : false
+      end
+
+      if !test_user.rookie? && (round == 0)
+        return false
+      end
+
+      return false if self.shadow? && !test_user.rookie?
+
+      test_user.shifts.each do |s|
+        if s.shift_date == self.shift_date
+          return false
+        end
+        if test_user.rookie?
+          if s.shadow?
+            shadow_shifts << s
+            max_shadow_date = s.shift_date if (max_shadow_date.nil? || (s.shift_date > max_shadow_date))
+          end
+          if s.round_one_rookie_shift?
+            rookie_training_shifts << s
+            max_rookie_shift_date = s.shift_date if (max_rookie_shift_date.nil? || (s.shift_date > max_rookie_shift_date))
+          end
+        end
+      end
+
+      if test_user.rookie?
+        if (self.shadow?)
+          return false if shadow_shifts.count >= 2
+        else
+          return false if shadow_shifts.count < 2
+
+          if rookie_training_shifts.count < 5
+            return false if (self.shift_date <= max_shadow_date) || (!self.round_one_rookie_shift?)
+          end
+
+          # if round one or less then no more than 7 shifts selected for rookies
+          if round <= 1
+            return false if (rookie_training_shifts.count == 5)
+          end
+        end
+      else
+        if round < 5
+          # if pre bingo - return false
+          return false if round <= 0
+          return false if (test_user.shifts.count >= (round * 5))
+        end
+      end
+
+
+
+
+
+
 
       retval = true
     end
     retval
+  end
+
+  # 0..1 group 3 round 1
+  # 2..3 group 2 round 1
+  # 4..5 group 1 round 1
+
+  # 6..7 group 3 round 2
+  # 8..9 group 2 round 2
+  # 10..11 group 1/rookie round 2
+
+
+  def get_current_round(bingo_start, dt, usr)
+    return 0 if dt < bingo_start
+
+    day_count = (dt - bingo_start).to_i
+    round_num = (day_count / 6).to_i + 1
+    group_num = (day_count % 6).to_i
+
+    return round_num if usr.group_3?
+    return round_num if usr.group_2? && (group_num >= 2)
+    return round_num if (usr.group_1? || usr.rookie?) && (group_num >= 4)
+    return (round_num - 1)
   end
 
   def can_drop(current_user)
