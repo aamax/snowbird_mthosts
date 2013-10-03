@@ -14,15 +14,15 @@
 
 <h1>Snowbird Mountain Hosts</h1>
 <div class="row">
-<% if current_user.has_role? :admin %>
+  <% if current_user.has_role? :admin %>
       <div class="span2">
-    <%= link_to "Create New User <i class='icon-male icon-large icon-white'></i>".html_safe, new_user_path, class: "btn btn-info" %>
+        <%= link_to "Create New User <i class='icon-male icon-large icon-white'></i>".html_safe, new_user_path, class: "btn btn-info" %>
       </div>
   <% end %>
-      <div class='span9'>
-        <input type="text" id='user_search_box' class="span3 search-query" placeholder="User Filter">
-      </div>
-    </div>
+  <div class='span9'>
+    <input type="text" id='user_search_box' class="span3 search-query" placeholder="User Filter">
+  </div>
+</div>
 <hr/>
 <table class='table table-striped'>
   <tbody>
@@ -31,12 +31,27 @@
   </tr>
 
   <% @users.each do |u| %>
-    <% next if u == current_user %>
-  <tr id=<%= "user_record_#{u.id}" %> class='user_entry' >
-    <%= render 'user_index_entry', object: u %>
-  </tr>
+      <% next if u == current_user %>
+      <tr id=<%= "user_record_#{u.id}" %> class='user_entry' >
+      <%= render 'user_index_entry', object: u %>
+      </tr>
   <% end %>
   </tbody>
 </table>
+
+<% if (current_user.has_role :admin) && (@inactive_users.length > 0) %>
+    <br/><br/>
+    <h2>Inactive Users</h2>
+    <table class='table table-striped'>
+      <tbody>
+      <% @inactive_users.each do |u| %>
+          <% next if u == current_user %>
+          <tr id=<%= "user_record_#{u.id}" %> class='user_entry' >
+          <%= render 'user_index_entry', object: u %>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+<% end %>
 
 

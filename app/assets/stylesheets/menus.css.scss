@@ -1,6 +1,19 @@
 // code to make menus open on mouse hover
 ul.nav li.dropdown:hover ul.dropdown-menu{ display: block; }
 
+ul.nav {
+  li.disabled {
+    padding-left: 10px;
+    font-weight: bold;
+    background-color: #e3e3e3;
+    height: 2em;
+    padding-top: 5px;
+    border-bottom-color: black;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+  }
+}
+
 .menu {
   height: 30px;
 }

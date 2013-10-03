@@ -117,6 +117,41 @@ class User < ActiveRecord::Base
     iCnt
   end
 
+  def round_one_end_date
+    dt = nil
+    iCnt = 0
+    self.shifts.each do |s|
+      if s.round_one_rookie_shift?
+        dt = s.shift_date
+        iCnt += 1
+      end
+      break if iCnt >= 5
+    end
+    dt
+  end
+
+  def last_shadow
+    dt = nil
+    iCnt = 0
+    self.shifts.each do |s|
+      if s.shadow?
+        dt = s.shift_date
+        iCnt += 1
+      end
+      break if iCnt >= 2
+    end
+    dt
+  end
+
+  def is_working? shift_date
+    self.shifts.each do |s|
+      if s.shift_date == shift_date
+        return true
+      end
+    end
+    false
+  end
+
   private
 
   def clear_shifts_on_destroy

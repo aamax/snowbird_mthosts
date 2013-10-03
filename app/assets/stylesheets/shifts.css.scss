@@ -4,3 +4,38 @@
 .align-center {
   text-align: center !important;
 }
+
+.filter_box {
+  border-width: 1px;
+  border-color: gray;
+  border-style: ridge;
+  padding: 15px;
+  border-radius: 15px;
+}
+
+.shift_button {
+  width: 35em;
+  height: 3em;
+}
+
+#filter_date {
+  width: 8em;
+}
+
+#set_date_btn {
+  width: 1em;
+  margin-bottom: 12px;
+}
+
+#clear_date {
+  width: 1em;
+  margin-bottom: 12px;
+}
+
+#filter_dayofweek {
+  height: 150px;
+}
+
+#filter_host {
+  height: 150px;
+}

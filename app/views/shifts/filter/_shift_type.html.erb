@@ -1,0 +1,7 @@
+<%= f.label(:shifttype, "Shift Type") %>
+<% if params['filter'].nil? %>
+    <%= f.select("shifttype", @shift_types, {:include_blank => true}, { :class=>"span1"})  %>
+<% else %>
+    <%= f.select("shifttype", @shift_types, {:include_blank => true, :selected => params['filter']['shifttype']},
+                 { :class=>"span1"})  %>
+<% end %>

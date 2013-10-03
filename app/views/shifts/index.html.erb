@@ -2,35 +2,33 @@
 
 <div class="shift_page_header">
   <div class="shift_page_filter">
+    <%= will_paginate @shifts %>
     <div class='row'>
-      <div class='span3'>
-        <br/>
-        <button type="button" class="btn btn-mini" data-toggle="collapse" data-target="#shift_filter" >
+      <div class='span4'>
+        <% if current_user.has_role? :admin %>
+            <button type="button" class="btn" data-toggle="collapse" data-target="#stats_display" >
+              Open Stats:&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
+            </button>
+        <% end %>
+        <button type="button" class="btn" data-toggle="collapse" data-target="#shift_filter" >
           Open Filter:&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
         </button>
       </div>
-      <div class='span9'>
-        <%= will_paginate @shifts %>
-      </div>
     </div>
-
+    <% if current_user.has_role? :admin %>
+        <div id="stats_display" class="collapse out">
+          <h4>Shift Stats:</h4>
+          Total Shifts:  <%= Shift.all.length %><br/>
+          Open Shifts:   <%= Shift.un_assigned.length %><br/>
+          Assigned Shifts:   <%= Shift.assigned.length %><br/>
+        </div>
+    <% end %>
     <div id="shift_filter" class="collapse out">
-      <h4>Shift Stats:</h4>
-      Total Shifts:  <%= Shift.all.length %><br/>
-      Open Shifts:   <%= Shift.un_assigned.length %><br/>
-      Assigned Shifts:   <%= Shift.assigned.length %><br/>
-
-        <h4>Filter:</h4>
-      shifts i can select: (default checked)<br/>
-      day of week<br/>
-      date<br/>
-      shift type: <br/>
-      host: <br/>
-      active: (default checked)
+      <%= render "shifts/filter/shift_filter_form" %>
     </div>
   </div>
-  <hr/>
 </div>
+<br/>
 
 <%
    curr_date = ""
@@ -43,9 +41,9 @@
               </div>
            <% end %>
 
-            <button type="button" class="btn btn-mini" data-toggle="collapse"
+            <button type="button" class="btn btn shift_button" data-toggle="collapse"
               data-target=<%= "#date_#{curr_date}" %>>
-                <%="#{s.shift_date} &nbsp;&nbsp;-&nbsp;&nbsp;Total: #{getShiftTotal(s.shift_date)} / Available: #{getSelectedShifts(s.shift_date)}".html_safe %>
+                <%="#{s.shift_date.strftime("%a")} - #{s.shift_date} &nbsp;&nbsp;-&nbsp;&nbsp;Total: #{getShiftTotal(s.shift_date)} / Available: #{getSelectedShifts(s.shift_date)}".html_safe %>
             </button>
           <br/>
 

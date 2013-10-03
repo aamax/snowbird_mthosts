@@ -1,0 +1,1 @@
+DAYNAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']

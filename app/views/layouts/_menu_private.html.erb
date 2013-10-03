@@ -43,9 +43,18 @@
         <li class="dropdown">
           <%= link_to "Admin", "#", :class => "dropdown-toggle", :data => {:toggle => "dropdown"}, :id => "admin_menu" %>
 
-          <ul class="dropdown-menu" padding-left="20px">
+          <ul class="dropdown-menu">
+            <li class='disabled'>Management</li>
             <li><%= link_to "Manage Shift Types", shift_types_path %></li>
             <li><%= link_to "Shift Creation Wizard", "#{shift_collections_path}/?date=#{Date.today}" %></li>
+
+            <li class='disabled'>Exports</li>
+            <li><a href="#">Shift Summary</a></li>
+
+            <li class='disabled'>Reports</li>
+            <li><a href="#">Shifts By Host</a></li>
+            <li><a href="#">Hosts Working By Date</a></li>
+            <li><a href="#">Ski Patrol</a></li>
           </ul>
         </li>
     <% end %>

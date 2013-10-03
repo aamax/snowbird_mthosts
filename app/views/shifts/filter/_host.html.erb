@@ -1,0 +1,6 @@
+<%= f.label(:host, "Host") %>
+<% if params['filter'].nil? %>
+    <%= f.select("host", @users, {}, {:class=>"span3", :multiple => true })  %>
+<% else %>
+    <%= f.select("host", @users, {:selected => params['filter']['host']}, {:class=>"span3", :multiple => true })  %>
+<% end %>

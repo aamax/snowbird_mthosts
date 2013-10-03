@@ -13,6 +13,7 @@
 #
 
 # if shift status = -1   ->  missed shift
+SEASON_START_DATE = Date.new(2012,9,1)
 
 class Shift < ActiveRecord::Base
   attr_accessible :user_id, :shift_type_id, :shift_status_id, :shift_date, :day_of_week
@@ -31,8 +32,8 @@ class Shift < ActiveRecord::Base
   validates :shift_date, :presence => true,
             :format => { :with => date_regex }
 
-  default_scope :order => "shift_date asc, shift_type_id asc", :conditions => "shift_date >= '#{Date.new(2013,9,1)}'"
-  scope :last_year, where("shifts.shift_date < '#{Date.new(2013,9,1)}'").order("shifts.shift_date")
+  default_scope :order => "shift_date asc, shift_type_id asc", :conditions => "shift_date >= '#{SEASON_START_DATE}'"
+  scope :last_year, where("shifts.shift_date < '#{SEASON_START_DATE}'").order("shifts.shift_date")
   scope :currentuser, lambda{|userid| where :user_id => userid}
   scope :assigned, where("shifts.user_id is not null").order("shifts.shift_date")
   scope :un_assigned, where("shifts.user_id is null").order("shifts.shift_date")
@@ -45,6 +46,42 @@ class Shift < ActiveRecord::Base
   scope :currentuserpending, lambda{|userid| where("user_id = #{userid} and shift_status = 1 and shift_date > #{Date.today}") }
   scope :currentusermissed, lambda{|userid| where :user_id => userid, :shift_status => -1}
   scope :distinctDates, :select => ('distinct on (shift_date) shift_date, shift_type_id')
+
+  def self.by_day_of_week(days)
+    return scoped unless days.present?
+    where(:day_of_week => days)
+  end
+
+  def self.by_shift_type(sts)
+    return scoped unless sts.present?
+    types = ShiftType.where("short_name like '#{sts}%'")
+    return scoped if types.nil? || (types.length == 0)
+    where("shift_type_id in (#{types.map {|t| t.id}.join(',')})")
+  end
+
+  def self.by_date(dt)
+    return scoped unless dt.present?
+    where(:shift_date => dt)
+  end
+
+  def self.by_users(users)
+    return scoped unless users.present?
+
+    dates = []
+    user_list = User.find_all_by_name(users)
+    user_list.each do |u|
+      u.shifts.each do |s|
+        dates << s.shift_date.strftime("%Y-%m-%d")
+      end
+    end
+    dates.uniq
+    where("shift_date in ('#{dates.join("','")}')")
+  end
+
+  def self.from_today(ft)
+    return scoped unless ft == true
+    where("shift_date >= '#{Date.today}'")
+  end
 
   def status_string
     value = "Worked" if ((self.shift_status_id == 1) && (self.shift_date <= Date.today))
@@ -86,6 +123,7 @@ class Shift < ActiveRecord::Base
     retval = false
     if self.user_id.nil?
       # if user is already working this day
+      return false if test_user.shifts.include?(self)
       rookie_training_shifts = []
       shadow_shifts = []
       max_shadow_date = nil
@@ -131,36 +169,26 @@ class Shift < ActiveRecord::Base
 
           # if round one or less then no more than 7 shifts selected for rookies
           if round <= 1
-            return false if (rookie_training_shifts.count == 5)
+            return false if (test_user.shifts.count >= 7)
           end
+          return false if (test_user.shifts.count >= (round * 5 + 2) && round > 0 && round < 3)
+          return false if round.between?(3,4) && (test_user.shifts.count >= 16)
+          return false if (round == 0) && test_user.shifts.count >= 7
         end
       else
         if round < 5
           # if pre bingo - return false
           return false if round <= 0
           return false if (test_user.shifts.count >= (round * 5))
+          return false if (round == 4) && (test_user.shifts.count >= 18)
         end
       end
-
-
-
-
-
-
-
       retval = true
+    else
+      return false
     end
     retval
   end
-
-  # 0..1 group 3 round 1
-  # 2..3 group 2 round 1
-  # 4..5 group 1 round 1
-
-  # 6..7 group 3 round 2
-  # 8..9 group 2 round 2
-  # 10..11 group 1/rookie round 2
-
 
   def get_current_round(bingo_start, dt, usr)
     return 0 if dt < bingo_start

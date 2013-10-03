@@ -5,3 +5,4 @@ class SysConfigTest < ActiveSupport::TestCase
      assert true
   end
 end
+

@@ -1,0 +1,33 @@
+<%= form_for(:filter, :url => shifts_path, :method => :get, :class=>"form-inline") do |f|  %>
+    <hr/>
+    <h4>Filter:</h4>
+    <div class='filter_box'>
+      <div class='row'>
+        <div class='span3'>
+          <br/><br/>
+          <%= render 'shifts/filter/can_select', :f => f %>  <br/><br/>
+          <%= render 'shifts/filter/start_from_today', :f => f %>
+        </div>
+
+        <div class='span2'>
+          <%= render 'shifts/filter/day_of_week', :f => f %>
+        </div>
+
+        <div class='span3'>
+          <%= render 'shifts/filter/shift_type', :f => f %> <br/><br/>
+          <%= render 'shifts/filter/date', :f => f %>
+        </div>
+
+        <div class='span3'>
+          <%= render 'shifts/filter/host', :f => f %>
+        </div>
+      </div>
+    </div>
+    <br/>
+
+    <div class="actions">
+      <input type="button" name="clear" value="Reset" id="reset_shifts_index_form" class="btn" >
+      <%= f.submit 'Apply', :class=>"btn" %>
+    </div>
+    <hr/>
+<% end %>

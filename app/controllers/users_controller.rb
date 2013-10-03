@@ -2,6 +2,10 @@ class UsersController < ApplicationController
   load_and_authorize_resource
 
   def index
+    if current_user.has_role :admin
+      @inactive_users = User.inactive_users
+    end
+    @users = User.active_users
     @users.sort! {|a,b| a.name <=> b.name }
   end
 

@@ -44,3 +44,4 @@ angular.module("UserServices", []).factory "userResource", ($resource, $rootScop
 
   getUserResource: ->
     _hosts
+
