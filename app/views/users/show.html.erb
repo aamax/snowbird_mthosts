@@ -1,51 +1,24 @@
-<%= gravatar_image_tag(@user.email, :alt => @user.name) %>
-<% if ((current_user.has_role? :admin) || (current_user.id == @user.id)) %>
-    <a href='<%= edit_user_path(@user) %>'><i class='icon-wrench icon-large icon_blue icon_obj'></i></a>
-<% end %>
-<br/>   <br/>
-<strong>Name: </strong> <%= @user.name %>
-<strong>Nick Name: </strong> <%= @user.nickname %><br/>
+<div class='row'>
+  <div class='span8'>
+    <%= render '/shared/user_profile_box', :user => @user %>
+  </div>
+  <div class='span4'>
+    <strong>Alt Email: </strong>
+    <%= @user.alt_email %> <br/>
 
-<strong>Address: </strong><br/>
-<%= @user.street %> <br/>
-<%= @user.city %>,
-<%= @user.state %>
-<%= @user.zip %>   <br/>
+    <strong>Active?: </strong>
+    <%= @user.active_user? ? "Yes" : "No" %>
 
+    &nbsp;&nbsp;&nbsp;
+    <strong>Confirmed? </strong>
+    <%= @user.confirmed? ? "Yes" : "No" %><br/>
 
-<strong>Home Phone: </strong>
-<%= @user.home_phone %> <br/>
-<strong>Cell Phone: </strong>
-<%= @user.cell_phone %> <br/>
-<strong>Email: </strong>
-<%= @user.email %> <br/>
-<strong>Alt Email: </strong>
-<%= @user.alt_email %> <br/>
-
-<strong>Active?: </strong>
-<%= @user.active_user? ? "Yes" : "No" %>
-
-&nbsp;&nbsp;&nbsp;
-<strong>Confirmed? </strong>
-<%= @user.confirmed? ? "Yes" : "No" %><br/>
-
+  </div>
+</div>
 <% if current_user.has_role?(:admin) && (@user.notes != '') %>
     <br/>
     <strong>Notes: </strong><br/>
     <%= @user.notes %> <br/>
-<% end %>
-
-<strong>Start Year: </strong>
-<%= @user.start_year %> <br/>
-<strong>seniority: </strong> <%= @user.seniority %><br/><br/>
-
-<% if @user.roles.length > 0 %>
-    <h5>Roles:</h5>
-    <ul>
-      <% @user.roles.each do |r| %>
-          <li><%= r.name %></li>
-      <% end %>
-    </ul>
 <% end %>
 
 <h5>shift summary info: </h5>

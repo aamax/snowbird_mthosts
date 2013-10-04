@@ -50,7 +50,7 @@ class ShiftsController < ApplicationController
     if ((@shift.user_id == current_user.id) || (current_user.has_role? :admin)  || @shift.user_id.nil?)
       @title = "Edit Shift"
       @shift.user_id.nil? ? @user_name = "UnSet" : @user_name = @shift.user.name
-      @userlist = User.all
+      @userlist = User.active_users
       if (current_user.has_role? :admin)
           shift_users = Shift.where("shift_date = ?", @shift.shift_date).map { |s| s.user}
           @userlist = @userlist - shift_users
@@ -132,7 +132,6 @@ class ShiftsController < ApplicationController
     #  elsif (params[:status] == "Missed")
     #    # to missed -1
     #    update_shift_status(@shift.id, -1)
-    #    flash[:success] = "Shift Status Set To Missed..."
     #  end
     #
     #  redirect_to shifts_path + "?" + strParams

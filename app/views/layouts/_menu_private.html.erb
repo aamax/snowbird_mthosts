@@ -6,8 +6,9 @@
 
     <li><%= link_to "Shifts", shifts_path %></li>
 
-     <li><a href=<%= "/users/#{current_user.id}" %>>Profile</a></li>
+    <li><a href=<%= "/users/#{current_user.id}" %>>Profile</a></li>
 
+    <li><%= link_to "Host Gallery", galleries_path %></li>
 
     <li class="dropdown">
       <%= link_to "Documents", "#", :class => "dropdown-toggle", :data => {:toggle => "dropdown"}, :id => "document_menu" %>
@@ -29,13 +30,13 @@
         <li><%= link_to "To: All Admin Users", "/send_mail/" + "ADMINUSERS" %></li>
         <li><%= link_to "To: All Team Leaders", "/send_mail/" + "TEAMLEADER", :target => "_blank"  %></li>
         <li><%= link_to "To: All Active hosts", "/send_mail/" + "ALLACTIVEHOSTS" %></li>
-        <li><%= link_to "To: All Hosts", "/send_mail/" + "ALLHOSTS", :target => "_blank" %></li>
-        <li><%= link_to "To: All In-Active hosts", "/send_mail/" + "ALLINACTIVEHOSTS" %></li>
         <li><%= link_to "To: All Rookies", "/send_mail/" + "ROOKIES", :target => "_blank" %></li>
         <li><%= link_to "To: Group 1 Hosts", "/send_mail/" + "GROUP1", :target => "_blank" %></li>
         <li><%= link_to "To: Group 2 Hosts", "/send_mail/" + "GROUP2", :target => "_blank" %></li>
         <li><%= link_to "To: Group 3 Hosts", "/send_mail/" + "GROUP3", :target => "_blank" %></li>
         <li><%= link_to "To: Selected hosts", select_hosts_for_email_path %></li>
+        <li><%= link_to "To: All Hosts", "/send_mail/" + "ALLHOSTS", :target => "_blank" %></li>
+        <li><%= link_to "To: All In-Active hosts", "/send_mail/" + "ALLINACTIVEHOSTS" %></li>
       </ul>
     </li>
 
@@ -49,7 +50,7 @@
             <li><%= link_to "Shift Creation Wizard", "#{shift_collections_path}/?date=#{Date.today}" %></li>
 
             <li class='disabled'>Exports</li>
-            <li><a href="#">Shift Summary</a></li>
+            <li><a href="/download_end_of_year">End of Year Shift Summary</a></li>
 
             <li class='disabled'>Reports</li>
             <li><a href="#">Shifts By Host</a></li>

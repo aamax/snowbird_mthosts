@@ -91,11 +91,54 @@ class ShiftsHelperTest < ActionView::TestCase
 
         it "rookies can select shadow shifts" do
           shifts = Shift.where(:shift_type_id => @sh.id)
-
           shifts.each do |s|
             s.can_select(@rookie_user).must_equal true
           end
         end
+
+        #describe "rookies" do
+        #  describe "round one shift selections" do
+        #    before do
+        #      shifts = Shift.where(:shift_type_id => @sh.id)
+        #      shifts.each do |s|
+        #        if s.can_select(@rookie_user) == true
+        #          @rookie_user.shifts << s
+        #        end
+        #        break if @rookie_user.shifts.length == 2
+        #      end
+        #    end
+        #
+        #    it "can't select G3 or G4 shifts on fridays" do
+        #      Shift.all.each do |s|
+        #        break if @rookie_user.shifts.length >= 7
+        #        next if s.day_of_week.downcase != "fri"
+        #
+        #        if ((s.short_name[0..1] == 'G3') || (s.short_name[0..1] == 'G4'))
+        #          test_val = s.can_select(@rookie_user)
+        #          test_val.must_equal(false)
+        #        end
+        #      end
+        #    end
+        #
+        #    it "can select G1,G2,G3,G4,C3,C4 on Sat and Sun" do
+        #      test_array = ['G1','G2','G3','G4','C3','C4']
+        #
+        #      Shift.all.each do |s|
+        #        break if @rookie_user.shifts.length >= 7
+        #        next if ((s.day_of_week.downcase != "sat") && (s.day_of_week.downcase != "sun"))
+        #
+        #        if ( test_array.include? s.short_name[0..1])
+        #          s.can_select(@rookie_user).must_equal(false)
+        #        end
+        #      end
+        #    end
+        #
+        #  end
+        #end
+
+
+
+
       end
     end
 

@@ -2,6 +2,24 @@
 // They will automatically be included in application.css.scss.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+.user_profile_box {
+  border-width: 1px;
+  border-style: ridge;
+  border-color: grey;
+  padding-top: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 15px;
+  width: 50em;
+  border-radius: 15px;
+
+  background-color: rgba(62, 202, 255, 0.36);
+
+  .col1 {
+    text-align: center;
+  }
+}
+
 .role_list ul {
   list-style-type: circle;
 }

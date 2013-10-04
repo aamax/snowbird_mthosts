@@ -112,7 +112,7 @@ class Shift < ActiveRecord::Base
   end
 
   def round_one_rookie_shift?
-    ['G1','G2','G3','G4','C3','C4'].include? self.short_name
+    return ['G1','G2', 'G3','G4','C3','C4'].include?(self.short_name[0..1])
   end
 
   def standard_shift?
