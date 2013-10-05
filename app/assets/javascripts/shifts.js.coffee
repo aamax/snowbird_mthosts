@@ -32,3 +32,10 @@ $(document).ready ->
 
   $("#clear_date").click ->
     $("input#filter_date").val ''
+
+  window.onbeforeunload = (e) ->
+    $('#show_page a').each ->
+      this.style.display = 'none'
+    $('#shift_listing a').each ->
+      this.style.display = 'none'
+    undefined

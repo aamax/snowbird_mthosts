@@ -43,7 +43,9 @@ class User < ActiveRecord::Base
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :name, :email, :password, :password_confirmation, :remember_me, :street, :city, :state, :zip,
-                  :home_phone, :cell_phone, :alt_email, :start_year, :notes, :confirmed, :active_user, :nickname
+                  :home_phone, :cell_phone, :alt_email, :start_year, :notes, :confirmed, :active_user, :nickname,
+                  :working_shifts
+  attr_accessor   :working_shifts
 
   has_many :shifts
 
@@ -150,6 +152,43 @@ class User < ActiveRecord::Base
       end
     end
     false
+  end
+
+  def get_meetings
+    meetings = []
+    first_date = Date.today
+    MEETINGS.each do |m|
+      unless self.rookie?
+        if ((m[:type] == "M1") || (m[:type] == "M3"))
+          next
+        end
+      end
+
+      if m[:when] >= first_date.strftime("%Y-%m-%d")
+        s_date = DateTime.parse(m[:when])
+        st = ShiftType.find_by_short_name(m[:type])
+        next if st.nil?
+        new_shift = Shift.new(:user_id=>self.id,
+                              :shift_type_id=>st.id,
+                              :shift_date=>s_date,
+                              :shift_status_id => 1,
+                              :day_of_week=>s_date.strftime("%a"))
+        meetings << new_shift
+      end
+    end
+    meetings
+  end
+
+  def get_working_shifts
+    working_shifts = self.shifts + get_meetings
+    working_shifts = working_shifts.flatten
+  end
+
+  def get_next_shifts(num)
+    working_shifts = get_working_shifts
+    working_shifts.delete_if {|s| s.shift_date < Date.today }
+    limit = num - 1
+    working_shifts[0..limit]
   end
 
   private

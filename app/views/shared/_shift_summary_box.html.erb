@@ -1,1 +1,29 @@
-small shift summary with counts for current user
+<div class='shift_summary_box'>
+  <strong>Shift Report</strong>
+  <table class="table table-striped" >
+    <tr>
+      <th>Need To Pick</th>
+      <th>Scheduled</th>
+      <th>Worked</th>
+      <th>Pending</th>
+      <th>Target</th>
+    </tr>
+    <tr>
+      <td>
+        <strong> <%= 20 - user.get_working_shifts.count %> </strong>
+      </td>
+      <td>
+        <strong> <%= user.get_working_shifts.count %> </strong>
+      </td>
+      <td>
+        <strong> <%= user.shifts_worked.count %> </strong>
+      </td>
+      <td>
+        <strong> <%= user.get_working_shifts.count - user.shifts_worked.count %> </strong>
+      </td>
+      <td>
+        <strong> 20 </strong>
+      </td>
+    </tr>
+  </table>
+</div>

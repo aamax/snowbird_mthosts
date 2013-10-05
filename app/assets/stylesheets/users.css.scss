@@ -1,6 +1,130 @@
 // Place all the styles related to the Users controller here.
 // They will automatically be included in application.css.scss.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+.shifts_today_box {
+  border-width: 1px;
+  border-style: ridge;
+  border-color: #dddddd;
+  padding-top: 0px;
+  padding-left: 3px;
+  padding-right: 3px;
+  padding-bottom: 0px;
+  width: 65em;
+  border-radius: 15px;
+  text-align: center;
+  background-color: rgba(207, 207, 207, 0.54);
+
+  table {
+    border-width: 1px;
+    border-style: solid;
+    border-color: #747474;
+    background-color: #bababa;
+    th {
+      background-color: #a1965f !important;
+      text-align: center;
+    }
+    td {
+      border-width: 1px;
+      border-style: ridge;
+      border-color: #dddddd;
+      text-align: center;
+    }
+  }
+}
+
+.shift_summary_box {
+  border-width: 1px;
+  border-style: ridge;
+  border-color: #dddddd;
+  padding-top: 0px;
+  padding-left: 3px;
+  padding-right: 3px;
+  padding-bottom: 0px;
+  width: 40em;
+  border-radius: 15px;
+  text-align: center;
+  background-color: rgba(207, 207, 207, 0.54);
+
+  h3 {
+    text-align: center;
+  }
+  table {
+    border-width: 1px;
+    border-style: solid;
+    border-color: #747474;
+    background-color: #bababa;
+    th {
+      background-color: #a1965f !important;
+      text-align: center;
+    }
+    td {
+      border-width: 1px;
+      border-style: ridge;
+      border-color: #dddddd;
+      text-align: center;
+    }
+  }
+}
+
+.three_shift_box {
+  border-width: 1px;
+  border-style: ridge;
+  border-color: grey;
+  padding-top: 5px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-bottom: 0px;
+  width: 40em;
+  border-radius: 15px;
+  text-align: center;
+
+  background-color: rgba(129, 255, 46, 0.35);
+
+  table {
+    border-width: 1px;
+    border-style: solid;
+    border-color: #747474;
+    background-color: #bababa;
+    th {
+      background-color: #a1965f !important;
+      text-align: center;
+    }
+    td {
+      border-width: 1px;
+      border-style: ridge;
+      border-color: #dddddd;
+      text-align: center;
+    }
+  }
+  }
+
+.user_status_box {
+  border-width: 1px;
+  border-style: ridge;
+  border-color: grey;
+  padding-top: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 15px;
+  width: 12em;
+  border-radius: 15px;
+
+  background-color: rgba(62, 202, 255, 0.36);
+}
+
+.user_notes_box {
+  border-width: 1px;
+  border-style: ridge;
+  border-color: grey;
+  padding-top: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 15px;
+  width: 65em;
+  border-radius: 15px;
+
+  background-color: rgba(255, 102, 81, 0.51);
+}
 
 .user_profile_box {
   border-width: 1px;

@@ -7,6 +7,14 @@ class UsersController < ApplicationController
     end
     @users = User.active_users
     @users.sort! {|a,b| a.name <=> b.name }
+
+    @users.each do |u|
+      add_meetings_to_shifts(u)
+    end
+  end
+
+  def show
+    add_meetings_to_shifts(@user)
   end
 
   def edit
@@ -45,5 +53,14 @@ class UsersController < ApplicationController
     else
       redirect_to users_path
     end
+  end
+
+  private
+
+  def add_meetings_to_shifts(u)
+    mtgs = u.get_meetings
+    u.working_shifts = u.shifts
+    u.working_shifts << mtgs if (mtgs.length > 0)
+    u.working_shifts = u.working_shifts.flatten.sort {|a,b| a.shift_date <=> b.shift_date }
   end
 end

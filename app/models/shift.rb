@@ -205,6 +205,7 @@ class Shift < ActiveRecord::Base
 
   def can_drop(current_user)
     retval = false
+    return if self.short_name[0] == 'M'
     unless self.user_id.nil?
       if (current_user.has_role? :admin)
         retval = true
