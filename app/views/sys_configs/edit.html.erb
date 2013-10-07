@@ -1,0 +1,63 @@
+<h1>System Administration</h1>
+
+<%= form_for @sys_config, url: {action: "update", method: :put}, html: {class: "nifty_form"} do |f| %>
+    <div class='row'>
+   <table class='table table-striped table-bordered span5'>
+     <tr>
+       <td>
+         <strong>Season/Rookie Year: </strong>
+       </td>
+       <td>
+         <%= f.text_field :season_year, :placeholder => 'Start year' %>
+       </td>
+     </tr>
+
+     <tr>
+       <td>
+         <strong>Seniors (Group 3): </strong>
+       </td>
+       <td>
+         <%= f.text_field :group_3_year, :placeholder => 'Group 3/Seniors' %>
+       </td>
+     </tr>
+
+     <tr>
+       <td>
+         <strong>Juniors (Group 2): </strong>
+       </td>
+       <td>
+         <%= f.text_field :group_2_year, :placeholder => 'Group 2/Juniors' %>
+       </td>
+     </tr>
+
+     <tr>
+       <td>
+         <strong>Freshmen (Group 1): </strong>
+       </td>
+       <td>
+         <%= f.text_field :group_1_year, :placeholder => 'Group 1/Freshmen' %>
+       </td>
+     </tr>
+
+     <tr>
+       <td>
+         <strong>Season Start Date: </strong>
+       </td>
+       <td>
+         <%= f.text_field :season_start_date, :placeholder => 'Season Start Date' %>
+       </td>
+     </tr>
+     <tr>
+       <td>
+         <strong>Bingo Start Date: </strong>
+       </td>
+       <td>
+         <%= f.text_field :bingo_start_date, :placeholder => 'Bingo Start Date' %>
+       </td>
+     </tr>
+   </table>
+    </div>
+    <hr/>
+    <%= f.submit "Update", class: 'btn btn-success' %>
+    <%= link_to "Cancel", root_path, class: "btn btn-warning" %>
+<% end %>

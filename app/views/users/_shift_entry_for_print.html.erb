@@ -1,0 +1,21 @@
+
+<td class="span2">
+  <% if object.shift_date.nil? %>
+      UnSet
+  <% else %>
+      <%= shiftdate = object.shift_date.strftime("%a.  %m/%d/%Y") %>
+
+  <% end %>
+</td>
+
+<td class="span3">
+  <%=  "#{object.short_name[0..1]} - #{object.shift_type.description }" %>
+</td>
+<td class="span3">
+  <%= "#{object.shift_type.start_time} - #{object.shift_type.end_time}" %>
+</td>
+<td class="span3">
+  <%=   object.shift_type.tasks %>
+</td>
+
+

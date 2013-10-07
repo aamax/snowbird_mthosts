@@ -21,7 +21,7 @@ class UsersController < ApplicationController
   end
 
   def new
-    @user.start_year = SysConfig.first.season_year
+    @user.start_year = HostConfig.season_year
     @user.active_user = true
   end
 
@@ -53,6 +53,11 @@ class UsersController < ApplicationController
     else
       redirect_to users_path
     end
+  end
+
+  def shift_print
+    @user = User.find(params[:id])
+    add_meetings_to_shifts(@user)
   end
 
   private

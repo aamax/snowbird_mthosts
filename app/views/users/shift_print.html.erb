@@ -1,0 +1,21 @@
+<h1>Shift Print Out For <%=  @user.name %> </h1>
+<br/>
+Click<strong><%= link_to " Here ", "/users/#{@user.id}" %></strong>to return to Profile form.
+<br/>
+
+
+<table class="table table-condensed table-striped">
+
+  <tr class="headerrow">
+    <th class="span2" >Shift Date</th>
+    <th class='span3' >Shift Name</th>
+    <th class='span3' >Times</th>
+    <th class='span3' >Tasks/Description</th>
+    </strong>
+  </tr>
+  <% @user.working_shifts.each do |object| %>
+      <tr>
+        <%= render 'shift_entry_for_print', :object => object %>
+      </tr>
+  <% end %>
+</table>

@@ -13,7 +13,6 @@
 #
 
 # if shift status = -1   ->  missed shift
-SEASON_START_DATE = Date.new(2012,9,1)
 
 class Shift < ActiveRecord::Base
   attr_accessible :user_id, :shift_type_id, :shift_status_id, :shift_date, :day_of_week
@@ -32,8 +31,8 @@ class Shift < ActiveRecord::Base
   validates :shift_date, :presence => true,
             :format => { :with => date_regex }
 
-  default_scope :order => "shift_date asc, shift_type_id asc", :conditions => "shift_date >= '#{SEASON_START_DATE}'"
-  scope :last_year, where("shifts.shift_date < '#{SEASON_START_DATE}'").order("shifts.shift_date")
+  default_scope :order => "shift_date asc, shift_type_id asc", :conditions => "shift_date >= '#{HostConfig.season_start_date}'"
+  scope :last_year, where("shifts.shift_date < '#{HostConfig.season_start_date}'").order("shifts.shift_date")
   scope :currentuser, lambda{|userid| where :user_id => userid}
   scope :assigned, where("shifts.user_id is not null").order("shifts.shift_date")
   scope :un_assigned, where("shifts.user_id is null").order("shifts.shift_date")
@@ -128,8 +127,8 @@ class Shift < ActiveRecord::Base
       shadow_shifts = []
       max_shadow_date = nil
       max_rookie_shift_date = nil
-      bingo_start = SysConfig.first.bingo_start_date
-      round = get_current_round(bingo_start, Date.today, test_user)
+      bingo_start = HostConfig.bingo_start_date
+      round = HostUtility.get_current_round(bingo_start, Date.today, test_user)
 
       if self.team_leader?
         return test_user.team_leader? ? true : false
@@ -190,18 +189,6 @@ class Shift < ActiveRecord::Base
     retval
   end
 
-  def get_current_round(bingo_start, dt, usr)
-    return 0 if dt < bingo_start
-
-    day_count = (dt - bingo_start).to_i
-    round_num = (day_count / 6).to_i + 1
-    group_num = (day_count % 6).to_i
-
-    return round_num if usr.group_3?
-    return round_num if usr.group_2? && (group_num >= 2)
-    return round_num if (usr.group_1? || usr.rookie?) && (group_num >= 4)
-    return (round_num - 1)
-  end
 
   def can_drop(current_user)
     retval = false

@@ -1,4 +1,5 @@
 Mthost::Application.routes.draw do
+
   devise_for :users
 
   resources :users
@@ -8,8 +9,9 @@ Mthost::Application.routes.draw do
   resources :shift_collections
   resources :galleries
   resources :exports
+  resources :sys_configs
   match '/download_end_of_year', :to =>  "exports#eoy_download"
-
+  get '/shift_print/:id', :to => 'users#shift_print'
   post '/users/save_new', :to => 'users#save_new'
 
   resources :pages

@@ -1,9 +1,20 @@
-<h1>Welcome <%= current_user.name.split(' ')[0] %>, to the Snowbird Mountain Host WebSite </h1><button type="button" class="btn" data-toggle="collapse" data-target="#stats_display" >
-
-  Open Host Information:&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
+<h1>Welcome <%= current_user.name.split(' ')[0] %>, to the Snowbird Mountain Host WebSite </h1>
+<button type="button" class="btn" data-toggle="collapse" data-target="#stats_display" >
+  My Dashboard:&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
 </button>
 
+<button type="button" class="btn" data-toggle="collapse" data-target="#extras_display" >
+My Extras:&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
+</button>
+
+<% if current_user.shift_status_message.length > 0 %>
+    <%= render "/users/shift_message", :user => current_user, :shift_page => false  %>
+<% end %>
+
 <div id="stats_display" class="collapse out">
+  <div class='row'>
+    <%= render '/shared/user_profile_box', :user => current_user %><br/>
+  </div>
   <div class='row'>
     <div class='span6'>
       <%= render '/shared/shift_summary_box', :user => current_user %>
@@ -15,15 +26,14 @@
 
   <div class='row'>
     <div class='span8'>
-      <%= render '/shared/user_profile_box', :user => current_user %><br/>
       <%= render '/shared/hosts_working_today', :user => current_user %>
-    </div>
-    <div class='span4'>
-      <h1>Gallery, blog, system messages, selection messages can go here</h1>
     </div>
   </div>
 </div>
 
+<div id="extras_display" class="collapse out">
+  <h1>Gallery, blog, system messages, selection messages can go here</h1>
+</div>
 
 <img src="assets/hosts_2012.jpg" alt="2012 mt host crew" class="host_banner_pic"/>
 
