@@ -39,7 +39,7 @@
   </tbody>
 </table>
 
-<% if (current_user.has_role :admin) && (@inactive_users.length > 0) %>
+<% if (current_user.has_role? :admin) && (@inactive_users.length > 0) %>
     <br/><br/>
     <h2>Inactive Users</h2>
     <table class='table table-striped'>
