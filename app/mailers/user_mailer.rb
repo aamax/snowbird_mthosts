@@ -1,7 +1,7 @@
 class UserMailer < ActionMailer::Base
   default from: "snowbirdhosts@gmail.com"
 
-  def send_email(toaddress, fromaddress, subject, message)
+  def send_email(current_user, toaddress, fromaddress, subject, message)
     if !current_user.has_role? :admin
       dest = toaddress.split(',').delete_if do |u|
         usr = User.find_by_email(u)

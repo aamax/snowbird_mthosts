@@ -24,7 +24,7 @@ class MailController < ApplicationController
     @fromaddress ||= params[:mailmessage][:fromaddress]
     @message = "FROM: #{current_user.name}(#{current_user.email})\n\nTO: [#{params[:mailmessage][:toaddress]}]\n\n#{params[:mailmessage][:message]}"
 
-    UserMailer.send_email(@useremail, @fromaddress,
+    UserMailer.send_email(current_user, @useremail, @fromaddress,
                                  @subject, @message).deliver
 
     flash[:success] = "Email sent..."
