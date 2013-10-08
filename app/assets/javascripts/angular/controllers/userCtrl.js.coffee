@@ -89,4 +89,4 @@
     $scope.current_user.id == user.id
 
 
-@UserCtrl.inject = ["$scope", "$resource", "$window", "userResource"]
+@UserCtrl.$inject = ["$scope", "$resource", "$window", "userResource"]

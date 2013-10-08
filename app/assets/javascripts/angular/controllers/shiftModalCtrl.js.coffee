@@ -15,4 +15,4 @@
       $scope.$parent.$broadcast "shiftUpdate"
       $scope.toggleModal('hide')
 
-@ShiftModalCtrl.inject = ["$scope", "$resource", "shiftResource"]
+@ShiftModalCtrl.$inject = ["$scope", "$resource", "shiftResource"]

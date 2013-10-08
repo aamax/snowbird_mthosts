@@ -42,4 +42,4 @@
 #      else
 #      history.go(-1)
 
-@UserModalCtrl.inject = ["$scope", "$resource", "userResource", "md5"]
+@UserModalCtrl.$inject = ["$scope", "$resource", "userResource", "md5"]
