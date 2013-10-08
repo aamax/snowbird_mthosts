@@ -56,3 +56,4 @@
         $scope.shiftTypeList.push(data)
       )
 
+@ShiftTypeCtrl.inject = ["$scope", "$resource", "shiftTypeResource"]

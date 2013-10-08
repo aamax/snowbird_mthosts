@@ -41,3 +41,5 @@
 #        self.location = '/users.html'
 #      else
 #      history.go(-1)
+
+@UserModalCtrl.inject = ["$scope", "$resource", "userResource", "md5"]

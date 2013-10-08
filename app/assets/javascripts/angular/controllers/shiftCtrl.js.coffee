@@ -64,3 +64,6 @@
 
   $scope.showSelectUser = (shift) ->
     shift.user_name == '' && shift.can_select
+
+
+@ShiftCtrl.inject = ["$scope", "$resource", "shiftResource"]

@@ -14,3 +14,5 @@
       shiftResource.setCurrentShift($scope.shift)
       $scope.$parent.$broadcast "shiftUpdate"
       $scope.toggleModal('hide')
+
+@ShiftModalCtrl.inject = ["$scope", "$resource", "shiftResource"]
