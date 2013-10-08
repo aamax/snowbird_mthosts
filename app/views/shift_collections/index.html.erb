@@ -1,4 +1,4 @@
-
+<div ng-controller='ShiftBuilderCtrl'>
 <%= form_tag("1", :method=>'put') do %>
     <%= hidden_field_tag "current_page", "introduction" %>
 
@@ -123,10 +123,8 @@
               <div class="span3">
                 <br/><br/>
                 <strong>Date Selection Type</strong><br/>
-                <% [ 'Single Date', 'Multiple Dates'].each do |type| %>
-                    <br/><%= radio_button_tag 'type', type, @type == type %>
-                    <%= type.humanize %><br/>
-                <% end %>
+                <input type="radio" ng-model="date_type" value="single" >  Single Date <br/>
+                <input type="radio" ng-model="date_type" value="multiple" > Multiple Dates <br/>
 
                 <br> <br/>
                 Start Date:
@@ -145,7 +143,7 @@
                 </table>
                 <br/>
 
-                <div class="multi_date">
+                <div class="multi_date" ng-hide="date_type == 'single'">
                   End Date:
                   <table>
                     <tr>
@@ -347,3 +345,4 @@
 
 <% end %>
 <br/><br/>
+</div>
