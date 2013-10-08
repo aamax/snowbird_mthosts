@@ -24,7 +24,7 @@ class PagesController < ApplicationController
 
   def show_contact_info
     if !current_user.blank?
-      @userlist = User.find( :all, :order => 'name')
+      @userlist = User.active_users.sort {|a,b| a.name <=> b.name }
       @title = "Host Contact Info"
     end
   end
