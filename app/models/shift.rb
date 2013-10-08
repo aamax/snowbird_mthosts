@@ -111,7 +111,11 @@ class Shift < ActiveRecord::Base
   end
 
   def round_one_rookie_shift?
-    return ['G1','G2', 'G3','G4','C3','C4'].include?(self.short_name[0..1])
+    retval = ['G1','G2', 'G3','G4','C3','C4'].include?(self.short_name[0..1])
+    if retval == true
+      retval = false if (self.short_name == 'G3friday') || (self.short_name == 'G4friday')
+    end
+    return retval
   end
 
   def standard_shift?
@@ -122,7 +126,7 @@ class Shift < ActiveRecord::Base
     retval = false
     if self.user_id.nil?
       # if user is already working this day
-      return false if test_user.shifts.include?(self)
+      return false if test_user.shifts.map {|s| s.shift_date }.include?(self.shift_date)
       rookie_training_shifts = []
       shadow_shifts = []
       max_shadow_date = nil

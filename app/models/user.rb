@@ -233,24 +233,43 @@ class User < ActiveRecord::Base
     else
       msg << "NOTE:  A Holiday Shift needs to be selected"
     end
-    msg << ""
+
     if self.rookie?
+      if shadow_count < 2
+        msg << "#{shadow_count} of 2 selected.  Need #{2 - shadow_count} Shadow Shifts."
+      elsif shadow_count == 2
+        msg << "All Shadow Shifts Selected."
+        msg << "Cannot Pick Shifts Prior to Last Shadow: #{self.last_shadow.strftime("%Y-%m-%d")}"
+      end
+      if self.round_one_type_count == 5
+        msg << "All Round One Rookie Shifts Selected."
+        msg << "Cannot Pick Non-Round One Rookie Type Shifts Prior to #{self.round_one_end_date.strftime("%Y-%m-%d")}"
+        if ((round == 2) && self.shifts.length == 12) || (self.shifts.length >= 16)
+          msg << "All Round #{round} Shifts Selected."
+        else
+          if round == 2
+            msg << "#{self.shifts.length} of 12 selected.  Need #{12 - self.shifts.length} Round 2 Shifts."
+          else
+            msg << "#{self.shifts.length} of 16 selected.  Need #{16 - self.shifts.length} Round #{round} Shifts."
+          end
+        end
 
-      case round
-        when 0
 
-        when 1
-
-        when 2
-
-        when 3
-
-        when 4
+        #case round
+        #  when 0..1
+        #  when 2
+        #  when 3
+        #  when 4
+        #
+        #  else
+        #
+        #end
 
       else
-
+        if (self.round_one_type_count < 5) && (self.shifts.length >= 2)
+          msg << "#{self.round_one_type_count} of 5 Round One Rookie Shifts Selected.  Need #{5 - self.round_one_type_count} Round One Rookie Shifts."
+        end
       end
-
     else
       case round
         when 0

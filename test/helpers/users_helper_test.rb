@@ -53,9 +53,160 @@ class UsersHelperTest < ActionView::TestCase
       end
     end
 
-    #describe "rookie" do
-    #
-    #end
+    describe "rookie" do
+      it "should report for prior to bingo shift selections" do
+        config = SysConfig.first
+        config.bingo_start_date = Date.today + 2.days
+        config.save
+        Shift.all.each do |s|
+          next if @rookie_user.is_working? s.shift_date
+          break if @rookie_user.shifts.length >= 7
+
+          shadow_count = @rookie_user.shadow_count
+          if @rookie_user.shifts.length < 2
+            next unless s.shadow?
+            @rookie_user.shift_status_message.include?("#{shadow_count} of 2 selected.  Need #{2 - shadow_count} Shadow Shifts.").must_equal true
+            @rookie_user.shifts << s
+          else
+            next unless s.round_one_rookie_shift?
+            @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
+            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length - 2} of 5 Round One Rookie Shifts Selected.  Need #{5 - (@rookie_user.shifts.length - 2)} Round One Rookie Shifts.").must_equal true
+            @rookie_user.shifts << s
+          end
+        end
+        @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
+        @rookie_user.shift_status_message.include?("All Round One Rookie Shifts Selected.").must_equal true
+        bFound1 = false
+        bFound2 = false
+        @rookie_user.shift_status_message.each do |m|
+          if m.match(/Need \d* Shadow Shifts./)
+            bFound1 = true
+          end
+          if m.match(/of 5 Round One Rookie Shifts Selected./)
+            bFound2 = true
+          end
+        end
+        bFound1.must_equal false
+        bFound2.must_equal false
+      end
+
+      it "should report for round 1 selections" do
+        config = SysConfig.first
+        config.bingo_start_date = Date.today - 4.days
+        config.save
+        Shift.all.each do |s|
+          next if @rookie_user.is_working? s.shift_date
+          break if @rookie_user.shifts.length >= 7
+
+          shadow_count = @rookie_user.shadow_count
+          if @rookie_user.shifts.length < 2
+            next unless s.shadow?
+            @rookie_user.shift_status_message.include?("#{shadow_count} of 2 selected.  Need #{2 - shadow_count} Shadow Shifts.").must_equal true
+            @rookie_user.shifts << s
+          else
+            next unless s.round_one_rookie_shift?
+            @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
+            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length - 2} of 5 Round One Rookie Shifts Selected.  Need #{5 - (@rookie_user.shifts.length - 2)} Round One Rookie Shifts.").must_equal true
+            @rookie_user.shifts << s
+          end
+        end
+        @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
+        @rookie_user.shift_status_message.include?("All Round One Rookie Shifts Selected.").must_equal true
+      end
+
+      it "should report for round 2 selections" do
+        config = SysConfig.first
+        config.bingo_start_date = Date.today - 10.days
+        config.save
+        Shift.all.each do |s|
+          next if @rookie_user.is_working? s.shift_date
+          break if @rookie_user.shifts.length >= 12
+          @rookie_user.shift_status_message.include?("Cannot Pick Shifts Prior to Last Shadow: #{@rookie_user.last_shadow.strftime("%Y-%m-%d")}").must_equal true if @rookie_user.shifts.length >= 2
+          @rookie_user.shift_status_message.include?("Cannot Pick Non-Round One Rookie Type Shifts Prior to #{@rookie_user.round_one_end_date.strftime("%Y-%m-%d")}").must_equal true if @rookie_user.shifts.length >= 7
+          shadow_count = @rookie_user.shadow_count
+          if @rookie_user.shifts.length < 2
+            next unless s.shadow?
+            @rookie_user.shift_status_message.include?("#{shadow_count} of 2 selected.  Need #{2 - shadow_count} Shadow Shifts.").must_equal true
+            @rookie_user.shifts << s
+          elsif @rookie_user.shifts.length < 7
+            next unless s.round_one_rookie_shift?
+            @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
+            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length - 2} of 5 Round One Rookie Shifts Selected.  Need #{5 - (@rookie_user.shifts.length - 2)} Round One Rookie Shifts.").must_equal true
+            @rookie_user.shifts << s
+          elsif @rookie_user.shifts.length < 12
+            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length} of 12 selected.  Need #{12 - @rookie_user.shifts.length} Round 2 Shifts.").must_equal true
+            @rookie_user.shifts << s
+          else
+            @rookie_user.shifts << s
+          end
+        end
+        @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
+        @rookie_user.shift_status_message.include?("All Round One Rookie Shifts Selected.").must_equal true
+        @rookie_user.shift_status_message.include?("All Round 2 Shifts Selected.").must_equal true
+      end
+
+      it "should report for round 3 selections" do
+        config = SysConfig.first
+        config.bingo_start_date = Date.today - 16.days
+        config.save
+        Shift.all.each do |s|
+          next if @rookie_user.is_working? s.shift_date
+          break if @rookie_user.shifts.length >= 16
+          @rookie_user.shift_status_message.include?("Cannot Pick Shifts Prior to Last Shadow: #{@rookie_user.last_shadow.strftime("%Y-%m-%d")}").must_equal true if @rookie_user.shifts.length >= 2
+          @rookie_user.shift_status_message.include?("Cannot Pick Non-Round One Rookie Type Shifts Prior to #{@rookie_user.round_one_end_date.strftime("%Y-%m-%d")}").must_equal true if @rookie_user.shifts.length >= 7
+          shadow_count = @rookie_user.shadow_count
+          if @rookie_user.shifts.length < 2
+            next unless s.shadow?
+            @rookie_user.shift_status_message.include?("#{shadow_count} of 2 selected.  Need #{2 - shadow_count} Shadow Shifts.").must_equal true
+            @rookie_user.shifts << s
+          elsif @rookie_user.shifts.length < 7
+            next unless s.round_one_rookie_shift?
+            @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
+            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length - 2} of 5 Round One Rookie Shifts Selected.  Need #{5 - (@rookie_user.shifts.length - 2)} Round One Rookie Shifts.").must_equal true
+            @rookie_user.shifts << s
+          elsif @rookie_user.shifts.length < 16
+            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length} of 16 selected.  Need #{16 - @rookie_user.shifts.length} Round 3 Shifts.").must_equal true
+            @rookie_user.shifts << s
+          else
+            @rookie_user.shifts << s
+          end
+        end
+        @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
+        @rookie_user.shift_status_message.include?("All Round One Rookie Shifts Selected.").must_equal true
+        @rookie_user.shift_status_message.include?("All Round 3 Shifts Selected.").must_equal true
+      end
+
+      it "should report for round 4 selections" do
+        config = SysConfig.first
+        config.bingo_start_date = Date.today - 22.days
+        config.save
+        Shift.all.each do |s|
+          next if @rookie_user.is_working? s.shift_date
+          break if @rookie_user.shifts.length >= 16
+          @rookie_user.shift_status_message.include?("Cannot Pick Shifts Prior to Last Shadow: #{@rookie_user.last_shadow.strftime("%Y-%m-%d")}").must_equal true if @rookie_user.shifts.length >= 2
+          @rookie_user.shift_status_message.include?("Cannot Pick Non-Round One Rookie Type Shifts Prior to #{@rookie_user.round_one_end_date.strftime("%Y-%m-%d")}").must_equal true if @rookie_user.shifts.length >= 7
+          shadow_count = @rookie_user.shadow_count
+          if @rookie_user.shifts.length < 2
+            next unless s.shadow?
+            @rookie_user.shift_status_message.include?("#{shadow_count} of 2 selected.  Need #{2 - shadow_count} Shadow Shifts.").must_equal true
+            @rookie_user.shifts << s
+          elsif @rookie_user.shifts.length < 7
+            next unless s.round_one_rookie_shift?
+            @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
+            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length - 2} of 5 Round One Rookie Shifts Selected.  Need #{5 - (@rookie_user.shifts.length - 2)} Round One Rookie Shifts.").must_equal true
+            @rookie_user.shifts << s
+          elsif @rookie_user.shifts.length < 16
+            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length} of 16 selected.  Need #{16 - @rookie_user.shifts.length} Round 4 Shifts.").must_equal true
+            @rookie_user.shifts << s
+          else
+            @rookie_user.shifts << s
+          end
+        end
+        @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
+        @rookie_user.shift_status_message.include?("All Round One Rookie Shifts Selected.").must_equal true
+        @rookie_user.shift_status_message.include?("All Round 4 Shifts Selected.").must_equal true
+      end
+    end
 
     describe 'non-rookie' do
       it 'not allow picking shifts prior to bingo start' do
