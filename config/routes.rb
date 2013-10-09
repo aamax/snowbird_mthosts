@@ -10,6 +10,8 @@ Mthost::Application.routes.draw do
   resources :galleries
   resources :exports
   resources :sys_configs
+  resources :reports
+
   match '/download_end_of_year', :to =>  "exports#eoy_download"
   get '/shift_print/:id', :to => 'users#shift_print'
   post '/users/save_new', :to => 'users#save_new'

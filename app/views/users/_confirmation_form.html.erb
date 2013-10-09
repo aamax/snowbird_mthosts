@@ -1,0 +1,7 @@
+<h1>Please Confirm Your Information</h1>
+<%= form_for current_user,  :controller => 'users', html: {class: "nifty_form"} do |f| %>
+    <%= f.hidden_field(:page_type, :value => 'confirmation_page') %>
+    <% @user = current_user %>
+    <%= render "/users/form", f: f %>
+    <%= f.submit "Update", id: 'user_form_submit', class: 'btn btn-success' %>
+<% end %>

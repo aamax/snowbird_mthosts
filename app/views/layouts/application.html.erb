@@ -42,7 +42,11 @@
   <% end %>
 
   <div class='main_body'>
-    <%= yield %>
+    <% if current_user && (!current_user.confirmed?) %>
+        <%= render :partial => '/users/confirmation_form' %>
+    <% else %>
+        <%= yield %>
+    <% end %>
   </div>
 </div>
 

@@ -34,14 +34,24 @@ class UsersController < ApplicationController
   end
 
   def update
-    if params[:user][:password].blank?
-      params[:user].except!(:password)
-      params[:user].except!(:password_confirmation)
-    end
-    if !@user.update_attributes(params[:user])
-      redirect_to :back, :alert => "Error saving user: #{@user.errors.messages}"
+    is_conf_page =  (params[:user][:page_type] == 'confirmation_page')
+    if is_conf_page && params[:user][:password].blank?
+      redirect_to :back, :alert => "You must set your password on your first visit"
     else
-      redirect_to users_path
+      params[:user].except!(:page_type)
+      if params[:user][:password].blank?
+        params[:user].except!(:password)
+        params[:user].except!(:password_confirmation)
+      end
+      if !@user.update_attributes(params[:user])
+        redirect_to :back, :alert => "Error saving user: #{@user.errors.messages}"
+      else
+        if is_conf_page
+          redirect_to root_path
+        else
+          redirect_to users_path
+        end
+      end
     end
   end
 

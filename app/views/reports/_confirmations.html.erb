@@ -1,0 +1,26 @@
+<h1><%= @title %></h1>
+
+<h2>Unconfirmed Hosts</h2>
+<% @non_confirmed.in_groups_of(4).each do |u_array| %>
+    <div class="row">
+      <% u_array.each do |u| %>
+          <div class="span3">
+            <%= "&nbsp;".html_safe if u.nil? %>
+            <%= u.name unless u.nil?%>
+          </div>
+      <% end %>
+    </div>
+<% end %>
+<hr/>
+
+<h2>Confirmed Hosts</h2>
+<% @confirmed.in_groups_of(4).each do |u_array| %>
+    <div class="row">
+      <% u_array.each do |u| %>
+          <div class="span3">
+            <%= "&nbsp;".html_safe if u.nil? %>
+            <%= u.name unless u.nil?%>
+          </div>
+      <% end %>
+    </div>
+<% end %>

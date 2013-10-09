@@ -18,12 +18,14 @@
 <strong>Alt Email: </strong>
 <%= f.email_field :alt_email, :placeholder => 'Alternate Email', class: 'email_edit' %> <br/>
 
-<strong>Active?: </strong>
-<%= f.check_box :active_user, :placeholder => "active", class: 'active_edit' %>
+<% if current_user.has_role? :admin %>
+    <strong>Active?: </strong>
+    <%= f.check_box :active_user, :placeholder => "active", class: 'active_edit' %>
+<% end %>
 
 &nbsp;&nbsp;&nbsp;
 <strong>Confirmed? </strong>
-<%= f.check_box :confirmed, :placeholder => "confirmed", class: 'active_edit' %><br/>
+<%= f.check_box :confirmed, :placeholder => "confirmed", class: 'active_edit', :required => true %><br/>
 
 <% if current_user.has_role? :admin %>
     <br/>

@@ -1,0 +1,9 @@
+<% if @report == 'confirmations' %>
+    <%= render 'confirmations' %>
+<% else %>
+
+    <div class='hero-unit'>
+        Sorry, the <%= @report %> Report is not available.
+    </div>
+
+<% end %>
