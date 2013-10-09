@@ -24,7 +24,9 @@
 <td>
   <strong>Start Date:</strong> <%= object.start_year %> <br/>
   <strong>Seniority:</strong> <%= object.seniority %><br/>
-  <strong>Last Signed In:</strong> <%= object.last_sign_in_at %>
+  <strong>Last Signed In:</strong>
+        <%= object.last_sign_in_at.nil? ? "---" :
+              object.last_sign_in_at.in_time_zone("Mountain Time (US & Canada)").strftime("%Y-%m-%d %H:%M") %>
 </td>
 
 <td>

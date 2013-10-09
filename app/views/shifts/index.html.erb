@@ -67,14 +67,16 @@
         <td>
           <% unless s.user_id.nil? %>
             <a href=<%= user_path(s.user_id) %>><%= s.user.name %></a>
+          <% else %>
+            &nbsp;&nbsp;
           <% end %>
         </td>
-        <td class="align-center">
+        <td class="align-left">
           <% if s.can_select current_user %>
-              <a href=<%= "select_shift/#{s.id}" %>><i class="icon-male btn btn-primary" title="select shift"></i></a>
+            <a href=<%= "select_shift/#{s.id}" %>><i class="icon-male btn btn-primary" title="select shift">&nbsp;&nbsp;Select</i></a>
           <% end %>
           <% if s.can_drop current_user %>
-              <a href=<%= "drop_shift/#{s.id}" %>><i class="icon-warning-sign btn btn-warning" title="drop shift"></i></a>
+            <a href=<%= "drop_shift/#{s.id}" %>><i class="icon-warning-sign btn btn-warning" title="drop shift">&nbsp;&nbsp;Drop</i></a>
           <% end %>
         </td>
         <td class="align-center"><a href="shiftcard" target='_blank'><%= s.shift_type.short_name[0..1] %></a></td>
