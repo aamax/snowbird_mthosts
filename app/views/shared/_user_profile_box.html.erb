@@ -8,8 +8,11 @@
     </div>
     <div class='span3'>
       <%= user.name %>
-      <a href='<%= edit_user_path(user) %>'>&nbsp;&nbsp;&nbsp;&nbsp;
-        <i class='icon-wrench icon-large icon_blue icon_obj' title='Edit User'></i></a><br/><br/>
+
+      <% if ((current_user.has_role? :admin) || (current_user.id == user.id)) %>
+          &nbsp;&nbsp;&nbsp;&nbsp;<a href='<%= edit_user_path(user) %>'>
+            <i class='icon-wrench icon-large icon_blue icon_obj' title='Edit User'></i></a><br/><br/>
+      <% end %>
 
       <%= user.street %><br/>
       <%= user.city %> <%= user.city.blank? ? " #{user.state} #{user.zip}" : ", #{user.state} #{user.zip}" %><br/><br/>
