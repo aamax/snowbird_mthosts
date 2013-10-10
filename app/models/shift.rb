@@ -51,6 +51,12 @@ class Shift < ActiveRecord::Base
     where(:day_of_week => days)
   end
 
+  def self.by_holidays(flag)
+    return scoped unless flag == true
+    where("shift_date in ('#{HOLIDAYS.join("','")}')")
+
+  end
+
   def self.by_shift_type(sts)
     return scoped unless sts.present?
     types = ShiftType.where("short_name like '#{sts}%'")

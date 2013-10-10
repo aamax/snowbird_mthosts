@@ -294,6 +294,54 @@ class User < ActiveRecord::Base
     msg
   end
 
+  def round1_date
+    HostUtility.date_for_round(self, 1)
+  end
+
+  def round1_msg
+    if self.rookie?
+      'You may select up to 7 shifts: (2) Shadow and (5) G1-G4, C3, C4 type shifts (excluding shifts on the Friday schedule)'
+    else
+      'You may select up to 5 shifts.'
+    end
+  end
+
+  def round2_date
+    HostUtility.date_for_round(self, 2)
+  end
+
+  def round2_msg
+    if self.rookie?
+      'You may select up to 12 shifts: You may not select non-round one type shifts prior to the 5th one you have already selected'
+    else
+      'You may select up to 10 shifts.'
+    end
+  end
+
+  def round3_date
+    HostUtility.date_for_round(self, 3)
+  end
+
+  def round3_msg
+    if self.rookie?
+      'You may select up to 16 shifts: You may not select non-round one type shifts prior to the 5th one you have already selected'
+    else
+      'You may select up to 15 shifts.'
+    end
+  end
+
+  def round4_date
+    HostUtility.date_for_round(self, 4)
+  end
+
+  def round4_msg
+    if self.rookie?
+      'You may select up to 16 shifts: You may not select non-round one type shifts prior to the 5th one you have already selected'
+    else
+      'You may select up to 18 shifts.'
+    end
+  end
+
   private
 
   def clear_shifts_on_destroy
@@ -302,4 +350,6 @@ class User < ActiveRecord::Base
       s.save
     end
   end
+
+
 end

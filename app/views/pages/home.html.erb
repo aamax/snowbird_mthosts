@@ -7,8 +7,17 @@
 My Extras:&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
 </button>
 
-<% if current_user.shift_status_message.length > 0 %>
-    <%= render "/users/shift_message", :user => current_user, :shift_page => false  %>
+<% if !current_user.team_leader? && current_user.shift_status_message.length > 0 %>
+    <div class='row'>
+      <div class='span6'>
+        <%= render "/users/shift_message", :user => current_user, :shift_page => false  %>
+      </div>
+      <div class='span6'>
+        <% if Date.today >= HostUtility.date_for_round(current_user, 5) %>
+            <%= render "/shared/shift_bingo", :user => current_user %>
+        <% end %>
+      </div>
+    </div>
 <% end %>
 
 <div id="stats_display" class="collapse out">

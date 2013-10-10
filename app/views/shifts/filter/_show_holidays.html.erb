@@ -1,0 +1,7 @@
+Show Holiday Shifts:
+<% if params['filter'] %>
+    <%= f.check_box(:holiday_shifts, :checked => (params['filter']['holiday_shifts'] == '1')) %>
+<% else %>
+    <%= f.check_box(:holiday_shifts, :checked => false) %>
+<% end %>
+<br/>

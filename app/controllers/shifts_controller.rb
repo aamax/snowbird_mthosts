@@ -8,6 +8,7 @@ class ShiftsController < ApplicationController
     @days = DAYNAMES.map{|u| ["#{u}", "#{u[0...3]}"]}
     @shift_types = ShiftType.all.map {|st| st.short_name[0..1] }.uniq.sort {|a,b| a <=> b }
     @users = User.active_users.map{|u| ["#{u.name}"]}.sort
+
     if params['filter']
       sts = params['filter']['shifttype']
       dow = params['filter']['dayofweek'].reject{ |e| e.empty? }
@@ -15,10 +16,11 @@ class ShiftsController < ApplicationController
       usrs = params['filter']['host'].reject{ |e| e.empty? }
       from_today = (params['filter']['start_from_today'] == '1')
       can_select = (params['filter']['shifts_i_can_pick'] == '1')
+      holidays = (params['filter']['holiday_shifts'] == '1')
       if can_select == false
-        @shifts = Shift.from_today(from_today).by_shift_type(sts).by_date(dt).by_day_of_week(dow).by_users(usrs).paginate(:page => params[:page], :per_page => 75)
+        @shifts = Shift.from_today(from_today).by_shift_type(sts).by_date(dt).by_day_of_week(dow).by_users(usrs).by_holidays(holidays).paginate(:page => params[:page], :per_page => 75)
       else
-        @shifts = Shift.from_today(from_today).by_shift_type(sts).by_date(dt).by_day_of_week(dow).by_users(usrs).delete_if {|s| s.can_select(current_user) == false }.paginate(:page => params[:page], :per_page => 75)
+        @shifts = Shift.from_today(from_today).by_shift_type(sts).by_date(dt).by_day_of_week(dow).by_holidays(holidays).by_users(usrs).delete_if {|s| s.can_select(current_user) == false }.paginate(:page => params[:page], :per_page => 75)
       end
     else
       @shifts = Shift.from_today(true).paginate(:page => params[:page], :per_page => 75)

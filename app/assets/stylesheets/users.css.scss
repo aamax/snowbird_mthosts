@@ -1,6 +1,45 @@
 // Place all the styles related to the Users controller here.
 // They will automatically be included in application.css.scss.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.bingo_schedule {
+  width: 40em;
+  background-color: rgba(95, 229, 63, 0.51);
+  color: rgba(121, 28, 28, 0.80);
+  border-width: 1px;
+  border-style: ridge;
+  border-color: #dddddd;
+  padding-top: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 5px;
+  border-radius: 15px;
+  margin-top: 15px;
+  margin-left: 15px;
+  margin-right: 15px;
+  margin-bottom: 15px;
+  min-height: 285px;
+
+  table {
+    background-color: #e1e1e1;
+    border-width: 1px;
+    border-style: ridge;
+    border-radius: 15px;
+
+    th {
+      text-align: center;
+    }
+
+    td.round_col {
+      width: 5em;
+      text-align: center;
+    }
+    td.date_col {
+      width: 6em;
+    }
+  }
+}
+
 .user_shift_message_box {
   width: 40em;
   background-color: rgba(26, 175, 245, 0.36);
@@ -17,7 +56,7 @@
   margin-left: 15px;
   margin-right: 15px;
   margin-bottom: 15px;
-
+  min-height: 285px;
 }
 
 .shifts_today_box {

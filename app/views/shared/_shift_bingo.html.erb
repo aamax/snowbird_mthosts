@@ -1,0 +1,61 @@
+<div class='bingo_schedule'>
+  <h2>Shift Selection Schedule</h2>
+
+  The Shift Selections For Senior Hosts Starts on: <strong><%= HostConfig.bingo_start_date.strftime('%Y-%m-%d') %></strong>
+
+  <table class='table table-striped'>
+    <tr>
+      <th>Round</th>
+      <th>Date</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td class='round_col'>
+        1
+      </td>
+      <td class='date_col'>
+        <%= current_user.round1_date.strftime("%Y-%m-%d") %>
+      </td>
+      <td>
+        <%= current_user.round1_msg %>
+      </td>
+    </tr>
+
+    <tr>
+      <td class='round_col'>
+        2
+      </td>
+      <td class='date_col'>
+        <%= current_user.round2_date.strftime("%Y-%m-%d") %>
+      </td>
+      <td>
+        <%= current_user.round2_msg %>
+      </td>
+    </tr>
+
+    <tr>
+      <td class='round_col'>
+        3
+      </td>
+      <td class='date_col'>
+        <%= current_user.round3_date.strftime("%Y-%m-%d") %>
+      </td>
+      <td>
+        <%= current_user.round3_msg %>
+      </td>
+    </tr>
+
+    <tr>
+      <td class='round_col'>
+        4
+      </td>
+      <td class='date_col'>
+        <%= current_user.round4_date.strftime("%Y-%m-%d") %>
+      </td>
+      <td>
+        <%= current_user.round4_msg %>
+      </td>
+    </tr>
+
+  </table>
+</div>

@@ -103,5 +103,3 @@ end
 # Capybara because it starts the web server in a thread.
 ActiveRecord::Base.shared_connection = ActiveRecord::Base.connection
 
-
-

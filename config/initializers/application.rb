@@ -6,3 +6,5 @@ MEETINGS = [{:who=>:rookie, :when=>"2013-11-3", :time=>"8:00am",:what=>"Rookie T
             {:who=>:all, :when=>"2014-1-26", :time=>"4:00pm", :what=>"Mid-Year Meeting", :type=>"M4"}]
 
 HOLIDAYS = [Date.new(2013,12,24),Date.new(2013,12,25),Date.new(2013,12,31),Date.new(2014,1,1)]
+
+

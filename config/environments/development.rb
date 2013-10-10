@@ -14,22 +14,24 @@ Mthost::Application.configure do
   config.action_controller.perform_caching = false
 
   # ActionMailer Config
-  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
-  config.action_mailer.delivery_method = :smtp
-  # change to true to allow email to be sent during development
-  config.action_mailer.perform_deliveries = true
-  config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.default :charset => "utf-8"
+  config.after_initialize do
+    config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+    config.action_mailer.delivery_method = :smtp
+    # change to true to allow email to be sent during development
+    config.action_mailer.perform_deliveries = true
+    config.action_mailer.raise_delivery_errors = true
+    config.action_mailer.default :charset => "utf-8"
 
-  config.action_mailer.smtp_settings = {
-      :address        => 'smtp.gmail.com',
-      :port           => '587',
-      :authentication => :plain,
-      user_name: ENV["GMAIL_USERNAME"],
-      password: ENV["GMAIL_PASSWORD"],
-      :domain         => 'localhost',
-      :enable_starttls_auto => true
-  }
+    config.action_mailer.smtp_settings = {
+        :address        => 'smtp.gmail.com',
+        :port           => '587',
+        :authentication => :plain,
+        user_name: ENV['mail_user'],
+        password: ENV['mail_pass'],
+        :domain         => 'localhost',
+        :enable_starttls_auto => true
+    }
+  end
 
   #config.paperclip_defaults = {
   #    :storage => :s3,
@@ -60,16 +62,5 @@ Mthost::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 end
-
-#ActionMailer::Base.smtp_settings = {
-#    :address        => 'smtp.gmail.com',
-#    :port           => '587',
-#    :authentication => :plain,
-#    :user_name      => 'snowbirdhosts',
-#    :password       => 'snowhosties',
-#    :domain         => 'localhost',
-#    :enable_starttls_auto => true
-#}
-#ActionMailer::Base.delivery_method = :smtp
 
 HOST_SENDER = "snowbirdhosts@gmail.com"
