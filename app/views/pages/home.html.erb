@@ -7,7 +7,7 @@
 My Extras:&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
 </button>
 
-<% if !current_user.team_leader? && current_user.shift_status_message.length > 0 %>
+<% if !current_user.team_leader? && (current_user.shift_status_message.length > 0) && (!current_user.supervisor?) %>
     <div class='row'>
       <div class='span6'>
         <%= render "/users/shift_message", :user => current_user, :shift_page => false  %>
@@ -26,15 +26,16 @@ My Extras:&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
         <%= render '/shared/user_profile_box', :user => current_user %><br/>
     </div>
   </div>
-  <div class='row'>
-    <div class='span6'>
-      <%= render '/shared/shift_summary_box', :user => current_user %>
-    </div>
-    <div class='span6'>
-      <%= render '/shared/next_three_shifts', :user => current_user %>
-    </div>
-  </div>
-
+  <% unless current_user.supervisor? %>
+      <div class='row'>
+        <div class='span6'>
+          <%= render '/shared/shift_summary_box', :user => current_user %>
+        </div>
+        <div class='span6'>
+          <%= render '/shared/next_three_shifts', :user => current_user %>
+        </div>
+      </div>
+  <% end %>
   <div class='row'>
     <div class='span8'>
       <%= render '/shared/hosts_working_today', :user => current_user %>

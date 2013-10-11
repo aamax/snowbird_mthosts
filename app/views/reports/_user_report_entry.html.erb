@@ -1,0 +1,10 @@
+<td>
+  <%= link_to object.name, user_path(object) %>
+  <br/>(seniority: <%= object.seniority %> )
+</td>
+    <td><%= object.shifts.count %> </td>
+    <td><%= object.shifts_worked.count %></td>
+    <td><%= object.pending_shifts.count %></td>
+    <td><%= object.missed_shifts.count %></td>
+    <td><%= object.notes %></td>
+

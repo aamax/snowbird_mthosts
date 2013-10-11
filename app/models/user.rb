@@ -38,7 +38,7 @@ class User < ActiveRecord::Base
   include HostConfig
   rolify
   # Include default devise modules. Others available are:
-  # :token_authenticatable, :confirmable, :registerable,
+  # :token_authenticatable, registerable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable
 
@@ -63,26 +63,50 @@ class User < ActiveRecord::Base
 
   # don't allow non active users to log into the system
   def active_for_authentication?
-    super and self.active_user?
+    super and self.has_role?(:admin) ? true : self.active_user?
   end
 
   def seniority
     if self.active_user != true
       retval = 'InActive'
     else
-      retval = "Rookie" if self.start_year == HostConfig.season_year
-      retval = "Freshman" if (self.start_year < HostConfig.season_year) && (self.start_year >= HostConfig.group_1_year)
-      retval = "Junior" if (self.start_year <= HostConfig.group_2_year) && (self.start_year > HostConfig.group_3_year)
-      retval = "Senior" if self.start_year <= HostConfig.group_3_year
+      retval = "Rookie" if self.rookie?
+      retval = "Freshman" if self.group_1?
+      retval = "Junior" if self.group_2?
+      retval = "Senior" if self.group_3?
     end
     retval
   end
 
+  def seniority_group
+    if self.active_user != true
+      retval = 5
+    else
+      retval = 4 if self.rookie?
+      retval = 3 if self.group_1?
+      retval = 2 if self.group_2?
+      retval = 1 if self.group_3?
+    end
+    retval
+  end
+
+  def supervisor?
+    self.email == 'jecotterii@gmail.com'
+  end
+
   def shifts_worked
-    worked = shifts
-    worked.delete_if {|s| (s.shift_date > Date.today) || (s.shift_status_id == -1) }
+    worked = shifts.delete_if {|s| (s.shift_date > Date.today) || (s.shift_status_id == -1) }
     worked
   end
+
+  def pending_shifts
+    pending = shifts.delete_if {|s| (s.shift_date <= Date.today) }
+  end
+
+  def missed_shifts
+    pending = shifts.delete_if {|s| (s.shift_status_id == -1) }
+  end
+
 
   def team_leader?
     self.has_role? :team_leader
@@ -97,15 +121,15 @@ class User < ActiveRecord::Base
   end
 
   def group_3?
-    self.start_year < HostConfig.group_2_year
+    self.start_year <= HostConfig.group_3_year
   end
 
   def group_2?
-    (self.start_year >= HostConfig.group_2_year) && (self.start_year < HostConfig.group_1_year)
+    (self.start_year <= HostConfig.group_2_year) && (self.start_year > HostConfig.group_3_year)
   end
 
   def group_1?
-    (self.start_year >= HostConfig.group_1_year) && (self.start_year != HostConfig.season_year)
+    (self.start_year < HostConfig.season_year) && (self.start_year >= HostConfig.group_1_year)
   end
 
   def shadow_count

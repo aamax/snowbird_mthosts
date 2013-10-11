@@ -1,0 +1,29 @@
+<% if current_user.has_role? :admin %>
+    <h1><%= @title %></h1>
+
+    <strong>Total Shifts:</strong> <%= @total_shifts.count %><br />
+    <strong>Total Assigned:</strong> <%= @total_assigned_shifts.count %><br />
+    <strong>Total Unassigned:</strong> <%= @total_open_shifts.count %><br />
+    <hr/>
+    <br />
+
+    <table class="table table-striped table-bordered">
+      <tr class="row">
+        <th class="span3">Host Name</th>
+        <th class="span1">Total</th>
+        <th class="span1">Worked</th>
+        <th class="span1">Pending</th>
+        <th class="span1">Missed</th>
+        <th class="span5">Comments</th>
+      </tr>
+      <% @hosts.each do |auser| %>
+          <tr class="row" >
+            <%= render "reports/user_report_entry", :object => auser %>
+          </tr>
+      <% end %>
+    </table>
+<% else %>
+    <h1>You do not have permissions to view this page...</h1>
+    <%= link_to "Click Here to return to home page", root_path, :class=>"btn btn-warning" %>
+<% end %>
+

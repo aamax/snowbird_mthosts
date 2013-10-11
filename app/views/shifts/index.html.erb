@@ -15,7 +15,9 @@
         </button>
       </div>
       <div class='span5'>
-        <%= render "/users/shift_message", :user => current_user, :shift_page => true %>
+        <% unless current_user.supervisor? %>
+            <%= render "/users/shift_message", :user => current_user, :shift_page => true %>
+        <% end %>
       </div>
     </div>
     <% if current_user.has_role? :admin %>
@@ -72,7 +74,7 @@
           <% end %>
         </td>
         <td class="align-left">
-          <% if s.can_select current_user %>
+          <% if s.can_select(current_user) && !current_user.supervisor? %>
             <a href=<%= "select_shift/#{s.id}" %>><i class="icon-male btn btn-primary" title="select shift">&nbsp;&nbsp;Select</i></a>
           <% end %>
           <% if s.can_drop current_user %>

@@ -35,7 +35,7 @@ class UsersController < ApplicationController
 
   def update
     is_conf_page =  (params[:user][:page_type] == 'confirmation_page')
-    if is_conf_page && params[:user][:password].blank?
+    if is_conf_page && params[:user][:password].blank? && !(current_user.has_role? :admin)
       redirect_to :back, :alert => "You must set your password on your first visit"
     else
       params[:user].except!(:page_type)

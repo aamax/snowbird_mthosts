@@ -42,7 +42,7 @@
   <% end %>
 
   <div class='main_body'>
-    <% if current_user && (!current_user.confirmed?) %>
+    <% if current_user && (!current_user.confirmed?) && !(current_user.has_role? :admin) %>
         <%= render :partial => '/users/confirmation_form' %>
     <% else %>
         <%= yield %>

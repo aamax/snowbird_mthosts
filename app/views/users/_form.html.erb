@@ -25,7 +25,7 @@
 
 &nbsp;&nbsp;&nbsp;
 <strong>Confirmed? </strong>
-<%= f.check_box :confirmed, :placeholder => "confirmed", class: 'active_edit', :required => true %><br/>
+<%= f.check_box :confirmed, :placeholder => "confirmed", class: 'active_edit', :required => !current_user.has_role?(:admin) %><br/>
 
 <% if current_user.has_role? :admin %>
     <br/>

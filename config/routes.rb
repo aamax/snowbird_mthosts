@@ -17,7 +17,6 @@ Mthost::Application.routes.draw do
   post '/users/save_new', :to => 'users#save_new'
 
   resources :pages
-
   match '/show_contact_info', :to => "pages#show_contact_info"
   match '/select_hosts_for_email', :to => "mail#select_hosts_for_email"
   match '/send_custom_mail', :to => "mail#send_custom_mail"
