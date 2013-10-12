@@ -19,7 +19,7 @@ class GalleriesController < ApplicationController
   end
 
   def new
-    @gallery = Friend.new
+    @gallery = Gallery.new
 
     respond_to do |format|
       format.html # new.html.erb
