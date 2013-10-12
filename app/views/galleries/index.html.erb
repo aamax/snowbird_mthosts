@@ -1,2 +1,5 @@
-Coming soon.... to a host site near you!
-
+<%= link_to "Create New Picture <i class='icon-camera icon-large icon-white'></i>".html_safe, new_gallery_path, class: "btn btn-success" %>
+<br/><hr/>
+<section id="galleries">
+  <%= render @galleries %>
+</section>

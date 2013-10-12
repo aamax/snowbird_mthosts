@@ -36,6 +36,10 @@ gem 'angularjs-rails'
 
 gem 'gon'
 
+gem "paperclip", "~> 3.0"
+gem 'aws-sdk'
+
+
 group :development do
   #gem 'debugger'
   gem 'annotate', :git => 'git://github.com/ctran/annotate_models.git'

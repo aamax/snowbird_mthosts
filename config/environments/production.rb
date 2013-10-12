@@ -79,15 +79,17 @@ Mthost::Application.configure do
       :enable_starttls_auto => true
   }
 
-  #config.paperclip_defaults = {
-  #    :storage => :s3,
-  #    :s3_credentials => {
-  #        :bucket => 'genevaeq',
-  #        :bucket_name => 'genevaeq',
-  #        :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
-  #        :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
-  #    }
-  #}
+  config.paperclip_defaults = {
+      :storage => :s3,
+      :url => ':s3_domain_url',
+      :path => "/:class/:attachment/:id_partition/:style/:filename",
+      :s3_credentials => {
+          :bucket => 'snowbirdhostgallery', #ENV['AWS_HOST_BUCKET_NAME'],
+          :bucket_name => ENV['AWS_HOST_BUCKET_NAME'],
+          :access_key_id => ENV['AWS_HOST_ACCESS_KEY'],
+          :secret_access_key => ENV['AWS_HOST_SECRET_ACCESS_KEY']
+      }
+  }
 
 
   # Log the query plan for queries taking more than this (works

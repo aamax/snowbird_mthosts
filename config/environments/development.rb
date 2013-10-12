@@ -33,15 +33,17 @@ Mthost::Application.configure do
     }
   end
 
-  #config.paperclip_defaults = {
-  #    :storage => :s3,
-  #    :s3_credentials => {
-  #        :bucket => 'genevaeq',
-  #        :bucket_name => 'genevaeq',
-  #        :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
-  #        :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
-  #    }
-  #}
+  config.paperclip_defaults = {
+      :storage => :s3,
+      :url => ':s3_domain_url',
+      :path => "/:class/:attachment/:id_partition/:style/:filename",
+      :s3_credentials => {
+          :bucket => 'snowbirdhostgallery', #ENV['AWS_HOST_BUCKET_NAME'],
+          :bucket_name => ENV['AWS_HOST_BUCKET_NAME'],
+          :access_key_id => ENV['AWS_HOST_ACCESS_KEY'],
+          :secret_access_key => ENV['AWS_HOST_SECRET_ACCESS_KEY']
+      }
+  }
 
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log

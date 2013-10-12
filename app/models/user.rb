@@ -49,6 +49,7 @@ class User < ActiveRecord::Base
   attr_accessor   :working_shifts
 
   has_many :shifts
+  has_many :galleries
 
   scope :active_users, -> {where(active_user: true)}
   scope :inactive_users, -> {where(active_user: false)}
