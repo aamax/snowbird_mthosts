@@ -49,6 +49,7 @@ class GalleriesController < ApplicationController
     unless @gallery.save
       render :new
     else
+      current_user.galleries << @gallery
       redirect_to galleries_path
     end
   end
