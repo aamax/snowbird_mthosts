@@ -108,12 +108,16 @@ class Shift < ActiveRecord::Base
     self.shift_type.short_name[0..1]
   end
 
+  def full_short_name
+    self.shift_type.short_name
+  end
+
   def shadow?
     self.short_name[0..1] == "SH"
   end
 
   def team_leader?
-    self.short_name[0..1] == "TL"
+    (self.short_name[0..1] == "TL") || (self.short_name.downcase == 'p2weekday')
   end
 
   def round_one_rookie_shift?

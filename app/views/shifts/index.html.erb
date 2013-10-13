@@ -15,11 +15,9 @@
           Open Filter:&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
         </button>
       </div>
-      <div class='span5'>
         <% unless current_user.supervisor? %>
             <%= render "/users/shift_message", :user => current_user, :shift_page => true %>
         <% end %>
-      </div>
     </div>
     <% if current_user.has_role? :admin %>
         <div id="stats_display" class="collapse out">

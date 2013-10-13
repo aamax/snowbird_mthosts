@@ -62,14 +62,19 @@ class ShiftsHelperTest < ActionView::TestCase
 
       describe "team leader shift" do
         it "cannot select tl shift if not team leader" do
-          shifts = Shift.where(:shift_type_id => @tl.id)
+          @p2weekday = FactoryGirl.create(:shift_type, :short_name => 'P2weekday')
+          curr_date = @sys_config.season_start_date
+          (0..10).each do |n|
+            FactoryGirl.create(:shift, :shift_type_id => @p2weekday.id, :shift_date => curr_date)
+            curr_date += 1.day
+          end
 
+          shifts = Shift.where(:shift_type_id => @tl.id)
+          others = Shift.where(:shift_type_id => @p2weekday)
+          shifts = (shifts + others)
           shifts.each do |s|
-            if s.team_leader?
-              s.can_select(@rookie_user).must_equal false
-              s.can_select(@group1_user).must_equal false
-              s.can_select(@group2_user).must_equal false
-              s.can_select(@group3_user).must_equal false
+            [@rookie_user, @group1_user, @group2_user, @group3_user ].each do |u|
+              s.can_select(u).must_equal false
             end
           end
         end
@@ -88,7 +93,6 @@ class ShiftsHelperTest < ActionView::TestCase
             end
           end
         end
-
 
         describe "rookies" do
           it "rookies can select shadow shifts" do
