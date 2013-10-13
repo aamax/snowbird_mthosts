@@ -1,4 +1,4 @@
-<div class='shifts_today_box'>
+<div class='shifts_today_box span6'>
 <% @shifts_today = Shift.where("shift_date = '#{Date.today}'")
    if @shifts_today.length > 0 %>
       <h3>Hosts Working Today: <%= Date.today().strftime("%a.  %m-%d-%Y") %></h3>

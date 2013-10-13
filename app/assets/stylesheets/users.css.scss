@@ -2,8 +2,10 @@
 // They will automatically be included in custom.css.scss.scss.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+.myhome_page {
+  margin-left: 0px;
+}
 .bingo_schedule {
-  width: 40em;
   background-color: rgba(95, 229, 63, 0.51);
   color: rgba(121, 28, 28, 0.80);
   border-width: 1px;
@@ -41,7 +43,6 @@
 }
 
 .user_shift_message_box {
-  width: 40em;
   background-color: rgba(26, 175, 245, 0.36);
   color: rgba(121, 28, 28, 0.80);
   border-width: 1px;
@@ -64,10 +65,9 @@
   border-style: ridge;
   border-color: #dddddd;
   padding-top: 0px;
-  padding-left: 3px;
-  padding-right: 3px;
+  padding-left: 0px;
+  padding-right: 0px;
   padding-bottom: 0px;
-  width: 65em;
   border-radius: 15px;
   text-align: center;
   background-color: rgba(207, 207, 207, 0.54);
@@ -95,10 +95,9 @@
   border-style: ridge;
   border-color: #dddddd;
   padding-top: 0px;
-  padding-left: 3px;
-  padding-right: 3px;
+  padding-left: 0px;
+  padding-right: 0px;
   padding-bottom: 0px;
-  width: 40em;
   border-radius: 15px;
   text-align: center;
   background-color: rgba(207, 207, 207, 0.54);
@@ -111,6 +110,7 @@
     border-style: solid;
     border-color: #747474;
     background-color: #bababa;
+    width: 100%;
     th {
       background-color: #a1965f !important;
       text-align: center;
@@ -129,12 +129,12 @@
   border-style: ridge;
   border-color: grey;
   padding-top: 5px;
-  padding-left: 2px;
-  padding-right: 2px;
+  padding-left: 0px;
+  padding-right: 0px;
   padding-bottom: 0px;
-  width: 40em;
   border-radius: 15px;
   text-align: center;
+  margin-left: -3px;
 
   background-color: rgba(129, 255, 46, 0.35);
 
@@ -164,10 +164,9 @@
   padding-left: 15px;
   padding-right: 15px;
   padding-bottom: 15px;
-  width: 12em;
   border-radius: 15px;
 
-  background-color: rgba(62, 202, 255, 0.36);
+  background-color: rgba(252, 255, 56, 0.35);
 }
 
 .user_notes_box {
@@ -178,7 +177,6 @@
   padding-left: 15px;
   padding-right: 15px;
   padding-bottom: 15px;
-  width: 65em;
   border-radius: 15px;
 
   background-color: rgba(255, 102, 81, 0.51);
@@ -189,11 +187,11 @@
   border-style: ridge;
   border-color: grey;
   padding-top: 15px;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 0px;
+  padding-right: 0px;
   padding-bottom: 15px;
-  width: 50em;
   border-radius: 15px;
+  //margin-left: 0px;
 
   background-color: rgba(62, 202, 255, 0.36);
 

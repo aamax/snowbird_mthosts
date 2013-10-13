@@ -1,32 +1,33 @@
 
-<div class='user_profile_box'>
+<div class='user_profile_box span7' >
   <div class='row'>
-    <div class='span2 col1'>
-      <%= gravatar_image_tag(user.email, :alt => user.name) %><br/>
-      <%= link_to user.email, "/send_mail/#{user.email}" %> <br/>
-      Cell Phone: <%= user.cell_phone %>
-    </div>
-    <div class='span3'>
+    <div class='span3 col1'>
       <%= user.name %>
 
       <% if ((current_user.has_role? :admin) || (current_user.id == user.id)) %>
-          &nbsp;&nbsp;&nbsp;&nbsp;<a href='<%= edit_user_path(user) %>'>
-            <i class='icon-wrench icon-large icon_blue icon_obj' title='Edit User'></i></a><br/><br/>
+          <a href='<%= edit_user_path(user) %>'>
+      <i class='icon-wrench icon-large icon_blue icon_obj' title='Edit User'></i></a><br/>
       <% end %>
 
+      <%= gravatar_image_tag(user.email, :alt => user.name) %><br/>
+      <%= link_to user.email, "/send_mail/#{user.email}" %> <br/>
+      <% unless user.alt_email.blank? %>
+        <strong>Alt Email: </strong> <%= link_to user.alt_email, "/send_mail/#{user.alt_email}" %> <br/>
+      <% end %>
+      <% unless user.nickname.blank? %>
+          Nick Name: <%= user.nickname %><br/>
+      <% end %>
+      Cell: <%= user.cell_phone %> <br/>
+      Home: <%= user.home_phone %> <br/><br/>
+    </div>
+    <div class='span4'>
       <%= user.street %><br/>
       <%= user.city %> <%= user.city.blank? ? " #{user.state} #{user.zip}" : ", #{user.state} #{user.zip}" %><br/><br/>
-      Home Phone: <%= user.home_phone %> <br/>
 
-    </div>
-    <div class='span2'>
-      <% unless user.nickname.blank? %>
-        Nick Name: <%= user.nickname %><br/>
-      <% end %>
-      Start Year:  <%= user.start_year %> <br/>
-      Seniority: <%= user.seniority %><br/>
       Survey Total: <%= "TBD" %> <br/>
-      Shifts Selected: <%= user.shifts.length %>
+      Shifts Selected: <%= user.shifts.length %>  <br/>
+      Seniority: <%= user.seniority %><br/>
+      Start Year:  <%= user.start_year %> <br/>
 
       <% if user.roles.length > 0 %>
           <br/>
@@ -37,7 +38,6 @@
             <% end %>
           </ul>
       <% end %>
-
     </div>
   </div>
 </div>
