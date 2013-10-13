@@ -6,11 +6,11 @@ group :assets do
   gem 'sass-rails',   '~> 3.2.3'
   gem 'coffee-rails', '~> 3.2.1'
   gem 'uglifier', '>= 1.0.3'
+  gem 'bootstrap-sass'
   gem 'therubyracer'
 end
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-#gem 'bootstrap-sass', '~> 2.3.2.1'
 gem "pg", ">= 0.14.1"
 gem "minitest-wscolor", ">= 0.0.3", :group => :test
 gem "capybara", ">= 2.0.2", :group => :test
@@ -22,16 +22,18 @@ gem "better_errors", ">= 0.6.0", :group => :development
 gem "binding_of_caller", ">= 0.7.1", :group => :development, :platforms => [:mri_19, :rbx]
 #gem 'spork', '0.9'
 
+gem 'bootstrap-will_paginate'
+gem 'bootstrap-datepicker-rails'
+gem 'bootstrap-addons-rails'
+
 gem 'jbuilder'
 gem 'awesome_print'
 gem 'tinymce-rails'
 gem 'gravatar_image_tag', '1.0.0.pre2'
 gem 'will_paginate', "~>3.0.2"
-gem 'bootstrap-will_paginate'
 gem 'nokogiri'
 gem 'ng-rails-csrf', :git => "git://github.com/xrd/ng-rails-csrf.git" #helps rails csrf with angular
 gem 'ngmin-rails'
-gem 'font-awesome-rails'
 gem 'angularjs-rails'
 
 gem 'gon'
@@ -53,7 +55,7 @@ group :test, :development do
   gem "minitest-rails-capybara"
   gem "minitest-stub-const"
   gem "minitest-reporters", '>= 0.5.0'
-
+  gem 'pry'
   gem "turn"
   gem "factory_girl_rails", ">= 4.2.0"
 

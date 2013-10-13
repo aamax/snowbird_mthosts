@@ -12,6 +12,7 @@ Mthost::Application.routes.draw do
   resources :sys_configs
   resources :reports
 
+
   match '/download_end_of_year', :to =>  "exports#eoy_download"
   get '/shift_print/:id', :to => 'users#shift_print'
   post '/users/save_new', :to => 'users#save_new'
@@ -25,6 +26,8 @@ Mthost::Application.routes.draw do
 
   get '/drop_shift/:id', :to => 'shifts#drop_shift'
   get '/select_shift/:id', :to => 'shifts#select_shift'
+
+  match "/gallery_page", :to => "galleries#gallery_page"
 
   root :to => "pages#show"
 

@@ -2,7 +2,8 @@
 
 <div class="shift_page_header">
   <div class="shift_page_filter">
-    <%= will_paginate @shifts %>
+    <%= will_paginate(@shifts, :renderer => 'BootstrapPaginationHelper::LinkRenderer') %>
+
     <div class='row'>
       <div class='span4'>
         <% if current_user.has_role? :admin %>
@@ -110,12 +111,8 @@
 <br/>
 
 
-
-
-
-
 <div class="shift_page_footer">
   <hr/>
-  <%= will_paginate @shifts %>
+  <%= will_paginate(@shifts, :renderer => 'BootstrapPaginationHelper::LinkRenderer') %>
 </div>
 

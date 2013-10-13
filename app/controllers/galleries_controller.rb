@@ -2,10 +2,26 @@ class GalleriesController < ApplicationController
   load_and_authorize_resource
 
   def index
-    @galleries = Gallery.all
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @galleries }
+    if current_user.has_role? :admin
+      redirect_to gallery_page_path
+    else
+      @galleries = Gallery.all
+      respond_to do |format|
+        format.html # index.html.erb
+        format.json { render json: @galleries }
+      end
+    end
+  end
+
+  def gallery_page
+    if current_user.has_role? :admin
+      @galleries = Gallery.all
+      respond_to do |format|
+        format.html # index.html.erb
+        format.json { render json: @galleries }
+      end
+    else
+      redirect_to :galleries_path
     end
   end
 
@@ -39,7 +55,11 @@ class GalleriesController < ApplicationController
         format.html { render action: "edit" }
         format.json { render json: @gallery.errors, status: :unprocessable_entity }
       else
-        redirect_to galleries_path
+        if current_user.has_role? :admin
+          redirect_to gallery_page_path
+        else
+          redirect_to galleries_path
+        end
       end
     end
   end
@@ -50,17 +70,22 @@ class GalleriesController < ApplicationController
       render :new
     else
       current_user.galleries << @gallery
-      redirect_to galleries_path
+
+      if current_user.has_role? :admin
+        redirect_to gallery_page_path
+      else
+        redirect_to galleries_path
+      end
     end
   end
 
   def destroy
     @gallery = Gallery.find(params[:id])
     @gallery.destroy
-
-    respond_to do |format|
-      format.html { redirect_to galleries_url }
-      format.json { head :no_content }
+    if current_user.has_role? :admin
+      redirect_to gallery_page_path
+    else
+      redirect_to galleries_path
     end
   end
 end

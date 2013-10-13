@@ -21,6 +21,11 @@
 //= require_tree ./angular/.
 //= require angular/directives/gravatar-directive
 //= require /md5-service
+
+//= require bootstrap
+//= require bootstrap-datepicker
+//= require bootstrap/load-image.min
+//= require bootstrap/image-gallery.min
 //= require_tree .
 
 $(function() {

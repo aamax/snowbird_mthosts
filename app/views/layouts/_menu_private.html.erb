@@ -14,7 +14,7 @@
       <%= link_to "Documents", "#", :class => "dropdown-toggle", :data => {:toggle => "dropdown"}, :id => "document_menu" %>
 
       <ul class="dropdown-menu" padding-left="20px">
-        <li><%= link_to "Shift Card", "shiftcard" %></li>
+        <li><%= link_to "Shift Card", "/shiftcard" %></li>
         <li><%= link_to "Mt Host Manual (2012-2013)", "/docs/HostManual2012.pdf", :target => "_blank"  %></li>
         <li><%= link_to "Host Manual (2012/13 change summary)", "/docs/HostManual_changes2012.pdf", :target => "_blank" %></li>
         <li><%= link_to "Parking Policy", "/docs/parking_policy.pdf", :target => "_blank" %></li>
@@ -49,6 +49,7 @@
             <li><%= link_to "Manage Shift Types", shift_types_path %></li>
             <li><%= link_to "Shift Creation Wizard", "#{shift_collections_path}/?date=#{Date.today}" %></li>
             <li><%= link_to "Manage Configurations", edit_sys_config_path(SysConfig.first) %></li>
+            <li><%= link_to "Manage Gallery", gallery_page_path %></li>
 
             <li class='disabled'>Exports</li>
             <li><a href="/download_end_of_year">End of Year Shift Summary</a></li>
