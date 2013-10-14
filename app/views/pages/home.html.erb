@@ -2,10 +2,16 @@
 <button type="button" class="btn" data-toggle="collapse" data-target="#stats_display" >
   My Dashboard:&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
 </button>
+<% msg = home_page_message %>
+<% unless msg.content.blank? %>
+    <button type="button" class="btn float_right" data-toggle="collapse" data-target="#extras_display" >
+      Messages From 'Max':&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
+    </button>
 
-<button type="button" class="btn" data-toggle="collapse" data-target="#extras_display" >
-  My Extras:&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
-</button>
+    <div id="extras_display" class="collapse <%= msg.content.blank? ? 'out' : 'in'  %>">
+      <%= render '/pages/home_page_message', :msg => msg %>
+    </div>
+<% end %>
 
 <div class='myhome_page'>
 <% if !current_user.team_leader? && (current_user.shift_status_message.length > 0) && (!current_user.supervisor?) %>
@@ -17,7 +23,7 @@
     </div>
 <% end %>
 
-<div id="stats_display" class="collapse out">
+  <div id="stats_display" class="collapse out">
   <div class='row'>
     <%= render '/shared/user_profile_box', :user => current_user %>
     <% unless current_user.supervisor? %>
@@ -34,9 +40,6 @@
 
 </div>
 
-<div id="extras_display" class="collapse out">
-  <h1>Gallery, blog, system messages, selection messages can go here</h1>
-</div>
 
 <img src="assets/hosts_2012.jpg" alt="2012 mt host crew" class="host_banner_pic"/>
 </div>

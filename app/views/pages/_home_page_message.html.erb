@@ -1,0 +1,6 @@
+<div class='home_page_message span5  float_right'>
+  <%= msg.content.html_safe %>
+  <%= 	link_to "Edit", edit_page_path(msg.name), :class=>"btn" if !msg.nil? && !msg.content.blank? && current_user.has_role?(:admin) %>
+  <br/>
+</div>
+

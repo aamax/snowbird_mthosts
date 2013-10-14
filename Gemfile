@@ -22,6 +22,8 @@ gem "better_errors", ">= 0.6.0", :group => :development
 gem "binding_of_caller", ">= 0.7.1", :group => :development, :platforms => [:mri_19, :rbx]
 #gem 'spork', '0.9'
 
+gem 'tinymce-rails'
+
 gem 'bootstrap-will_paginate'
 gem 'bootstrap-datepicker-rails'
 gem 'bootstrap-addons-rails'

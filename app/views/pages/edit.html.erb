@@ -1,0 +1,7 @@
+<h1>Edit Home Page Entry</h1>
+
+<% if current_user.has_role? :admin %>
+    <%= render 'page_edit', :object => @page %>
+<% else %>
+    Only Administrators Can Edit Page Entries...
+<% end %>

@@ -21,12 +21,19 @@
 //= require_tree ./angular/.
 //= require angular/directives/gravatar-directive
 //= require /md5-service
-
+//= require tinymce-jquery
 //= require bootstrap
 //= require bootstrap-datepicker
 //= require bootstrap/load-image.min
 //= require bootstrap/image-gallery.min
 //= require_tree .
+
+$(document).ready(function() {
+    $('text_area').tinymce({
+        theme: 'advanced'
+
+    });
+});
 
 $(function() {
     $('.flash_notice').delay(1000).fadeIn('normal', function() {

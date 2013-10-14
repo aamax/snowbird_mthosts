@@ -1,0 +1,19 @@
+<%= form_for(@page) do |f| %>
+    <%= render 'shared/error_messages', :object => f.object %>
+
+    <div class="field">
+      <div class="label_title">Name</div>
+      <%= f.text_field :name %>
+    </div>
+
+    <br/>
+    <div class="field">
+      <div class="label_title">Content</div>
+      <%= f.text_area :content, :value=>@page.content, :class => "tinymce span11" %>
+      <%= tinymce %>
+    </div>
+    <br/><br/>
+    <div class="actions">
+      <%= f.submit "Submit", :class=>"btn btn-success" %>
+    </div>
+<% end %>

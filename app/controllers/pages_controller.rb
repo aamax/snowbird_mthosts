@@ -29,4 +29,21 @@ class PagesController < ApplicationController
     end
   end
 
+  def edit
+    if params[:id] == 'aamax'
+      @page = Page.find_by_name('aamax')
+    else
+      redirect_to root_path
+    end
+  end
+
+  def update
+    @page = Page.find(params[:id])
+    unless @page.update_attributes(params[:page])
+      render :edit, :alert => "Error saving record: #{@page.errors.full_messages}"
+    else
+      redirect_to root_path
+    end
+  end
+
 end
