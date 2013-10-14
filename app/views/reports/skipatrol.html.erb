@@ -8,12 +8,12 @@
                      :id=>"set_date_btn",
                      "data-date-format"=>"yyyy-mm-dd",
                      "data-date"=>@date.strftime('%Y-%m-%d') %>
-        <%=  submit_tag("Refresh") %>
+        <%=  submit_tag("Refresh", :class=>'btn btn-primary') %>
     <% end %>
   </div>
 </div>
 
-<%= link_to "download CSV", "/skipatrol_printable?date=#{@date}" %>
+<%= link_to "Export Report <i class='icon-print'></i>".html_safe, "/skipatrol_printable?date=#{@date}", :class => 'btn' %>
 
 
 <div class="row">

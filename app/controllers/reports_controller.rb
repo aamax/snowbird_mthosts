@@ -78,7 +78,6 @@ class ReportsController < ApplicationController
     send_data csv_string,
               :type => "text/csv; charset:iso-8859-1;header=present",
               :disposition => "attachment; filename=ski_patrol_report#{@date.strftime('%a.%Y%m%d')}.csv"
-    #redirect_to "/skipatrol"
   end
 
 
