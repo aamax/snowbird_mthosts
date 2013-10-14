@@ -121,15 +121,15 @@ class Shift < ActiveRecord::Base
   end
 
   def round_one_rookie_shift?
-    retval = ['G1','G2', 'G3','G4','C3','C4'].include?(self.short_name[0..1])
+    retval = ['G1','G2', 'G3','G4','C3','C4'].include?(self.short_name)
     if retval == true
-      retval = false if (self.short_name == 'G3friday') || (self.short_name == 'G4friday')
+      retval = false if (self.full_short_name.downcase == 'g3friday') || (self.full_short_name.downcase == 'g4friday')
     end
     return retval
   end
 
   def standard_shift?
-    ['P1', 'P2', 'P3', 'P4', 'C1', 'C2', 'G5', 'G6', 'G7', 'G8', 'TL'].include? self.short_name[0..1]
+    ['P1', 'P2', 'P3', 'P4', 'C1', 'C2', 'G5', 'G6', 'G7', 'G8', 'TL'].include? self.short_name
   end
 
   def can_select(test_user)
