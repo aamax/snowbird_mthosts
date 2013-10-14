@@ -15,6 +15,8 @@ Mthost::Application.routes.draw do
 
   match '/download_end_of_year', :to =>  "exports#eoy_download"
   match '/shifts_by_date', :to => 'shifts#shifts_by_date_view'
+  match '/skipatrol', :to => "reports#skipatrol"
+  match '/skipatrol_printable', :to => "reports#skipatrol_printable"
   get '/shift_print/:id', :to => 'users#shift_print'
   post '/users/save_new', :to => 'users#save_new'
 

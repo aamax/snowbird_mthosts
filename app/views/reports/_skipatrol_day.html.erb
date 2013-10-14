@@ -1,0 +1,26 @@
+<table class="table table-striped table-condensed table-bordered">
+  <tr>
+    <th>Date</th><th  colspan=3> <%= date.strftime('%a.   %Y-%m-%d') %></th>
+  </tr>
+  <tr style="background-color: #b7b2c6;">
+    <th>Host</th>
+    <th>Shift</th>
+    <th>Description</th>
+    <th>Tasks</th>
+  </tr>
+
+  <% shifts.each do |s| %>
+      <tr>
+        <td>
+          <% if s.user.nil? %>
+              UnSet
+          <% else %>
+              <%= s.user.name %>
+          <% end %>
+        </td>
+        <td><%= s.short_name %></td>
+        <td><%=  s.shift_type.description %></td>
+        <td><%=  s.shift_type.tasks %></td>
+      </tr>
+  <% end %>
+</table>
