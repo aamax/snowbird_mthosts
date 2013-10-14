@@ -1,0 +1,27 @@
+<td>
+  <%= object.shift_date.strftime("%a.  %m-%d-%Y") %>
+</td>
+<td>
+  <% if object.user_id.nil? %>
+      UnSet
+  <% else %>
+      <%= user = User.find(object.user_id)
+          user.name
+      %>
+  <% end %>
+
+</td>
+
+<td>
+  <%=
+      object.short_name
+  %>
+</td>
+
+<td>
+  <%= object.shift_type.description %>
+</td>
+<td>
+  <%= object.shift_type.tasks %>
+</td>
+

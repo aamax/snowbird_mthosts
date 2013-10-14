@@ -140,4 +140,28 @@ class ShiftsController < ApplicationController
     #end
   end
 
+  def shifts_by_date_view
+    if params[:date] == ""
+      params[:date] = nil
+    end
+
+    if params[:date]
+      @datevalue = params[:date].to_date
+      @shifts = Shift.where("shift_date = ?", @datevalue)
+
+      #if @datevalue >= HostSite::season_start
+      #  @shifts = Shift.where("shift_date = ?", params[:date])
+      #else
+      #  @shifts = Shift.unscoped.where("shift_date = ?", params[:date])
+      #end
+
+      #elsif params[:filter][:date]
+      #@shifts = Shift.where("shift_date = ?" params[:filter][:date])
+
+    elsif !params[:filter]
+      @datevalue = Date.today
+
+      @shifts = []
+    end
+  end
 end

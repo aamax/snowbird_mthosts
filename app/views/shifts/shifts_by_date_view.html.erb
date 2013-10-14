@@ -1,0 +1,55 @@
+<h1>Shifts For Date: <%= @datevalue %></h1>
+
+<%= form_for(:filter, :url => shifts_by_date_path, :method => :get) do |f|  %>
+    <div id="filter_form">
+      <table class="indexmenutable">
+        <tr>
+          <td>
+            Date&nbsp;&nbsp;
+          </td>
+          <td>
+            <%= text_field_tag(:date, @datevalue, :size => 20, :readonly=>'readonly', :class=>'shift_date', :id =>'filter_date') %>
+          </td>
+          <td>
+
+            <%=  link_to "<i class='icon-calendar'></i>".html_safe, "#", :class=>"btn cal_icon",
+                         :id=>"set_date_btn", :title => 'set date',
+                         "data-date-format"=>"yyyy-mm-dd",
+                         "data-date"=>@datevalue.strftime('%Y-%m-%d') %>
+
+          </td>
+          <td>
+            <div class="actions">
+              <%= f.submit('Apply Filter') %>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+<% end %>
+
+<% if @shifts.length == 0 %>
+    <h3>No Shifts Scheduled for <%= @datevalue.strftime('%Y-%m-%d') %></h3>
+<% end %>
+
+<table class="table table-striped table-bordered table-condensed">
+  <tr class="row">
+    <th>Date</th>
+    <th>HOST</th>
+    <th>Shift</th>
+    <th>Description</th>
+    <th>Tasks</th>
+
+  </tr>
+  <% @shifts.each do |object| %>
+      <tr class="row">
+
+        <%=
+            render "shifts_by_date_view_entry", :object => object %>
+
+      </tr>
+  <% end %>
+</table>
+
+
