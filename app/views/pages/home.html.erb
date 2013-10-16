@@ -1,7 +1,9 @@
 <h1>Welcome <%= current_user.name.split(' ')[0] %>, to the Snowbird Mountain Host WebSite </h1>
+
 <button type="button" class="btn" data-toggle="collapse" data-target="#stats_display" >
   My Dashboard:&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
 </button>
+
 <% msg = home_page_message %>
 <% unless msg.content.blank? %>
     <button type="button" class="btn float_right" data-toggle="collapse" data-target="#extras_display" >
@@ -17,13 +19,13 @@
 <% if !current_user.team_leader? && (current_user.shift_status_message.length > 0) && (!current_user.supervisor?) %>
     <div class='row'>
       <%= render "/users/shift_message", :user => current_user, :shift_page => false  %>
-      <% if Date.today >= HostUtility.date_for_round(current_user, 5) %>
+      <% if Date.today <= HostUtility.date_for_round(current_user, 6) %>
           <%= render "/shared/shift_bingo", :user => current_user %>
       <% end %>
     </div>
 <% end %>
 
-  <div id="stats_display" class="collapse out">
+<div id="stats_display" class="collapse out">
   <div class='row'>
     <%= render '/shared/user_profile_box', :user => current_user %>
     <% unless current_user.supervisor? %>

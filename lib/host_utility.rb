@@ -13,11 +13,11 @@ module HostUtility
 
   def self.date_for_round(user, num)
     num_weeks = num - 1
-    dt = Date.today - num_weeks.weeks
+    dt = HostConfig.bingo_start_date + num_weeks.weeks 
     if user.rookie? || user.group_1?
-      dt -= 4.days
+      dt += 4.days
     elsif user.group_2?
-      dt -= 2.days
+      dt += 2.days
     end
     dt
   end

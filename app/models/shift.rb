@@ -117,7 +117,7 @@ class Shift < ActiveRecord::Base
   end
 
   def team_leader?
-    (self.short_name[0..1] == "TL") || (self.short_name.downcase == 'p2weekday')
+    (self.short_name[0..1] == "TL") || (self.shift_type.short_name.downcase == 'p2weekday')
   end
 
   def round_one_rookie_shift?
@@ -136,48 +136,34 @@ class Shift < ActiveRecord::Base
     retval = false
     if self.user_id.nil?
       # if user is already working this day
-      return false if test_user.shifts.map {|s| s.shift_date }.include?(self.shift_date)
-      rookie_training_shifts = []
-      shadow_shifts = []
-      max_shadow_date = nil
-      max_rookie_shift_date = nil
-      bingo_start = HostConfig.bingo_start_date
-      round = HostUtility.get_current_round(bingo_start, Date.today, test_user)
-
+      return false if test_user.is_working?(self.shift_date)
+      return false if self.shadow? && !test_user.rookie?
       if self.team_leader?
         return test_user.team_leader? ? true : false
       end
+
+      bingo_start = HostConfig.bingo_start_date
+      round = HostUtility.get_current_round(bingo_start, Date.today, test_user)
 
       if !test_user.rookie? && (round == 0)
         return false
       end
 
-      return false if self.shadow? && !test_user.rookie?
-
-      test_user.shifts.each do |s|
-        if s.shift_date == self.shift_date
-          return false
-        end
-        if test_user.rookie?
-          if s.shadow?
-            shadow_shifts << s
-            max_shadow_date = s.shift_date if (max_shadow_date.nil? || (s.shift_date > max_shadow_date))
-          end
-          if s.round_one_rookie_shift?
-            rookie_training_shifts << s
-            max_rookie_shift_date = s.shift_date if (max_rookie_shift_date.nil? || (s.shift_date > max_rookie_shift_date))
-          end
-        end
-      end
-
       if test_user.rookie?
+        round_one_shift_count = test_user.round_one_type_count
+        shadow_count = test_user.shadow_count
+        max_shadow_date = test_user.last_shadow
+        last_round_one_date = test_user.round_one_end_date
+        first_round_one_date = test_user.first_round_one_end_date
         if (self.shadow?)
-          return false if shadow_shifts.count >= 2
+          return false if shadow_count >= 2
+          return false if (round_one_shift_count > 0) && (first_round_one_date <= self.shift_date)
         else
-          return false if shadow_shifts.count < 2
-
-          if rookie_training_shifts.count < 5
-            return false if (self.shift_date <= max_shadow_date) || (!self.round_one_rookie_shift?)
+          return false if shadow_count < 2
+          #return false if self.shift_date < max_shadow_date
+          if round_one_shift_count < 5
+            return false if (!self.round_one_rookie_shift?)
+            return true if self.round_one_rookie_shift?
           end
 
           # if round one or less then no more than 7 shifts selected for rookies
@@ -187,6 +173,7 @@ class Shift < ActiveRecord::Base
           return false if (test_user.shifts.count >= (round * 5 + 2) && round > 0 && round < 3)
           return false if round.between?(3,4) && (test_user.shifts.count >= 16)
           return false if (round == 0) && test_user.shifts.count >= 7
+          return false if (self.shift_date <= max_shadow_date)
         end
       else
         if round < 5

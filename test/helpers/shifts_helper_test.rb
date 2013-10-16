@@ -1,5 +1,24 @@
 require "test_helper"
 
+def display_user_and_shift(user, shift)
+  puts "----- User and shift info --------"
+
+  puts "user: rookie: #{user.rookie?}  g1: #{user.group_1?} g2: #{user.group_2?}  g3: #{user.group_3?}"
+
+  puts "shadow cnt: #{user.shadow_count} last shadow: #{user.last_shadow} "
+  puts "rnd1 cnt: #{user.round_one_type_count}  rnd1 first: #{user.first_round_one_end_date}  rnd1 end: #{user.round_one_end_date}"
+  puts "first non round 1: #{user.first_non_round_one_end_date} is working: #{user.is_working?(shift.shift_date)}"
+  puts ""
+
+  puts "current shift: #{shift.shift_date}  short_name: #{shift.short_name} can select: #{shift.can_select(user)}"
+  puts ""
+
+  user.shifts.each do |s|
+    puts "dt: #{s.shift_date}  shortname: #{s.short_name}"
+  end
+  puts "=================================="
+end
+
 class ShiftsHelperTest < ActionView::TestCase
 
   before do
@@ -95,10 +114,86 @@ class ShiftsHelperTest < ActionView::TestCase
         end
 
         describe "rookies" do
-          it "rookies can select shadow shifts" do
+          it "can select shadow shifts" do
             shifts = Shift.where(:shift_type_id => @sh.id)
             shifts.each do |s|
               s.can_select(@rookie_user).must_equal true
+            end
+          end
+
+          describe "user has all shadows and round 1 types picked" do
+            before do
+              shifts = Shift.where(:shift_type_id => @sh.id)
+              dt = shifts[0].shift_date + 3.days
+
+              shifts.each do |s|
+                next if dt != s.shift_date
+                dt = s.shift_date + 3.days
+                if s.can_select(@rookie_user) == true
+                  @rookie_user.shifts << s
+                  @last_shadow = s.shift_date
+                end
+                break if @rookie_user.shifts.length == 2
+              end
+
+              # select 5 round 1 shifts - spaced out
+              shifts = Shift.where("shift_type_id in (#{@g1.id}, #{@g2.id})")
+              dt = shifts[0].shift_date + 3.days
+
+              shifts.each do |s|
+                next if dt != s.shift_date
+                dt = s.shift_date + 3.days
+                if s.can_select(@rookie_user) == true
+                  if @rookie_user.shifts.length == 2
+                    @first_round1 = s.shift_date
+                  end
+                  @rookie_user.shifts << s
+                  @last_round1 = s.shift_date
+                end
+                break if @rookie_user.shifts.length == 7
+              end
+            end
+
+            it "can only select shadows prior to first round 1 shift" do
+              @rookie_user.shifts[1].user_id = nil
+              @rookie_user.shifts[1].save
+              @rookie_user.shifts.delete_at(1)
+
+              Shift.all.each do |s|
+                if s.round_one_rookie_shift?
+                  s.can_select(@rookie_user).must_equal false
+                elsif s.shadow? && (!@rookie_user.is_working?(s.shift_date)) && (s.shift_date < @first_round1)
+                  s.can_select(@rookie_user).must_equal true
+                else
+                  s.can_select(@rookie_user).must_equal false
+                end
+              end
+            end
+
+            it "can only select round 1s prior to non-round 1 (after picking a non round 1)" do
+              @sys_config.bingo_start_date = HostUtility.date_for_round(@rookie_user, 3)
+              @sys_config.save!
+              dt = @rookie_user.shifts[-1].shift_date
+
+              shift = Shift.where("shift_date >= '#{dt + 3.days}' and shift_type_id = #{@p1.id}")
+              @rookie_user.shifts << shift.first
+
+              @rookie_user.shifts[3].user_id = nil
+              @rookie_user.shifts[3].save
+              @rookie_user.shifts.delete_at(3)
+
+              Shift.all.each do |s|
+                if ((@rookie_user.is_working?(s.shift_date)) || (s.shift_date < @rookie_user.last_shadow) ||
+                    (!s.round_one_rookie_shift?) || (s.shift_date >= @rookie_user.first_non_round_one_end_date))
+
+                  display_user_and_shift(@rookie_user, s) if (s.shift_date < @rookie_user.last_shadow)
+
+
+                  s.can_select(@rookie_user).must_equal(false)
+                else
+                  s.can_select(@rookie_user).must_equal true
+                end
+              end
             end
           end
 
@@ -142,7 +237,8 @@ class ShiftsHelperTest < ActionView::TestCase
                   next unless test_array.include? s.short_name[0..1]
                   next if s.shift_date <= @last_shadow
                   test_val = s.can_select(@rookie_user)
-                  if ((s.short_name == 'G3friday') || (s.short_name == 'G4friday'))
+                  test_name = s.full_short_name.downcase
+                  if ((test_name == 'g3friday') || (test_name == 'g4friday'))
                     test_val.must_equal(false)
                   else
                     test_val.must_equal(true)
@@ -522,7 +618,11 @@ class ShiftsHelperTest < ActionView::TestCase
         before  do
           @sys_config.bingo_start_date = HostUtility.date_for_round(@rookie_user, 1)
           @sys_config.save!
+          iCnt = 0
           Shift.all.each do |s|
+            iCnt += 1
+            next if iCnt < 5
+
             if ((s.can_select(@rookie_user) == true))
               @rookie_user.shifts << s
               @last_rookie_shift = s
@@ -543,7 +643,8 @@ class ShiftsHelperTest < ActionView::TestCase
           @sys_config.bingo_start_date = HostUtility.date_for_round(@rookie_user, 2)
           @sys_config.save!
           Shift.all.each do |s|
-            next if (s.team_leader? || s.shadow? || !s.user_id.nil? || !@rookie_user.shifts.include?(s))
+            next if (s.team_leader? || s.shadow? || !s.user_id.nil? || @rookie_user.is_working?(s.shift_date))
+            next if s.shift_date < @rookie_user.last_shadow
             s.can_select(@rookie_user).must_equal true
           end
         end

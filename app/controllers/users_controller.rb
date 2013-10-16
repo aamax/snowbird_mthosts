@@ -11,6 +11,7 @@ class UsersController < ApplicationController
     @users.each do |u|
       add_meetings_to_shifts(u)
     end
+    add_meetings_to_shifts(current_user)
   end
 
   def show

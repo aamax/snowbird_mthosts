@@ -5,6 +5,13 @@ body {
   margin-left: 0px;
 }
 
+.nav-collapse {
+  background-color: lightgrey;
+  z-index: 9999999;
+}
+
 
 @import "bootstrap-responsive";
 @import "bootstrap/image-gallery";
+
+

@@ -170,6 +170,30 @@ class User < ActiveRecord::Base
     dt
   end
 
+  def first_round_one_end_date
+    dt = nil
+    iCnt = 0
+    self.shifts.each do |s|
+      if s.round_one_rookie_shift?
+        dt = s.shift_date
+        break
+      end
+    end
+    dt
+  end
+
+  def first_non_round_one_end_date
+    dt = nil
+    iCnt = 0
+    self.shifts.each do |s|
+      if !s.round_one_rookie_shift? && !s.shadow?
+        dt = s.shift_date
+        break
+      end
+    end
+    dt
+  end
+
   def last_shadow
     dt = nil
     iCnt = 0

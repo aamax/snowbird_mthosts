@@ -23,10 +23,15 @@
         <li><%= link_to "Training Videos", "training_videos" %></li>
 
         <li class='disabled'>General Links & Resources</li>
-        <li><%= link_to "National Weather Service Report",
-                        "http://forecast.weather.gov/MapClick.php?site=slc&textField1=40.58194&textField2=-111.65444#.Ulsm6GTwKPA",
+		<li><%= link_to '24 Hour Cottonwood Canyons Weather Report',
+                        'http://www.wrh.noaa.gov/slc/snow/mtnwx/mtnForecast.php?forecast=cottonwood',
+		                :target => '_blank' %>
+        </li>
+        <li><%= link_to "National Weather Service Report",                      
+					"http://forecast.weather.gov/MapClick.php?site=slc&textField1=40.58194&textField2=-111.65444#.Ulsm6GTwKPA",
                         :target => "_blank"%></li>
-        <li><%= link_to "Utah Avalanche Center Home Page", "http://utahavalanchecenter.org/", :target => "_blank" %></li>
+        <li><%= link_to "Utah Avalanche Center Home Page", 
+							"http://utahavalanchecenter.org/advisory/salt-lake/04/28/2013", :target => "_blank" %></li>
         <li><%= link_to "Wasatch Snow Info Site", "http://www.wasatchsnowinfo.com/", :target => "_blank" %></li>
         <li><%= link_to "UTA Home Page", "http://www.rideuta.com/" %></li>
 
