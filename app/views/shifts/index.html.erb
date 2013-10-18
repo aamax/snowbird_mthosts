@@ -16,6 +16,10 @@
         </button>
       </div>
     </div>
+    <div id="shift_filter" class="collapse out">
+      <%= render "shifts/filter/shift_filter_form" %>
+    </div>
+
     <div id="stats_display" class="collapse <%= current_user.shift_status_message.length > 0 ? "in": "out" %>">
       <div class='row'>
       <% if current_user.has_role? :admin %>
@@ -32,10 +36,6 @@
               <%= render "/users/shift_message", :user => current_user, :shift_page => true %>
           <% end %>
       </div>
-    </div>
-
-    <div id="shift_filter" class="collapse out">
-      <%= render "shifts/filter/shift_filter_form" %>
     </div>
 
   </div>

@@ -2,7 +2,12 @@ class MailController < ApplicationController
 
   # select hosts form
   def select_hosts_for_email
-    @users = User.all
+    if current_user.has_role? :admin
+      inactive_users = User.inactive_users
+    end
+    @users = User.active_users + inactive_users
+    @users.sort! {|a,b| a.name <=> b.name }
+
     @title = "Select Hosts For Email Message"
   end
 

@@ -26,9 +26,9 @@
 
 <h1>Select Email Recipients</h1>
 
-<%= form_for(:recipients, :url => "/send_custom_mail/", :html => {:name => "recipients", :id => "recipients"}) do |f| %>
+<%= form_for(:recipients, :url => "/send_custom_mail/", :html => {:name => "recipients", :id => "recipients", :class=>'form-inline'}) do |f| %>
 
-	<table class="table">
+	<table class="table table-striped">
 	  <% iCnt = 0 %>
 	
 	  <% @users.each do |user| %>
@@ -36,10 +36,10 @@
  		<% if iCnt == 0 %>
 		  <tr class="row">
 		<% end %>
-		<td>
-			
-		<%= f.label user.name %>
-		<%= f.check_box user.id %>
+		<td class='span3'>
+
+          <%= f.check_box user.id %> &nbsp;&nbsp;<%= f.label user.id, user.name %>
+
 		
 		</td>
 		<% if iCnt == 4 %>

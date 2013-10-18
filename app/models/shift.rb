@@ -155,6 +155,7 @@ class Shift < ActiveRecord::Base
         max_shadow_date = test_user.last_shadow
         last_round_one_date = test_user.round_one_end_date
         first_round_one_date = test_user.first_round_one_end_date
+        first_non_round_one_date = test_user.first_non_round_one_end_date
         if (self.shadow?)
           return false if shadow_count >= 2
           return false if (round_one_shift_count > 0) && (first_round_one_date <= self.shift_date)
@@ -163,11 +164,14 @@ class Shift < ActiveRecord::Base
           #return false if self.shift_date < max_shadow_date
           if round_one_shift_count < 5
             return false if (!self.round_one_rookie_shift?)
-            return true if self.round_one_rookie_shift?
+            return false if (!first_non_round_one_date.nil? && (self.shift_date >= first_non_round_one_date))
+            return false if (self.shift_date < max_shadow_date)
+            return false if !self.round_one_rookie_shift?
+            return true
           end
 
           # if round one or less then no more than 7 shifts selected for rookies
-          if round <= 1
+          if round < 2
             return false if (test_user.shifts.count >= 7)
           end
           return false if (test_user.shifts.count >= (round * 5 + 2) && round > 0 && round < 3)

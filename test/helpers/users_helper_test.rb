@@ -92,7 +92,7 @@ class UsersHelperTest < ActionView::TestCase
 
       it "should report for round 1 selections" do
         config = SysConfig.first
-        config.bingo_start_date = HostUtility.date_for_round(@rookie_user, 1)
+        config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 1)
         config.save
         Shift.all.each do |s|
           next if @rookie_user.is_working? s.shift_date
@@ -116,7 +116,7 @@ class UsersHelperTest < ActionView::TestCase
 
       it "should report for round 2 selections" do
         config = SysConfig.first
-        config.bingo_start_date = HostUtility.date_for_round(@rookie_user, 2)
+        config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 2)
         config.save
         Shift.all.each do |s|
           next if @rookie_user.is_working? s.shift_date
@@ -147,7 +147,7 @@ class UsersHelperTest < ActionView::TestCase
 
       it "should report for round 3 selections" do
         config = SysConfig.first
-        config.bingo_start_date = HostUtility.date_for_round(@rookie_user, 3)
+        config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 3)
         config.save
         Shift.all.each do |s|
           next if @rookie_user.is_working? s.shift_date
@@ -178,7 +178,7 @@ class UsersHelperTest < ActionView::TestCase
 
       it "should report for round 4 selections" do
         config = SysConfig.first
-        config.bingo_start_date = HostUtility.date_for_round(@rookie_user, 4)
+        config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 4)
         config.save
         Shift.all.each do |s|
           next if @rookie_user.is_working? s.shift_date
@@ -220,7 +220,7 @@ class UsersHelperTest < ActionView::TestCase
 
       it 'should report total shift status after round 4 if not complete' do
         config = SysConfig.first
-        config.bingo_start_date = HostUtility.date_for_round(@group1_user, 6)
+        config.bingo_start_date = HostUtility.bingo_start_for_round(@group1_user, 6)
         config.save
 
         @group1_user.shift_status_message.include?("0 of 18 Shifts Selected.  You need to pick 18").must_equal true
@@ -230,7 +230,7 @@ class UsersHelperTest < ActionView::TestCase
 
       it 'should report after round 4 if complete' do
         config = SysConfig.first
-        config.bingo_start_date = HostUtility.date_for_round(@group3_user, 6)
+        config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 6)
         config.save
         shifts = Shift.find_all_by_shift_type_id(@p1.id)
         [@group1_user, @group2_user, @group3_user].each do |u|
@@ -244,7 +244,7 @@ class UsersHelperTest < ActionView::TestCase
 
       it "should report for round 1 shift selections" do
         config = SysConfig.first
-        config.bingo_start_date = HostUtility.date_for_round(@group1_user, 1)
+        config.bingo_start_date = HostUtility.bingo_start_for_round(@group1_user, 1)
         config.save
         shifts = Shift.find_all_by_shift_type_id(@p1.id)
         [@group1_user, @group2_user, @group3_user].each do |u|
@@ -262,7 +262,7 @@ class UsersHelperTest < ActionView::TestCase
 
       it "should report for round 2 shift selections" do
         config = SysConfig.first
-        config.bingo_start_date = HostUtility.date_for_round(@group1_user, 2)
+        config.bingo_start_date = HostUtility.bingo_start_for_round(@group1_user, 2)
         config.save
         shifts = Shift.find_all_by_shift_type_id(@p1.id)
         [@group1_user, @group2_user, @group3_user].each do |u|
@@ -280,7 +280,7 @@ class UsersHelperTest < ActionView::TestCase
 
       it "should report for round 3 shift selections" do
         config = SysConfig.first
-        config.bingo_start_date = HostUtility.date_for_round(@group1_user, 3)
+        config.bingo_start_date = HostUtility.bingo_start_for_round(@group1_user, 3)
         config.save
         shifts = Shift.find_all_by_shift_type_id(@p1.id)
         [@group1_user, @group2_user, @group3_user].each do |u|
@@ -298,7 +298,7 @@ class UsersHelperTest < ActionView::TestCase
 
       it "should report for round 4 shift selections" do
         config = SysConfig.first
-        config.bingo_start_date = HostUtility.date_for_round(@group1_user, 4)
+        config.bingo_start_date = HostUtility.bingo_start_for_round(@group1_user, 4)
         config.save
         shifts = Shift.find_all_by_shift_type_id(@p1.id)
         [@group1_user, @group2_user, @group3_user].each do |u|
