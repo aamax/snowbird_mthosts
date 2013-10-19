@@ -18,7 +18,8 @@
         <li><%= link_to "Shift Card", "/shiftcard" %></li>
         <li><%= link_to "Mt Host Manual (2012-2013)", "/docs/HostManual2012.pdf", :target => "_blank"  %></li>
         <li><%= link_to "Host Manual (2012/13 change summary)", "/docs/HostManual_changes2012.pdf", :target => "_blank" %></li>
-        <li><%= link_to "Parking Policy", "/docs/parking_policy.pdf", :target => "_blank" %></li>
+        <li><%= link_to "Parking Policy 2012-13", "/docs/parking_policy.pdf", :target => "_blank" %></li>
+        <li><%= link_to "Parking Policy 2013-14", "/docs/parking_policy_2013_14.doc", :target => "_blank" %></li>
         <li><%= link_to "Host Phone List", "/show_contact_info" %></li>
         <li><%= link_to "Training Videos", "training_videos" %></li>
 
@@ -57,7 +58,9 @@
         <li><%= link_to "To: Group 3 Hosts", "/send_mail/" + "GROUP3", :target => "_blank" %></li>
         <li><%= link_to "To: Selected hosts", select_hosts_for_email_path %></li>
         <li><%= link_to "To: All Hosts", "/send_mail/" + "ALLHOSTS", :target => "_blank" %></li>
-        <li><%= link_to "To: All In-Active hosts", "/send_mail/" + "ALLINACTIVEHOSTS" %></li>
+        <% if current_user.has_role? :admin %>
+            <li><%= link_to "To: All In-Active hosts", "/send_mail/" + "ALLINACTIVEHOSTS" %></li>
+        <% end %>
       </ul>
     </li>
 

@@ -1,5 +1,7 @@
 require "test_helper"
 
+# user picks shadow and round 1.  drop shadow.  message says pick shadow shifts
+
 class UsersHelperTest < ActionView::TestCase
   before do
     @sys_config = SysConfig.first
@@ -143,6 +145,49 @@ class UsersHelperTest < ActionView::TestCase
         @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
         @rookie_user.shift_status_message.include?("All Round One Rookie Shifts Selected.").must_equal true
         @rookie_user.shift_status_message.include?("All Round 2 Shifts Selected.").must_equal true
+      end
+
+      it "should report if round 1 selection dropped after round 1" do
+        config = SysConfig.first
+        config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 2)
+        config.save
+        Shift.all.each do |s|
+          if s.can_select(@rookie_user) == true
+            @rookie_user.shifts << s
+          end
+        end
+
+        @rookie_user.shifts[3].user_id = nil
+        @rookie_user.shifts[3].save
+        @rookie_user.shifts.delete_at(3)
+
+        @rookie_user.shifts.length.must_equal 11
+        messages = @rookie_user.shift_status_message
+        messages.include?("All Shadow Shifts Selected.").must_equal true
+        messages.include?("4 of 5 Round One Rookie Shifts Selected.  Need 1 Round One Rookie Shifts.").must_equal true
+        messages.include?("Cannot Pick Shifts Prior to Last Shadow: #{@rookie_user.shifts[1].shift_date}").must_equal true
+        messages.include?("Cannot Pick Shifts After First Non-Round One Shift: #{@rookie_user.first_non_round_one_end_date}").must_equal true
+      end
+
+      it "should report if shadow dropped after round 1 selections" do
+        config = SysConfig.first
+        config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 2)
+        config.save
+        Shift.all.each do |s|
+          if s.can_select(@rookie_user) == true
+            @rookie_user.shifts << s
+          end
+        end
+
+        @rookie_user.shifts[1].user_id = nil
+        @rookie_user.shifts[1].save
+        @rookie_user.shifts.delete_at(1)
+
+        @rookie_user.shifts.length.must_equal 11
+        messages = @rookie_user.shift_status_message
+        messages.include?("1 of 2 selected.  Need 1 Shadow Shifts.").must_equal true
+        messages.include?("All Round One Rookie Shifts Selected.").must_equal true
+        messages.include?("Cannot Pick Shifts After First Non-Shadow Shift: #{@rookie_user.shifts[1].shift_date}").must_equal true
       end
 
       it "should report for round 3 selections" do

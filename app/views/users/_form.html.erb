@@ -1,4 +1,6 @@
-<%= gravatar_image_tag(@user.email, :alt => @user.name) %><br/>   <br/>
+<%= gravatar_image_tag(@user.email, :alt => @user.name) %><br/>
+<%= link_to "Setup Gravatar", "http://gravatar.com" %>
+<br/>
 <strong>Name: </strong> <%= f.text_field :name, :placeholder => 'Name', class: 'name_edit' %>
 <strong>Nick Name: </strong> <%= f.text_field :nickname, :placeholder => 'NickName', class: 'name_edit' %><br/>
 

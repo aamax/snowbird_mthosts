@@ -279,6 +279,9 @@ class User < ActiveRecord::Base
     day_offset = get_day_offset
     num_selected = self.shifts.length
     round = HostUtility.get_current_round(HostConfig.bingo_start_date, Date.today, self)
+
+    msg << "You are currently in round #{round} of the shift selection process."
+
     if has_holiday_shift?
       msg << "A Holiday Shift has been selected."
     else
@@ -288,6 +291,9 @@ class User < ActiveRecord::Base
     if self.rookie?
       if shadow_count < 2
         msg << "#{shadow_count} of 2 selected.  Need #{2 - shadow_count} Shadow Shifts."
+        if self.shifts.count >= 2
+          msg << "Cannot Pick Shifts After First Non-Shadow Shift: #{self.shifts[1].shift_date}"
+        end
       elsif shadow_count == 2
         msg << "All Shadow Shifts Selected."
         msg << "Cannot Pick Shifts Prior to Last Shadow: #{self.last_shadow.strftime("%Y-%m-%d")}"
@@ -295,30 +301,25 @@ class User < ActiveRecord::Base
       if self.round_one_type_count == 5
         msg << "All Round One Rookie Shifts Selected."
         msg << "Cannot Pick Non-Round One Rookie Type Shifts Prior to #{self.round_one_end_date.strftime("%Y-%m-%d")}"
-        if ((round == 2) && self.shifts.length == 12) || (self.shifts.length >= 16)
-          msg << "All Round #{round} Shifts Selected."
+
+        if ((round == 2) && (self.shifts.length == 12)) || ((round >= 3) && (self.shifts.length >= 16))
+          msg << "All Round #{round} Shifts Selected." if round < 5
+          msg << "All Required Shifts Have Been Selected." if round >= 5
         else
-          if round == 2
+          if round < 2
+            msg << "#{self.shifts.length} of 7 selected.  Need #{7 - self.shifts.length} Round 1 Shifts."
+          elsif round == 2
             msg << "#{self.shifts.length} of 12 selected.  Need #{12 - self.shifts.length} Round 2 Shifts."
           else
             msg << "#{self.shifts.length} of 16 selected.  Need #{16 - self.shifts.length} Round #{round} Shifts."
           end
         end
-
-
-        #case round
-        #  when 0..1
-        #  when 2
-        #  when 3
-        #  when 4
-        #
-        #  else
-        #
-        #end
-
       else
         if (self.round_one_type_count < 5) && (self.shifts.length >= 2)
           msg << "#{self.round_one_type_count} of 5 Round One Rookie Shifts Selected.  Need #{5 - self.round_one_type_count} Round One Rookie Shifts."
+          unless self.first_non_round_one_end_date.nil?
+            msg << "Cannot Pick Shifts After First Non-Round One Shift: #{self.first_non_round_one_end_date}"
+          end
         end
       end
     else
@@ -351,7 +352,7 @@ class User < ActiveRecord::Base
 
   def round1_msg
     if self.rookie?
-      'You may select up to 7 shifts: (2) Shadow and (5) G1-G4, C3, C4 type shifts (excluding shifts on the Friday schedule)'
+      'You may select up to 7 shifts: (2) Shadow and (5) G1-G4, C3, C4 type shifts (excluding G3, G4 shifts on the Friday schedule)'
     else
       'You may select up to 5 shifts.'
     end

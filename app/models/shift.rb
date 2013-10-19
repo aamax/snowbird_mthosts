@@ -196,16 +196,17 @@ class Shift < ActiveRecord::Base
 
 
   def can_drop(current_user)
-    retval = false
-    return if self.short_name[0] == 'M'
-    unless self.user_id.nil?
-      if (current_user.has_role? :admin)
-        retval = true
-      elsif ((current_user.id == self.user_id) && (self.shift_date > Date.today + 13.days))
-        retval = true
-      end
+    return false if (self.short_name[0] == 'M')
+    return false if (self.user_id.nil?)
+    return true if current_user.has_role? :admin
+    return false if current_user.id != self.user_id
+    return false if self.shift_date <= Date.today + 13.days
+
+    if current_user.rookie?
+      return false if (current_user.shifts.count > 2) && (self.shadow?)
+      return false if (current_user.shifts.count > 7) && (self.shift_date <= current_user.round_one_end_date)
     end
-    retval
+    true
   end
 
 
