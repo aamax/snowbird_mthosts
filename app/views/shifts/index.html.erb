@@ -85,7 +85,7 @@
             <a href=<%= "select_shift/#{s.id}" %>><i class="icon-male btn btn-primary" title="select shift">&nbsp;&nbsp;Select</i></a>
           <% end %>
           <% if s.can_drop current_user %>
-            <a href=<%= "drop_shift/#{s.id}" %>><i class="icon-warning-sign btn btn-warning" title="drop shift">&nbsp;&nbsp;Drop</i></a>
+            <a href=<%= "drop_shift/#{s.id}" %>><i class="icon-trash btn btn-danger" title="drop shift">&nbsp;&nbsp;Drop</i></a>
           <% end %>
         </td>
         <td class="align-center"><a href="shiftcard" target='_blank'><%= s.shift_type.short_name[0..1] %></a></td>

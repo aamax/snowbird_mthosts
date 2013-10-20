@@ -2,6 +2,13 @@ require "test_helper"
 
 def display_user_and_shift(user, shift)
   puts "----- User and shift info --------"
+  puts "Bingo Start: #{SysConfig.first.bingo_start_date}"
+  puts "Seniority: #{user.seniority}   seniority_group: #{user.seniority_group}"
+  puts "Current Round: #{HostUtility.get_current_round(SysConfig.first.bingo_start_date, Date.today, user)}"
+  (1..5).each do |num|
+    puts "    date for round: #{num}  -  #{HostUtility.date_for_round(user, num)}"
+  end
+
 
   puts "user: rookie: #{user.rookie?}  g1: #{user.group_1?} g2: #{user.group_2?}  g3: #{user.group_3?}"
 
@@ -26,7 +33,7 @@ class ShiftsHelperTest < ActionView::TestCase
     @rookie_user = User.find_by_name('rookie')
     @group1_user = User.find_by_name('g1')
     @group2_user = User.find_by_name('g2')
-    @group3_user = User.find_by_name('g3')
+    @senior_user = User.find_by_name('g3')
     @team_leader = User.find_by_name('teamlead')
 
     @tl = ShiftType.find_by_short_name('TL')
@@ -498,6 +505,9 @@ class ShiftsHelperTest < ActionView::TestCase
           @sys_config.bingo_start_date = (Date.today - 1.days)
           @sys_config.save!
           Shift.all.each do |s|
+            if s.can_select(@group2_user) == true
+              display_user_and_shift(@group2_user, s)
+            end
             s.can_select(@group2_user).must_equal false
           end
 
@@ -526,7 +536,11 @@ class ShiftsHelperTest < ActionView::TestCase
         it "cannot select shifts until start of my round" do
           @sys_config.bingo_start_date = Date.today - 3.days
           @sys_config.save!
+
           Shift.all.each do |s|
+            if s.can_select(@group1_user) == true
+              display_user_and_shift(@group1_user, s)
+            end
             s.can_select(@group1_user).must_equal false
           end
 

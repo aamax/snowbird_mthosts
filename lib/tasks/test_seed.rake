@@ -5,11 +5,11 @@ namespace :db do
       @sys_config = SysConfig.create(season_year: 2013, group_1_year: 2012, group_2_year: 2009, group_3_year: 2005,
                        season_start_date: Date.new(2013,9,1), bingo_start_date: Date.today())
 
-      @rookie_user = FactoryGirl.create(:user, name: 'rookie', start_year: 2013)
-      @group1_user = FactoryGirl.create(:user, name: 'g1', start_year: 2012)
-      @group2_user = FactoryGirl.create(:user, name: 'g2', start_year: 2009)
-      @group3_user = FactoryGirl.create(:user, name: 'g3', start_year: 2005)
-      @team_leader = FactoryGirl.create(:user, name: 'teamlead', start_year: 2004)
+      @rookie_user = FactoryGirl.create(:user, name: 'rookie', start_year: 2013, active_user: true, confirmed: true)
+      @group1_user = FactoryGirl.create(:user, name: 'g3', start_year: 2012, active_user: true, confirmed: true)
+      @group2_user = FactoryGirl.create(:user, name: 'g2', start_year: 2009, active_user: true, confirmed: true)
+      @group3_user = FactoryGirl.create(:user, name: 'g1', start_year: 2005, active_user: true, confirmed: true)
+      @team_leader = FactoryGirl.create(:user, name: 'teamlead', start_year: 2005 , active_user: true, confirmed: true)
       @team_leader.add_role :team_leader
 
       @tl = FactoryGirl.create(:shift_type, short_name: 'TL')

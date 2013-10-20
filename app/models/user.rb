@@ -56,9 +56,12 @@ class User < ActiveRecord::Base
   scope :non_confirmed_users, -> {where(confirmed: false)}
 
   scope :rookies, -> {where("start_year = #{HostConfig.season_year} and active_user = true")}
-  scope :group1, -> {where("(start_year < ?) and (start_year >= ?) and (active_user = true)", HostConfig.season_year, HostConfig.group_1_year)}
-  scope :group2, -> {where("(start_year <= ?) and (start_year > ?) and (active_user = true)", HostConfig.group_2_year, HostConfig.group_3_year)}
-  scope :group3, -> {where("(start_year <= ?) and (active_user = true)", HostConfig.group_3_year)}
+  #scope :group1, -> {where("(start_year < ?) and (start_year >= ?) and (active_user = true)", HostConfig.season_year, HostConfig.group_1_year)}
+  #scope :group2, -> {where("(start_year <= ?) and (start_year > ?) and (active_user = true)", HostConfig.group_2_year, HostConfig.group_3_year)}
+  #scope :group3, -> {where("(start_year <= ?) and (active_user = true)", HostConfig.group_3_year)}
+  scope :group3, -> {where("(start_year < ?) and (start_year >= ?) and (active_user = true)", HostConfig.season_year, HostConfig.group_3_year)}
+  scope :group2, -> {where("(start_year <= ?) and (start_year > ?) and (active_user = true)", HostConfig.group_2_year, HostConfig.group_1_year)}
+  scope :group1, -> {where("(start_year <= ?) and (active_user = true)", HostConfig.group_1_year)}
 
   before_destroy :clear_shifts_on_destroy
 
@@ -74,9 +77,9 @@ class User < ActiveRecord::Base
       retval = 'Supervisor'
     else
       retval = "Rookie" if self.rookie?
-      retval = "Freshman" if self.group_1?
-      retval = "Junior" if self.group_2?
-      retval = "Senior" if self.group_3?
+      retval = "Group 1 (Senior)" if self.group_1?
+      retval = "Group 2 (Middle)" if self.group_2?
+      retval = "Group 3 (Newer)" if self.group_3?
     end
     retval
   end
@@ -85,10 +88,10 @@ class User < ActiveRecord::Base
     if self.active_user != true
       retval = 5
     else
-      retval = 4 if self.rookie?
-      retval = 3 if self.group_1?
+      retval = 1 if self.group_1?
       retval = 2 if self.group_2?
-      retval = 1 if self.group_3?
+      retval = 3 if self.group_3?
+      retval = 4 if self.rookie?
     end
     retval
   end
@@ -124,15 +127,19 @@ class User < ActiveRecord::Base
   end
 
   def group_3?
-    self.start_year <= HostConfig.group_3_year
+   # self.start_year <= HostConfig.group_3_year
+    (self.start_year < HostConfig.season_year) && (self.start_year >= HostConfig.group_3_year)
+
   end
 
   def group_2?
-    (self.start_year <= HostConfig.group_2_year) && (self.start_year > HostConfig.group_3_year)
+    #(self.start_year <= HostConfig.group_2_year) && (self.start_year > HostConfig.group_3_year)
+    (self.start_year <= HostConfig.group_2_year) && (self.start_year > HostConfig.group_1_year)
   end
 
   def group_1?
-    (self.start_year < HostConfig.season_year) && (self.start_year >= HostConfig.group_1_year)
+    #(self.start_year < HostConfig.season_year) && (self.start_year >= HostConfig.group_1_year)
+    self.start_year <= HostConfig.group_1_year
   end
 
   def shadow_count
