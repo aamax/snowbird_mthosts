@@ -32,6 +32,7 @@
 #  confirmed              :boolean
 #  active_user            :boolean
 #  nickname               :string(255)
+#  snowbird_start_year    :integer
 #
 
 class User < ActiveRecord::Base
@@ -45,7 +46,7 @@ class User < ActiveRecord::Base
   # Setup accessible (or protected) attributes for your model
   attr_accessible :name, :email, :password, :password_confirmation, :remember_me, :street, :city, :state, :zip,
                   :home_phone, :cell_phone, :alt_email, :start_year, :notes, :confirmed, :active_user, :nickname,
-                  :working_shifts
+                  :working_shifts, :snowbird_start_year
   attr_accessor   :working_shifts
 
   has_many :shifts

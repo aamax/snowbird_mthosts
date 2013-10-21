@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131014003416) do
+ActiveRecord::Schema.define(:version => 20131021052543) do
 
   create_table "galleries", :force => true do |t|
     t.string   "name"
@@ -104,6 +104,7 @@ ActiveRecord::Schema.define(:version => 20131014003416) do
     t.boolean  "confirmed"
     t.boolean  "active_user"
     t.string   "nickname"
+    t.integer  "snowbird_start_year"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

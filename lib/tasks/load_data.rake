@@ -14,6 +14,14 @@ namespace :db do
     Rake::Task['db:load_shifts'].invoke
   end
 
+  desc "populate snowbird_start_year from start_year"
+  task :set_snowbird_start_year => :environment do
+    User.all.each do |u|
+      u.snowbird_start_year = u.start_year
+      u.save
+    end
+  end
+
   desc "populate sys config settings"
   task :setup_sys_config => :environment do
     puts "setting up sys config values"

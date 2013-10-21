@@ -2,7 +2,7 @@ namespace :db do
   namespace :test do
     task :load => :environment do
       puts "loading seed data for tests..."
-      @sys_config = SysConfig.create(season_year: 2013, group_1_year: 2012, group_2_year: 2009, group_3_year: 2005,
+      @sys_config = SysConfig.create(season_year: 2013, group_1_year: 2005, group_2_year: 2009, group_3_year: 2012,
                        season_start_date: Date.new(2013,9,1), bingo_start_date: Date.today())
 
       @rookie_user = FactoryGirl.create(:user, name: 'rookie', start_year: 2013, active_user: true, confirmed: true)

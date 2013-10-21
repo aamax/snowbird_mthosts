@@ -95,6 +95,10 @@ class Shift < ActiveRecord::Base
     value
   end
 
+  def hosts_this_date
+    Shift.where("shift_date = #{self.shift_date}").users
+  end
+
   def date
     shift_date
   end
@@ -121,7 +125,7 @@ class Shift < ActiveRecord::Base
   end
 
   def round_one_rookie_shift?
-    retval = ['G1','G2', 'G3','G4','C3','C4'].include?(self.short_name)
+    retval = ['G1','G2', 'G3','G4'].include?(self.short_name)
     if retval == true
       retval = false if (self.full_short_name.downcase == 'g3friday') || (self.full_short_name.downcase == 'g4friday')
     end
@@ -129,7 +133,7 @@ class Shift < ActiveRecord::Base
   end
 
   def standard_shift?
-    ['P1', 'P2', 'P3', 'P4', 'C1', 'C2', 'G5', 'G6', 'G7', 'G8', 'TL'].include? self.short_name
+    ['P1', 'P2', 'P3', 'P4', 'C1', 'C2', 'C3', 'C4', 'G5', 'G6', 'G7', 'G8', 'TL'].include? self.short_name
   end
 
   def can_select(test_user)
