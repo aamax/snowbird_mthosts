@@ -1,0 +1,7 @@
+Show All Shifts Expanded:
+<% if params['filter'] %>
+    <%= f.check_box(:show_expanded, :checked => (params['filter']['show_expanded'] == '1')) %>
+<% else %>
+    <%= f.check_box(:show_expanded, :checked => false) %>
+<% end %>
+<br/>

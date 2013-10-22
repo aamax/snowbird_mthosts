@@ -5,7 +5,9 @@
       <div class='row'>
         <div class='span3'>
           <br/><br/>
-          <%= render 'shifts/filter/can_select', :f => f %>  <br/><br/>
+          <%= render 'shifts/filter/can_select', :f => f %>
+          <%= render 'shifts/filter/show_expanded', :f => f %>
+          <%= render 'shifts/filter/show_unselected', :f => f %>
           <%= render 'shifts/filter/start_from_today', :f => f %>
           <%= render 'shifts/filter/show_holidays', :f => f %>
         </div>

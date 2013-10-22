@@ -54,7 +54,11 @@ class Shift < ActiveRecord::Base
   def self.by_holidays(flag)
     return scoped unless flag == true
     where("shift_date in ('#{HOLIDAYS.join("','")}')")
+  end
 
+  def self.by_unselected(flag)
+    return scoped unless flag == true
+    where("user_id is null")
   end
 
   def self.by_shift_type(sts)

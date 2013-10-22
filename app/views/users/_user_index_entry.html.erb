@@ -2,10 +2,10 @@
   <input type='hidden' value='<%= object.name %>'>
 
   <a href='<%= user_path(object) %>'>
-    <%= "#{object.name} - #{object.nickname}" %><br/>
+    <%= "#{object.name}" %><br/>
     <%= gravatar_image_tag(object.email, :alt => object.name) %>
   </a> <br/>
-  <%= link_to object.email, "send_mail/#{object.email}" %><br/>
+  <%= link_to object.email, "send_mail/#{object.email}" %><br/>  
 </td>
 
 <td>
