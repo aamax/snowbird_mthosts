@@ -276,7 +276,7 @@ class User < ActiveRecord::Base
     retval = 0
     if self.group_2?
       retval = 2
-    elsif self.group_1? || self.rookie?
+    elsif self.group_3? || self.rookie?
       retval = 4
     end
     retval
