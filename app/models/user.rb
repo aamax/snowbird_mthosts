@@ -360,7 +360,7 @@ class User < ActiveRecord::Base
 
   def round1_msg
     if self.rookie?
-      'You may select up to 7 shifts: (2) Shadow and (5) G1-G4, C3, C4 type shifts (excluding G3, G4 shifts on the Friday schedule)'
+      'You may select up to 7 shifts: (2) Shadow and (5) G1-G4 type shifts (excluding G3, G4 shifts on the Friday schedule)'
     else
       'You may select up to 5 shifts.'
     end
