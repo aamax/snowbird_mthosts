@@ -1,6 +1,26 @@
 Mthost
 ========================
 
+This application is used to manage the Mt Host program at The Snowbird Ski Resort in Utah.
+There are about 75+ hosts each year with over 1300 shifts to schedule and manage.
+this site allows users to select shifts and handle all the management needed to keep the
+program running all year.  it is also a central hub for program information and external resources
+that are helpful for our users.
+
+I've also added a photo gallery that users can use to upload and share photos.
+
+the site uses twitter bootstrap and angularjs in various locations.  it is always a work in progress.
+I welcome feedback and suggestions - I still consider myself pretty new to rails and web dev in general.
+
+thanks,
+
+Max
+
+
+
+
+
+
 This application was generated with the rails_apps_composer gem:
 https://github.com/RailsApps/rails_apps_composer
 provided by the RailsApps Project:
