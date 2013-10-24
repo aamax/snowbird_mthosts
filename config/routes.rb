@@ -27,6 +27,9 @@ Mthost::Application.routes.draw do
   match '/deliver_mail', :to => "mail#deliver_mail"
   match '/send_mail/:address', :to => "mail#send_mail"
 
+  match '/set_start_year/:year', :to => "users#set_start_year"
+  match '/clear_assignments', :to => "users#clear_assignments"
+
   get '/drop_shift/:id', :to => 'shifts#drop_shift'
   get '/select_shift/:id', :to => 'shifts#select_shift'
 

@@ -71,6 +71,27 @@ class UsersController < ApplicationController
     add_meetings_to_shifts(@user)
   end
 
+  def set_start_year
+    if params[:year].nil?
+      redirect_to :back, :alert => 'Error - no year set'
+    else
+      User.all.each do |u|
+        u.start_year = params[:year]
+        u.save
+      end
+
+      redirect_to :back, :notice => "All users set to start year of: #{params[:year]}"
+    end
+  end
+
+  def clear_assignments
+    Shift.all.each do |s|
+      s.user_id = nil
+      s.save
+    end
+    redirect_to :back, :notice => "All Shift Assignments Have Been Cleared"
+  end
+
   private
 
   def add_meetings_to_shifts(u)
