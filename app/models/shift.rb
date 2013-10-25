@@ -186,6 +186,7 @@ class Shift < ActiveRecord::Base
           return false if round.between?(3,4) && (test_user.shifts.count >= 16)
           return false if (round == 0) && test_user.shifts.count >= 7
           return false if (self.shift_date <= max_shadow_date)
+          return false if (!self.round_one_rookie_shift? && (self.shift_date <= test_user.round_one_end_date))
         end
       else
         if round < 5

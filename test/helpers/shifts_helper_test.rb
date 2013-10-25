@@ -134,15 +134,15 @@ class ShiftsHelperTest < ActionView::TestCase
 
   describe "can_select" do
     describe "basic settings" do
-      it 'only 2 rookies per day on weekend shifts' do
-        shift_types = [@g1.id, @g2.id, @g3.id, @g4.id]
-        r1 = FactoryGirl.create(:user, :email => 'f1.user@example.com', :start_year => @sys_config.season_year)
-        r2 = FactoryGirl.create(:user, :email => 'f2.user@example.com', :start_year => @sys_config.season_year)
-        shifts = Shift.where("shift_type_id in (#{shift_types.join(',')}) and shift_date = '#{Date.today()  + 20.days}'")
-        r1.shifts << shifts[0]
-        r2.shifts << shifts[1]
-        shifts[2].can_select(@rookie_user).must_equal false
-      end
+      #it 'only 2 rookies per day on weekend shifts' do
+      #  shift_types = [@g1.id, @g2.id, @g3.id, @g4.id]
+      #  r1 = FactoryGirl.create(:user, :email => 'f1.user@example.com', :start_year => @sys_config.season_year)
+      #  r2 = FactoryGirl.create(:user, :email => 'f2.user@example.com', :start_year => @sys_config.season_year)
+      #  shifts = Shift.where("shift_type_id in (#{shift_types.join(',')}) and shift_date = '#{Date.today()  + 20.days}'")
+      #  r1.shifts << shifts[0]
+      #  r2.shifts << shifts[1]
+      #  shifts[2].can_select(@rookie_user).must_equal false
+      #end
 
       # TODO
       #it 'only 1 rookies per day on friday shifts' do
@@ -723,12 +723,15 @@ class ShiftsHelperTest < ActionView::TestCase
           @sys_config.save!
           iCnt = 0
           Shift.all.each do |s|
-            iCnt += 1
-            next if iCnt < 5
 
             if ((s.can_select(@rookie_user) == true))
+              iCnt += 1
+              next if iCnt < 5
+
               @rookie_user.shifts << s
               @last_rookie_shift = s
+
+              iCnt = 0
             end
           end
         end
@@ -747,7 +750,11 @@ class ShiftsHelperTest < ActionView::TestCase
           @sys_config.save!
           Shift.all.each do |s|
             next if (s.team_leader? || s.shadow? || !s.user_id.nil? || @rookie_user.is_working?(s.shift_date))
-            next if s.shift_date < @rookie_user.last_shadow
+            next if (s.shift_date < @rookie_user.round_one_end_date) && !s.round_one_rookie_shift?
+            next if (s.shift_date <= @rookie_user.last_shadow)
+            if s.can_select(@rookie_user) == false
+              HostUtility.display_user_and_shift(@rookie_user, s)
+            end
             s.can_select(@rookie_user).must_equal true
           end
         end
@@ -762,6 +769,22 @@ class ShiftsHelperTest < ActionView::TestCase
             end
           end
           @rookie_user.shifts.count.must_equal 12
+        end
+
+        it "cannot select any non-round1 type shifts prior to 5 round one selections" do
+          @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 2)
+          @sys_config.save!
+
+          Shift.all.each do |s|
+            next if s.shift_date > @rookie_user.round_one_end_date
+            next if @rookie_user.is_working? s.shift_date
+            next if s.round_one_rookie_shift?
+
+            if s.can_select(@rookie_user) == true
+              HostUtility.display_user_and_shift(@rookie_user, s)
+            end
+            s.can_select(@rookie_user).must_equal false
+          end
         end
       end
     end
