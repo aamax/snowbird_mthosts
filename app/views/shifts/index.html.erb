@@ -88,8 +88,8 @@
             <a href=<%= "drop_shift/#{s.id}" %>><i class="icon-trash btn btn-danger" title="drop shift">&nbsp;&nbsp;Drop</i></a>
           <% end %>
         </td>
-        <td class="align-center"><a href="shiftcard" target='_blank'><%= s.shift_type.short_name[0..1] %></a></td>
-        <td><a href="shiftcard" target='_blank'><%= s.shift_type.description %></a></td>
+        <td class="align-center"><%= s.shift_type.short_name[0..1] %></td>
+        <td><%= s.shift_type.description %></td>
         <td class="align-center"><%= s.shift_type.start_time %></td>
         <td class="align-center"><%= s.shift_type.end_time %></td>
         <td><%= s.shift_type.tasks %></td>
