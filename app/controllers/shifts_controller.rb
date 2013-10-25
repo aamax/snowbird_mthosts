@@ -23,12 +23,12 @@ class ShiftsController < ApplicationController
       holidays = (params['filter']['holiday_shifts'] == '1')
       unselected = (params['filter']['show_unselected'] == '1')
       if can_select == false
-        @shifts = Shift.from_today(from_today).by_shift_type(sts).by_date(dt).by_day_of_week(dow).by_users(usrs).by_holidays(holidays).by_unselected(unselected).paginate(:page => params[:page], :per_page => 75)
+        @shifts = Shift.from_today(from_today).by_shift_type(sts).by_date(dt).by_day_of_week(dow).by_users(usrs).by_holidays(holidays).by_unselected(unselected).paginate(:page => params[:page], :per_page => 150)
       else
-        @shifts = Shift.from_today(from_today).by_shift_type(sts).by_date(dt).by_day_of_week(dow).by_holidays(holidays).by_users(usrs).by_unselected(unselected).delete_if {|s| s.can_select(current_user) == false }.paginate(:page => params[:page], :per_page => 75)
+        @shifts = Shift.from_today(from_today).by_shift_type(sts).by_date(dt).by_day_of_week(dow).by_holidays(holidays).by_users(usrs).by_unselected(unselected).delete_if {|s| s.can_select(current_user) == false }.paginate(:page => params[:page], :per_page => 150)
       end
     else
-      @shifts = Shift.from_today(true).paginate(:page => params[:page], :per_page => 75)
+      @shifts = Shift.from_today(true).paginate(:page => params[:page], :per_page => 150)
     end
   end
 
