@@ -25,22 +25,24 @@
     <%= f.check_box :active_user, :placeholder => "active", class: 'active_edit' %>
 <% end %>
 
-&nbsp;&nbsp;&nbsp;
-<strong>Confirmed? </strong>
-<%= f.check_box :confirmed, :placeholder => "confirmed", class: 'active_edit', :required => !current_user.has_role?(:admin) %><br/>
-
 <% if current_user.has_role? :admin %>
     <br/>
     <strong>Notes: </strong><br/>
     <%= f.text_area :notes, class: 'notes_edit', placeholder: 'Admin Notes' %> <br/>
-<% end %>
 
-<strong>Start Year: </strong>
-<%= f.text_field :start_year, :placeholder => 'Start Year', class: 'year_edit' %> <br/>
-<strong>Snowbird Start Year: </strong>
-<%= f.text_field :snowbird_start_year, :placeholder => 'Snowbird Start Year', class: 'year_edit' %> <br/>
+    <strong>Start Year: </strong>
+    <%= f.text_field :start_year, :placeholder => 'Start Year', class: 'year_edit' %> <br/>
+    <strong>Snowbird Start Year: </strong>
+    <%= f.text_field :snowbird_start_year, :placeholder => 'Snowbird Start Year', class: 'year_edit' %>
+<% else %>
+    <strong>Start Year: </strong> <%= @user.snowbird_start_year %>
+<% end %>
+<br/>
 
 <strong>seniority: </strong> <%= @user.seniority %><br/><br/>
+<strong>Confirmed? </strong>
+<%= f.check_box :confirmed, :placeholder => "confirmed", class: 'active_edit', :required => !current_user.has_role?(:admin) %><br/>
+
 
 <%= f.password_field :password, class: 'password_edit', placeholder: 'Password' %> <br/>
 <%= f.password_field :password_confirmation, class: 'password_edit', placeholder: 'Password Confirmation' %> <br/><br/>
