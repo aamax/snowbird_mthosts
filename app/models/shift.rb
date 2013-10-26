@@ -211,10 +211,10 @@ class Shift < ActiveRecord::Base
     return false if current_user.id != self.user_id
     return false if self.shift_date <= Date.today + 13.days
 
-    if current_user.rookie?
-      return false if (current_user.shifts.count > 2) && (self.shadow?)
-      return false if (current_user.shifts.count > 7) && (self.shift_date <= current_user.round_one_end_date)
-    end
+    #if current_user.rookie?
+    #  return false if (current_user.shifts.count > 2) && (self.shadow?)
+    #  return false if (current_user.shifts.count > 7) && (self.shift_date <= current_user.round_one_end_date)
+    #end
     true
   end
 
