@@ -40,7 +40,7 @@ class UsersHelperTest < ActionView::TestCase
     it 'should report need a holiday if one not picked' do
       [@rookie_user, @group1_user, @group2_user, @group3_user].each do |u|
         u.has_holiday_shift?.must_equal false
-        u.shift_status_message.include?("NOTE:  A Holiday Shift needs to be selected").must_equal true
+        u.shift_status_message.include?("NOTE:  You still need a <strong>Holiday Shift</strong>").must_equal true
       end
     end
 
@@ -72,7 +72,7 @@ class UsersHelperTest < ActionView::TestCase
           else
             next unless s.round_one_rookie_shift?
             @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
-            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length - 2} of 5 Round One Rookie Shifts Selected.  Need #{5 - (@rookie_user.shifts.length - 2)} Round One Rookie Shifts.").must_equal true
+            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length - 2} of 5 selected.  Need #{5 - (@rookie_user.shifts.length - 2)} Round 1 Rookie Shifts.").must_equal true
             @rookie_user.shifts << s
           end
         end
@@ -108,7 +108,8 @@ class UsersHelperTest < ActionView::TestCase
           else
             next unless s.round_one_rookie_shift?
             @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
-            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length - 2} of 5 Round One Rookie Shifts Selected.  Need #{5 - (@rookie_user.shifts.length - 2)} Round One Rookie Shifts.").must_equal true
+
+            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length - 2} of 5 selected.  Need #{5 - (@rookie_user.shifts.length - 2)} Round 1 Rookie Shifts.").must_equal true
             @rookie_user.shifts << s
           end
         end
@@ -123,8 +124,12 @@ class UsersHelperTest < ActionView::TestCase
         Shift.all.each do |s|
           next if @rookie_user.is_working? s.shift_date
           break if @rookie_user.shifts.length >= 12
-          @rookie_user.shift_status_message.include?("Cannot Pick Shifts Prior to Last Shadow: #{@rookie_user.last_shadow.strftime("%Y-%m-%d")}").must_equal true if @rookie_user.shifts.length >= 2
-          @rookie_user.shift_status_message.include?("Cannot Pick Non-Round One Rookie Type Shifts Prior to #{@rookie_user.round_one_end_date.strftime("%Y-%m-%d")}").must_equal true if @rookie_user.shifts.length >= 7
+
+          if ((@rookie_user.shifts.length >= 2) && !@rookie_user.first_non_round_one_end_date.nil?)
+            @rookie_user.shift_status_message.include?("Round One Type Shifts Only Between #{@rookie_user.last_shadow.strftime("%Y-%m-%d")} and #{@rookie_user.first_non_round_one_end_date.strftime("%Y-%m-%d")}.").must_equal true
+          end
+
+          @rookie_user.shift_status_message.include?("Non Round One Type Shifts After #{@rookie_user.round_one_end_date.strftime("%Y-%m-%d")}").must_equal true if @rookie_user.shifts.length >= 7
           shadow_count = @rookie_user.shadow_count
           if @rookie_user.shifts.length < 2
             next unless s.shadow?
@@ -133,10 +138,11 @@ class UsersHelperTest < ActionView::TestCase
           elsif @rookie_user.shifts.length < 7
             next unless s.round_one_rookie_shift?
             @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
-            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length - 2} of 5 Round One Rookie Shifts Selected.  Need #{5 - (@rookie_user.shifts.length - 2)} Round One Rookie Shifts.").must_equal true
+
+            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length - 2} of 5 selected.  Need #{5 - (@rookie_user.shifts.length - 2)} Round 1 Rookie Shifts.").must_equal true
             @rookie_user.shifts << s
           elsif @rookie_user.shifts.length < 12
-            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length} of 12 selected.  Need #{12 - @rookie_user.shifts.length} Round 2 Shifts.").must_equal true
+            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length} of 12 shifts selected.").must_equal true
             @rookie_user.shifts << s
           else
             @rookie_user.shifts << s
@@ -144,7 +150,7 @@ class UsersHelperTest < ActionView::TestCase
         end
         @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
         @rookie_user.shift_status_message.include?("All Round One Rookie Shifts Selected.").must_equal true
-        @rookie_user.shift_status_message.include?("All Round 2 Shifts Selected.").must_equal true
+        @rookie_user.shift_status_message.include?("All Required Shifts Selected.").must_equal true
       end
 
       it "should report if round 1 selection dropped after round 1" do
@@ -164,9 +170,8 @@ class UsersHelperTest < ActionView::TestCase
         @rookie_user.shifts.length.must_equal 11
         messages = @rookie_user.shift_status_message
         messages.include?("All Shadow Shifts Selected.").must_equal true
-        messages.include?("4 of 5 Round One Rookie Shifts Selected.  Need 1 Round One Rookie Shifts.").must_equal true
-        messages.include?("Cannot Pick Shifts Prior to Last Shadow: #{@rookie_user.shifts[1].shift_date}").must_equal true
-        messages.include?("Cannot Pick Shifts After First Non-Round One Shift: #{@rookie_user.first_non_round_one_end_date}").must_equal true
+        messages.include?("4 of 5 selected.  Need 1 Round 1 Rookie Shifts.").must_equal true
+        messages.include?("Round One Type Shifts Only After: #{@rookie_user.last_shadow}").must_equal true
       end
 
       it "should report if shadow dropped after round 1 selections" do
@@ -186,8 +191,8 @@ class UsersHelperTest < ActionView::TestCase
         @rookie_user.shifts.length.must_equal 11
         messages = @rookie_user.shift_status_message
         messages.include?("1 of 2 selected.  Need 1 Shadow Shifts.").must_equal true
-        messages.include?("All Round One Rookie Shifts Selected.").must_equal true
-        messages.include?("Cannot Pick Shifts After First Non-Shadow Shift: #{@rookie_user.shifts[1].shift_date}").must_equal true
+        messages.include?( "1 of 2 selected.  Need 1 Shadow Shifts.").must_equal true
+        messages.include?( "Shifts Only Before: #{@rookie_user.first_non_shadow}").must_equal true
       end
 
       it "should report for round 3 selections" do
@@ -197,8 +202,10 @@ class UsersHelperTest < ActionView::TestCase
         Shift.all.each do |s|
           next if @rookie_user.is_working? s.shift_date
           break if @rookie_user.shifts.length >= 16
-          @rookie_user.shift_status_message.include?("Cannot Pick Shifts Prior to Last Shadow: #{@rookie_user.last_shadow.strftime("%Y-%m-%d")}").must_equal true if @rookie_user.shifts.length >= 2
-          @rookie_user.shift_status_message.include?("Cannot Pick Non-Round One Rookie Type Shifts Prior to #{@rookie_user.round_one_end_date.strftime("%Y-%m-%d")}").must_equal true if @rookie_user.shifts.length >= 7
+          if (@rookie_user.shadow_count >= 2) && (@rookie_user.first_non_round_one_end_date)
+            @rookie_user.shift_status_message.include?("Round One Type Shifts Only Between #{@rookie_user.last_shadow.strftime("%Y-%m-%d")} and #{@rookie_user.first_non_round_one_end_date}.")
+          end
+          @rookie_user.shift_status_message.include?("Non Round One Type Shifts After #{@rookie_user.round_one_end_date.strftime("%Y-%m-%d")}").must_equal true if @rookie_user.shifts.length >= 7
           shadow_count = @rookie_user.shadow_count
           if @rookie_user.shifts.length < 2
             next unless s.shadow?
@@ -207,10 +214,10 @@ class UsersHelperTest < ActionView::TestCase
           elsif @rookie_user.shifts.length < 7
             next unless s.round_one_rookie_shift?
             @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
-            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length - 2} of 5 Round One Rookie Shifts Selected.  Need #{5 - (@rookie_user.shifts.length - 2)} Round One Rookie Shifts.").must_equal true
+            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length - 2} of 5 selected.  Need #{5 - (@rookie_user.shifts.length - 2)} Round 1 Rookie Shifts.").must_equal true
             @rookie_user.shifts << s
           elsif @rookie_user.shifts.length < 16
-            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length} of 16 selected.  Need #{16 - @rookie_user.shifts.length} Round 3 Shifts.").must_equal true
+            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length} of 16 shifts selected.").must_equal true
             @rookie_user.shifts << s
           else
             @rookie_user.shifts << s
@@ -218,7 +225,7 @@ class UsersHelperTest < ActionView::TestCase
         end
         @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
         @rookie_user.shift_status_message.include?("All Round One Rookie Shifts Selected.").must_equal true
-        @rookie_user.shift_status_message.include?("All Round 3 Shifts Selected.").must_equal true
+        @rookie_user.shift_status_message.include?("All Required Shifts Selected.").must_equal true
       end
 
       it "should report for round 4 selections" do
@@ -228,8 +235,13 @@ class UsersHelperTest < ActionView::TestCase
         Shift.all.each do |s|
           next if @rookie_user.is_working? s.shift_date
           break if @rookie_user.shifts.length >= 16
-          @rookie_user.shift_status_message.include?("Cannot Pick Shifts Prior to Last Shadow: #{@rookie_user.last_shadow.strftime("%Y-%m-%d")}").must_equal true if @rookie_user.shifts.length >= 2
-          @rookie_user.shift_status_message.include?("Cannot Pick Non-Round One Rookie Type Shifts Prior to #{@rookie_user.round_one_end_date.strftime("%Y-%m-%d")}").must_equal true if @rookie_user.shifts.length >= 7
+
+          if (@rookie_user.shadow_count >= 2) && (@rookie_user.first_non_round_one_end_date)
+            @rookie_user.shift_status_message.include?("Round One Type Shifts Only Between #{@rookie_user.last_shadow.strftime("%Y-%m-%d")} and #{@rookie_user.first_non_round_one_end_date}.")
+          end
+          if (!@rookie_user.first_non_round_one_end_date.nil?)
+            @rookie_user.shift_status_message.include?("Non Round One Type Shifts After #{@rookie_user.round_one_end_date.strftime("%Y-%m-%d")}").must_equal true if @rookie_user.shifts.length >= 2
+          end
           shadow_count = @rookie_user.shadow_count
           if @rookie_user.shifts.length < 2
             next unless s.shadow?
@@ -238,10 +250,10 @@ class UsersHelperTest < ActionView::TestCase
           elsif @rookie_user.shifts.length < 7
             next unless s.round_one_rookie_shift?
             @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
-            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length - 2} of 5 Round One Rookie Shifts Selected.  Need #{5 - (@rookie_user.shifts.length - 2)} Round One Rookie Shifts.").must_equal true
+            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length - 2} of 5 selected.  Need #{5 - (@rookie_user.shifts.length - 2)} Round 1 Rookie Shifts.").must_equal true
             @rookie_user.shifts << s
           elsif @rookie_user.shifts.length < 16
-            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length} of 16 selected.  Need #{16 - @rookie_user.shifts.length} Round 4 Shifts.").must_equal true
+            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length} of 16 shifts selected.").must_equal true
             @rookie_user.shifts << s
           else
             @rookie_user.shifts << s
@@ -249,7 +261,7 @@ class UsersHelperTest < ActionView::TestCase
         end
         @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
         @rookie_user.shift_status_message.include?("All Round One Rookie Shifts Selected.").must_equal true
-        @rookie_user.shift_status_message.include?("All Round 4 Shifts Selected.").must_equal true
+        @rookie_user.shift_status_message.include?("All Required Shifts Selected.").must_equal true
       end
     end
 
@@ -258,9 +270,9 @@ class UsersHelperTest < ActionView::TestCase
         config = SysConfig.first
         config.bingo_start_date = Date.today + 10.days
         config.save
-        @group1_user.shift_status_message.include?("No Shifts may be selected before the selection rounds start.").must_equal true
-        @group2_user.shift_status_message.include?("No Shifts may be selected before the selection rounds start.").must_equal true
-        @group3_user.shift_status_message.include?("No Shifts may be selected before the selection rounds start.").must_equal true
+        @group1_user.shift_status_message.include?("No Selections Until #{HostUtility.date_for_round(@group1_user, 1)}.").must_equal true
+        @group2_user.shift_status_message.include?("No Selections Until #{HostUtility.date_for_round(@group2_user, 1)}.").must_equal true
+        @group3_user.shift_status_message.include?("No Selections Until #{HostUtility.date_for_round(@group3_user, 1)}.").must_equal true
       end
 
       it 'should report total shift status after round 4 if not complete' do

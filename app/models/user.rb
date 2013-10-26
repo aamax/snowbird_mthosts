@@ -165,6 +165,18 @@ class User < ActiveRecord::Base
     iCnt
   end
 
+  def first_non_shadow
+    dt = nil
+    self.shifts.each do |s|
+      if !s.shadow?
+        dt = s.shift_date
+        break
+      end
+    end
+    dt
+  end
+
+
   def round_one_end_date
     dt = nil
     iCnt = 0
@@ -200,6 +212,10 @@ class User < ActiveRecord::Base
       end
     end
     dt
+  end
+
+  def has_non_round_one?
+    !first_non_round_one_end_date.nil?
   end
 
   def last_shadow
@@ -288,53 +304,50 @@ class User < ActiveRecord::Base
     num_selected = self.shifts.length
     round = HostUtility.get_current_round(HostConfig.bingo_start_date, Date.today, self)
 
-    msg << "You are currently in round #{round} of the shift selection process."
+    msg << "You are currently in <strong>round #{round}</strong>."
 
     if has_holiday_shift?
-      msg << "A Holiday Shift has been selected."
+      msg << "A <strong>Holiday Shift</strong> has been selected."
     else
-      msg << "NOTE:  A Holiday Shift needs to be selected"
+      msg << "NOTE:  You still need a <strong>Holiday Shift</strong>"
     end
 
     if self.rookie?
       if shadow_count < 2
         msg << "#{shadow_count} of 2 selected.  Need #{2 - shadow_count} Shadow Shifts."
-        if self.shifts.count >= 2
-          msg << "Cannot Pick Shifts After First Non-Shadow Shift: #{self.shifts[1].shift_date}"
-        end
-      elsif shadow_count == 2
-        msg << "All Shadow Shifts Selected."
-        msg << "Cannot Pick Shifts Prior to Last Shadow: #{self.last_shadow.strftime("%Y-%m-%d")}"
-      end
-      if self.round_one_type_count == 5
-        msg << "All Round One Rookie Shifts Selected."
-        msg << "Cannot Pick Non-Round One Rookie Type Shifts Prior to #{self.round_one_end_date.strftime("%Y-%m-%d")}"
 
-        if ((round == 2) && (self.shifts.length == 12)) || ((round >= 3) && (self.shifts.length >= 16))
-          msg << "All Round #{round} Shifts Selected." if round < 5
-          msg << "All Required Shifts Have Been Selected." if round >= 5
-        else
-          if round < 2
-            msg << "#{self.shifts.length} of 7 selected.  Need #{7 - self.shifts.length} Round 1 Shifts."
-          elsif round == 2
-            msg << "#{self.shifts.length} of 12 selected.  Need #{12 - self.shifts.length} Round 2 Shifts."
-          else
-            msg << "#{self.shifts.length} of 16 selected.  Need #{16 - self.shifts.length} Round #{round} Shifts."
-          end
+        if self.shifts.count > 0
+          msg << "Shifts Only Before: #{self.first_non_shadow.strftime("%Y-%m-%d")}" unless self.first_non_shadow.nil?
         end
       else
-        if (self.round_one_type_count < 5) && (self.shifts.length >= 2)
-          msg << "#{self.round_one_type_count} of 5 Round One Rookie Shifts Selected.  Need #{5 - self.round_one_type_count} Round One Rookie Shifts."
-          unless self.first_non_round_one_end_date.nil?
-            msg << "Cannot Pick Shifts After First Non-Round One Shift: #{self.first_non_round_one_end_date}"
+        msg << "All Shadow Shifts Selected."
+
+        if self.round_one_type_count < 5
+          msg << "Round One Type Shifts Only After: #{self.last_shadow.strftime("%Y-%m-%d")}"
+          if !self.has_non_round_one?
+            msg << "Shifts Only Before: #{self.first_non_round_one_end_date.strftime("%Y-%m-%d")}" unless self.first_non_round_one_end_date.nil?
           end
+          msg << "#{self.round_one_type_count} of 5 selected.  Need #{5 - self.round_one_type_count} Round 1 Rookie Shifts."
+        else
+          # shadows = 2.  round 1 = 5
+          msg << "All Round One Rookie Shifts Selected."
+          if !self.first_non_round_one_end_date.nil?
+            msg << "Round One Type Shifts Only Between #{self.last_shadow.strftime("%Y-%m-%d")} and #{self.first_non_round_one_end_date.strftime("%Y-%m-%d")}."
+          else
+            msg << "Round One Type Shifts Only After #{self.last_shadow.strftime("%Y-%m-%d")}"
+          end
+
+          msg << "Non Round One Type Shifts After #{self.round_one_end_date.strftime("%Y-%m-%d")}"
+
+          round == 2 ? total_for_round = 12 : total_for_round = 16
+          msg << "#{self.shifts.count} of #{total_for_round} shifts selected." if (self.shifts.count <= total_for_round)
+          msg << "All Required Shifts Selected." if (self.shifts.count >= total_for_round)
         end
       end
     else
       case round
         when 0
-          msg << "No Shifts may be selected before the selection rounds start."
-          msg << "you may start selecting shifts on #{HostConfig.bingo_start_date + day_offset.days}"
+          msg << "No Selections Until #{HostConfig.bingo_start_date + day_offset.days}."
         when 1..4
           limit = round * 5
           limit = 18 if (round == 4)
@@ -353,6 +366,7 @@ class User < ActiveRecord::Base
     end
     msg
   end
+
 
   def round1_date
     HostUtility.date_for_round(self, 1)

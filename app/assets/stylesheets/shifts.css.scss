@@ -5,6 +5,20 @@
   text-align: center !important;
 }
 
+.shift_user_listing {
+  border-width: 1px;
+  background-color: #abe1fb;
+  border-style: ridge;
+  padding: 15px;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+  border-radius: 15px;
+
+  table {
+    background-color: #8BB3CD;
+  }
+}
+
 .filter_box {
   border-width: 1px;
   border-color: gray;

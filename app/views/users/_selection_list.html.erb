@@ -1,0 +1,18 @@
+<div class='span5 shift_user_listing'>
+  <h3>Current Shift Selections</h3>
+  <table class='table table-striped'>
+    <tr>
+      <th>Date</th>
+      <th>Shift</th>
+    </tr>
+
+
+    <% current_user.shifts.each do |s| %>
+        <tr>
+          <td><%= "#{s.day_of_week}:#{s.shift_date.strftime('%Y-%m-%d')}" %></td>
+
+          <td><%= "#{s.shift_type.short_name[0..1]}:#{s.shift_type.description}:#{s.shift_type.tasks}" %></td>
+        </tr>
+    <% end %>
+  </table>
+</div>

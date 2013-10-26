@@ -1,11 +1,12 @@
-<div class='user_shift_message_box span5'>
-  <h4>Shift Selection Status Messages
+<div class='user_shift_message_box span4'>
+  <h4>Selection Status
     <% if shift_page == false %>
-        [<a href='<%= shifts_path %>'>Go To Selection Page]</a>
+        [<a href='<%= shifts_path %>'>Go To Shifts Page]</a>
     <% end %>
   </h4>
   <% user.shift_status_message.each do |m| %>
-    <%= m %>   <br/>
+    <%= m.html_safe %>   <br/>
+      <br/>
   <% end %>
   <br/>
 </div>

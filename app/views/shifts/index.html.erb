@@ -23,18 +23,19 @@
     <div id="stats_display" class="collapse <%= current_user.shift_status_message.length > 0 ? "in": "out" %>">
       <div class='row'>
       <% if current_user.has_role? :admin %>
-          <div class='span3'>
+          <div class='span2'>
             <h4>Shift Stats:</h4>
           Total Shifts:  <%= Shift.all.length %><br/>
           Open Shifts:   <%= Shift.un_assigned.length %><br/>
           Assigned Shifts:   <%= Shift.assigned.length %><br/>
           </div>
       <% else %>
-            <div class='span3'>&nbsp;</div>
+            <div class='span2'>&nbsp;</div>
       <% end %>
-          <% unless current_user.supervisor? %>
-              <%= render "/users/shift_message", :user => current_user, :shift_page => true %>
-          <% end %>
+      <% unless current_user.supervisor? %>
+          <%= render "/users/shift_message", :user => current_user, :shift_page => true %>
+          <%= render "/users/selection_list", :user => current_user %>
+      <% end %>
       </div>
     </div>
 
