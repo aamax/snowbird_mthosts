@@ -28,7 +28,7 @@ class ShiftsController < ApplicationController
         @shifts = Shift.from_today(from_today).by_shift_type(sts).by_date(dt).by_day_of_week(dow).by_holidays(holidays).by_users(usrs).by_unselected(unselected).delete_if {|s| s.can_select(current_user) == false }.paginate(:page => params[:page], :per_page => 150)
       end
     else
-      @shifts = Shift.from_today(true).paginate(:page => params[:page], :per_page => 150)
+      @shifts = Shift.from_today(true).delete_if {|s| s.can_select(current_user) == false }.paginate(:page => params[:page], :per_page => 150)
     end
   end
 

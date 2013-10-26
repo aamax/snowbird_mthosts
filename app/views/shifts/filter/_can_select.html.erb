@@ -2,6 +2,6 @@ Show Only Shifts I Can Pick:
 <% if params['filter'] %>
     <%= f.check_box(:shifts_i_can_pick, :checked => (params['filter']['shifts_i_can_pick'] == '1')) %>
 <% else %>
-    <%= f.check_box(:shifts_i_can_pick, :checked => false) %>
+    <%= f.check_box(:shifts_i_can_pick, :checked => true) %>
 <% end %>
 <br/>

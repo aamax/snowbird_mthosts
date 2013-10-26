@@ -29,6 +29,7 @@ Mthost::Application.routes.draw do
 
   match '/set_start_year/:year', :to => "users#set_start_year"
   match '/clear_assignments', :to => "users#clear_assignments"
+  match '/reset_confirms_and_passwords', :to => "users#reset_confirms_and_passwords"
 
   get '/drop_shift/:id', :to => 'shifts#drop_shift'
   get '/select_shift/:id', :to => 'shifts#select_shift'

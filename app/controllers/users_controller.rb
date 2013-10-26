@@ -92,6 +92,15 @@ class UsersController < ApplicationController
     redirect_to :back, :notice => "All Shift Assignments Have Been Cleared"
   end
 
+  def reset_confirms_and_passwords
+    User.active_users.each do |u|
+      u.confirmed = false
+      u.password = 'password'
+      u.save
+    end
+    redirect_to :back, :notice => "All Users Have Been Reset..."
+  end
+
   private
 
   def add_meetings_to_shifts(u)
