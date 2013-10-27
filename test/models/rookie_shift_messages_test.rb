@@ -1,7 +1,6 @@
 require "test_helper"
-require 'user_message_test'
 
-class RookieMessageTest < UserMessageTest
+class RookieMessageTest < ActiveSupport::TestCase
 
   def setup
     HostConfig.initialize_values
