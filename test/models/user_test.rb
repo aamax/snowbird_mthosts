@@ -8,6 +8,7 @@ class UserTest < ActiveSupport::TestCase
     @group2_user = User.find_by_name('g2')
     @group3_user = User.find_by_name('g3')
     @team_leader = User.find_by_name('teamlead')
+    @user = User.create(name: 'test user', email: 'user@example.com')
 
     @tl = ShiftType.find_by_short_name('TL')
     @sh = ShiftType.find_by_short_name('SH')
@@ -64,6 +65,45 @@ class UserTest < ActiveSupport::TestCase
 
     it "should return correct shadow date" do
       @last_rookie_shift.shift_date.must_equal @rookie_user.round_one_end_date
+    end
+  end
+
+  describe "seniority" do
+    it "should be Supervisor for John Cotter" do
+      @user.name = 'John Cotter'
+      @user.seniority.must_equal 'Supervisor'
+    end
+
+    it 'should be Rookie for rookie user' do
+      @rookie_user.seniority.must_equal 'Rookie'
+    end
+
+    it 'should be Group 3 (Newer) for first year user' do
+      @group3_user.seniority.must_equal 'Group 3 (Newer)'
+    end
+
+    it 'should be Group 2 (Middle) for middle group users' do
+      @group2_user.seniority.must_equal 'Group 2 (Middle)'
+    end
+
+    it 'should be Group 1 (Senior) for senior user' do
+      @group1_user.seniority.must_equal 'Group 1 (Senior)'
+    end
+
+    it 'should be Rookie for rookie user' do
+      @rookie_user.seniority.must_equal 'Rookie'
+    end
+  end
+
+  describe 'seniority Group' do
+    it "should return correct group values for each user" do
+      @user.active_user = false
+      @user.seniority_group.must_equal 5
+
+      @group1_user.seniority_group.must_equal 1
+      @group2_user.seniority_group.must_equal 2
+      @group3_user.seniority_group.must_equal 3
+      @rookie_user.seniority_group.must_equal 4
     end
   end
 

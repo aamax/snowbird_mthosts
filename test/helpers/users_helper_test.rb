@@ -37,23 +37,23 @@ class UsersHelperTest < ActionView::TestCase
       HostConfig.initialize_values
     end
 
-    it 'should report need a holiday if one not picked' do
-      [@rookie_user, @group1_user, @group2_user, @group3_user].each do |u|
-        u.has_holiday_shift?.must_equal false
-        u.shift_status_message.include?("NOTE:  You still need a <strong>Holiday Shift</strong>").must_equal true
-      end
-    end
-
-    it 'should not report need a holiday if one is picked' do
-      [@rookie_user, @group1_user, @group2_user, @group3_user].each do |u|
-        HOLIDAYS.each do |h|
-          shift = FactoryGirl.create(:shift, shift_date: h, shift_type_id: @g1.id)
-
-          u.shifts << shift
-          u.has_holiday_shift?.must_equal true
-        end
-      end
-    end
+    #it 'should report need a holiday if one not picked' do
+    #  [@rookie_user, @group1_user, @group2_user, @group3_user].each do |u|
+    #    u.has_holiday_shift?.must_equal false
+    #    u.shift_status_message.include?("NOTE:  You still need a <strong>Holiday Shift</strong>").must_equal true
+    #  end
+    #end
+    #
+    #it 'should not report need a holiday if one is picked' do
+    #  [@rookie_user, @group1_user, @group2_user, @group3_user].each do |u|
+    #    HOLIDAYS.each do |h|
+    #      shift = FactoryGirl.create(:shift, shift_date: h, shift_type_id: @g1.id)
+    #
+    #      u.shifts << shift
+    #      u.has_holiday_shift?.must_equal true
+    #    end
+    #  end
+    #end
 
     describe "rookie" do
       it "should report for prior to bingo shift selections" do
@@ -265,112 +265,112 @@ class UsersHelperTest < ActionView::TestCase
       end
     end
 
-    describe 'non-rookie' do
-      it 'not allow picking shifts prior to bingo start' do
-        config = SysConfig.first
-        config.bingo_start_date = Date.today + 10.days
-        config.save
-        @group1_user.shift_status_message.include?("No Selections Until #{HostUtility.date_for_round(@group1_user, 1)}.").must_equal true
-        @group2_user.shift_status_message.include?("No Selections Until #{HostUtility.date_for_round(@group2_user, 1)}.").must_equal true
-        @group3_user.shift_status_message.include?("No Selections Until #{HostUtility.date_for_round(@group3_user, 1)}.").must_equal true
-      end
-
-      it 'should report total shift status after round 4 if not complete' do
-        config = SysConfig.first
-        config.bingo_start_date = HostUtility.bingo_start_for_round(@group1_user, 6)
-        config.save
-
-        @group1_user.shift_status_message.include?("0 of 18 Shifts Selected.  You need to pick 18").must_equal true
-        @group2_user.shift_status_message.include?("0 of 18 Shifts Selected.  You need to pick 18").must_equal true
-        @group3_user.shift_status_message.include?("0 of 18 Shifts Selected.  You need to pick 18").must_equal true
-      end
-
-      it 'should report after round 4 if complete' do
-        config = SysConfig.first
-        config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 6)
-        config.save
-        shifts = Shift.find_all_by_shift_type_id(@p1.id)
-        [@group1_user, @group2_user, @group3_user].each do |u|
-          shifts.each do |s|
-            break if u.shifts.length >= 18
-            u.shifts << s
-          end
-          u.shift_status_message.include?("All required shifts selected. (18 of 18)").must_equal true
-        end
-      end
-
-      it "should report for round 1 shift selections" do
-        config = SysConfig.first
-        config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 1)
-        config.save
-        shifts = Shift.find_all_by_shift_type_id(@p1.id)
-        [@group1_user, @group2_user, @group3_user].each do |u|
-          shifts.each do |s|
-            u.shifts << s
-            break if u.shifts.length > 5
-            if u.shifts.length < 5
-              u.shift_status_message.include?("#{u.shifts.length} of 5 Shifts Selected.  You need to pick #{5 - u.shifts.length}").must_equal true
-            else
-              u.shift_status_message.include?("All required shifts selected for round 1. (5 of 5)").must_equal true
-            end
-          end
-        end
-      end
-
-      it "should report for round 2 shift selections" do
-        config = SysConfig.first
-        config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 2)
-        config.save
-        shifts = Shift.find_all_by_shift_type_id(@p1.id)
-        [@group1_user, @group2_user, @group3_user].each do |u|
-          shifts.each do |s|
-            u.shifts << s
-            break if u.shifts.length > 10
-            if u.shifts.length < 10
-              u.shift_status_message.include?("#{u.shifts.length} of 10 Shifts Selected.  You need to pick #{10 - u.shifts.length}").must_equal true
-            else
-              u.shift_status_message.include?("All required shifts selected for round 2. (10 of 10)").must_equal true
-            end
-          end
-        end
-      end
-
-      it "should report for round 3 shift selections" do
-        config = SysConfig.first
-        config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 3)
-        config.save
-        shifts = Shift.find_all_by_shift_type_id(@p1.id)
-        [@group1_user, @group2_user, @group3_user].each do |u|
-          shifts.each do |s|
-            u.shifts << s
-            break if u.shifts.length > 15
-            if u.shifts.length < 15
-              u.shift_status_message.include?("#{u.shifts.length} of 15 Shifts Selected.  You need to pick #{15 - u.shifts.length}").must_equal true
-            else
-              u.shift_status_message.include?("All required shifts selected for round 3. (15 of 15)").must_equal true
-            end
-          end
-        end
-      end
-
-      it "should report for round 4 shift selections" do
-        config = SysConfig.first
-        config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 4)
-        config.save
-        shifts = Shift.find_all_by_shift_type_id(@p1.id)
-        [@group1_user, @group2_user, @group3_user].each do |u|
-          shifts.each do |s|
-            u.shifts << s
-            break if u.shifts.length > 18
-            if u.shifts.length < 18
-              u.shift_status_message.include?("#{u.shifts.length} of 18 Shifts Selected.  You need to pick #{18 - u.shifts.length}").must_equal true
-            else
-              u.shift_status_message.include?("All required shifts selected for round 4. (18 of 18)").must_equal true
-            end
-          end
-        end
-      end
-    end
+    #describe 'non-rookie' do
+    #  #it 'not allow picking shifts prior to bingo start' do
+    #  #  config = SysConfig.first
+    #  #  config.bingo_start_date = Date.today + 10.days
+    #  #  config.save
+    #  #  @group1_user.shift_status_message.include?("No Selections Until #{HostUtility.date_for_round(@group1_user, 1)}.").must_equal true
+    #  #  @group2_user.shift_status_message.include?("No Selections Until #{HostUtility.date_for_round(@group2_user, 1)}.").must_equal true
+    #  #  @group3_user.shift_status_message.include?("No Selections Until #{HostUtility.date_for_round(@group3_user, 1)}.").must_equal true
+    #  #end
+    #
+    #  #it 'should report total shift status after round 4 if not complete' do
+    #  #  config = SysConfig.first
+    #  #  config.bingo_start_date = HostUtility.bingo_start_for_round(@group1_user, 6)
+    #  #  config.save
+    #  #
+    #  #  @group1_user.shift_status_message.include?("0 of 18 Shifts Selected.  You need to pick 18").must_equal true
+    #  #  @group2_user.shift_status_message.include?("0 of 18 Shifts Selected.  You need to pick 18").must_equal true
+    #  #  @group3_user.shift_status_message.include?("0 of 18 Shifts Selected.  You need to pick 18").must_equal true
+    #  #end
+    #
+    #  #it 'should report after round 4 if complete' do
+    #  #  config = SysConfig.first
+    #  #  config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 6)
+    #  #  config.save
+    #  #  shifts = Shift.find_all_by_shift_type_id(@p1.id)
+    #  #  [@group1_user, @group2_user, @group3_user].each do |u|
+    #  #    shifts.each do |s|
+    #  #      break if u.shifts.length >= 18
+    #  #      u.shifts << s
+    #  #    end
+    #  #    u.shift_status_message.include?("All required shifts selected. (18 of 18)").must_equal true
+    #  #  end
+    #  #end
+    #
+    #  #it "should report for round 1 shift selections" do
+    #  #  config = SysConfig.first
+    #  #  config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 1)
+    #  #  config.save
+    #  #  shifts = Shift.find_all_by_shift_type_id(@p1.id)
+    #  #  [@group1_user, @group2_user, @group3_user].each do |u|
+    #  #    shifts.each do |s|
+    #  #      u.shifts << s
+    #  #      break if u.shifts.length > 5
+    #  #      if u.shifts.length < 5
+    #  #        u.shift_status_message.include?("#{u.shifts.length} of 5 Shifts Selected.  You need to pick #{5 - u.shifts.length}").must_equal true
+    #  #      else
+    #  #        u.shift_status_message.include?("All required shifts selected for round 1. (5 of 5)").must_equal true
+    #  #      end
+    #  #    end
+    #  #  end
+    #  #end
+    #
+    #  #it "should report for round 2 shift selections" do
+    #  #  config = SysConfig.first
+    #  #  config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 2)
+    #  #  config.save
+    #  #  shifts = Shift.find_all_by_shift_type_id(@p1.id)
+    #  #  [@group1_user, @group2_user, @group3_user].each do |u|
+    #  #    shifts.each do |s|
+    #  #      u.shifts << s
+    #  #      break if u.shifts.length > 10
+    #  #      if u.shifts.length < 10
+    #  #        u.shift_status_message.include?("#{u.shifts.length} of 10 Shifts Selected.  You need to pick #{10 - u.shifts.length}").must_equal true
+    #  #      else
+    #  #        u.shift_status_message.include?("All required shifts selected for round 2. (10 of 10)").must_equal true
+    #  #      end
+    #  #    end
+    #  #  end
+    #  #end
+    #
+    #  #it "should report for round 3 shift selections" do
+    #  #  config = SysConfig.first
+    #  #  config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 3)
+    #  #  config.save
+    #  #  shifts = Shift.find_all_by_shift_type_id(@p1.id)
+    #  #  [@group1_user, @group2_user, @group3_user].each do |u|
+    #  #    shifts.each do |s|
+    #  #      u.shifts << s
+    #  #      break if u.shifts.length > 15
+    #  #      if u.shifts.length < 15
+    #  #        u.shift_status_message.include?("#{u.shifts.length} of 15 Shifts Selected.  You need to pick #{15 - u.shifts.length}").must_equal true
+    #  #      else
+    #  #        u.shift_status_message.include?("All required shifts selected for round 3. (15 of 15)").must_equal true
+    #  #      end
+    #  #    end
+    #  #  end
+    #  #end
+    #
+    #  #it "should report for round 4 shift selections" do
+    #  #  config = SysConfig.first
+    #  #  config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 4)
+    #  #  config.save
+    #  #  shifts = Shift.find_all_by_shift_type_id(@p1.id)
+    #  #  [@group1_user, @group2_user, @group3_user].each do |u|
+    #  #    shifts.each do |s|
+    #  #      u.shifts << s
+    #  #      break if u.shifts.length > 18
+    #  #      if u.shifts.length < 18
+    #  #        u.shift_status_message.include?("#{u.shifts.length} of 18 Shifts Selected.  You need to pick #{18 - u.shifts.length}").must_equal true
+    #  #      else
+    #  #        u.shift_status_message.include?("All required shifts selected for round 4. (18 of 18)").must_equal true
+    #  #      end
+    #  #    end
+    #  #  end
+    #  #end
+    #end
   end
 
 

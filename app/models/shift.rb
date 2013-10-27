@@ -203,7 +203,6 @@ class Shift < ActiveRecord::Base
     retval
   end
 
-
   def can_drop(current_user)
     return false if (self.short_name[0] == 'M')
     return false if (self.user_id.nil?)

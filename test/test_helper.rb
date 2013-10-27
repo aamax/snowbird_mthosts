@@ -58,7 +58,6 @@ require "minitest/rails"
 require 'minitest/mock'
 #MiniTest::Reporters.use!
 
-
 # Add `gem "minitest/rails/capybara"` to the test group of your Gemfile
 # and uncomment the following if you want Capybara feature tests
 require "minitest/rails/capybara"

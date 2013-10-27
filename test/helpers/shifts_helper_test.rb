@@ -73,41 +73,41 @@ class ShiftsHelperTest < ActionView::TestCase
     end
 
     describe 'rookies' do
-      it 'cannot drop shadow shifts if any other shifts have been selected' do
-        @sys_config.bingo_start_date = HostUtility.date_for_round(@rookie_user, 6)
-        @sys_config.save!
+      #it 'cannot drop shadow shifts if any other shifts have been selected' do
+      #  @sys_config.bingo_start_date = HostUtility.date_for_round(@rookie_user, 6)
+      #  @sys_config.save!
+      #
+      #  # create shadow and select by rookie (shift date 1 week out)
+      #  @sha1 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
+      #  @sha2 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 1.day, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
+      #
+      #  @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 2.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+      #  @sha1.can_drop(@rookie_user).must_equal false
+      #  @sha2.can_drop(@rookie_user).must_equal false
+      #end
 
-        # create shadow and select by rookie (shift date 1 week out)
-        @sha1 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
-        @sha2 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 1.day, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
-
-        @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 2.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
-        @sha1.can_drop(@rookie_user).must_equal false
-        @sha2.can_drop(@rookie_user).must_equal false
-      end
-
-      it 'cannot drop any round 1 shifts if non round one shift is shift number 8' do
-        @sys_config.bingo_start_date = HostUtility.date_for_round(@rookie_user, 6)
-        @sys_config.save!
-
-        # create shadow and select by rookie (shift date 1 week out)
-        @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
-        @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 1.day, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
-
-        sh1 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 2.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
-        sh2 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 3.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
-        sh3 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 4.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
-        sh4 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 5.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
-        sh5 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 6.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
-
-        sh6 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 7.days, :shift_type_id => @p1.id, :user_id => @rookie_user.id)
-        sh1.can_drop(@rookie_user).must_equal false
-        sh2.can_drop(@rookie_user).must_equal false
-        sh3.can_drop(@rookie_user).must_equal false
-        sh4.can_drop(@rookie_user).must_equal false
-        sh5.can_drop(@rookie_user).must_equal false
-        sh6.can_drop(@rookie_user).must_equal true
-      end
+      #it 'cannot drop any round 1 shifts if non round one shift is shift number 8' do
+      #  @sys_config.bingo_start_date = HostUtility.date_for_round(@rookie_user, 6)
+      #  @sys_config.save!
+      #
+      #  # create shadow and select by rookie (shift date 1 week out)
+      #  @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
+      #  @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 1.day, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
+      #
+      #  sh1 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 2.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+      #  sh2 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 3.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+      #  sh3 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 4.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+      #  sh4 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 5.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+      #  sh5 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 6.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+      #
+      #  sh6 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 7.days, :shift_type_id => @p1.id, :user_id => @rookie_user.id)
+      #  sh1.can_drop(@rookie_user).must_equal false
+      #  sh2.can_drop(@rookie_user).must_equal false
+      #  sh3.can_drop(@rookie_user).must_equal false
+      #  sh4.can_drop(@rookie_user).must_equal false
+      #  sh5.can_drop(@rookie_user).must_equal false
+      #  sh6.can_drop(@rookie_user).must_equal true
+      #end
 
       it 'can drop non shadow, non-round one shifts outside of 2 week window' do
         @sys_config.bingo_start_date = HostUtility.date_for_round(@rookie_user, 6)

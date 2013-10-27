@@ -303,11 +303,12 @@ class User < ActiveRecord::Base
     day_offset = get_day_offset
     num_selected = self.shifts.length
     round = HostUtility.get_current_round(HostConfig.bingo_start_date, Date.today, self)
+    has_holiday = has_holiday_shift?
 
-    msg << "You are currently in <strong>round #{round}</strong>."
+    msg << "You are currently in <strong>round #{round}</strong>." if round < 5
 
-    if has_holiday_shift?
-      msg << "A <strong>Holiday Shift</strong> has been selected."
+    if has_holiday
+      msg << "A <strong>Holiday Shift</strong> has been selected." if round < 5
     else
       msg << "NOTE:  You still need a <strong>Holiday Shift</strong>"
     end
@@ -360,7 +361,7 @@ class User < ActiveRecord::Base
           if num_selected < 18
             msg << "#{num_selected} of 18 Shifts Selected.  You need to pick #{18 - num_selected}"
           else
-            msg << "All required shifts selected. (#{num_selected} of 18)"
+            msg << "All required shifts selected." if has_holiday
           end
       end
     end
