@@ -324,21 +324,22 @@ class User < ActiveRecord::Base
         msg << "All Shadow Shifts Selected."
 
         if self.round_one_type_count < 5
-          msg << "Round One Type Shifts Only After: #{self.last_shadow.strftime("%Y-%m-%d")}"
-          if !self.has_non_round_one?
-            msg << "Shifts Only Before: #{self.first_non_round_one_end_date.strftime("%Y-%m-%d")}" unless self.first_non_round_one_end_date.nil?
+          if self.has_non_round_one?
+            msg << "Round 1 Type Shifts Only Between #{self.last_shadow} and #{self.first_non_round_one_end_date.strftime("%Y-%m-%d")}"
+          else
+            msg << "Round One Type Shifts Only After: #{self.last_shadow.strftime("%Y-%m-%d")}"
           end
           msg << "#{self.round_one_type_count} of 5 selected.  Need #{5 - self.round_one_type_count} Round 1 Rookie Shifts."
         else
           # shadows = 2.  round 1 = 5
           msg << "All Round One Rookie Shifts Selected."
           if !self.first_non_round_one_end_date.nil?
-            msg << "Round One Type Shifts Only Between #{self.last_shadow.strftime("%Y-%m-%d")} and #{self.first_non_round_one_end_date.strftime("%Y-%m-%d")}."
+            msg << "Round 1 Type Shifts Only Between #{self.last_shadow.strftime("%Y-%m-%d")} and #{self.first_non_round_one_end_date.strftime("%Y-%m-%d")}."
           else
-            msg << "Round One Type Shifts Only After #{self.last_shadow.strftime("%Y-%m-%d")}"
+            msg << "Round 1 Type Shifts Only Between #{self.last_shadow.strftime("%Y-%m-%d")} and #{self.round_one_end_date.strftime("%Y-%m-%d")}."
           end
 
-          msg << "Non Round One Type Shifts After #{self.round_one_end_date.strftime("%Y-%m-%d")}"
+          msg << "Any Shifts After #{self.round_one_end_date.strftime("%Y-%m-%d")}"
 
           round == 2 ? total_for_round = 12 : total_for_round = 16
           msg << "#{self.shifts.count} of #{total_for_round} shifts selected." if (self.shifts.count <= total_for_round)

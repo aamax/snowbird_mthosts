@@ -36,14 +36,14 @@ $(document).ready(function() {
 });
 
 $(function() {
-    $('.flash_notice').delay(1000).fadeIn('normal', function() {
-        $(this).delay(2000).fadeOut();
+    $('.flash_notice').delay(3000).fadeIn('normal', function() {
+        $(this).delay(4000).fadeOut();
     });
 });
 
 $(function() {
-    $('.alert-error').delay(1000).fadeIn('normal', function() {
-        $(this).delay(3000).fadeOut();
+    $('.alert-error').delay(3000).fadeIn('normal', function() {
+        $(this).delay(4000).fadeOut();
     });
 });
 
