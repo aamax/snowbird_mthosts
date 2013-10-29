@@ -51,6 +51,7 @@ class User < ActiveRecord::Base
 
   has_many :shifts
   has_many :galleries
+  has_many :surveys
 
   scope :active_users, -> {where(active_user: true)}
   scope :inactive_users, -> {where(active_user: false)}

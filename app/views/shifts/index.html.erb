@@ -23,12 +23,12 @@
     <div id="stats_display" class="collapse <%= current_user.shift_status_message.length > 0 ? "in": "out" %>">
       <div class='row'>
       <% if current_user.has_role? :admin %>
-          <div class='span2'>
-            <h4>Shift Stats:</h4>
-          Total Shifts:  <%= Shift.all.length %><br/>
-          Open Shifts:   <%= Shift.un_assigned.length %><br/>
-          Assigned Shifts:   <%= Shift.assigned.length %><br/>
-          </div>
+            <div class='span2'>
+              <h4>Shift Stats:</h4>
+              Total Shifts:  <%= Shift.all.length %><br/>
+              Open Shifts:   <%= Shift.un_assigned.length %><br/>
+              Assigned Shifts:   <%= Shift.assigned.length %><br/>
+            </div>
       <% else %>
             <div class='span2'>&nbsp;</div>
       <% end %>
@@ -83,10 +83,10 @@
         </td>
         <td class="align-left">
           <% if s.can_select(current_user) && !current_user.supervisor? %>
-            <a href=<%= "select_shift/#{s.id}" %>><i class="icon-male btn btn-primary" title="select shift">&nbsp;&nbsp;Select</i></a>
+            <a href=<%= "select_shift/#{s.id}" %> class='select_btn' ><i class="icon-male btn btn-primary" title="select shift">&nbsp;&nbsp;Select</i></a>
           <% end %>
           <% if s.can_drop current_user %>
-            <a href=<%= "drop_shift/#{s.id}" %>><i class="icon-trash btn btn-danger" title="drop shift">&nbsp;&nbsp;Drop</i></a>
+            <a href=<%= "drop_shift/#{s.id}" %> class='select_btn' ><i class="icon-trash btn btn-danger" title="drop shift">&nbsp;&nbsp;Drop</i></a>
           <% end %>
         </td>
         <td class="align-center"><%= s.shift_type.short_name[0..1] %></td>

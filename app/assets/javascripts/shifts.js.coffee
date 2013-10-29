@@ -39,3 +39,7 @@ $(document).ready ->
     $('#shift_listing a').each ->
       this.style.display = 'none'
     undefined
+
+  $('.select_btn').click ->
+    $('.select_btn').remove()
+

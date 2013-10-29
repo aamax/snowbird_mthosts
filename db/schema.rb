@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131021052543) do
+ActiveRecord::Schema.define(:version => 20131029012947) do
 
   create_table "galleries", :force => true do |t|
     t.string   "name"
@@ -61,6 +61,15 @@ ActiveRecord::Schema.define(:version => 20131021052543) do
     t.string   "day_of_week"
     t.datetime "created_at",                     :null => false
     t.datetime "updated_at",                     :null => false
+  end
+
+  create_table "surveys", :force => true do |t|
+    t.integer  "user_id"
+    t.datetime "date"
+    t.integer  "count"
+    t.integer  "survey_type"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "sys_configs", :force => true do |t|

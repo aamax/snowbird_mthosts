@@ -1,5 +1,7 @@
 Mthost::Application.routes.draw do
 
+
+
   devise_for :users
 
   resources :users
@@ -11,6 +13,7 @@ Mthost::Application.routes.draw do
   resources :exports
   resources :sys_configs
   resources :reports
+  resources :surveys
 
 
   match '/download_end_of_year', :to =>  "exports#eoy_download"
