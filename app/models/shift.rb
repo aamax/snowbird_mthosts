@@ -70,6 +70,7 @@ class Shift < ActiveRecord::Base
 
   def self.by_date(dt)
     return scoped unless dt.present?
+
     where(:shift_date => dt)
   end
 
@@ -84,6 +85,7 @@ class Shift < ActiveRecord::Base
       end
     end
     dates.uniq
+    return where("shift_date is null") if dates.length == 0
     where("shift_date in ('#{dates.join("','")}')")
   end
 
