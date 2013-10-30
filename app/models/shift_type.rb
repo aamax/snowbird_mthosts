@@ -15,12 +15,12 @@
 class ShiftType < ActiveRecord::Base
   attr_accessible :short_name, :description, :start_time, :end_time, :tasks
 
-  time_regex = /[0-1][0-9]:[0-6][0-9]/
+  #time_regex = /[0-1][0-9]:[0-6][0-9]/
 
   validates   :short_name, :presence => true, :length   => { :maximum => 20 }
   validates   :description, :presence => true, :length   => { :maximum => 40 }
-  validates   :start_time, :presence => true, :format => { :with => time_regex }
-  validates   :end_time, :presence => true, :format => { :with => time_regex }
+  #validates   :start_time, :presence => true, :format => { :with => time_regex }
+  #validates   :end_time, :presence => true, :format => { :with => time_regex }
   validates   :tasks, :length   => { :maximum => 40 }
 
   #has_many    :shifts, :dependent => :destroy
