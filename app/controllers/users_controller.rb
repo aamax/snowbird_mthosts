@@ -1,5 +1,22 @@
 class UsersController < ApplicationController
+  require "json"
+
+  respond_to :html, :json, :js
   load_and_authorize_resource
+
+  def get_survey_users
+    users = User.active_users
+    users.map do |u|
+      name_array = u.name.split(' ')
+      u.name = "#{name_array[-1]}, #{name_array[0..-2].join(' ')}"
+    end
+    @hosts = users.sort { |a, b| a.name <=> b.name }
+    respond_with @hosts
+  end
+
+  def get_user_surveys
+    raise "not yet implemented!"
+  end
 
   def index
     if current_user.has_role? :admin

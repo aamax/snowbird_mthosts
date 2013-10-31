@@ -1,14 +1,75 @@
 <h1>Mountain Host Survey Report</h1>
 
-<table class="table table-striped">
-  <tr>
-      <th>Host</th>
-      <th>Type 1</th>
-      <th>Type 2</th>
-      <th>Needed</th>
-  </tr>
-  <tr>
+<div ng-controller='SurveyCtrl'>
+  <% if current_user.has_role? :admin %>
+      <div class='row'>
+        <div class='span1'>&nbsp;</div>
+        <div class="span3">
+          <strong>HOST:</strong>
+          <select ng-model='current_host'
+                  required options='user.name for user in host_list'>
+          </select>
+        </div>
 
-  </tr>
+        <div class='span3'>
+          <input class="shift_date"
+                         size="10"
+                         title='Survey Date'
+                         type="text"
+                         placeholder="Survey Date"
+                         ng-model='current_date'>
 
-</table>
+          <a href="#" class="btn cal_icon"
+                         data-date-format="yyyy-mm-dd"
+                         data-date="<%= Date.today.strftime('%Y-%m-%d') %>"
+                         id="set_date_btn" title="set date">
+            <i class="icon-calendar"></i>
+          </a>
+        </div>
+
+        <div class='span1'>
+          <strong>Type 1 Count:</strong>
+          type1 amount
+        </div>
+        <div class='span1'>
+          <strong>Type 2 Count:</strong>
+          type2 amount
+        </div>
+
+        <div class='span1'>
+          <a href="#" class='btn btn-success'>
+            <i class='icon-check icon-large icon-white' ng-click='addSurveyRecord()'> Submit </i>
+          </a>
+        </div>
+      </div>
+
+      <hr/>
+  <% end %>
+
+  <table class="table table-striped table-bordered span10">
+    <tr class='row'>
+      <th class='span3'>Host</th>
+      <th class='span2'>Type 1</th>
+      <th class='span2'>Type 2</th>
+      <th class='span3'>Needed</th>
+    </tr>
+
+    <% @surveys.each do |s| %>
+        <tr class='row'>
+          <td>
+            <a ng-click='show_surveys(s[4])' href='#'> <!-- open modal and show this hosts entries -->
+              <%= s[0] %>
+            </a>
+          </td>
+
+          <td><%= s[1] %></td>
+          <td><%= s[2] %></td>
+          <td><%= s[3] %></td>
+        </tr>
+    <% end %>
+  </table>
+
+<!-- modal window to show hosts entries -->
+
+
+</div>

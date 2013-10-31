@@ -4,7 +4,8 @@ class CreateSurveys < ActiveRecord::Migration
       t.integer     :user_id
       t.datetime    :date
       t.integer     :count
-      t.integer     :survey_type
+      t.integer     :type1
+      t.integer     :type2
       t.timestamps
     end
   end

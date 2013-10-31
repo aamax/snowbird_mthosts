@@ -67,9 +67,10 @@ ActiveRecord::Schema.define(:version => 20131029012947) do
     t.integer  "user_id"
     t.datetime "date"
     t.integer  "count"
-    t.integer  "survey_type"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.integer  "type1"
+    t.integer  "type2"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "sys_configs", :force => true do |t|
