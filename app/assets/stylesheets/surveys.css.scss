@@ -1,3 +1,13 @@
 // Place all the styles related to the Surveys controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+#survey_modal {
+  position:fixed;
+  top:15%;
+  left:25%;
+  margin-left: 5px !important;
+  width: 700px !important;
+  height: 300px;
+  max-height: 90% ;
+  background-color: white;
+}

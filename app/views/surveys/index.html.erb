@@ -7,33 +7,35 @@
         <div class="span3">
           <strong>HOST:</strong>
           <select ng-model='current_host'
-                  required options='user.name for user in host_list'>
+                  required ng-options='user.name for user in name_list'>
           </select>
         </div>
 
         <div class='span3'>
           <input class="shift_date"
-                         size="10"
+                         class='span1'
                          title='Survey Date'
                          type="text"
+                         id="survey_add_date"
                          placeholder="Survey Date"
-                         ng-model='current_date'>
-
-          <a href="#" class="btn cal_icon"
-                         data-date-format="yyyy-mm-dd"
-                         data-date="<%= Date.today.strftime('%Y-%m-%d') %>"
-                         id="set_date_btn" title="set date">
-            <i class="icon-calendar"></i>
-          </a>
+                         ng-model='current_date' >
         </div>
 
         <div class='span1'>
-          <strong>Type 1 Count:</strong>
-          type1 amount
+          <input class="span1"
+                 title='Survey Type 1 Amount'
+                 type="text"
+                 id="survey_type_1"
+                 placeholder="Type1"
+                 ng-model='type_1_value' >
         </div>
         <div class='span1'>
-          <strong>Type 2 Count:</strong>
-          type2 amount
+          <input class="span1"
+                 title='Survey Type 2 Amount'
+                 type="text"
+                 id="survey_type_2"
+                 placeholder="Type2"
+                 ng-model='type_2_value' >
         </div>
 
         <div class='span1'>
@@ -47,29 +49,26 @@
   <% end %>
 
   <table class="table table-striped table-bordered span10">
-    <tr class='row'>
+    <tr>
       <th class='span3'>Host</th>
       <th class='span2'>Type 1</th>
       <th class='span2'>Type 2</th>
       <th class='span3'>Needed</th>
     </tr>
 
-    <% @surveys.each do |s| %>
-        <tr class='row'>
-          <td>
-            <a ng-click='show_surveys(s[4])' href='#'> <!-- open modal and show this hosts entries -->
-              <%= s[0] %>
-            </a>
-          </td>
+    <tr ng-repeat='host in name_list'>
+      <td>
+        <a ng-click='openModalForUser(host)'> <!-- open modal and show this hosts entries -->
+          {{ host.name }}
+        </a>
+      </td>
+      <td>{{ host.type1_total }}</td>
+      <td>{{ host.type2_total }}</td>
+      <td>{{ host.needed }}</td>
+    </tr>
 
-          <td><%= s[1] %></td>
-          <td><%= s[2] %></td>
-          <td><%= s[3] %></td>
-        </tr>
-    <% end %>
   </table>
 
 <!-- modal window to show hosts entries -->
-
 
 </div>

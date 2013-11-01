@@ -13,7 +13,7 @@
 #
 
 class Survey < ActiveRecord::Base
-  attr_accessible :date, :count, :survey_type
+  attr_accessible :date, :count, :type1, :type2, :user_id
 
   TYPE1_TOTAL = 38
   TYPE2_TOTAL = 0

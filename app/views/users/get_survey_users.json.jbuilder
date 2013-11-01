@@ -1,5 +1,4 @@
-json.array!(@hosts) do |survey|
-  json.id           st.id
-  json.name         st.name
-
+json.array!(@hosts) do |host|
+  json.id           host[:id]
+  json.name         host[:name]
 end

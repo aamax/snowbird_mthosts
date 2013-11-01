@@ -342,7 +342,7 @@ class User < ActiveRecord::Base
 
           msg << "Any Shifts After #{self.round_one_end_date.strftime("%Y-%m-%d")}"
 
-          round == 2 ? total_for_round = 12 : total_for_round = 16
+          round == 2 ? total_for_round = 12 : round <= 1 ? total_for_round = 7 : total_for_round = 16
           msg << "#{self.shifts.count} of #{total_for_round} shifts selected." if (self.shifts.count <= total_for_round)
           msg << "All Required Shifts Selected." if (self.shifts.count >= total_for_round)
         end

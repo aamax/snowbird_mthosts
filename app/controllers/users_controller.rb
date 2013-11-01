@@ -10,12 +10,8 @@ class UsersController < ApplicationController
       name_array = u.name.split(' ')
       u.name = "#{name_array[-1]}, #{name_array[0..-2].join(' ')}"
     end
-    @hosts = users.sort { |a, b| a.name <=> b.name }
+    @hosts = users.sort { |a, b| a.name <=> b.name }.map { |u| {name: u.name, id: u.id}}
     respond_with @hosts
-  end
-
-  def get_user_surveys
-    raise "not yet implemented!"
   end
 
   def index

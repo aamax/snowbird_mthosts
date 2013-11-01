@@ -26,6 +26,7 @@
 //= require bootstrap-datepicker
 //= require bootstrap/load-image.min
 //= require bootstrap/image-gallery.min
+//= require angular-strap
 //= require_tree .
 
 $(document).ready(function() {

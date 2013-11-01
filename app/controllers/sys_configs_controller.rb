@@ -8,7 +8,7 @@ class SysConfigsController < ApplicationController
     if @sys_config.update_attributes(params[:sys_config])
       flash[:success] = "Configurations updated."
 
-      redirect_to root_path
+      redirect_to edit_sys_config_path(SysConfig.first)
       return
     else
       @title = "Edit System Configurations"
