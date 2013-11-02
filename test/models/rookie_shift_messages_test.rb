@@ -176,7 +176,7 @@ class RookieMessageTest < ActiveSupport::TestCase
     msgs = @rookie_user.shift_status_message
     msgs.include?("All Shadow Shifts Selected.").must_equal true
     msgs.include?("All Round One Rookie Shifts Selected.").must_equal true
-    msgs.include?("Round 1 Type Shifts Only Between #{@rookie_user.last_shadow} and #{@rookie_user.first_non_round_one_end_date}.").must_equal true
+    msgs.include?("Round 1 Type Shifts Only Between #{@rookie_user.last_shadow} and #{@rookie_user.round_one_end_date}.").must_equal true
     msgs.include?("Any Shifts After #{@rookie_user.round_one_end_date}").must_equal true
   end
 
