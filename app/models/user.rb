@@ -334,11 +334,12 @@ class User < ActiveRecord::Base
         else
           # shadows = 2.  round 1 = 5
           msg << "All Round One Rookie Shifts Selected."
-          if !self.first_non_round_one_end_date.nil?
-            msg << "Round 1 Type Shifts Only Between #{self.last_shadow.strftime("%Y-%m-%d")} and #{self.first_non_round_one_end_date.strftime("%Y-%m-%d")}."
-          else
-            msg << "Round 1 Type Shifts Only Between #{self.last_shadow.strftime("%Y-%m-%d")} and #{self.round_one_end_date.strftime("%Y-%m-%d")}."
-          end
+          msg << "Round 1 Type Shifts Only Between #{self.last_shadow.strftime("%Y-%m-%d")} and #{self.round_one_end_date.strftime("%Y-%m-%d")}."
+          #if !self.first_non_round_one_end_date.nil?
+          #  msg << "Round 1 Type Shifts Only Between #{self.last_shadow.strftime("%Y-%m-%d")} and #{self.first_non_round_one_end_date.strftime("%Y-%m-%d")}."
+          #else
+          #  msg << "Round 1 Type Shifts Only Between #{self.last_shadow.strftime("%Y-%m-%d")} and #{self.round_one_end_date.strftime("%Y-%m-%d")}."
+          #end
 
           msg << "Any Shifts After #{self.round_one_end_date.strftime("%Y-%m-%d")}"
 
