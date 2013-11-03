@@ -1,6 +1,8 @@
 require "test_helper"
 
 class ShiftTest < ActiveSupport::TestCase
+
+
   describe "round one shift type" do
     before do
       @p1 = ShiftType.find_by_short_name('P1')
@@ -104,4 +106,6 @@ class ShiftTest < ActiveSupport::TestCase
       end
     end
   end
+
+
 end

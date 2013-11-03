@@ -27,6 +27,7 @@ class ShiftsHelperTest < ActionView::TestCase
     @c3 = ShiftType.find_by_short_name('C3')
     @c4 = ShiftType.find_by_short_name('C4')
     @bg = ShiftType.find_by_short_name('BG')
+    @tl = ShiftType.find_by_short_name('TL')
 
     @start_date = (Date.today()  + 20.days)
   end
@@ -133,6 +134,125 @@ class ShiftsHelperTest < ActionView::TestCase
   end
 
   describe "can_select" do
+    describe "team leaders" do
+      before do
+        @sys_config.bingo_start_date = Date.today + 1.day
+        @sys_config.save!
+        Shift.all.each do |s|
+          if s.can_select(@team_leader)
+            s.short_name.must_equal "TL"
+            @team_leader.shifts << s
+            break if @team_leader.shifts.count >= 12
+          else
+            s.short_name.wont_equal "TL"
+          end
+        end
+      end
+
+      it 'must have 12 shifts after setup' do
+        @team_leader.shifts.count.must_equal 12
+      end
+
+      it "can select team leader shifts regardless of bingo if shift is open" do
+        shifts = Shift.where(:shift_type_id => @tl.id)
+        unselected = shifts.delete_if {|s| !s.user_id.nil? }
+        @senior_user.shifts << unselected[0]
+        target_shift = unselected[0]
+
+        target_shift.can_select(@team_leader).must_equal false
+        shifts.each do |s|
+          if s.user_id.nil?
+            s.can_select(@team_leader).must_equal true
+          else
+            s.can_select(@team_leader).must_equal false
+          end
+        end
+      end
+
+      describe 'round 1' do
+        before do
+          @sys_config.bingo_start_date = Date.today - 1.day
+          @sys_config.save!
+        end
+
+        # do not count team lead shifts against quota for round
+        it 'should allow picking regular shifts in round 1 in spite of team leader shift count' do
+          shifts = Shift.where(:shift_type_id => @p1.id)
+          shifts.each do |s|
+            next if @team_leader.is_working? s.shift_date
+            s.can_select(@team_leader).must_equal true
+          end
+        end
+
+        # can only pick up to 5 shifts in round 1
+        it 'can only pick up to 5 shifts in round 1' do
+          shifts = Shift.where(:shift_type_id => @p1.id)
+          shifts.each do |s|
+            if @team_leader.shifts.count < 17
+              next if @team_leader.is_working? s.shift_date
+              s.can_select(@team_leader).must_equal true
+              @team_leader.shifts << s
+            else
+              s.can_select(@team_leader).must_equal false
+            end
+          end
+        end
+
+        it "cannot pick more than 18 team leader shifts prior to end of bingo" do
+          shifts = Shift.where(:shift_type_id => @tl.id)
+          shifts.each do |s|
+            next unless s.user_id.nil?
+
+            if @team_leader.shifts.count < 18
+              s.can_select(@team_leader).must_equal true
+              @team_leader.shifts << s
+            else
+              s.can_select(@team_leader).must_equal false
+            end
+          end
+        end
+      end
+
+      describe 'round 2' do
+        before do
+          @sys_config.bingo_start_date = Date.today - 2.weeks
+          @sys_config.save!
+        end
+
+        it 'cannot select more than 18 shifts before bingo is done' do
+          shifts = Shift.where(:shift_type_id => @p1.id)
+          shifts.each do |s|
+            next unless s.user_id.nil?
+            next if @team_leader.is_working? s.shift_date
+
+            if @team_leader.shifts.count < 18
+              s.can_select(@team_leader).must_equal true
+              @team_leader.shifts << s
+            else
+              s.can_select(@team_leader).must_equal false
+            end
+          end
+        end
+      end
+
+      describe 'after bingo' do
+        before do
+          @sys_config.bingo_start_date = Date.today - 7.weeks
+          @sys_config.save!
+        end
+
+        it 'can select more than 18 shifts' do
+          shifts = Shift.where(:shift_type_id => @p1.id)
+          shifts.each do |s|
+            next unless s.user_id.nil?
+            next if @team_leader.is_working? s.shift_date
+            s.can_select(@team_leader).must_equal true
+            @team_leader.shifts << s
+          end
+        end
+      end
+    end
+
     describe "basic settings" do
       #it 'only 2 rookies per day on weekend shifts' do
       #  shift_types = [@g1.id, @g2.id, @g3.id, @g4.id]
@@ -752,9 +872,6 @@ class ShiftsHelperTest < ActionView::TestCase
             next if (s.team_leader? || s.shadow? || !s.user_id.nil? || @rookie_user.is_working?(s.shift_date))
             next if (s.shift_date < @rookie_user.round_one_end_date) && !s.round_one_rookie_shift?
             next if (s.shift_date <= @rookie_user.last_shadow)
-            if s.can_select(@rookie_user) == false
-              HostUtility.display_user_and_shift(@rookie_user, s)
-            end
             s.can_select(@rookie_user).must_equal true
           end
         end
@@ -780,9 +897,6 @@ class ShiftsHelperTest < ActionView::TestCase
             next if @rookie_user.is_working? s.shift_date
             next if s.round_one_rookie_shift?
 
-            if s.can_select(@rookie_user) == true
-              HostUtility.display_user_and_shift(@rookie_user, s)
-            end
             s.can_select(@rookie_user).must_equal false
           end
         end

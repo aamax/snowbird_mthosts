@@ -148,12 +148,18 @@ class Shift < ActiveRecord::Base
       # if user is already working this day
       return false if test_user.is_working?(self.shift_date)
       return false if self.shadow? && !test_user.rookie?
-      if self.team_leader?
-        return test_user.team_leader? ? true : false
-      end
 
       bingo_start = HostConfig.bingo_start_date
       round = HostUtility.get_current_round(bingo_start, Date.today, test_user)
+      shift_count = test_user.shifts.count
+
+      if self.team_leader?
+        return false if ((round < 5) && (shift_count >= 18))
+        return test_user.team_leader? ? true : false
+      end
+      if test_user.has_role? :team_leader
+        shift_count = test_user.shifts.map {|s| s.short_name }.delete_if {|s| s == 'TL'}.count
+      end
 
       if !test_user.rookie? && (round == 0)
         return false
@@ -182,11 +188,11 @@ class Shift < ActiveRecord::Base
 
           # if round one or less then no more than 7 shifts selected for rookies
           if round < 2
-            return false if (test_user.shifts.count >= 7)
+            return false if (shift_count >= 7)
           end
-          return false if (test_user.shifts.count >= (round * 5 + 2) && round > 0 && round < 3)
-          return false if round.between?(3,4) && (test_user.shifts.count >= 16)
-          return false if (round == 0) && test_user.shifts.count >= 7
+          return false if (shift_count >= (round * 5 + 2) && round > 0 && round < 3)
+          return false if round.between?(3,4) && (shift_count >= 16)
+          return false if (round == 0) && shift_count >= 7
           return false if (self.shift_date <= max_shadow_date)
           return false if (!self.round_one_rookie_shift? && (self.shift_date <= test_user.round_one_end_date))
         end
@@ -194,8 +200,9 @@ class Shift < ActiveRecord::Base
         if round < 5
           # if pre bingo - return false
           return false if round <= 0
-          return false if (test_user.shifts.count >= (round * 5))
-          return false if (round == 4) && (test_user.shifts.count >= 18)
+
+          return false if (shift_count >= (round * 5))
+          return false if (round <= 4) && (test_user.shifts.count >= 18)
         end
       end
       retval = true

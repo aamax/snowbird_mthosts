@@ -4,6 +4,7 @@ module HostUtility
     puts "Bingo Start: #{SysConfig.first.bingo_start_date}"
     puts "Seniority: #{user.seniority}   seniority_group: #{user.seniority_group}"
     puts "Current Round: #{HostUtility.get_current_round(SysConfig.first.bingo_start_date, Date.today, user)}"
+    puts "Total shifts selected: #{user.shifts.count}"
     (1..5).each do |num|
       puts "    date for round: #{num}  -  #{HostUtility.date_for_round(user, num)}"
     end
@@ -14,7 +15,7 @@ module HostUtility
 
     puts "shadow cnt: #{user.shadow_count} last shadow: #{user.last_shadow} "
     puts "rnd1 cnt: #{user.round_one_type_count}  rnd1 first: #{user.first_round_one_end_date}  rnd1 end: #{user.round_one_end_date}"
-    puts "first non round 1: #{user.first_non_round_one_end_date} is working: #{user.is_working?(shift.shift_date)}"
+    puts "first non round 1: #{user.first_non_round_one_end_date} is already working: #{user.is_working?(shift.shift_date)}"
     puts ""
 
     puts "current shift: #{shift.shift_date}  short_name: #{shift.short_name} can select: #{shift.can_select(user)}"
