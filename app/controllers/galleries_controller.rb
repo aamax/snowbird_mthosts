@@ -2,14 +2,16 @@ class GalleriesController < ApplicationController
   load_and_authorize_resource
 
   def index
+    @galleries = Gallery.all
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json { render json: @galleries }
+    end
+  end
+
+  def gallery_admin
     if current_user.has_role? :admin
       redirect_to gallery_page_path
-    else
-      @galleries = Gallery.all
-      respond_to do |format|
-        format.html # index.html.erb
-        format.json { render json: @galleries }
-      end
     end
   end
 
