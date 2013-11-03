@@ -48,8 +48,13 @@ class ShiftsController < ApplicationController
 
   def select_shift
     s = Shift.find(params[:id])
-    s.user_id = current_user.id
-    s.save
+    if s.user_id.nil?
+      s.user_id = current_user.id
+      s.save
+    else
+      redirect_to :back, :alert => "Sorry - this shift has already been taken. Please try a different shift"
+    end
+
     redirect_to :back
   end
 
