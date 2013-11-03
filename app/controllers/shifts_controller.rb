@@ -55,6 +55,7 @@ class ShiftsController < ApplicationController
       s.save
     else
       redirect_to :back, :alert => "Sorry - this shift has already been taken. Please try a different shift"
+      return
     end
 
     redirect_to :back
