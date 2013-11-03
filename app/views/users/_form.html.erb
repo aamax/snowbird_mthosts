@@ -1,6 +1,17 @@
-<%= gravatar_image_tag(@user.email, :alt => @user.name) %><br/>
-<%= link_to "Setup Gravatar", "http://gravatar.com" %>
+<% if @user.head_shot.nil? %>
+    <%=  gravatar_image_tag(@user.email, :alt => @user.name) %>
+      <%= link_to "Setup Gravatar", "http://gravatar.com" %>
+    <br/>
+
+<% else %>
+      <%= image_tag @user.head_shot %>
+<% end %>
 <br/>
+
+<% if current_user.has_role? :admin %>
+    <strong>Image Path/file: </strong> <%= f.text_field :head_shot, :placeholder => "Headshot File", class: 'name_edit' %><br/>
+<% end %>
+
 <strong>Name: </strong> <%= f.text_field :name, :placeholder => 'Name', class: 'name_edit' %>
 <strong>Nick Name: </strong> <%= f.text_field :nickname, :placeholder => 'NickName', class: 'name_edit' %><br/>
 

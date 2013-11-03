@@ -26,7 +26,6 @@ module HostUtility
     puts "=================================="
   end
 
-
   def self.get_current_round(bingo_start, dt, usr)
     return 0 if dt < bingo_start
 

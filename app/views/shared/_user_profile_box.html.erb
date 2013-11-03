@@ -8,8 +8,12 @@
           <a href='<%= edit_user_path(user) %>'>
       <i class='icon-wrench icon-large icon_blue icon_obj' title='Edit User'></i></a><br/>
       <% end %>
-
-      <%= gravatar_image_tag(user.email, :alt => user.name) %><br/>
+      <%= if user.head_shot.nil?
+            gravatar_image_tag(user.email, :alt => user.name)
+          else
+            image_tag user.head_shot
+          end
+      %><br/>
       <%= link_to user.email, "/send_mail/#{user.email}" %> <br/>
       <% unless user.alt_email.blank? %>
         <strong>Alt Email: </strong> <%= link_to user.alt_email, "/send_mail/#{user.alt_email}" %> <br/>

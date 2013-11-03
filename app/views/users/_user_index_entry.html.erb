@@ -3,7 +3,13 @@
 
   <a href='<%= user_path(object) %>'>
     <%= "#{object.name}" %><br/>
-    <%= gravatar_image_tag(object.email, :alt => object.name) %>
+    <% if object.head_shot.nil? %>
+
+         <%= gravatar_image_tag(object.email, :alt => object.name) %>
+    <% else %>
+         <%= image_tag object.head_shot, :class => 'index_head_shot' %>
+    <% end %>
+
   </a> <br/>
   <%= link_to object.email, "send_mail/#{object.email}" %><br/>  
 </td>
