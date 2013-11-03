@@ -1,4 +1,4 @@
-<% if @user.head_shot.nil? %>
+<% if @user.head_shot.nil? || (object.head_shot == '') %>
     <%=  gravatar_image_tag(@user.email, :alt => @user.name) %>
       <%= link_to "Setup Gravatar", "http://gravatar.com" %>
     <br/>
