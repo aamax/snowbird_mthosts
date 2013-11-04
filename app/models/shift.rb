@@ -158,7 +158,10 @@ class Shift < ActiveRecord::Base
         return test_user.team_leader? ? true : false
       end
       if test_user.has_role? :team_leader
-        shift_count = test_user.shifts.map {|s| s.short_name }.delete_if {|s| s == 'TL'}.count
+        shift_count = 0
+        test_user.shifts.each do |s|
+          shift_count += 1 unless s.team_leader?
+        end
       end
 
       if !test_user.rookie? && (round == 0)

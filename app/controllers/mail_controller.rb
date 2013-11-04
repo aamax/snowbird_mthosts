@@ -90,7 +90,7 @@ class MailController < ApplicationController
       when 'ADMINUSERS'
         users = User.with_role(:admin)
       when 'TEAMLEADER'
-        users = User.with_role(:team_leader)
+        users = User.with_role(:team_leader) + User.find_by_name('John Cotter')
       when 'ROOKIES'
         users = User.rookies
       when 'GROUP1'

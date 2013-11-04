@@ -16,7 +16,7 @@
 <% end %>
 
 <div class='myhome_page'>
-<% if !current_user.team_leader? && (current_user.shift_status_message.length > 0) && (!current_user.supervisor?) %>
+<% if (current_user.shift_status_message.length > 0) && (!current_user.supervisor?) %>
     <div class='row'>
       <%= render "/users/shift_message", :user => current_user, :shift_page => false  %>
       <% if Date.today <= HostUtility.date_for_round(current_user, 6) %>

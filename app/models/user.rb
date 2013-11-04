@@ -103,16 +103,19 @@ class User < ActiveRecord::Base
   end
 
   def shifts_worked
-    worked = shifts.delete_if {|s| (s.shift_date > Date.today) || (s.shift_status_id == -1) }
+    worked = shifts
+    worked.delete_if {|s| (s.shift_date > Date.today) || (s.shift_status_id == -1) }
     worked
   end
 
   def pending_shifts
-    pending = shifts.delete_if {|s| (s.shift_date <= Date.today) }
+    pending = shifts
+    pending.delete_if {|s| (s.shift_date <= Date.today) }
   end
 
   def missed_shifts
-    pending = shifts.delete_if {|s| (s.shift_status_id == -1) }
+    pending = shifts
+    pending.delete_if {|s| (s.shift_status_id == -1) }
   end
 
 
@@ -354,8 +357,8 @@ class User < ActiveRecord::Base
           msg << "No Selections Until #{HostConfig.bingo_start_date + day_offset.days}."
         when 1..4
           limit = round * 5
-          limit = 18 if (round == 4)
-          if self.shifts.length < limit
+          limit = 18 if limit > 18
+          if num_selected < limit
             msg << "#{num_selected} of #{limit} Shifts Selected.  You need to pick #{limit - num_selected}"
           else
             msg << "All required shifts selected for round #{round}. (#{num_selected} of #{limit})"
@@ -370,7 +373,6 @@ class User < ActiveRecord::Base
     end
     msg
   end
-
 
   def round1_date
     HostUtility.date_for_round(self, 1)

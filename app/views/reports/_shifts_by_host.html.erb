@@ -1,4 +1,17 @@
 <% if current_user.has_role? :admin %>
+    <%= form_for(:filter, :url => "/reports/shifts_by_host", :method => :get, :class=>"form-inline") do |f|  %>
+        <%= f.label(:seniority, "Seniority") %>
+        <% if params['filter'].nil? %>
+            <%= f.select("Seniority", @seniority, {},
+                         {:class=>"span2", :multiple => true })  %>
+        <% else %>
+            <%= f.select("Seniority", @seniority, {:selected => params['filter']['Seniority'].reject {|e| e.empty?}},
+                         {:class=>"span2", :multiple => true})  %>
+        <% end %>
+        <br/>
+        <%= f.submit 'Apply', :class=>"btn" %>
+    <% end %>
+
     <h1><%= @title %></h1>
 
     <strong>Total Shifts:</strong> <%= @total_shifts.count %><br />
