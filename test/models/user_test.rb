@@ -32,7 +32,9 @@ class UserTest < ActiveSupport::TestCase
   end
 
   describe "is_trainee_on_date" do
-    assert false
+    it 'should fail til implemented' do
+      assert false
+    end
   end
 
   describe "shadow date" do

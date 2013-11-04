@@ -560,11 +560,6 @@ class ShiftsHelperTest < ActionView::TestCase
             shifts = Shift.where("shift_type_id in (#{shift_types.join(',')}) and shift_date = '#{shift_date}'")
             r1.shifts << shifts[0]
             r2.shifts << shifts[1]
-
-            HostUtility.display_user_and_shift(r1, shifts[2])
-            HostUtility.display_user_and_shift(r2, shifts[2])
-            HostUtility.display_user_and_shift(@rookie_user, shifts[2])
-
             shifts[2].can_select(@rookie_user).must_equal false
           end
 

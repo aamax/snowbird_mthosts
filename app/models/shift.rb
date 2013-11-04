@@ -151,6 +151,7 @@ class Shift < ActiveRecord::Base
     return false unless (suffix.include? 'weekend') || (suffix.include? 'friday')
     users = self.users_on_date.delete_if {|u| u.is_trainee_on_date(self.shift_date)}
 
+    # TODO finish coding trainee can pick?...
 
     true
   end
@@ -205,10 +206,7 @@ class Shift < ActiveRecord::Base
             return false if (!first_non_round_one_date.nil? && (self.shift_date >= first_non_round_one_date))
             return false if (self.shift_date < max_shadow_date)
             return false if !self.round_one_rookie_shift?
-
-            training_count = self.rookies_training_today
             return self.trainee_can_pick?
-            return true
           end
 
           # if round one or less then no more than 7 shifts selected for rookies
