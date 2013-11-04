@@ -31,6 +31,10 @@ class UserTest < ActiveSupport::TestCase
     @start_date = (Date.today()  + 20.days)
   end
 
+  describe "is_trainee_on_date" do
+    assert false
+  end
+
   describe "shadow date" do
     before  do
       @sys_config.bingo_start_date = (Date.today -  9.days)

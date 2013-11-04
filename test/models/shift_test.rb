@@ -1,26 +1,79 @@
 require "test_helper"
 
 class ShiftTest < ActiveSupport::TestCase
+  before do
+    @sys_config = SysConfig.first
+    @p1 = ShiftType.find_by_short_name('P1')
+    @p2 = ShiftType.find_by_short_name('P2')
+    @p3 = ShiftType.find_by_short_name('P3')
+    @p4 = ShiftType.find_by_short_name('P4')
+    @g1 = ShiftType.find_by_short_name('G1')
+    @g2 = ShiftType.find_by_short_name('G2')
+    @g3 = ShiftType.find_by_short_name('G3')
+    @g4 = ShiftType.find_by_short_name('G4')
+    @g5 = ShiftType.find_by_short_name('G5')
+    @c1 = ShiftType.find_by_short_name('C1')
+    @c2 = ShiftType.find_by_short_name('C2')
+    @c3 = ShiftType.find_by_short_name('C3')
+    @c4 = ShiftType.find_by_short_name('C4')
+    @bg = ShiftType.find_by_short_name('BG')
+  end
 
-
-  describe "round one shift type" do
+  describe 'trainee_can_pick?' do
     before do
-      @p1 = ShiftType.find_by_short_name('P1')
-      @p2 = ShiftType.find_by_short_name('P2')
-      @p3 = ShiftType.find_by_short_name('P3')
-      @p4 = ShiftType.find_by_short_name('P4')
-      @g1 = ShiftType.find_by_short_name('G1')
-      @g2 = ShiftType.find_by_short_name('G2')
-      @g3 = ShiftType.find_by_short_name('G3')
-      @g4 = ShiftType.find_by_short_name('G4')
-      @g5 = ShiftType.find_by_short_name('G5')
-      @c1 = ShiftType.find_by_short_name('C1')
-      @c2 = ShiftType.find_by_short_name('C2')
-      @c3 = ShiftType.find_by_short_name('C3')
-      @c4 = ShiftType.find_by_short_name('C4')
-      @bg = ShiftType.find_by_short_name('BG')
+      # make g1 weekend and g1 friday shift types
+      @g1_friday = FactoryGirl.create(:shift_type, :short_name => 'G1friday')
+      @g1_weekend = FactoryGirl.create(:shift_type, :short_name => 'G1weekend')
+
+      # make shifts using g1 weekend and g1 friday shifts
+      @weekend_shift = FactoryGirl.create(:shift, :shift_date => Date.today + 1.week,
+                                          :shift_type_id => @g1_weekend.id, :user_id => nil)
+      @friday_shift = FactoryGirl.create(:shift, :shift_date => Date.today + 1.week + 1.day,
+                                        :shift_type_id => @g1_friday.id, :user_id => nil)
     end
 
+    # no trainees on this date
+    it 'true if no trainees on this date' do
+      @weekend_shift.users_on_date.count.must_equal 0
+      @weekend_shift.trainee_can_pick?.must_equal true
+      @friday_shift.users_on_date.count.must_equal 0
+      @friday_shift.trainee_can_pick?.must_equal true
+    end
+
+    # date is not weekend or friday
+    it 'date is not weekend or friday' do
+      shift = Shift.find_by_shift_type_id(@g1.id)
+      shift.trainee_can_pick?.must_equal false
+    end
+
+    describe "trainees are working" do
+      before do
+        # 1 trainee on date
+        @rookie2 = FactoryGirl.create(:user, :email => 'f1.user@example.com', :start_year => @sys_config.season_year, :active_user => true)
+        @rookie2.shifts << @weekend_shift
+        @rookie2.shifts << @friday_shift
+        @weekend_shift2 = FactoryGirl.create(:shift, :shift_date => Date.today + 1.week,
+                                            :shift_type_id => @g1_weekend.id, :user_id => nil)
+        @friday_shift2 = FactoryGirl.create(:shift, :shift_date => Date.today + 1.week + 1.day,
+                                           :shift_type_id => @g1_friday.id, :user_id => nil)
+      end
+
+      # 1 trainee on friday
+      it "one on friday returns false" do
+        @friday_shift2.trainee_can_pick?.must_equal false
+      end
+
+      # 1 trainee on weekend
+      it 'one on weekend returns true' do
+        @weekend_shift2.trainee_can_pick?.must_equal true
+      end
+
+      # 2 trainees on weekend
+
+    end
+  end
+
+  describe "round one shift type" do
     describe 'should return true' do
       it 'shift is G1' do
         @g1s = FactoryGirl.create(:shift, :shift_type_id => @g1.id, :shift_date => Date.today)

@@ -302,6 +302,10 @@ class User < ActiveRecord::Base
     retval
   end
 
+  def is_trainee_on_date(aDate)
+    raise 'is trainee not yet implemented'
+  end
+
   def shift_status_message
     msg = []
     day_offset = get_day_offset

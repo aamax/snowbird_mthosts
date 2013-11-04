@@ -254,25 +254,6 @@ class ShiftsHelperTest < ActionView::TestCase
     end
 
     describe "basic settings" do
-      #it 'only 2 rookies per day on weekend shifts' do
-      #  shift_types = [@g1.id, @g2.id, @g3.id, @g4.id]
-      #  r1 = FactoryGirl.create(:user, :email => 'f1.user@example.com', :start_year => @sys_config.season_year)
-      #  r2 = FactoryGirl.create(:user, :email => 'f2.user@example.com', :start_year => @sys_config.season_year)
-      #  shifts = Shift.where("shift_type_id in (#{shift_types.join(',')}) and shift_date = '#{Date.today()  + 20.days}'")
-      #  r1.shifts << shifts[0]
-      #  r2.shifts << shifts[1]
-      #  shifts[2].can_select(@rookie_user).must_equal false
-      #end
-
-      # TODO
-      #it 'only 1 rookies per day on friday shifts' do
-      #  g1friday = FactoryGirl.create(:shift_type, short_name: 'G3friday')
-      #  r1 = FactoryGirl.create(:user, :email => 'f1.user@example.com', :start_year => @sys_config.season_year)
-      #  shifts = Shift.where("shift_type_id = #{g1friday.id} and shift_date = #{Date.today()  + 20.days}")
-      #  r1.shifts << shifts[0]
-      #  shifts[2].can_select(@rookie_user).must_equal false
-      #end
-
       it "should not be selectable if shift user already assigned that day" do
         shift = nil
         Shift.all.each do |s|
@@ -570,6 +551,33 @@ class ShiftsHelperTest < ActionView::TestCase
               s.can_select(@rookie_user).must_equal false
             end
           end
+
+          it 'only 2 rookies per day on weekend shifts' do
+            shift_date = @dates[-1] + 2.days
+            shift_types = [@g1.id, @g2.id, @g3.id, @g4.id]
+            r1 = FactoryGirl.create(:user, :email => 'f1.user@example.com', :start_year => @sys_config.season_year, :active_user => true)
+            r2 = FactoryGirl.create(:user, :email => 'f2.user@example.com', :start_year => @sys_config.season_year, :active_user => true)
+            shifts = Shift.where("shift_type_id in (#{shift_types.join(',')}) and shift_date = '#{shift_date}'")
+            r1.shifts << shifts[0]
+            r2.shifts << shifts[1]
+
+            HostUtility.display_user_and_shift(r1, shifts[2])
+            HostUtility.display_user_and_shift(r2, shifts[2])
+            HostUtility.display_user_and_shift(@rookie_user, shifts[2])
+
+            shifts[2].can_select(@rookie_user).must_equal false
+          end
+
+          # TODO
+          #it 'only 1 rookies per day on friday shifts' do
+          #  g1friday = FactoryGirl.create(:shift_type, short_name: 'G3friday')
+          #  r1 = FactoryGirl.create(:user, :email => 'f1.user@example.com', :start_year => @sys_config.season_year)
+          #  shifts = Shift.where("shift_type_id = #{g1friday.id} and shift_date = #{Date.today()  + 20.days}")
+          #  r1.shifts << shifts[0]
+          #  shifts[2].can_select(@rookie_user).must_equal false
+          #end
+
+
         end
       end
 
