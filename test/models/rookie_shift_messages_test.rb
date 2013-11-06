@@ -8,7 +8,7 @@ class RookieMessageTest < ActiveSupport::TestCase
     @sys_config = SysConfig.first
     @rookie_user = User.find_by_name('rookie')
     @p1 = ShiftType.find_by_short_name('P1')
-    @g1 = ShiftType.find_by_short_name('G1')
+    @g1 = ShiftType.find_by_short_name('G1weekend')
     @sh = ShiftType.find_by_short_name('SH')
   end
 

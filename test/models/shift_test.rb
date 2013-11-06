@@ -7,13 +7,11 @@ class ShiftTest < ActiveSupport::TestCase
     @p2 = ShiftType.find_by_short_name('P2')
     @p3 = ShiftType.find_by_short_name('P3')
     @p4 = ShiftType.find_by_short_name('P4')
-    @g1 = ShiftType.find_by_short_name('G1')
-    @g2 = ShiftType.find_by_short_name('G2')
-    @g3 = ShiftType.find_by_short_name('G3')
-    @g4 = ShiftType.find_by_short_name('G4')
+    @g1 = ShiftType.find_by_short_name('G1weekend')
+    @g2 = ShiftType.find_by_short_name('G2weekend')
+    @g3 = ShiftType.find_by_short_name('G3weekend')
+    @g4 = ShiftType.find_by_short_name('G4weekend')
     @g5 = ShiftType.find_by_short_name('G5')
-    @c1 = ShiftType.find_by_short_name('C1')
-    @c2 = ShiftType.find_by_short_name('C2')
     @c3 = ShiftType.find_by_short_name('C3')
     @c4 = ShiftType.find_by_short_name('C4')
     @bg = ShiftType.find_by_short_name('BG')
@@ -42,7 +40,7 @@ class ShiftTest < ActiveSupport::TestCase
 
     # date is not weekend or friday
     it 'date is not weekend or friday' do
-      shift = Shift.find_by_shift_type_id(@g1.id)
+      shift = Shift.find_by_shift_type_id(@c3.id)
       shift.trainee_can_pick?.must_equal false
     end
 
@@ -52,9 +50,9 @@ class ShiftTest < ActiveSupport::TestCase
         @rookie2 = FactoryGirl.create(:user, :email => 'f1.user@example.com', :start_year => @sys_config.season_year, :active_user => true)
         @rookie2.shifts << @weekend_shift
         @rookie2.shifts << @friday_shift
-        @weekend_shift2 = FactoryGirl.create(:shift, :shift_date => Date.today + 1.week,
+        @weekend_shift2 = FactoryGirl.create(:shift, :shift_date => @weekend_shift.shift_date,
                                             :shift_type_id => @g1_weekend.id, :user_id => nil)
-        @friday_shift2 = FactoryGirl.create(:shift, :shift_date => Date.today + 1.week + 1.day,
+        @friday_shift2 = FactoryGirl.create(:shift, :shift_date => @friday_shift.shift_date,
                                            :shift_type_id => @g1_friday.id, :user_id => nil)
       end
 
@@ -69,7 +67,13 @@ class ShiftTest < ActiveSupport::TestCase
       end
 
       # 2 trainees on weekend
-
+      it 'two on weekend returns false' do
+        @rookie3 = FactoryGirl.create(:user, :email => 'f3.user@example.com', :start_year => @sys_config.season_year, :active_user => true)
+        @rookie3.shifts << @weekend_shift2
+        @weekend_shift3 = FactoryGirl.create(:shift, :shift_date => @weekend_shift.shift_date,
+                                             :shift_type_id => @g1_weekend.id, :user_id => nil)
+        @weekend_shift3.trainee_can_pick?.must_equal false
+      end
     end
   end
 

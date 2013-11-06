@@ -148,11 +148,10 @@ class Shift < ActiveRecord::Base
 
   def trainee_can_pick?
     suffix = self.type_suffix.downcase
-    return false unless (suffix.include? 'weekend') || (suffix.include? 'friday')
-    users = self.users_on_date.delete_if {|u| u.is_trainee_on_date(self.shift_date)}
-
-    # TODO finish coding trainee can pick?...
-
+    return false unless ((suffix.include? 'weekend') || (suffix.include? 'friday'))
+    users = self.users_on_date.delete_if {|u| !u.is_trainee_on_date(self.shift_date)}
+    return false if ((users.count >=1) && (suffix.include? 'friday'))
+    return false if ((users.count >=2) && (suffix.include? 'weekend'))
     true
   end
 
@@ -191,13 +190,9 @@ class Shift < ActiveRecord::Base
         shadow_count = test_user.shadow_count
         if (self.shadow?)
           return false if shadow_count >= 2
-          return false if (round_one_shift_count > 0) && (first_round_one_date <= self.shift_date)
+          return false if (round_one_shift_count > 0) && (test_user.first_round_one_end_date <= self.shift_date)
         else
           return false if shadow_count < 2
-          if round < 2
-            return false if (shift_count >= 7)
-          end
-
           max_shadow_date = test_user.last_shadow
           first_round_one_date = test_user.first_round_one_end_date
           first_non_round_one_date = test_user.first_non_round_one_end_date
@@ -207,6 +202,7 @@ class Shift < ActiveRecord::Base
             return false if (self.shift_date < max_shadow_date)
             return false if !self.round_one_rookie_shift?
             return self.trainee_can_pick?
+            return true
           end
 
           # if round one or less then no more than 7 shifts selected for rookies

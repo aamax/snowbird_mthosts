@@ -17,10 +17,10 @@ class ShiftsHelperTest < ActionView::TestCase
     @p2 = ShiftType.find_by_short_name('P2')
     @p3 = ShiftType.find_by_short_name('P3')
     @p4 = ShiftType.find_by_short_name('P4')
-    @g1 = ShiftType.find_by_short_name('G1')
-    @g2 = ShiftType.find_by_short_name('G2')
-    @g3 = ShiftType.find_by_short_name('G3')
-    @g4 = ShiftType.find_by_short_name('G4')
+    @g1 = ShiftType.find_by_short_name('G1weekend')
+    @g2 = ShiftType.find_by_short_name('G2weekend')
+    @g3 = ShiftType.find_by_short_name('G3weekend')
+    @g4 = ShiftType.find_by_short_name('G4weekend')
     @g5 = ShiftType.find_by_short_name('G5')
     @c1 = ShiftType.find_by_short_name('C1')
     @c2 = ShiftType.find_by_short_name('C2')
@@ -391,7 +391,6 @@ class ShiftsHelperTest < ActionView::TestCase
                     (!s.round_one_rookie_shift?) || (s.shift_date >= @rookie_user.first_non_round_one_end_date))
                   s.can_select(@rookie_user).must_equal(false)
                 else
-
                   s.can_select(@rookie_user).must_equal true
                 end
               end
@@ -560,6 +559,14 @@ class ShiftsHelperTest < ActionView::TestCase
             shifts = Shift.where("shift_type_id in (#{shift_types.join(',')}) and shift_date = '#{shift_date}'")
             r1.shifts << shifts[0]
             r2.shifts << shifts[1]
+
+
+            if shifts[2].can_select(@rookie_user) == true
+              HostUtility.display_user_and_shift(@rookie_user, s)
+            end
+
+
+
             shifts[2].can_select(@rookie_user).must_equal false
           end
 

@@ -17,10 +17,14 @@ class UserTest < ActiveSupport::TestCase
     @p2 = ShiftType.find_by_short_name('P2')
     @p3 = ShiftType.find_by_short_name('P3')
     @p4 = ShiftType.find_by_short_name('P4')
-    @g1 = ShiftType.find_by_short_name('G1')
-    @g2 = ShiftType.find_by_short_name('G2')
-    @g3 = ShiftType.find_by_short_name('G3')
-    @g4 = ShiftType.find_by_short_name('G4')
+    @g1 = ShiftType.find_by_short_name('G1weekend')
+    @g2 = ShiftType.find_by_short_name('G2weekend')
+    @g3 = ShiftType.find_by_short_name('G3weekend')
+    @g4 = ShiftType.find_by_short_name('G4weekend')
+    @g1f = ShiftType.find_by_short_name('G1friday')
+    @g2f = ShiftType.find_by_short_name('G2friday')
+    @g3f = ShiftType.find_by_short_name('G3friday')
+    @g4f = ShiftType.find_by_short_name('G4friday')
     @g5 = ShiftType.find_by_short_name('G5')
     @c1 = ShiftType.find_by_short_name('C1')
     @c2 = ShiftType.find_by_short_name('C2')
@@ -32,8 +36,38 @@ class UserTest < ActiveSupport::TestCase
   end
 
   describe "is_trainee_on_date" do
-    it 'should fail til implemented' do
-      assert false
+    before do
+      r1s = [@g1.id, @g2.id, @g3.id, @g4.id]
+      @shadows = Shift.where(:shift_type_id => @sh.id)
+      @round_ones = Shift.where("shift_type_id in (#{r1s.join(',')})")
+    end
+
+    it 'rookie no selections: true' do
+      @rookie_user.is_trainee_on_date(Shift.first.shift_date).must_equal true
+    end
+
+    it "rookie with 1 shadow" do
+      @rookie_user.shifts << @shadows[0]
+      @rookie_user.is_trainee_on_date(@shadows[0].shift_date + 3.days).must_equal true
+    end
+
+    it "rookie with 2 shadows" do
+      @rookie_user.shifts << @shadows[0]
+      @rookie_user.shifts << @shadows[1]
+      @rookie_user.is_trainee_on_date(@shadows[1].shift_date + 3.days).must_equal true
+    end
+
+    it "rookie with 2 shadows and 1 - 5 round one shifts" do
+      @rookie_user.shifts << @shadows[0]
+      @rookie_user.shifts << @shadows[1]
+      (0..3).each do |n|
+        @rookie_user.shifts << @round_ones[n]
+
+        @rookie_user.is_trainee_on_date(@round_ones[n].shift_date + 3.days).must_equal true
+      end
+
+      @rookie_user.shifts << @round_ones[4]
+      @rookie_user.is_trainee_on_date(@shadows[1].shift_date + 3.days).must_equal false
     end
   end
 

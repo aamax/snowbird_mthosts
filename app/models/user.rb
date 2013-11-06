@@ -303,7 +303,17 @@ class User < ActiveRecord::Base
   end
 
   def is_trainee_on_date(aDate)
-    raise 'is trainee not yet implemented'
+    shifts = self.shifts
+    shifts.delete_if {|s| s.shift_date > aDate }
+    shadow_count = 0
+    round_one_count = 0
+    shifts.each do |s|
+      return false if (shadow_count >= 2) && (round_one_count >= 5)
+      shadow_count += 1 if s.shadow?
+      round_one_count += 1 if s.round_one_rookie_shift?
+    end
+    return false if (shadow_count >= 2) && (round_one_count >= 5)
+    true
   end
 
   def shift_status_message
