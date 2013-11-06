@@ -8,6 +8,7 @@ class ShiftTest < ActiveSupport::TestCase
     @p3 = ShiftType.find_by_short_name('P3')
     @p4 = ShiftType.find_by_short_name('P4')
     @g1 = ShiftType.find_by_short_name('G1weekend')
+    @g1f = ShiftType.find_by_short_name('G1friday')
     @g2 = ShiftType.find_by_short_name('G2weekend')
     @g3 = ShiftType.find_by_short_name('G3weekend')
     @g4 = ShiftType.find_by_short_name('G4weekend')
@@ -141,25 +142,6 @@ class ShiftTest < ActiveSupport::TestCase
       it 'shift is P4' do
         @p4s = FactoryGirl.create(:shift, :shift_type_id => @p4.id, :shift_date => Date.today)
         @p4s.round_one_rookie_shift?.must_equal false
-      end
-    end
-  end
-
-  # TODO
-  describe 'rookie count' do
-    describe 'rookies working training shifts' do
-      describe 'friday' do
-        it 'no rookies'
-        it '1 rookie'
-        it '1 training rookie, 1 past training'
-        it '1 senior, 1 middle, 1 newer, 1 rookie'
-      end
-
-      describe 'weekend' do
-        it 'no rookies'
-        it '1 rookie'
-        it '1 training rookie, 1 past training'
-        it '1 senior, 1 middle, 1 newer, 1 rookie'
       end
     end
   end

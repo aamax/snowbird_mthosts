@@ -101,10 +101,6 @@ class Shift < ActiveRecord::Base
     value
   end
 
-  def hosts_this_date
-    Shift.where("shift_date = #{self.shift_date}").users
-  end
-
   def date
     shift_date
   end
