@@ -76,6 +76,8 @@
             <li><%= link_to "Manage Configurations", edit_sys_config_path(SysConfig.first) %></li>
             <li><%= link_to "Manage Gallery", gallery_page_path %></li>
             <li><%= link_to "Manage Max's Message", edit_page_path('aamax') %></li>
+
+
             <% if current_user.email == 'aamax@xmission.com' %>
                 <li class='disabled'>Admin Operations</li>
                 <li><%= link_to "Reset passwords and confirmations for all.", "/reset_confirms_and_passwords",
@@ -90,7 +92,10 @@
                                 :confirm => "You sure you want to reset all the host seniorities?" %></li>
                 <li><%= link_to "Set all Hosts As Group 1 (Senior)", "/set_start_year/#{SysConfig.first.group_1_year}",
                                 :confirm => "You sure you want to reset all the host seniorities?" %></li>
+                <li><%= link_to "Set all hosts inactive", "#",
+                                :confirm => "You sure you want to set all hosts as inactive?" %></li>
             <% end %>
+
 
             <li class='disabled'>Exports</li>
             <li><a href="/download_end_of_year">End of Year Shift Summary</a></li>

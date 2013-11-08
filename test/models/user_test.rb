@@ -42,22 +42,22 @@ class UserTest < ActiveSupport::TestCase
       @round_ones = Shift.where("shift_type_id in (#{r1s.join(',')})")
     end
 
-    it 'rookie no selections: true' do
-      @rookie_user.is_trainee_on_date(Shift.first.shift_date).must_equal true
+    it 'rookie no selections: false - needs shadows' do
+      @rookie_user.is_trainee_on_date(Shift.first.shift_date).must_equal false
     end
 
-    it "rookie with 1 shadow" do
+    it "rookie with 1 shadow: false - needs shadow" do
       @rookie_user.shifts << @shadows[0]
-      @rookie_user.is_trainee_on_date(@shadows[0].shift_date + 3.days).must_equal true
+      @rookie_user.is_trainee_on_date(@shadows[0].shift_date + 3.days).must_equal false
     end
 
-    it "rookie with 2 shadows" do
+    it "rookie with 2 shadows: true" do
       @rookie_user.shifts << @shadows[0]
       @rookie_user.shifts << @shadows[1]
       @rookie_user.is_trainee_on_date(@shadows[1].shift_date + 3.days).must_equal true
     end
 
-    it "rookie with 2 shadows and 1 - 5 round one shifts" do
+    it "rookie with 2 shadows and 1 - 5 round one shifts: true" do
       @rookie_user.shifts << @shadows[0]
       @rookie_user.shifts << @shadows[1]
       (0..3).each do |n|
@@ -76,7 +76,7 @@ class UserTest < ActiveSupport::TestCase
       @sys_config.bingo_start_date = (Date.today -  9.days)
       @sys_config.save!
       Shift.all.each do |s|
-        if ((s.can_select(@rookie_user) == true))
+        if (s.can_select(@rookie_user) == true)
           @rookie_user.shifts << s
           @last_date = s.shift_date if s.shadow?
         end

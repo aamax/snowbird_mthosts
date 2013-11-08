@@ -303,17 +303,11 @@ class User < ActiveRecord::Base
   end
 
   def is_trainee_on_date(aDate)
-    shifts = self.shifts
-    shifts.delete_if {|s| s.shift_date > aDate }
-    shadow_count = 0
-    round_one_count = 0
-    shifts.each do |s|
-      return false if (shadow_count >= 2) && (round_one_count >= 5)
-      shadow_count += 1 if s.shadow?
-      round_one_count += 1 if s.round_one_rookie_shift?
-    end
-    return false if (shadow_count >= 2) && (round_one_count >= 5)
-    true
+    return false unless self.rookie?
+    return false if self.last_shadow.nil? || (self.shadow_count < 2)
+    return true if self.round_one_end_date.nil? || (aDate <= self.round_one_end_date) || (self.round_one_type_count < 5 )
+
+    false
   end
 
   def shift_status_message

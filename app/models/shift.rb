@@ -152,7 +152,7 @@ class Shift < ActiveRecord::Base
   end
 
   def users_on_date
-    Shift.where(:shift_date => self.shift_date).map {|s| s.user }.delete_if {|u| u.nil? }
+    Shift.where(:shift_date => self.shift_date).delete_if {|s| s.short_name == 'SH' }.map {|s| s.user }.delete_if {|u| u.nil? }
   end
 
   def can_select(test_user)
@@ -188,17 +188,19 @@ class Shift < ActiveRecord::Base
           return false if shadow_count >= 2
           return false if (round_one_shift_count > 0) && (test_user.first_round_one_end_date <= self.shift_date)
         else
-          return false if shadow_count < 2
+          return false if (shadow_count < 2)
           max_shadow_date = test_user.last_shadow
+          return false if (max_shadow_date >= self.shift_date)
           first_round_one_date = test_user.first_round_one_end_date
           first_non_round_one_date = test_user.first_non_round_one_end_date
           if round_one_shift_count < 5
             return false if (!self.round_one_rookie_shift?)
             return false if (!first_non_round_one_date.nil? && (self.shift_date >= first_non_round_one_date))
             return false if (self.shift_date < max_shadow_date)
-            return false if !self.round_one_rookie_shift?
+          end
+
+          if test_user.is_trainee_on_date(self.shift_date)
             return self.trainee_can_pick?
-            return true
           end
 
           # if round one or less then no more than 7 shifts selected for rookies

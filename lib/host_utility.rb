@@ -18,12 +18,23 @@ module HostUtility
     puts "first non round 1: #{user.first_non_round_one_end_date} is already working: #{user.is_working?(shift.shift_date)}"
     puts ""
 
-    puts "current shift: #{shift.shift_date}  short_name: #{shift.short_name} can select: #{shift.can_select(user)}"
+    puts "current shift: #{shift.shift_date}  short_name: #{shift.full_short_name} can select: #{shift.can_select(user)}"
+    puts ""
+    puts "is trainee: #{user.is_trainee_on_date(shift.shift_date)}"
     puts ""
 
+    puts "shifts for user:"
     user.shifts.each do |s|
       puts "dt: #{s.shift_date}  shortname: #{s.short_name}"
     end
+    puts ""
+
+    puts "shifts on date: #{shift.shift_date}"
+    shifts = Shift.where("shift_date = '#{shift.shift_date}'")
+    shifts.each do |s|
+      puts "short_name: #{s.full_short_name}  host: #{s.user_id.nil? ? "nil" : s.user.name }"
+    end
+
     puts "=================================="
   end
 
