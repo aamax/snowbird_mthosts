@@ -172,6 +172,47 @@ class ShiftTest < ActiveSupport::TestCase
       @weekend_shift3.can_select(r).must_equal false
     end
   end
+  
+  describe 'can select edge cases' do
+    # TODO finish tests
+    
+    
+    before do
+      @day = Date.today + 5.weeks
+      
+      # give user shadow shifts
+      @user = FactoryGirl.create(:user, :email => "user_mail_new@example.com", :start_year => @sys_config.season_year, :active_user => true)
+      sh1 = FactoryGirl.create(:shift, :shift_date => @day,
+                                 :shift_type_id => @sh.id, :user_id => nil)
+      sh2 = FactoryGirl.create(:shift, :shift_date => @day + 1.day,
+                                 :shift_type_id => @sh.id, :user_id => nil)
+      @user.shifts << sh1
+      @user.shifts << sh2      
+    end
+    
+    describe 'after training is over' do
+      before do
+        # set bingo to 6 weeks ago
+        
+      end
+      
+      # weekend p, c, g shifts
+      
+      # Weekday p shifts
+      
+      # friday p, c, g shifts
+      
+    end
+    
+    it 'must not be able to pick non-round1 weekend shifts after 4 round 1 shifts picked' do
+      
+    end
+    
+    # TODO must be able to pick shifts after training is over - weekend, weekday, friday (p and c shifts too)
+    # TODO must not be able to pick non-round 1 shifts after 4 round one shifts are picked (on weekends)
+
+
+  end
 
   describe "can_select with some rookies past trainee" do
     before do
