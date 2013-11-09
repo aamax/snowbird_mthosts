@@ -1,7 +1,6 @@
 <%= link_to "Create New Picture <i class='icon-camera icon-large icon-white'></i>".html_safe,
             new_gallery_path, class: "btn btn-success" %>
 <br/><hr/>
-
 <div id="modal-gallery" class="modal modal-gallery hide fade" tabindex="-1">
   <div class="modal-header">
     <a class="close" data-dismiss="modal">&times;</a>
@@ -24,12 +23,9 @@
 <div id="gallery" data-toggle="modal-gallery" data-target="#modal-gallery" data-selector="span.gallery-item">
   <% @galleries.each do |pic| %>
 
-      <span class='gallery-item' data-href=' <%= pic.pic.url(:large) %>' title=' <%= "#{pic.name} by #{pic.user.name}" %>'>
+      <span class='gallery-item' data-href=' <%= pic.pic.url(:large) %>' title=' <%= pic.name %>'>
           <image src=' <%= pic.pic.url(:thumb) %>' class='gallery-thumbnail'></image>
       </span>
 
   <% end %>
 </div>
-
-
-

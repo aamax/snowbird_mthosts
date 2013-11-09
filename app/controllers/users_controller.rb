@@ -29,6 +29,7 @@ class UsersController < ApplicationController
 
   def show
     add_meetings_to_shifts(@user)
+    @galleries = @user.galleries
   end
 
   def edit

@@ -17,14 +17,15 @@ class ShiftTest < ActiveSupport::TestCase
     @c4 = ShiftType.find_by_short_name('C4')
     @bg = ShiftType.find_by_short_name('BG')
     @sh = ShiftType.find_by_short_name('SH')
+
+    @g1_friday = FactoryGirl.create(:shift_type, :short_name => 'G1friday')
+    @g1_weekend = FactoryGirl.create(:shift_type, :short_name => 'G1weekend')
+    @p1_weekend = FactoryGirl.create(:shift_type, :short_name => 'P1weekend')
   end
 
   describe 'trainee_can_pick?' do
     before do
       # make g1 weekend and g1 friday shift types
-      @g1_friday = FactoryGirl.create(:shift_type, :short_name => 'G1friday')
-      @g1_weekend = FactoryGirl.create(:shift_type, :short_name => 'G1weekend')
-
       # make shifts using g1 weekend and g1 friday shifts
       @sh1 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.days,
                                   :shift_type_id => @sh.id, :user_id => nil)
@@ -98,8 +99,6 @@ class ShiftTest < ActiveSupport::TestCase
       @day3 = Date.today + 3.weeks + 5.days
       @day4 = Date.today + 3.weeks + 6.days
 
-      @g1_friday = FactoryGirl.create(:shift_type, :short_name => 'G1friday')
-      @g1_weekend = FactoryGirl.create(:shift_type, :short_name => 'G1weekend')
       @rookies = []
       (0..1).each do |n|
         r = FactoryGirl.create(:user, :email => "user_mail#{n}@example.com", :start_year => @sys_config.season_year, :active_user => true)
@@ -192,26 +191,34 @@ class ShiftTest < ActiveSupport::TestCase
     
     describe 'after training is over' do
       before do
-        # set bingo to 6 weeks ago
-        
+        @sys_config.bingo_start_date = Date.today - 5.days
+        @sys_config.save!
+
+        # create and select shifts to finish training
+        (2..5).each do |n|
+          shift = FactoryGirl.create(:shift, :shift_date => @day + n.days,
+                                             :shift_type_id => @g1_weekend.id, :user_id => nil)
+          @user.shifts << shift
+        end
+        shift = FactoryGirl.create(:shift, :shift_date => @day + 8.days,
+                                   :shift_type_id => @g1_weekend.id, :user_id => nil)
+        @user.shifts << shift
       end
-      
-      # weekend p, c, g shifts
-      
-      # Weekday p shifts
-      
-      # friday p, c, g shifts
-      
-    end
-    
-    it 'must not be able to pick non-round1 weekend shifts after 4 round 1 shifts picked' do
-      
-    end
-    
-    # TODO must be able to pick shifts after training is over - weekend, weekday, friday (p and c shifts too)
-    # TODO must not be able to pick non-round 1 shifts after 4 round one shifts are picked (on weekends)
 
+      it 'cannot pick non rookie shifts before last selected rookie shift' do
+        dt = @user.shifts[-1].shift_date
+        shift = FactoryGirl.create(:shift, :shift_date => dt - 1.day,
+                                   :shift_type_id => @p1_weekend.id, :user_id => nil)
+        shift.can_select(@user).must_equal false
+      end
 
+      it 'cannot pick g1 weekend shift inside 5th rookie shift, if all shifts picked for round' do
+        dt = @user.shifts[-1].shift_date
+        shift = FactoryGirl.create(:shift, :shift_date => dt - 1.day,
+                                   :shift_type_id => @g1_weekend.id, :user_id => nil)
+        shift.can_select(@user).must_equal false
+      end
+    end
   end
 
   describe "can_select with some rookies past trainee" do
@@ -225,8 +232,6 @@ class ShiftTest < ActiveSupport::TestCase
       @og2 = @rookies[1]
       @tr1 = @rookies[2]
       @tr2 = @rookies[3]
-      @g1_friday = FactoryGirl.create(:shift_type, :short_name => 'G1friday')
-      @g1_weekend = FactoryGirl.create(:shift_type, :short_name => 'G1weekend')
 
       @start_date = Date.today + 2.days
       (0..1).each do |d|

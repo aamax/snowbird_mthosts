@@ -197,10 +197,8 @@ class Shift < ActiveRecord::Base
             return false if (!self.round_one_rookie_shift?)
             return false if (!first_non_round_one_date.nil? && (self.shift_date >= first_non_round_one_date))
             return false if (self.shift_date < max_shadow_date)
-          end
-
-          if test_user.is_trainee_on_date(self.shift_date)
-            return self.trainee_can_pick?
+          else
+            return false if (!self.round_one_rookie_shift?) && (test_user.round_one_end_date > self.shift_date)
           end
 
           # if round one or less then no more than 7 shifts selected for rookies
@@ -209,6 +207,10 @@ class Shift < ActiveRecord::Base
           return false if (round == 0) && shift_count >= 7
           return false if (self.shift_date <= max_shadow_date)
           return false if (!self.round_one_rookie_shift? && (self.shift_date <= test_user.round_one_end_date))
+
+          if test_user.is_trainee_on_date(self.shift_date)
+            return self.trainee_can_pick?
+          end
         end
       else
         if round < 5
