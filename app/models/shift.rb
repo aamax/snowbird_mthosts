@@ -204,7 +204,7 @@ class Shift < ActiveRecord::Base
           # if round one or less then no more than 7 shifts selected for rookies
           return false if (shift_count >= (round * 5 + 2) && round > 0 && round < 3)
           return false if round.between?(3,4) && (shift_count >= 16)
-          return false if (round == 0) && shift_count >= 7
+          return false if (round == 0) && (shift_count >= 7)
           return false if (self.shift_date <= max_shadow_date)
           return false if (!self.round_one_rookie_shift? && (self.shift_date <= test_user.round_one_end_date))
 

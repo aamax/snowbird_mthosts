@@ -36,7 +36,7 @@ class ShiftsHelperTest < ActionView::TestCase
     describe 'all hosts' do
       it 'cannot drop shifts within two week limit' do
         # set bingo to start 6 rounds ago
-        @sys_config.bingo_start_date = HostUtility.date_for_round(@rookie_user, 6)
+        @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 6)
         @sys_config.save!
 
         # create shadow and select by rookie (shift date 1 week out)
@@ -57,7 +57,7 @@ class ShiftsHelperTest < ActionView::TestCase
 
     describe 'non-rookies' do
       it 'can drop any shifts outside of 2 week window' do
-        @sys_config.bingo_start_date = HostUtility.date_for_round(@rookie_user, 6)
+        @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 6)
         @sys_config.save!
 
         # create 3 other shifts and select by other hosts (shift date 1 week out)
@@ -111,7 +111,7 @@ class ShiftsHelperTest < ActionView::TestCase
       #end
 
       it 'can drop non shadow, non-round one shifts outside of 2 week window' do
-        @sys_config.bingo_start_date = HostUtility.date_for_round(@rookie_user, 6)
+        @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 6)
         @sys_config.save!
 
         # create shadow and select by rookie (shift date 1 week out)
@@ -373,7 +373,7 @@ class ShiftsHelperTest < ActionView::TestCase
             end
 
             it "can only select round 1s prior to non-round 1 (after picking a non round 1)" do
-              @sys_config.bingo_start_date = HostUtility.date_for_round(@rookie_user, 3)
+              @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 3)
               @sys_config.save!
               dt = @rookie_user.shifts[-1].shift_date
 
