@@ -55,10 +55,16 @@
               </div>
            <% end %>
 
-            <button type="button" class="btn btn shift_button" data-toggle="collapse"
+            <button type="button" class="btn shift_button" data-toggle="collapse"
               data-target=<%= "#date_#{curr_date}" %>>
-                <%="#{s.shift_date.strftime("%a")} - #{s.shift_date} &nbsp;&nbsp;-&nbsp;&nbsp;Total: #{getShiftTotal(s.shift_date)} / Available: #{getSelectedShifts(s.shift_date)}".html_safe %>
+                <%="#{s.shift_date.strftime("%a")} - #{s.shift_date} &nbsp;&nbsp;-&nbsp;&nbsp;Total:
+                #{getShiftTotal(s.shift_date)} / Available: #{getSelectedShifts(s.shift_date)}".html_safe %>
             </button>
+          &nbsp;&nbsp;&nbsp;
+          <a href="/send_mail/THIS_DATE/?date=<%= s.shift_date %>" class='btn btn-info btn-small'>
+            <i class='icon-envelope'></i> &nbsp;&nbsp;&nbsp; eMail Hosts Working This Day
+          </a>
+
           <br/>
 
             <div id='<%= "date_#{curr_date}" %>' class="collapse <%= @show_expanded ? "in" : "out" %>">

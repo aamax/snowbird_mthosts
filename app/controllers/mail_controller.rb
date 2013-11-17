@@ -108,6 +108,8 @@ class MailController < ApplicationController
         users = User.inactive_users
       when 'NONCONFIRMED'
         users = User.non_confirmed_users
+      when 'THIS_DATE'
+        users = Shift.where(shift_date: params[:date]).map {|s| s.user }
       else
         @emailaddress = nil
     end
