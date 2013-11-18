@@ -61,6 +61,8 @@ class UsersController < ApplicationController
       if !@user.update_attributes(params[:user])
         redirect_to :back, :alert => "Error saving user: #{@user.errors.messages}"
       else
+        process_user_roles params
+
         if is_conf_page
           redirect_to root_path
         else
@@ -76,6 +78,7 @@ class UsersController < ApplicationController
       flash[:alert] = "Error creating new User: #{@user.errors.messages}"
       redirect_to new_user_path
     else
+      process_user_roles params
       redirect_to users_path
     end
   end
@@ -123,4 +126,31 @@ class UsersController < ApplicationController
     u.working_shifts << mtgs if (mtgs.length > 0)
     u.working_shifts = u.working_shifts.flatten.sort {|a,b| a.shift_date <=> b.shift_date }
   end
+
+  def process_user_roles params
+    return if !current_user.has_role? :admin
+    if params['role'].nil?
+      @user.roles = []
+    else
+      missing_roles = []
+      extra_roles = []
+      params['role'].each do |k, v|
+        if !(@user.roles.map { |r| r.name }.include? k)
+          missing_roles << k
+        end
+      end
+      @user.roles.each do |r|
+        if params['role'][r.name].nil?
+          extra_roles << r.name
+        end
+      end
+      extra_roles.each do |r|
+        @user.remove_role r
+      end
+      missing_roles.each do |r|
+        @user.add_role r
+      end
+    end
+  end
+
 end

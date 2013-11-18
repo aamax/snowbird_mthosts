@@ -102,12 +102,14 @@ class MailController < ApplicationController
         users = User.group3
       when 'ALLACTIVEHOSTS'
         users = User.active_users
+        users << User.find_by_name('John Cotter')
       when 'ALLHOSTS'
         users = User.all
       when 'ALLINACTIVEHOSTS'
         users = User.inactive_users
       when 'NONCONFIRMED'
         users = User.non_confirmed_users
+        users << User.find_by_name('John Cotter')
       when 'THIS_DATE'
         users = Shift.where(shift_date: params[:date]).map {|s| s.user }
       else

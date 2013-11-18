@@ -1,9 +1,14 @@
 getToday = ->
-  current_date = new Date()
-  day = current_date.getDate()
-  month = current_date.getMonth() + 1
-  year = current_date.getFullYear()
-  "#{year}-#{month}-#{day}"
+  getDateStr(new Date())
+
+getDateStr = (aDate) ->
+  if aDate
+    curr_date = aDate.getDate()
+    curr_month = aDate.getMonth() + 1;
+    curr_year = aDate.getFullYear();
+    return "#{curr_year}-#{curr_month}-#{curr_date}"
+  else
+    '---'
 
 item_in_array = (test_item, test_array) ->
   for item in test_array
@@ -35,12 +40,14 @@ padstr = (value, length) ->
   $scope.getSurveyTotals = (host_id) ->
     t1 = 0
     t2 = 0
+    last = undefined
     for rec in $scope.survey_data_list
       if rec.user_id == host_id
         t1 += rec.type1
         t2 += rec.type2
+        last = new Date(rec.date)
     # TODO calculate needed value from totals
-    {type1: padstr(t1,5), type2: padstr(t2, 5), needed: "smiles"}
+    {type1: padstr(t1,5), type2: padstr(t2, 5), needed: 38 - t1, last_entered: last}
 
   $(".survey_cal_icon").datepicker().on "changeDate", (ev) ->
     date_str = ev.date.getFullYear() + "-" + pad((ev.date.getMonth() + 1), 2) + "-" + pad(ev.date.getDate(), 2)
@@ -48,10 +55,17 @@ padstr = (value, length) ->
     $(this).datepicker "hide"
 
   $scope.calculate_survey_list = () ->
-    $scope.name_list = []
+    $scope.name_list.length = 0
     for host in $scope.user_list
       totals = $scope.getSurveyTotals(host.id)
-      $scope.name_list.push {name: host.name, id: host.id, type1_total: totals.type1, type2_total: totals.type2, needed: totals.needed}
+      $scope.name_list.push {
+        name: host.name,
+        id: host.id,
+        type1_total: totals.type1,
+        type2_total: totals.type2,
+        needed: totals.needed,
+        last_entered: getDateStr(totals.last_entered)
+      }
 
   # declare resource for host list
   $scope.survey_data_list = _surveys.query()
@@ -60,13 +74,27 @@ padstr = (value, length) ->
     $scope.calculate_survey_list()
   )
 
-  $scope.addSurveyRecord = () ->
-    new_record = {user_id: $scope.current_host.id, date: $scope.current_date, type1: $scope.type_1_value, type2: $scope.type_2_value}
-    new_res = _surveys.save(new_record)
-    $scope.survey_data_list.push new_res
-    $scope.user_list = _users.query(->
+  $scope.addCurrentEntries = () ->
+    number_changes = 0
+    for host in $scope.name_list
+      if host.new_value
+        number_changes += 1
+        new_record = {
+          user_id: host.id,
+          date: getToday(),
+          type1: host.new_value,
+        }
+        new_res = _surveys.save(new_record)
+        $scope.survey_data_list.push new_res
+        host.new_value = undefined
+    $scope.user_list.length = 0
+    $scope.tmp_list = _users.query(->
+      for item in $scope.tmp_list
+        $scope.user_list.push item
       $scope.calculate_survey_list()
+      $scope.addCurrentEntries() if number_changes > 0
     )
+
 
   $scope.openModalForUser = (host) ->
     $scope.current_host = host
@@ -75,3 +103,4 @@ padstr = (value, length) ->
 
 
 @SurveyCtrl.$inject = ["$scope", "$resource", "$http"]
+

@@ -59,12 +59,33 @@
 <%= f.password_field :password_confirmation, class: 'password_edit', placeholder: 'Password Confirmation' %> <br/><br/>
 
 <% if @user.roles.length > 0 %>
-    <h5>Roles:</h5>
-    <ul>
-      <% @user.roles.each do |r| %>
-          <li><%= r.name %></li>
-      <% end %>
-    </ul>
+    <% unless current_user.has_role? :admin %>
+        <h5>Roles:</h5>
+        <ul>
+          <% @user.roles.each do |r| %>
+              <li><%= r.name %></li>
+          <% end %>
+        </ul>
+    <% else %>
+        <h5>Roles</h5>
+        <ul>
+          <% Role.all.each do |r| %>
+              <% if @user.roles.include? r
+                   role_checked = true
+                 else
+                   role_checked = false
+                 end %>
+              <li>
+                <input title='Role on/off' id=<%= "role_#{r.name}" %> name=<%= "role[#{r.name}" %> type="checkbox" <%= role_checked ? 'checked' : '' %> />
+
+                <%= r.name %>
+              </li>
+          <% end %>
+
+        </ul>
+    <% end %>
+    <hr/>
+
 <% end %>
 
 <h5>shift summary info: </h5>

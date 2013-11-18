@@ -21,11 +21,22 @@
 </div>
 
 <div id="gallery" data-toggle="modal-gallery" data-target="#modal-gallery" data-selector="span.gallery-item">
-  <% @galleries.each do |pic| %>
 
+    <% @galleries.each do |pic| %>
+      <div class='span2'>
       <span class='gallery-item' data-href=' <%= pic.pic.url(:large) %>' title=' <%= pic.name %>'>
           <image src=' <%= pic.pic.url(:thumb) %>' class='gallery-thumbnail'></image>
       </span>
+        <br/>
 
-  <% end %>
+        <%= pic.name %>
+        <br/>
+        <a href=<%= edit_gallery_path(pic.id) %>><i class="icon-wrench btn btn-info" title="edit image"></i></a>
+        <%= link_to "<i class='icon-trash btn btn-danger'></i>".html_safe, pic, :method => :delete,
+                    :confirm => "You sure you want to delete this Image?",
+                    :title => "Delete #{pic.name}", :page => 'admin' %>
+      </div>
+    <% end %>
+
+
 </div>
