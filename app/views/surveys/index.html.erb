@@ -2,35 +2,35 @@
 
 <div ng-controller='SurveyCtrl'>
   <% if current_user.has_role? :admin %>
-      <div class='survey_index_entry_box'>
-        <br/>
-      <div class='row'>
-        <div class='span1'>&nbsp;</div>
-        <div class="span3">
-          <strong>HOST:</strong>
-          <select ng-model='current_host'
-                  required ng-options='user.name for user in name_list'>
-          </select>
-        </div>
+      <!--<div class='survey_index_entry_box'>-->
+        <!--<br/>-->
+      <!--<div class='row'>-->
+        <!--<div class='span1'>&nbsp;</div>-->
+        <!--<div class="span3">-->
+          <!--<strong>HOST:</strong>-->
+          <!--<select ng-model='current_host'-->
+                  <!--required ng-options='user.name for user in name_list'>-->
+          <!--</select>-->
+        <!--</div>-->
 
-        <div class='span3'>
-          <input class="shift_date"
-                         class='span1'
-                         title='Survey Date'
-                         type="text"
-                         id="survey_add_date"
-                         placeholder="Survey Date"
-                         ng-model='current_date' >
-        </div>
+        <!--<div class='span3'>-->
+          <!--<input class="shift_date"-->
+                         <!--class='span1'-->
+                         <!--title='Survey Date'-->
+                         <!--type="text"-->
+                         <!--id="survey_add_date"-->
+                         <!--placeholder="Survey Date"-->
+                         <!--ng-model='current_date' >-->
+        <!--</div>-->
 
-        <div class='span1'>
-          <input class="span1"
-                 title='Survey Type 1 Amount'
-                 type="text"
-                 id="survey_type_1"
-                 placeholder="Type1"
-                 ng-model='type_1_value' >
-        </div>
+        <!--<div class='span1'>-->
+          <!--<input class="span1"-->
+                 <!--title='Survey Type 1 Amount'-->
+                 <!--type="text"-->
+                 <!--id="survey_type_1"-->
+                 <!--placeholder="Type1"-->
+                 <!--ng-model='type_1_value' >-->
+        <!--</div>-->
         <!--<div class='span1'>-->
           <!--<input class="span1"-->
                  <!--title='Survey Type 2 Amount'-->
@@ -45,8 +45,8 @@
             <i class='icon-check icon-large icon-white' ng-click='addCurrentEntries()'> Submit </i>
           </a>
         </div>
-      </div>
-      </div>
+      <!--</div>-->
+      <!--</div>-->
       <hr/>
   <% end %>
 
