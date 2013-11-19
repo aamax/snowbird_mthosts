@@ -43,6 +43,8 @@ gem 'gon'
 gem "paperclip", "~> 3.0"
 gem 'aws-sdk'
 
+gem 'rollbar'
+
 
 group :development do
   #gem 'debugger'

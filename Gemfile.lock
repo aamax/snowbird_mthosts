@@ -200,6 +200,8 @@ GEM
       json (~> 1.4)
     ref (1.0.5)
     rolify (3.2.0)
+    rollbar (0.12.0)
+      multi_json (~> 1.5)
     ruby_parser (3.2.2)
       sexp_processor (~> 4.1)
     sass (3.2.12)
@@ -279,6 +281,7 @@ DEPENDENCIES
   pry
   rails (= 3.2.13)
   rolify (>= 3.2.0)
+  rollbar
   sass-rails (~> 3.2.3)
   therubyracer
   tinymce-rails
