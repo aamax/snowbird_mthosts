@@ -44,6 +44,7 @@ gem "paperclip", "~> 3.0"
 gem 'aws-sdk'
 
 gem 'rollbar'
+gem 'unicorn'
 
 
 group :development do
