@@ -154,6 +154,7 @@ GEM
     minitest-wscolor (0.0.3)
       minitest (>= 2.3.1)
     multi_json (1.8.1)
+    newrelic_rpm (3.6.9.171)
     ngmin-rails (0.4.0)
       rails (>= 3.1)
     nokogiri (1.6.0)
@@ -279,6 +280,7 @@ DEPENDENCIES
   minitest-reporters (>= 0.5.0)
   minitest-stub-const
   minitest-wscolor (>= 0.0.3)
+  newrelic_rpm
   ng-rails-csrf!
   ngmin-rails
   nokogiri

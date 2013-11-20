@@ -23,7 +23,7 @@
 
 <div id="gallery" data-toggle="modal-gallery" data-target="#modal-gallery" data-selector="span.gallery-item">
   <% @galleries.each do |pic| %>
-      <div class='span2'>
+      <div class='span2 gallery_index_thumb'>
       <span class='gallery-item' data-href=' <%= pic.pic.url(:large) %>' title=' <%= pic.name %>'>
           <image src=' <%= pic.pic.url(:thumb) %>' class='gallery-thumbnail'></image>
       </span>

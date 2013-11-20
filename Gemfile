@@ -46,6 +46,8 @@ gem 'aws-sdk'
 gem 'rollbar'
 gem 'unicorn'
 
+gem 'newrelic_rpm'
+
 
 group :development do
   #gem 'debugger'
