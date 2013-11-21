@@ -89,10 +89,14 @@
           <% end %>
         </td>
         <td class="align-left">
-          <% if s.can_select(current_user) && !current_user.supervisor? %>
-            <a href=<%= "select_shift/#{s.id}" %> class='select_btn' ><i class="icon-male btn btn-primary" title="select shift">&nbsp;&nbsp;Select</i></a>
+          <% if @can_select && !current_user.supervisor? %>
+              <a href=<%= "select_shift/#{s.id}" %> class='select_btn' ><i class="icon-male btn btn-primary" title="select shift">&nbsp;&nbsp;Select</i></a>
+          <% else %>
+              <% if (s.can_select(current_user) == true) && !current_user.supervisor? %>
+                <a href=<%= "select_shift/#{s.id}" %> class='select_btn' ><i class="icon-male btn btn-primary" title="select shift">&nbsp;&nbsp;Select</i></a>
+              <% end %>
           <% end %>
-          <% if s.can_drop current_user %>
+          <% if (s.can_drop(current_user) == true) %>
             <a href=<%= "drop_shift/#{s.id}" %> class='select_btn' ><i class="icon-trash btn btn-danger" title="drop shift">&nbsp;&nbsp;Drop</i></a>
           <% end %>
         </td>

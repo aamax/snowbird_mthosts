@@ -16,7 +16,6 @@
 
 class Shift < ActiveRecord::Base
   attr_accessible :user_id, :shift_type_id, :shift_status_id, :shift_date, :day_of_week
-  attr_accessor :can_select#, :shift_type_short_name, :shift_type_description
 
   before_save :set_day_of_week
 
@@ -229,16 +228,11 @@ class Shift < ActiveRecord::Base
   end
 
   def can_drop(current_user)
-    return false if (self.short_name[0] == 'M')
-    return false if (self.user_id.nil?)
+    return false if self.user_id.nil?
     return true if current_user.has_role? :admin
     return false if current_user.id != self.user_id
     return false if self.shift_date <= Date.today + 13.days
-
-    #if current_user.rookie?
-    #  return false if (current_user.shifts.count > 2) && (self.shadow?)
-    #  return false if (current_user.shifts.count > 7) && (self.shift_date <= current_user.round_one_end_date)
-    #end
+    return false if (self.short_name[0] == 'M')
     true
   end
 
