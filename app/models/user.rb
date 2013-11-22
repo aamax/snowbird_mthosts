@@ -246,7 +246,7 @@ class User < ActiveRecord::Base
 
   def get_meetings
     meetings = []
-    first_date = Date.today
+    first_date = SysConfig.first.season_start_date
     MEETINGS.each do |m|
       unless self.rookie?
         if ((m[:type] == "M1") || (m[:type] == "M3"))

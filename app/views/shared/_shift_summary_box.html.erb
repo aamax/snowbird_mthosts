@@ -5,21 +5,17 @@
       <th>Need To Pick</th>
       <th>Scheduled</th>
       <th>Worked</th>
-      <th>Pending</th>
       <th>Target</th>
     </tr>
     <tr>
       <td>
-        <strong> <%= 20 - user.get_working_shifts.count %> </strong>
+        <strong> <%= user.get_working_shifts.count <= 20 ? 20 - user.get_working_shifts.count : 0 %> </strong>
       </td>
       <td>
         <strong> <%= user.get_working_shifts.count %> </strong>
       </td>
       <td>
-        <strong> <%= user.shifts_worked.count %> </strong>
-      </td>
-      <td>
-        <strong> <%= user.get_working_shifts.count - user.shifts_worked.count %> </strong>
+        <strong> <%= user.get_working_shifts.delete_if { |s| s.shift_date > Date.today() }.count %> </strong>
       </td>
       <td>
         <strong> 20 </strong>

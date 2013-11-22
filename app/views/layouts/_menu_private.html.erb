@@ -19,6 +19,7 @@
         <li class='disabled'>Host Program Info</li>
         <li><%= link_to "Shift Card", "/shiftcard" %></li>
         <li><%= link_to "Mt Host Manual (2013-2014)", "/docs/HostManual2013.pdf", :target => "_blank"  %></li>
+        <li><%= link_to "Mt Host Manual (2013-2014) [Highlighted]", "/docs/HostManual2013_highlighted.pdf", :target => "_blank"  %></li>
         <li><%= link_to "Parking Policy 2012-13", "/docs/parking_policy.pdf", :target => "_blank" %></li>
         <li><%= link_to "Parking Policy 2013-14", "/docs/parking_policy_2013_14.doc", :target => "_blank" %></li>
         <li><%= link_to "Host Phone List", "/show_contact_info" %></li>
@@ -78,8 +79,25 @@
             <li><%= link_to "Manage Max's Message", edit_page_path('aamax') %></li>
 
 
-            <% if current_user.email == 'aamax@xmission.com' %>
-                <li class='disabled'>Admin Operations</li>
+
+
+
+            <li class='disabled'>Exports</li>
+            <li><a href="/download_end_of_year">End of Year Shift Summary</a></li>
+
+            <li class='disabled'>Reports</li>
+            <li><a href="/reports/confirmations">Host Confirmations</a></li>
+            <li><a href="/reports/shifts_by_host">Shifts By Host</a></li>
+            <li><a href="/shifts_by_date">Hosts Working By Date</a></li>
+            <li><a href="/skipatrol">Ski Patrol Reporting</a></li>
+          </ul>
+        </li>
+
+        <% if current_user.email == 'aamax@xmission.com' %>
+            <li class="dropdown">
+              <%= link_to "Max's Menu", "#", :class => "dropdown-toggle", :data => {:toggle => "dropdown"}, :id => "admin_menu" %>
+              <ul class="dropdown-menu">
+                <li class='disabled'>Operations</li>
                 <li><%= link_to "Reset passwords and confirmations for all.", "/reset_confirms_and_passwords",
                                 :confirm => "You sure you want to reset confirmations and passwords?" %></li>
                 <li><%= link_to "Clear all Host Assignments", "/clear_assignments",
@@ -94,19 +112,10 @@
                                 :confirm => "You sure you want to reset all the host seniorities?" %></li>
                 <li><%= link_to "Set all hosts inactive", "#",
                                 :confirm => "You sure you want to set all hosts as inactive?" %></li>
-            <% end %>
+              </ul>
+            </li>
+        <% end %>
 
-
-            <li class='disabled'>Exports</li>
-            <li><a href="/download_end_of_year">End of Year Shift Summary</a></li>
-
-            <li class='disabled'>Reports</li>
-            <li><a href="/reports/confirmations">Host Confirmations</a></li>
-            <li><a href="/reports/shifts_by_host">Shifts By Host</a></li>
-            <li><a href="/shifts_by_date">Hosts Working By Date</a></li>
-            <li><a href="/skipatrol">Ski Patrol Reporting</a></li>
-          </ul>
-        </li>
     <% end %>
 
   </ul>

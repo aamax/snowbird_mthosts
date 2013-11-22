@@ -14,12 +14,10 @@
 
           <td><%= "#{s.shift_type.short_name[0..1]}:#{s.shift_type.description}:#{s.shift_type.tasks}" %></td>
           <td>
+
             <% if s.can_drop current_user %>
-
-                <a href='<%= "drop_shift/#{s.id}" %>' class='select_btn' >
-                    <i class="icon-trash btn btn-danger" title="drop shift"></i>
-                </a>
-
+                <%= link_to "<i class='icon-trash btn btn-danger' title='drop shift'>&nbsp;&nbsp;Drop</i>".html_safe,  "/drop_shift/#{s.id}",
+                            :confirm => "You sure you want to drop this shift?", :title => "Clear Shift", :class=>'drop_shift_btn select_btn' %>
             <% end %>
           </td>
         </tr>

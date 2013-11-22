@@ -16,7 +16,14 @@
 <% end %>
 
 <div class='myhome_page'>
-<% if (current_user.shift_status_message.length > 0) && (!current_user.supervisor?) %>
+  <div class='row'>
+    <%= render '/shared/hosts_working_today', :user => current_user %>
+    <% unless current_user.supervisor? %>
+        <%= render '/shared/next_three_shifts', :user => current_user %>
+    <% end %>
+  </div>
+
+  <% if (current_user.shift_status_message.length > 0) && (!current_user.supervisor?) %>
     <div class='row'>
       <%= render "/users/shift_message", :user => current_user, :shift_page => false  %>
       <% if Date.today <= HostUtility.date_for_round(current_user, 6) %>
@@ -33,12 +40,6 @@
     <% end %>
   </div>
 
-  <div class='row'>
-    <%= render '/shared/hosts_working_today', :user => current_user %>
-    <% unless current_user.supervisor? %>
-        <%= render '/shared/next_three_shifts', :user => current_user %>
-    <% end %>
-  </div>
 
 </div>
 
