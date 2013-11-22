@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131103025803) do
+ActiveRecord::Schema.define(:version => 20131122015032) do
 
   create_table "galleries", :force => true do |t|
     t.string   "name"
@@ -53,6 +53,8 @@ ActiveRecord::Schema.define(:version => 20131103025803) do
     t.datetime "updated_at",  :null => false
   end
 
+  add_index "shift_types", ["short_name"], :name => "index_shift_types_on_short_name"
+
   create_table "shifts", :force => true do |t|
     t.integer  "user_id"
     t.integer  "shift_type_id",                  :null => false
@@ -62,6 +64,9 @@ ActiveRecord::Schema.define(:version => 20131103025803) do
     t.datetime "created_at",                     :null => false
     t.datetime "updated_at",                     :null => false
   end
+
+  add_index "shifts", ["shift_date"], :name => "index_shifts_on_shift_date"
+  add_index "shifts", ["user_id"], :name => "index_shifts_on_user_id"
 
   create_table "surveys", :force => true do |t|
     t.integer  "user_id"
@@ -119,6 +124,7 @@ ActiveRecord::Schema.define(:version => 20131103025803) do
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+  add_index "users", ["name"], :name => "index_users_on_name"
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
   create_table "users_roles", :id => false, :force => true do |t|
