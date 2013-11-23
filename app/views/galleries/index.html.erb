@@ -24,13 +24,13 @@
 <div id="gallery" data-toggle="modal-gallery" data-target="#modal-gallery" data-selector="span.gallery-item">
   <% @galleries.each do |pic| %>
       <div class='span2 gallery_index_thumb'>
-      <span class='gallery-item' data-href=' <%= pic.pic.url(:large) %>' title=' <%= pic.name %>'>
+      <span class='gallery-item' data-href=' <%= pic.pic.url(:large) %>' title=' <%= "#{pic.name} - #{pic.user.name}" %>'>
           <image src=' <%= pic.pic.url(:thumb) %>' class='gallery-thumbnail'></image>
       </span>
-        <% if pic.user == current_user %>
-            <br/>
+        <br/> <br/>
+        <%= pic.name %><br/>
 
-            <%= pic.name %>
+        <% if pic.user == current_user %>
             <br/>
             <a href=<%= edit_gallery_path(pic.id) %>><i class="icon-wrench btn btn-info" title="edit image"></i></a>
             <%= link_to "<i class='icon-trash btn btn-danger'></i>".html_safe, pic, :method => :delete,

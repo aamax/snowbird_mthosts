@@ -8,7 +8,7 @@
       <% (0..4).each do |n| %>
           <% pic = @galleries[p + n] %>
           <% break if pic.nil? %>
-          <div class='span2'>
+          <div class='span2 gallery_index_thumb'>
             <image src=' <%= pic.pic.url(:thumb) %>' class='gallery-thumbnail'></image>
 
             <br/> <br/>

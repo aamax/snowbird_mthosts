@@ -4,7 +4,7 @@
    
   <div class="readonlyfield">
     <%= f.label "TO:" %>
-    <%= f.text_field :toaddress, :value => @emailaddress, 
+    <%= f.text_area :toaddress, :value => @emailaddress,
                       :readonly => true,
  					  :style=>'width: 700px;',
                       :placeholder => 'Send To' %>
