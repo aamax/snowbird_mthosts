@@ -29,10 +29,15 @@ class MailController < ApplicationController
     @fromaddress ||= params[:mailmessage][:fromaddress]
     @message = "FROM: #{current_user.name}(#{current_user.email})\n\nTO: [#{params[:mailmessage][:toaddress]}]\n\n#{params[:mailmessage][:message]}"
 
-    UserMailer.send_email(current_user, @useremail, @fromaddress,
-                                 @subject, @message).deliver
+    if params[:include_john] == '1'
+      jemail = User.find_by_name('John Cotter').email
 
-    flash[:success] = "Email sent..."
+      unless @useremail.include? jemail
+        @useremail += ",#{jemail}"
+      end
+    end
+
+    flash[:notice] = "Email sent to #{@useremail}..."
     redirect_to(root_path)
   end
 
