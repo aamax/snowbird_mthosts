@@ -123,7 +123,7 @@ class MailController < ApplicationController
     if (users.nil? || users.empty?)
       @emailaddress = nil
     else
-      @emailaddress = users.map {|u| u.email}.join(',')
+      @emailaddress = users.compact.reject(&:empty?).map {|u| u.email}.join(',')
     end
 
     @emailaddress
