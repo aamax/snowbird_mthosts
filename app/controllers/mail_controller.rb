@@ -4,6 +4,8 @@ class MailController < ApplicationController
   def select_hosts_for_email
     if current_user.has_role? :admin
       inactive_users = User.inactive_users
+    else
+      inactive_users = []
     end
     @users = User.active_users + inactive_users
     @users.sort! {|a,b| a.name <=> b.name }
