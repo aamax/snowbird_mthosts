@@ -1,0 +1,41 @@
+<% @shifts_today = Shift.where("shift_date = '#{shift_date}'")
+   if @shifts_today.length > 0 %>
+    <h3>Hosts Working On: <%= shift_date.strftime("%a.  %m-%d-%Y") %></h3>
+    <table class="table table-striped table-bordered">
+      <tr>
+        <th>Host</th>
+        <th>Shift Name</th>
+        <th>Description</th>
+        <th>Tasks</th>
+      </tr>
+      <% @shifts_today.each do |object| %>
+          <tr>
+
+            <td>
+              <% if object.user_id.nil? %>
+                  UnSet
+              <% else %>
+                  <%= user = User.find(object.user_id)
+                      user.name
+                  %>
+              <% end %>
+
+            </td>
+
+            <td>
+              <%=
+                  @shifttype = ShiftType.find(object.shift_type_id)
+                  @shifttype.short_name[0...2]
+              %>
+            </td>
+
+            <td>
+              <%= @shifttype.description %>
+            </td>
+            <td>
+              <%= @shifttype.tasks %>
+            </td>
+          </tr>
+      <% end %>
+    </table>
+<% end %>

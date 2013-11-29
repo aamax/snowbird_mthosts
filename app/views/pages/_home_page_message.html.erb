@@ -1,7 +1,6 @@
-<div class='home_page_message span10  float_right'>
+<div class='home_page_message  float_right'>
   <span class='float_right'>Push Button To Close Message ^&nbsp;&nbsp;</span>
   <%= msg.content.html_safe %>
-  <%= 	link_to "Edit", edit_page_path(msg.name), :class=>"btn" if !msg.nil? && !msg.content.blank? && current_user.has_role?(:admin) %>
-  <br/>
+  <%= 	link_to "Edit", edit_page_path(msg.name), :class=>"btn" if current_user.has_role?(:admin) %>
 </div>
 
