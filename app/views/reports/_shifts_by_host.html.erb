@@ -4,6 +4,10 @@
         <% if params['filter'].nil? %>
             <%= f.select("Seniority", @seniority, {},
                          {:class=>"span2", :multiple => true })  %>
+            <br/>
+            <strong>Only Needing Shifts </strong>&nbsp;&nbsp;
+            <%= f.check_box(:need_shifts, :checked => false) %>
+
         <% else %>
             <%= f.select("Seniority", @seniority, {:selected => params['filter']['Seniority'].reject {|e| e.empty?}},
                          {:class=>"span2", :multiple => true})  %>
