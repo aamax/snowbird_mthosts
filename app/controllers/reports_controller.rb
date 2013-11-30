@@ -46,6 +46,17 @@ class ReportsController < ApplicationController
           end
         end
       end
+      if params['filter'] && params['filter']['need_shifts']== '1'
+        tmp_arr = Array.new(@hosts)
+        @hosts = []
+        tmp_arr.each do |user|
+          if user.rookie?
+            @hosts << user if user.shifts.count < 16
+          else
+            @hosts << user if user.shifts.count < 18
+          end
+        end
+      end
 
       @total_shifts = Shift.all
       @total_assigned_shifts = Shift.assigned

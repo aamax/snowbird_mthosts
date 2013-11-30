@@ -7,8 +7,13 @@
         <% else %>
             <%= f.select("Seniority", @seniority, {:selected => params['filter']['Seniority'].reject {|e| e.empty?}},
                          {:class=>"span2", :multiple => true})  %>
+            <br/>
+            <strong>Only Needing Shifts </strong>&nbsp;&nbsp;
+            <%= f.check_box(:need_shifts, :checked => (params['filter']['need_shifts'] == '1')) %>
+
+            <br/>
         <% end %>
-        <br/>
+          <br/>
         <%= f.submit 'Apply', :class=>"btn" %>
     <% end %>
 
