@@ -1,5 +1,6 @@
 class SurveysController < ApplicationController
   require "json"
+  require 'csv'
 
   respond_to :html, :json, :js
   load_and_authorize_resource :except => [:show]
@@ -18,8 +19,8 @@ class SurveysController < ApplicationController
 
   def show
     # show entries for host
-    user = User.find_by_id(params[:id])
-    @surveys = user.surveys.sort {|a, b|  a.date <=> b.date }
+    @user = User.find_by_id(params[:id])
+    @surveys = @user.surveys.sort {|a, b|  a.date <=> b.date }
   end
 
   def create
@@ -29,8 +30,52 @@ class SurveysController < ApplicationController
 
   def update
     @survey = nil
-
   end
 
-  # update, destroy, create, new, edit
+  def survey_list(user_id, surveys, dates)
+    arr = []
+    dates.each do |h|
+      arr << 0
+    end
+    idx = -1
+    surveys.each do |s|
+      if s.user_id == user_id.to_i
+        dates.each_with_index do |item, index|
+          idx = index if item == s.date
+        end
+        arr[idx] = s.type1 if idx != -1
+      end
+    end
+    arr
+  end
+
+  def export_to_csv
+    @surveys = Survey.all.sort {|a,b| a.date <=> b.date }
+
+    if @surveys.empty?
+      respond_with "no data"
+    else
+      dates = []
+      names = User.all.map {|u| "#{u.id},#{u.name}" }
+
+      @surveys.each do |s|
+        dates << s.date unless dates.include? s.date
+      end
+      dates.sort!
+      header = "Name," + dates.map {|d| d.strftime('%Y%m%d')}.join(',')
+
+      csv_string = CSV.generate do |csv|
+        csv << header.split(',')
+
+        names.each do |n|
+          arr = [n.split(',')[1]] + survey_list(n.split(',')[0], @surveys, dates)
+
+          csv << arr
+        end
+      end
+    end
+    send_data csv_string,
+              :type => "text/csv; charset:iso-8859-1;header=present",
+              :disposition => "attachment; filename=csv_survey_export#{Date.today.strftime('%Y%m%d')}.csv"
+    end
 end

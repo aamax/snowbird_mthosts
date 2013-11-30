@@ -12,6 +12,7 @@ Mthost::Application.routes.draw do
   resources :reports
   resources :surveys
 
+  match '/export_surveys_to_csv', :to => "surveys#export_to_csv"
   match '/get_survey_users', :to => "users#get_survey_users"
   match '/get_user_surveys', :to => 'users#get_user_surveys'
 
