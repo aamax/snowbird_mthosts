@@ -6,64 +6,28 @@
 
 <div ng-controller='SurveyCtrl'>
   <% if current_user.has_role? :admin %>
-      <!--<div class='survey_index_entry_box'>-->
-        <!--<br/>-->
-      <!--<div class='row'>-->
-        <!--<div class='span1'>&nbsp;</div>-->
-        <!--<div class="span3">-->
-          <!--<strong>HOST:</strong>-->
-          <!--<select ng-model='current_host'-->
-                  <!--required ng-options='user.name for user in name_list'>-->
-          <!--</select>-->
-        <!--</div>-->
-
-        <!--<div class='span3'>-->
-          <!--<input class="shift_date"-->
-                         <!--class='span1'-->
-                         <!--title='Survey Date'-->
-                         <!--type="text"-->
-                         <!--id="survey_add_date"-->
-                         <!--placeholder="Survey Date"-->
-                         <!--ng-model='current_date' >-->
-        <!--</div>-->
-
-        <!--<div class='span1'>-->
-          <!--<input class="span1"-->
-                 <!--title='Survey Type 1 Amount'-->
-                 <!--type="text"-->
-                 <!--id="survey_type_1"-->
-                 <!--placeholder="Type1"-->
-                 <!--ng-model='type_1_value' >-->
-        <!--</div>-->
-        <!--<div class='span1'>-->
-          <!--<input class="span1"-->
-                 <!--title='Survey Type 2 Amount'-->
-                 <!--type="text"-->
-                 <!--id="survey_type_2"-->
-                 <!--placeholder="Type2"-->
-                 <!--ng-model='type_2_value' >-->
-        <!--</div>-->
-
+      <div class='row'>
         <div class='span1'>
-          <a href="#" class='btn btn-success'>
+          <a href="" class='btn btn-success span2'>
             <i class='icon-check icon-large icon-white' ng-click='addCurrentEntries()'> Submit </i>
           </a>
         </div>
-      <!--</div>-->
-      <!--</div>-->
+      </div>
       <hr/>
   <% end %>
 
-
+   <div class='row'>
   <table class="table table-striped table-bordered span10">
     <tr>
-      <th class='span3'>Host</th>
-      <th class='span2'>NSAA Surveys</th>
-      <!--<th class='span2'>Type 2</th>-->
-      <th class='span2'>Needed</th>
-      <th class='span2'>Last Entered</th>
+      <th class='span2'>Host</th>
+
+      <th ng-repeat='hdr in surveyHeader()'>{{ hdr }}</td>
+
+      <th>NSAA</th>
+      <th>Needed</th>
+      <th>Last Entered</th>
       <% if current_user.has_role? :admin %>
-        <th class='span2'>{{ todays_date() }}</th>
+        <th>{{ getToday() }}</th>
       <% end %>
     </tr>
 
@@ -73,22 +37,23 @@
           {{ host.name }}
         </a>
       </td>
+
+\      <td ng-repeat='val in surveyRecords(host.id)'>{{ val }}</td>
+
       <td>{{ host.type1_total }}</td>
-      <!--<td>{{ host.type2_total }}</td>-->
       <td>{{ host.needed }}</td>
       <td>{{ host.last_entered }}</td>
       <% if current_user.has_role? :admin %>
-          <td>
+          <td class='survey_input'>
             <input title='New Survey Entry'
                    type="text"
                    placeholder="---"
-                   ng-model='host.new_value' >
+                   ng-model='host.new_value'
+                   class='survey_input'>
           </td>
       <% end %>
     </tr>
 
   </table>
-
-<!-- modal window to show hosts entries -->
-
+   </div>
 </div>

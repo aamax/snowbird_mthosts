@@ -95,6 +95,23 @@ padstr = (value, length) ->
       $scope.addCurrentEntries() if number_changes > 0
     )
 
+  $scope.surveyHeader =  () ->
+    arr = []
+    for survey in $scope.survey_data_list
+      if arr.indexOf(survey.date.substr(0,10)) == -1
+        arr.push survey.date.substr(0,10)
+    arr
+
+  $scope.surveyRecords = (host_id) ->
+    hdr = $scope.surveyHeader()
+    arr = []
+    for i in hdr
+      arr.push 0
+    for survey in $scope.survey_data_list
+      if survey.user_id == host_id
+        idx = hdr.indexOf(survey.date.substr(0,10))
+        arr[idx] += survey.type1
+    arr
 
   $scope.openModalForUser = (host) ->
     $scope.current_host = host
