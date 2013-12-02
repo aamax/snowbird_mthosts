@@ -12,13 +12,16 @@
             <th><%= s.date.strftime('%Y%m%d') %></th>
         <% end %>
         <th>Total</th>
+        <th>Edit</th>
       </tr>
 
       <tr>
         <% @surveys.each do |s| %>
             <td>
-              <%= tot += s.type1
-                  s.type1 %>
+              <a href='<%= s.id %>/edit' title='Edit Survey Entry'>
+                  <%= tot += s.type1
+                      s.type1 %>
+              </a>
             </td>
         <% end %>
         <td>

@@ -28,6 +28,10 @@ class SurveysController < ApplicationController
     respond_with @survey
   end
 
+  def edit
+
+  end
+
   def update
     @survey = nil
   end
