@@ -39,6 +39,10 @@ class MailController < ApplicationController
       end
     end
 
+    msg = UserMailer.send_email(current_user, @useremail, @fromaddress,
+                                 @subject, @message)
+    msg.deliver unless msg.nil?
+
     flash[:notice] = "Email sent to #{@useremail}..."
     redirect_to(root_path)
   end

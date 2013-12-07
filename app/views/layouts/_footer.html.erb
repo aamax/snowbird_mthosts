@@ -1,12 +1,12 @@
 <div class='footer_menu'>
-  <a href="<%= "/send_mail/" + "aamax@xmission.com" %>" class="footer_logo">
+  <% if current_user.nil? %>
+    <a href="<%= "/send_mail/" + "aamax@xmission.com" %>" class="footer_logo">
+  <% else %>
+      <a href=“mailto:aamax@xmission.com” class='footer_logo'>
+  <% end %>
     <img alt="Aamax_logo" src="/assets/aamax_logo.gif" title="aaMax Software Creations">
     <strong>aaMax Software Creations: (801) 502-4745</strong>
   </a>
-
-
-
-
 
   <%= link_to image_tag("logo.gif"), "http://snowbird.com", :class=>'float_right footer_logo' %>
 </div>
