@@ -1,1 +1,8 @@
-TO COME - ability to edit this survey record.
+<%= form_for @survey, url: {action: "update", method: :put}, html: {class: "nifty_form"} do |f| %>
+
+    <%= render "form", f: f %>
+
+    <%= f.submit "Update", id: 'survey_form_submit', class: 'btn btn-success' %>
+    <%= link_to "Cancel", "/surveys/#{@survey.user_id}", class: "btn btn-warning" %>
+
+<% end %>

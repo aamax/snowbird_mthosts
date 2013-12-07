@@ -44,7 +44,7 @@ class UsersController < ApplicationController
     if User.destroy(params[:id])
       redirect_to users_path, notice: "User deleted"
     else
-      redirect_to datasets_path, alert: "Unable to Delete User: #{@user.errors.messages}"
+      redirect_to users_path, alert: "Unable to Delete User: #{@user.errors.messages}"
     end
   end
 

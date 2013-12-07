@@ -33,7 +33,23 @@ class SurveysController < ApplicationController
   end
 
   def update
-    @survey = nil
+    @survey = Survey.find(params[:id])
+    if @survey.update_attributes(params[:survey])
+      flash[:success] = "Survey Count updated."
+      redirect_to "/surveys/#{@survey.user_id}"
+    else
+      flash[:failure] = "ERROR: Survey Count NOT updated."
+      render :action => "edit"
+    end
+  end
+
+  def destroy
+    user = User.find(Survey.find(params[:id]).user_id)
+    if Survey.destroy(params[:id])
+      redirect_to "/surveys/#{user.id}", notice: "Survey Count deleted"
+    else
+      redirect_to surveys_path, alert: "Unable to Delete Suvey Count Entry: #{@survey.errors.messages}"
+    end
   end
 
   def survey_list(user_id, surveys, dates)
