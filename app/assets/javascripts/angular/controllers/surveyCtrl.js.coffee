@@ -70,12 +70,18 @@ padstr = (value, length) ->
   # declare resource for host list
   $scope.survey_data_list = _surveys.query()
 
-  $scope.user_list = _users.query(->
+  $scope.tmp_list = _users.query(->
+    $scope.user_list = [] unless $scope.user_list
+    $scope.user_list.length = 0
+    for item in $scope.tmp_list
+      $scope.user_list.push item
     $scope.calculate_survey_list()
+    $scope.addCurrentEntries()
   )
 
   $scope.addCurrentEntries = () ->
     number_changes = 0
+    $scope.user_list = [] unless $scope.user_list
     for host in $scope.name_list
       if host.new_value
         number_changes += 1

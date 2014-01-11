@@ -1,5 +1,5 @@
 <h1>Survey Records For <%= @user.name %></h1>
-
+<%= link_to "Surveys", surveys_path, :class => "btn btn-success btn-large" %>
 <% tot = 0 %>
 
 <% if @surveys.count == 0 %>

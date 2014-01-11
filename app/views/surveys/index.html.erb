@@ -41,6 +41,7 @@
 \      <td ng-repeat='val in surveyRecords(host.id)'>{{ val }}</td>
 
       <td>{{ host.type1_total }}</td>
+
       <% if current_user.has_role? :admin %>
           <td class='survey_input'>
             <input title='New Survey Entry'
@@ -50,6 +51,7 @@
                    class='survey_input'>
           </td>
       <% end %>
+
       <td>{{ host.last_entered }}</td>
       <td>{{ host.needed }}</td>
     </tr>
