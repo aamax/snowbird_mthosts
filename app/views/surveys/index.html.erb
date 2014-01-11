@@ -24,11 +24,11 @@
       <th ng-repeat='hdr in surveyHeader()'>{{ hdr }}</td>
 
       <th>NSAA</th>
-      <th>Needed</th>
-      <th>Last Entered</th>
       <% if current_user.has_role? :admin %>
         <th>{{ getToday() }}</th>
       <% end %>
+      <th>Last Entered</th>
+      <th>Needed</th>
     </tr>
 
     <tr ng-repeat='host in name_list'>
@@ -41,8 +41,6 @@
 \      <td ng-repeat='val in surveyRecords(host.id)'>{{ val }}</td>
 
       <td>{{ host.type1_total }}</td>
-      <td>{{ host.needed }}</td>
-      <td>{{ host.last_entered }}</td>
       <% if current_user.has_role? :admin %>
           <td class='survey_input'>
             <input title='New Survey Entry'
@@ -52,6 +50,8 @@
                    class='survey_input'>
           </td>
       <% end %>
+      <td>{{ host.last_entered }}</td>
+      <td>{{ host.needed }}</td>
     </tr>
 
   </table>
