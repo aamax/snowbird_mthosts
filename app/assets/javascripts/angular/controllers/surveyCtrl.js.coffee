@@ -70,6 +70,12 @@ padstr = (value, length) ->
   # declare resource for host list
   $scope.survey_data_list = _surveys.query()
 
+  $scope.refreshGrid = () ->
+    $scope.calculate_survey_list()
+    alert(JSON.stringify($scope.name_list))
+
+
+
   $scope.tmp_list = _users.query(->
     $scope.user_list = [] unless $scope.user_list
     $scope.user_list.length = 0
@@ -77,6 +83,8 @@ padstr = (value, length) ->
       $scope.user_list.push item
     $scope.calculate_survey_list()
     $scope.addCurrentEntries()
+
+    alert(JSON.stringify($scope.name_list))
   )
 
   $scope.addCurrentEntries = () ->
