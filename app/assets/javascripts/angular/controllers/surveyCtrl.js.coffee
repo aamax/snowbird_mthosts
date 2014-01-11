@@ -72,9 +72,6 @@ padstr = (value, length) ->
 
   $scope.refreshGrid = () ->
     $scope.calculate_survey_list()
-    alert(JSON.stringify($scope.name_list))
-
-
 
   $scope.tmp_list = _users.query(->
     $scope.user_list = [] unless $scope.user_list
@@ -83,8 +80,6 @@ padstr = (value, length) ->
       $scope.user_list.push item
     $scope.calculate_survey_list()
     $scope.addCurrentEntries()
-
-    alert(JSON.stringify($scope.name_list))
   )
 
   $scope.addCurrentEntries = () ->
