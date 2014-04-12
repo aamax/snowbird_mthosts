@@ -72,6 +72,8 @@ class User < ActiveRecord::Base
     super and self.has_role?(:admin) ? true : (self.active_user? || (self.email == 'jcollins@snowbird.com'))
   end
 
+
+
   def seniority
     if (self.active_user != true) && (self.name != 'John Cotter')
       retval = 'InActive'

@@ -22,6 +22,10 @@
     <% end %>
 
     <h1><%= @title %></h1>
+    Download:
+    <%= link_to "CSV", params.merge(:format => :csv) %> |
+    <%= link_to "EXCEL", params.merge(:format => :xls) %>
+    <br/><br/>
 
     <strong>Total Shifts:</strong> <%= @total_shifts.count %><br />
     <strong>Total Assigned:</strong> <%= @total_assigned_shifts.count %><br />

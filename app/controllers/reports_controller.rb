@@ -63,6 +63,21 @@ class ReportsController < ApplicationController
       @total_open_shifts = Shift.un_assigned
 
       @seniority = ['Group1 (Senior)', 'Group2 (Middle)', 'Group3 (Newer)', 'Rookie' ]
+
+      respond_to do |format|
+        format.html
+        format.csv do
+
+          file = CSV.generate do |csv|
+            csv << "Name,Total,Worked,Pending,Missed,Comments".split(',')
+            @hosts.each do |user|
+              csv << "#{user.name},#{user.shifts.count},#{user.shifts_worked.count},#{user.pending_shifts.count},#{user.missed_shifts.count},#{user.notes}".split(',')
+            end
+          end
+          render text: file
+        end
+        format.xls
+      end
     end
   end
 
