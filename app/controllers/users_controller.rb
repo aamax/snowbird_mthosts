@@ -139,6 +139,14 @@ class UsersController < ApplicationController
     redirect_to :back, :notice => "All Users Have Been Reset..."
   end
 
+  def init_confirmations
+    User.active_users.each do |u|
+      u.confirmed = false
+      u.save
+    end
+    redirect_to :back, :notice => "All User Confirmations Have Been Reset..."
+  end
+
   private
 
   def add_meetings_to_shifts(u)
