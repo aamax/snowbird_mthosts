@@ -18,7 +18,6 @@ $(->
       else
         # show the entry
         rec.style.display = ''
-
   )
 
   $('#user_password').keyup(->
@@ -41,4 +40,21 @@ $(->
       else
         $("#user_password_confirmation")[0].style.backgroundColor = "white"
 
+  $('.set_active').change(->
+    # make ajax call to set active value for this user
+    chkboxValue = this.checked
+    arr = this.name.split('_')
+    userID = arr[arr.length - 1]
+
+    $.ajax
+      type: "POST" # GET in place of POST
+      contentType: "application/json; charset=utf-8"
+      url: "/set_user_active/#{userID},#{chkboxValue}"
+      dataType: "json"
+      success: (result) ->
+        #do somthing here
+        alert "User Active Setting Updated"
+      error: ->
+       alert "Error Setting Active Value."
+  )
 )

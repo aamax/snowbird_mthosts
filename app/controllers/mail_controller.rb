@@ -100,35 +100,44 @@ class MailController < ApplicationController
     case @emailaddress
       when 'ADMINUSERS'
         users = User.with_role(:admin)
+        users << User.find_by_name('John Cotter')
       when 'TEAMLEADER'
         users = User.active_users.with_role(:team_leader)
         users << User.find_by_name('John Cotter')
       when 'ROOKIES'
         users = User.rookies
+        users << User.find_by_name('John Cotter')
       when 'GROUP1'
         users = User.group1
+        users << User.find_by_name('John Cotter')
       when 'GROUP2'
         users = User.group2
+        users << User.find_by_name('John Cotter')
       when 'GROUP3'
         users = User.group3
+        users << User.find_by_name('John Cotter')
       when 'ALLACTIVEHOSTS'
         users = User.active_users
         users << User.find_by_name('John Cotter')
       when 'ALLHOSTS'
         users = User.all
+        users << User.find_by_name('John Cotter')
       when 'ALLINACTIVEHOSTS'
         users = User.inactive_users
+        users << User.find_by_name('John Cotter')
       when 'NONCONFIRMED'
         users = User.non_confirmed_users
         users << User.find_by_name('John Cotter')
       when 'THIS_DATE'
         users = Shift.where(shift_date: params[:date]).map {|s| s.user }
+        users << User.find_by_name('John Cotter')
       else
         @emailaddress = nil
     end
     if (users.nil? || users == [])
       @emailaddress = nil
-    else      
+    else
+      users.uniq!
       @emailaddress = users.compact.map {|u| u.email}.join(',')
     end
 

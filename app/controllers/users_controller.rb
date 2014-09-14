@@ -104,6 +104,17 @@ class UsersController < ApplicationController
     redirect_to root_path
   end
 
+  def set_user_active
+    arr = params['value'].split(',')
+
+    user = User.find_by_id(arr[0])
+    user.active_user = arr[1] == 'true'
+
+    render :json => {
+        result: user.save
+    }
+  end
+
   def shift_print
     @user = User.find(params[:id])
     add_meetings_to_shifts(@user)

@@ -20,12 +20,18 @@
   <%= object.city %>, <%= object.state %> <%= object.zip %><br/> <br/>
   <strong>Home Phone:</strong> <%= object.home_phone %><br/>
   <strong>Cell Phone:</strong> <%= object.cell_phone %>
-
 </td>
 
 <td>
   <strong>Scheduled Shifts: </strong><%= object.shifts.length %> <br/>
-  <strong>Shifts Worked: </strong> <%= object.shifts_worked.length %> <br/>
+  <strong>Shifts Worked: </strong> <%= object.shifts_worked.length %> <br/><br/>
+  <strong>Active:</strong>
+  <% if current_user.admin? %>
+    <%= check_box_tag("user_active_#{object.id}", "user_active_#{object.id}", object.active_user, :class => 'set_active') %>
+  <% else %>
+    <%= object.active_user %>
+  <% end %>
+  <br/>
 </td>
 <td>
   <strong>Start Date:</strong> <%= object.snowbird_start_year %> <br/>

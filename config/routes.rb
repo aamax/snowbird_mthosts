@@ -35,6 +35,8 @@ Mthost::Application.routes.draw do
   match '/reset_confirms_and_passwords', :to => "users#reset_confirms_and_passwords"
   match '/init_confirmations', :to => "users#init_confirmations"
 
+  post '/set_user_active/:value', :to => "users#set_user_active"
+
   get '/drop_shift/:id', :to => 'shifts#drop_shift'
   get '/select_shift/:id', :to => 'shifts#select_shift'
 
