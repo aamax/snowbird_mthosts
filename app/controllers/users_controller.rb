@@ -109,9 +109,9 @@ class UsersController < ApplicationController
 
     user = User.find_by_id(arr[0])
     user.active_user = arr[1] == 'true'
-
+    user.save
     render :json => {
-        result: user.save
+        user: user
     }
   end
 

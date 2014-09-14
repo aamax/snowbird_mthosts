@@ -53,7 +53,7 @@ $(->
       dataType: "json"
       success: (result) ->
         #do somthing here
-        alert "User Active Setting Updated"
+        alert "User Active Setting updated for: #{result.user.name}"
       error: ->
        alert "Error Setting Active Value."
   )
