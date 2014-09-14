@@ -38,7 +38,7 @@
 <td>
   <% if ((current_user.has_role? :admin) || (current_user.id == object.id)) %>
       <a href='<%= edit_user_path(object) %>'><i class='icon-wrench icon-large icon_blue icon_obj'></i></a>
-      <% if current_user.email == MAX_EMAIL %>
+      <% if (current_user.email == MAX_EMAIL) && (object.id != current_user.id)%>
           <a href="/ghost_user/<%= object.id %>"><i class="icon-user icon_blue icon-large icon_obj" title="Ghost This User"></i></a>
       <% end %>
   <% end %>
