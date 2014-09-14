@@ -20,4 +20,25 @@ $(->
         rec.style.display = ''
 
   )
+
+  $('#user_password').keyup(->
+    validate_pword()
+  )
+
+  $('#user_password_confirmation').keyup(->
+    validate_pword()
+  )
+
+  validate_pword = () ->
+    pword = $("#user_password").val()
+    pconf = $("#user_password_confirmation").val()
+
+    if (pword.length < 8)
+      $("#user_password_confirmation")[0].style.backgroundColor = "red"
+    else
+      if (pword != pconf)
+        $("#user_password_confirmation")[0].style.backgroundColor = "yellow"
+      else
+        $("#user_password_confirmation")[0].style.backgroundColor = "white"
+
 )
