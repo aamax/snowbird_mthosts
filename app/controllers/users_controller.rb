@@ -83,6 +83,27 @@ class UsersController < ApplicationController
     end
   end
 
+  def ghost_user
+    session[:admin_user_id] = current_user.id
+    usr = User.find(params[:id])
+    sign_in(usr, bypass: true)
+    session[:ghost_user] = usr.id
+    redirect_to root_path
+  end
+
+  def un_ghost_user
+    unless session[:admin_user_id].nil?
+      user = User.find(session[:admin_user_id])
+      sign_in(user, bypass: true)
+      session[:admin_user_id] = nil
+      session[:ghost_user] = nil
+    else
+      session[:admin_user_id] = nil
+      session[:ghost_user] = nil
+    end
+    redirect_to root_path
+  end
+
   def shift_print
     @user = User.find(params[:id])
     add_meetings_to_shifts(@user)

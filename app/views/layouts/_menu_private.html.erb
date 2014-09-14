@@ -128,6 +128,10 @@
         <ul class="dropdown-menu">
           <li class="divider"></li>
           <li>&nbsp;&nbsp; <%= DateTime.current.strftime('%Y-%m-%d %H:%M') %></li>
+          <% if !session[:admin_user_id].nil? %>
+            <li><a href="/un_ghost_user"><i class="icon-user icon_red icon-large icon_obj" title="Un-Ghost This User">&nbsp;&nbsp; UnGhost User</i></a></li>
+          <% end %>
+
           <li><%= link_to raw("<i class='icon-off'></i> Log Out"), destroy_user_session_path, :method => :delete %></li>
         </ul>
       </li>

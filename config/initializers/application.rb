@@ -7,4 +7,4 @@ MEETINGS = [{:who=>:rookie, :when=>"2013-11-2", :time=>"8:00am",:what=>"Rookie T
 
 HOLIDAYS = [Date.new(2013,12,24),Date.new(2013,12,25),Date.new(2013,12,31),Date.new(2014,1,1)]
 
-
+MAX_EMAIL = 'aamax@xmission.com'

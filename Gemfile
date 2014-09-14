@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 gem 'rails', '3.2.13'
-ruby '2.0.0'
+ruby '2.1.0'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
@@ -30,7 +30,6 @@ gem 'bootstrap-addons-rails'
 
 gem 'jbuilder'
 gem 'awesome_print'
-gem 'tinymce-rails'
 gem 'gravatar_image_tag', '1.0.0.pre2'
 gem 'will_paginate', "~>3.0.2"
 gem 'nokogiri'
@@ -68,6 +67,5 @@ group :test, :development do
 
   gem "capybara-webkit"
   #gem "database_cleaner", :git => 'git://github.com/bmabey/database_cleaner.git'
-  gem 'turn'
 end
 

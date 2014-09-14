@@ -39,6 +39,9 @@ Mthost::Application.routes.draw do
 
   match "/gallery_page", :to => "galleries#gallery_page"
 
+  get '/ghost_user/:id', :to => 'users#ghost_user'
+  get '/un_ghost_user', :to => 'users#un_ghost_user'
+
   root :to => "pages#show"
 
   # catchall route to get pages
