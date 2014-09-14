@@ -58,12 +58,15 @@
 <%= f.password_field :password, class: 'password_edit', placeholder: 'Password' %> <br/>
 <%= f.password_field :password_confirmation, class: 'password_edit', placeholder: 'Password Confirmation' %> <br/><br/>
 
-<% if @user.roles.length > 0 %>
     <% unless current_user.has_role? :admin %>
         <h5>Roles:</h5>
         <ul>
           <% @user.roles.each do |r| %>
               <li><%= r.name %></li>
+          <% end %>
+
+          <% if @user.roles.empty? %>
+            <li>No Roles Defined...</li>
           <% end %>
         </ul>
     <% else %>
@@ -85,8 +88,6 @@
         </ul>
     <% end %>
     <hr/>
-
-<% end %>
 
 <h5>shift summary info: </h5>
 <table class='table table-striped'>
