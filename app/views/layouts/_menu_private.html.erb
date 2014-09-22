@@ -104,6 +104,8 @@
                                 :confirm => "You sure you want to clear the assignments?" %></li>
                 <li><%= link_to "DELETE All Shifts", "/delete_shifts",
                                 :confirm => "You sure you want to delete all shifts?" %></li>
+                <li><%= link_to "DELETE All Surveys", "/delete_surveys",
+                                :confirm => "You sure you want to delete all surveys?" %></li>
                 <li><%= link_to "Set all Hosts As Rookies", "/set_start_year/#{SysConfig.first.season_year}",
                                 :confirm => "You sure you want to reset all the host seniorities?" %></li>
                 <li><%= link_to "Set all Hosts As Group 3 (Newer)", "/set_start_year/#{SysConfig.first.group_3_year}",

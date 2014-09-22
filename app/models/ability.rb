@@ -12,6 +12,8 @@ class Ability
         cannot :manage, :all
       else
         can :manage, :all
+        cannot :delete, Survey
+        cannot :delete, Shift
       end
     end
 

@@ -52,6 +52,11 @@ class SurveysController < ApplicationController
     end
   end
 
+  def delete_surveys
+    Survey.delete_all
+    redirect_to :back, :notice => "All Surveys Have Been Deleted"
+  end
+
   def survey_list(user_id, surveys, dates)
     arr = []
     dates.each do |h|

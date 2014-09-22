@@ -35,6 +35,8 @@ Mthost::Application.routes.draw do
   match '/delete_shifts', :to => "shifts#delete_shifts"
   match '/reset_confirms_and_passwords', :to => "users#reset_confirms_and_passwords"
   match '/init_confirmations', :to => "users#init_confirmations"
+  match '/delete_surveys', :to => "surveys#delete_surveys"
+
 
   post '/set_user_active/:value', :to => "users#set_user_active"
 
