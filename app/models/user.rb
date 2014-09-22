@@ -72,7 +72,9 @@ class User < ActiveRecord::Base
     super and self.has_role?(:admin) ? true : (self.active_user? || (self.email == 'jcollins@snowbird.com'))
   end
 
-
+  def inactive_message
+    "Sorry, this account has been deactivated."
+  end
 
   def seniority
     if (self.active_user != true) && (self.name != 'John Cotter')
@@ -300,9 +302,9 @@ class User < ActiveRecord::Base
   def get_day_offset
     retval = 0
     if self.group_2?
-      retval = 2
+      retval = 1
     elsif self.group_3? || self.rookie?
-      retval = 4
+      retval = 2
     end
     retval
   end

@@ -74,41 +74,41 @@ class ShiftsHelperTest < ActionView::TestCase
     end
 
     describe 'rookies' do
-      #it 'cannot drop shadow shifts if any other shifts have been selected' do
-      #  @sys_config.bingo_start_date = HostUtility.date_for_round(@rookie_user, 6)
-      #  @sys_config.save!
+      # it 'cannot drop shadow shifts if any other shifts have been selected' do
+      # @sys_config.bingo_start_date = HostUtility.date_for_round(@rookie_user, 6)
+      # @sys_config.save!
       #
-      #  # create shadow and select by rookie (shift date 1 week out)
-      #  @sha1 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
-      #  @sha2 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 1.day, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
+      # # create shadow and select by rookie (shift date 1 week out)
+      # @sha1 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
+      # @sha2 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 1.day, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
       #
-      #  @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 2.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
-      #  @sha1.can_drop(@rookie_user).must_equal false
-      #  @sha2.can_drop(@rookie_user).must_equal false
-      #end
-
-      #it 'cannot drop any round 1 shifts if non round one shift is shift number 8' do
-      #  @sys_config.bingo_start_date = HostUtility.date_for_round(@rookie_user, 6)
-      #  @sys_config.save!
+      # @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 2.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+      # @sha1.can_drop(@rookie_user).must_equal false
+      # @sha2.can_drop(@rookie_user).must_equal false
+      # end
       #
-      #  # create shadow and select by rookie (shift date 1 week out)
-      #  @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
-      #  @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 1.day, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
+      # it 'cannot drop any round 1 shifts if non round one shift is shift number 8' do
+      # @sys_config.bingo_start_date = HostUtility.date_for_round(@rookie_user, 6)
+      # @sys_config.save!
       #
-      #  sh1 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 2.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
-      #  sh2 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 3.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
-      #  sh3 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 4.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
-      #  sh4 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 5.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
-      #  sh5 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 6.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+      # # create shadow and select by rookie (shift date 1 week out)
+      # @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
+      # @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 1.day, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
       #
-      #  sh6 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 7.days, :shift_type_id => @p1.id, :user_id => @rookie_user.id)
-      #  sh1.can_drop(@rookie_user).must_equal false
-      #  sh2.can_drop(@rookie_user).must_equal false
-      #  sh3.can_drop(@rookie_user).must_equal false
-      #  sh4.can_drop(@rookie_user).must_equal false
-      #  sh5.can_drop(@rookie_user).must_equal false
-      #  sh6.can_drop(@rookie_user).must_equal true
-      #end
+      # sh1 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 2.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+      # sh2 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 3.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+      # sh3 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 4.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+      # sh4 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 5.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+      # sh5 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 6.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+      #
+      # sh6 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 7.days, :shift_type_id => @p1.id, :user_id => @rookie_user.id)
+      # sh1.can_drop(@rookie_user).must_equal false
+      # sh2.can_drop(@rookie_user).must_equal false
+      # sh3.can_drop(@rookie_user).must_equal false
+      # sh4.can_drop(@rookie_user).must_equal false
+      # sh5.can_drop(@rookie_user).must_equal false
+      # sh6.can_drop(@rookie_user).must_equal true
+      # end
 
       it 'can drop non shadow, non-round one shifts outside of 2 week window' do
         @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 6)
@@ -173,6 +173,8 @@ class ShiftsHelperTest < ActionView::TestCase
         before do
           @sys_config.bingo_start_date = Date.today - 1.day
           @sys_config.save!
+
+          HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @team_leader).must_equal 1
         end
 
         # do not count team lead shifts against quota for round
@@ -215,8 +217,10 @@ class ShiftsHelperTest < ActionView::TestCase
 
       describe 'round 2' do
         before do
-          @sys_config.bingo_start_date = Date.today - 2.weeks
+          @sys_config.bingo_start_date = Date.today - 3.days
           @sys_config.save!
+
+          HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @team_leader).must_equal 2
         end
 
         it 'cannot select more than 18 shifts before bingo is done' do
@@ -237,8 +241,10 @@ class ShiftsHelperTest < ActionView::TestCase
 
       describe 'after bingo' do
         before do
-          @sys_config.bingo_start_date = Date.today - 7.weeks
+          @sys_config.bingo_start_date = Date.today - (3 * 4).days
           @sys_config.save!
+
+          (HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @team_leader) >= 5).must_equal true
         end
 
         it 'can select more than 18 shifts' do
@@ -455,6 +461,8 @@ class ShiftsHelperTest < ActionView::TestCase
       before  do
         @sys_config.bingo_start_date = Date.today + 1.day
         @sys_config.save!
+
+        HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @team_leader).must_equal 0
       end
 
       describe "rookie" do
@@ -632,13 +640,13 @@ class ShiftsHelperTest < ActionView::TestCase
 
       describe "middle" do
         it "cannot select shifts until start of my round" do
-          @sys_config.bingo_start_date = (Date.today - 1.days)
+          @sys_config.bingo_start_date = (Date.today)
           @sys_config.save!
           Shift.all.each do |s|
             s.can_select(@middle_user).must_equal false
           end
 
-          @sys_config.bingo_start_date = (Date.today -  2.days)
+          @sys_config.bingo_start_date = (Date.today -  1.day)
           @sys_config.save!
           Shift.all.each do |s|
             next if (s.team_leader? || s.shadow? || !s.user_id.nil?|| !@middle_user.shifts.include?(s))
@@ -647,7 +655,7 @@ class ShiftsHelperTest < ActionView::TestCase
         end
 
         it 'cannot select more than 5 shifts in round' do
-          @sys_config.bingo_start_date = (Date.today -  2.days)
+          @sys_config.bingo_start_date = (Date.today -  1.days)
           @sys_config.save!
 
           Shift.all.each do |s|
@@ -661,14 +669,14 @@ class ShiftsHelperTest < ActionView::TestCase
 
       describe "newer" do
         it "cannot select shifts until start of my round" do
-          @sys_config.bingo_start_date = Date.today - 3.days
+          @sys_config.bingo_start_date = Date.today - 1.days
           @sys_config.save!
 
           Shift.all.each do |s|
             s.can_select(@newer_user).must_equal false
           end
 
-          @sys_config.bingo_start_date = (Date.today -  4.days)
+          @sys_config.bingo_start_date = (Date.today -  2.days)
           @sys_config.save!
           Shift.all.each do |s|
             next if (s.team_leader? || s.shadow? || !s.user_id.nil? || !@newer_user.shifts.include?(s))
@@ -677,7 +685,7 @@ class ShiftsHelperTest < ActionView::TestCase
         end
 
         it 'cannot select more than 5 shifts in round' do
-          @sys_config.bingo_start_date = (Date.today -  4.days)
+          @sys_config.bingo_start_date = (Date.today -  2.days)
           @sys_config.save!
 
           Shift.all.each do |s|
@@ -744,11 +752,13 @@ class ShiftsHelperTest < ActionView::TestCase
               @last_senior_shift = s
             end
           end
+
+          HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @senior_user).must_equal 1
         end
 
         it "cannot select shifts until start of my round" do
           @senior_user.shifts.count.must_equal 5
-          @sys_config.bingo_start_date = (Date.today -  6.days)
+          @sys_config.bingo_start_date = (Date.today -  2.days)
           @sys_config.save!
           Shift.all.each do |s|
             s.can_select(@senior_user).must_equal false
@@ -759,6 +769,7 @@ class ShiftsHelperTest < ActionView::TestCase
             next if (s.team_leader? || s.shadow? || !s.user_id.nil?|| !@senior_user.shifts.include?(s))
             s.can_select(@senior_user).must_equal true
           end
+          HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @senior_user).must_equal 2
         end
 
         it 'cannot select more than 5 shifts in round' do
@@ -777,6 +788,7 @@ class ShiftsHelperTest < ActionView::TestCase
         before  do
           @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@middle_user, 1)
           @sys_config.save!
+          HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @middle_user).must_equal 1
           Shift.all.each do |s|
             if ((s.short_name == 'P2') && (s.can_select(@middle_user) == true))
               @middle_user.shifts << s
@@ -1086,127 +1098,131 @@ class ShiftsHelperTest < ActionView::TestCase
       end
     end
 
-    describe "round 4" do
-        describe "senior" do
-          before  do
-            @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@senior_user, 3)
-            @sys_config.save!
-            Shift.all.each do |s|
-              if ((s.short_name == 'P3') && (s.can_select(@senior_user) == true))
-                @senior_user.shifts << s
-                @last_senior_shift = s
-              end
+    describe "round 4 - open round to fill out schedules" do
+      describe "senior" do
+        before  do
+          @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@senior_user, 3)
+          @sys_config.save!
+          Shift.all.each do |s|
+            if ((s.short_name == 'P3') && (s.can_select(@senior_user) == true))
+              @senior_user.shifts << s
+              @last_senior_shift = s
             end
-          end
-
-          it "cannot select shifts until start of my round" do
-            @senior_user.shifts.count.must_equal 15
-            @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@senior_user, 3)
-            @sys_config.save!
-            Shift.all.each do |s|
-              s.can_select(@senior_user).must_equal false
-            end
-            @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@senior_user, 4)
-            @sys_config.save!
-            Shift.all.each do |s|
-              next if (s.team_leader? || s.shadow? || !s.user_id.nil?|| !@senior_user.shifts.include?(s))
-              s.can_select(@senior_user).must_equal true
-            end
-          end
-
-          it 'cannot select more than 3 shifts in round' do
-            @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@senior_user, 4)
-            @sys_config.save!
-            Shift.all.each do |s|
-              if s.can_select(@senior_user)
-                @senior_user.shifts << s
-              end
-            end
-            @senior_user.shifts.count.must_equal 18
           end
         end
 
-        describe "middle" do
-          before  do
-            @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@middle_user, 3)
-            @sys_config.save!
-            Shift.all.each do |s|
-              if ((s.short_name == 'P2') && (s.can_select(@middle_user) == true))
-                @middle_user.shifts << s
-                @last_middle_shift = s
-              end
-            end
+        it "cannot select shifts until start of my round" do
+          @senior_user.shifts.count.must_equal 15
+          @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@senior_user, 3)
+          @sys_config.save!
+          Shift.all.each do |s|
+            s.can_select(@senior_user).must_equal false
           end
-
-          it "cannot select shifts until start of my round" do
-            @middle_user.shifts.count.must_equal 15
-            @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@middle_user, 3)
-            @sys_config.save!
-            Shift.all.each do |s|
-              s.can_select(@middle_user).must_equal false
-            end
-
-            @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@middle_user, 4)
-            @sys_config.save!
-            Shift.all.each do |s|
-              next if (s.team_leader? || s.shadow? || !s.user_id.nil?|| !@middle_user.shifts.include?(s))
-              s.can_select(@middle_user).must_equal true
-            end
-          end
-
-          it 'cannot select more than 5 shifts in round' do
-            @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@middle_user, 4)
-            @sys_config.save!
-
-            Shift.all.each do |s|
-              if s.can_select(@middle_user)
-                @middle_user.shifts << s
-              end
-            end
-            @middle_user.shifts.count.must_equal 18
+          @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@senior_user, 4)
+          @sys_config.save!
+          Shift.all.each do |s|
+            next if (s.team_leader? || s.shadow? || !s.user_id.nil?|| !@senior_user.shifts.include?(s))
+            s.can_select(@senior_user).must_equal true
           end
         end
 
-        describe "newer" do
-          before  do
-            Shift.all.each do |s|
-              @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@newer_user, 3)
-              @sys_config.save!
-              if ((s.short_name == 'P1') && (s.can_select(@newer_user) == true))
-                @newer_user.shifts << s
-                @last_newer_shift = s
-              end
+        it 'cannot select more than 3 shifts in round' do
+          @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@senior_user, 4)
+          @sys_config.save!
+          Shift.all.each do |s|
+            if s.can_select(@senior_user)
+              @senior_user.shifts << s
             end
           end
+          @senior_user.shifts.count.must_equal 18
+        end
+      end
 
-          it "cannot select shifts until start of my round" do
-            @newer_user.shifts.count.must_equal 15
+      describe "middle" do
+        before  do
+          @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@middle_user, 3)
+          @sys_config.save!
+          Shift.all.each do |s|
+            if ((s.short_name == 'P2') && (s.can_select(@middle_user) == true))
+              @middle_user.shifts << s
+              @last_middle_shift = s
+            end
+          end
+        end
+
+        it "cannot select shifts until start of my round" do
+          @middle_user.shifts.count.must_equal 15
+          @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@middle_user, 3)
+          @sys_config.save!
+          Shift.all.each do |s|
+            s.can_select(@middle_user).must_equal false
+          end
+
+          @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@senior_user, 4)
+          @sys_config.save!
+          Shift.all.each do |s|
+            next if (s.team_leader? || s.shadow? || !s.user_id.nil?|| !@senior_user.shifts.include?(s))
+
+
+            puts "test shift is true" if  s.can_select(@middle_user) == true
+
+            s.can_select(@middle_user).must_equal true
+          end
+        end
+
+        it 'cannot select more than 3 shifts in round' do
+          @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@senior_user, 4)
+          @sys_config.save!
+
+          Shift.all.each do |s|
+            if s.can_select(@middle_user)
+              @middle_user.shifts << s
+            end
+          end
+          @middle_user.shifts.count.must_equal 18
+        end
+      end
+
+      describe "newer" do
+        before  do
+          Shift.all.each do |s|
             @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@newer_user, 3)
             @sys_config.save!
-            Shift.all.each do |s|
-              s.can_select(@newer_user).must_equal false
+            if ((s.short_name == 'P1') && (s.can_select(@newer_user) == true))
+              @newer_user.shifts << s
+              @last_newer_shift = s
             end
-
-            @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@newer_user, 4)
-            @sys_config.save!
-            Shift.all.each do |s|
-              next if (s.team_leader? || s.shadow? || !s.user_id.nil? || !@newer_user.shifts.include?(s))
-              s.can_select(@newer_user).must_equal true
-            end
-          end
-
-          it 'cannot select more than 5 shifts in round' do
-            @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@newer_user, 4)
-            @sys_config.save!
-
-            Shift.all.each do |s|
-              if s.can_select(@newer_user)
-                @newer_user.shifts << s
-              end
-            end
-            @newer_user.shifts.count.must_equal 18
           end
         end
+
+        it "cannot select shifts until start of my round" do
+          @newer_user.shifts.count.must_equal 15
+          @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@senior_user, 3)
+          @sys_config.save!
+          Shift.all.each do |s|
+            s.can_select(@newer_user).must_equal false
+          end
+
+          @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@senior_user, 4)
+          @sys_config.save!
+          Shift.all.each do |s|
+            next if (s.team_leader? || s.shadow? || !s.user_id.nil? || !@newer_user.shifts.include?(s))
+            s.can_select(@newer_user).must_equal true
+          end
+        end
+
+        it 'cannot select more than 3 shifts in round' do
+          @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@senior_user, 4)
+          @sys_config.save!
+
+          Shift.all.each do |s|
+            if s.can_select(@newer_user)
+              @newer_user.shifts << s
+            end
+          end
+          @newer_user.shifts.count.must_equal 18
+        end
+      end
 
       describe "rookie" do
         before  do
@@ -1224,13 +1240,13 @@ class ShiftsHelperTest < ActionView::TestCase
           @rookie_user.shifts.count.must_equal 16
           @rookie_user.shadow_count.must_equal 2
           assert_operator(@rookie_user.round_one_type_count, :>=, 5, "Not enough round one selections")
-          @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 3)
+          @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@senior_user, 3)
           @sys_config.save!
           Shift.all.each do |s|
             s.can_select(@rookie_user).must_equal false
           end
 
-          @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 4)
+          @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@senior_user, 4)
           @sys_config.save!
           Shift.all.each do |s|
             s.can_select(@rookie_user).must_equal false

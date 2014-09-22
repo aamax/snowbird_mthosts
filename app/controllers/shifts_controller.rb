@@ -156,6 +156,11 @@ class ShiftsController < ApplicationController
     #end
   end
 
+  def delete_shifts
+    Shift.delete_all
+    redirect_to :back, :notice => "All Shifts Have Been Deleted"
+  end
+
   def shifts_by_date_view
     if params[:date] == ""
       params[:date] = nil

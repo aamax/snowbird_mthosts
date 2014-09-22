@@ -191,7 +191,7 @@ class ShiftTest < ActiveSupport::TestCase
     
     describe 'after training is over' do
       before do
-        @sys_config.bingo_start_date = Date.today - 5.days
+        @sys_config.bingo_start_date = Date.today - 4.days
         @sys_config.save!
 
         # create and select shifts to finish training

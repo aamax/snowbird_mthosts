@@ -34,6 +34,7 @@ class UserMessageTest < ActiveSupport::TestCase
     config = SysConfig.first
     config.bingo_start_date = Date.today + 10.days
     config.save
+
     @group1_user.shift_status_message.include?("No Selections Until #{HostUtility.date_for_round(@group1_user, 1)}.").must_equal true
     @group2_user.shift_status_message.include?("No Selections Until #{HostUtility.date_for_round(@group2_user, 1)}.").must_equal true
     @group3_user.shift_status_message.include?("No Selections Until #{HostUtility.date_for_round(@group3_user, 1)}.").must_equal true
