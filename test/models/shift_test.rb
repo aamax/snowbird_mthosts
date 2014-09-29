@@ -414,7 +414,7 @@ class ShiftTest < ActiveSupport::TestCase
 
     it 'should set all monday shifts for team leader 1' do
       u = User.with_role(:team_leader).first
-      params = {'monday' => u.id}
+      params = {'monday' => u.name}
       Shift.assign_team_leaders(params)
       shift_list = Shift.team_leader_shifts
       shift_list.each do |shift|
