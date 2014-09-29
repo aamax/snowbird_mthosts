@@ -74,6 +74,7 @@
             <li class='disabled'>Management</li>
             <li><%= link_to "Manage Shift Types", shift_types_path %></li>
             <li><%= link_to "Shift Creation Wizard", "#{shift_collections_path}/?date=#{Date.today}" %></li>
+            <li><%= link_to "Assign Team Leader Shifts", "/assign_team_leaders" %></li>
             <li><%= link_to "Manage Configurations", edit_sys_config_path(SysConfig.first) %></li>
             <li><%= link_to "Manage Gallery", gallery_page_path %></li>
             <li><%= link_to "Manage Max's Message", edit_page_path('aamax') %></li>

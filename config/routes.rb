@@ -22,6 +22,8 @@ Mthost::Application.routes.draw do
   match '/skipatrol_printable', :to => "reports#skipatrol_printable"
   get '/shift_print/:id', :to => 'users#shift_print'
   post '/users/save_new', :to => 'users#save_new'
+  post '/shifts/assign_team_leaders', :to => 'shifts#assign_team_leaders'
+  get '/assign_team_leaders', :to => 'shifts#edit_team_leader_shifts'
 
   resources :pages
   match '/show_contact_info', :to => "pages#show_contact_info"

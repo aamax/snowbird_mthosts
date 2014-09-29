@@ -3,3 +3,11 @@
 *= require bootstrap-datepicker
 *= require_tree .
 */
+
+.leader_box {
+    border: 1px solid black;
+}
+
+.namebox {
+    font-size: 8px;
+}

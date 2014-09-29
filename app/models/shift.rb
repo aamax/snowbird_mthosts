@@ -35,6 +35,7 @@ class Shift < ActiveRecord::Base
   scope :currentuser, lambda{|userid| where :user_id => userid}
   scope :assigned, where("shifts.user_id is not null").order("shifts.shift_date")
   scope :un_assigned, where("shifts.user_id is null").order("shifts.shift_date")
+  scope :team_leader_shifts, where("shifts.shift_type_id = #{ShiftType.team_lead_type.id}")
 
   # shift status values:
   #      worked = 1
@@ -44,6 +45,21 @@ class Shift < ActiveRecord::Base
   scope :currentuserpending, lambda{|userid| where("user_id = #{userid} and shift_status = 1 and shift_date > #{Date.today}") }
   scope :currentusermissed, lambda{|userid| where :user_id => userid, :shift_status => -1}
   scope :distinctDates, :select => ('distinct on (shift_date) shift_date, shift_type_id')
+
+  def self.assign_team_leaders(params)
+    days = {'monday' => 1, 'tuesday' => 2, 'wednesday' => 3, 'thursday' => 4, 'friday' => 5, 'saturday' => 6, 'sunday' => 7}
+    params.each do |day_str, user_name|
+      next if days[day_str].nil?
+      user = User.find_by_name(user_name)
+      unless user.nil?
+        shifts = Shift.team_leader_shifts.delete_if {|shift| !shift.user_id.nil? || shift.shift_date.cwday != days[day_str] }
+        shifts.each do |s|
+          s.user_id = user.id
+          s.save
+        end
+      end
+    end
+  end
 
   def self.by_day_of_week(days)
     return scoped unless days.present?

@@ -28,4 +28,8 @@ class ShiftType < ActiveRecord::Base
   #default_scope :order => "shortname"
   #scope :distinctShifttypes, :select => ('distinct shortname')
 
+  def self.team_lead_type
+    ShiftType.find_by_short_name('TL')
+  end
+
 end

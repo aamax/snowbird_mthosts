@@ -185,4 +185,14 @@ class ShiftsController < ApplicationController
       @shifts = []
     end
   end
+
+  def edit_team_leader_shifts
+    @leaders = User.with_role(:team_leader)
+    render 'edit_team_leader_shifts'
+  end
+
+  def assign_team_leaders
+    Shift.assign_team_leaders(params)
+    redirect_to shifts_path # TODO just show TL shifts
+  end
 end

@@ -1,0 +1,83 @@
+
+<h1>Assign Team Leader Shifts</h1>
+<hr/>
+<%= form_tag('/shifts/assign_team_leaders') do %>
+    <div class="row">
+      <div class="span2">
+        <h3>Leaders</h3>
+        <div class="leader_box">
+          <ul>
+            <% @leaders.each do |leader| %>
+                <li draggable="true" id="<%= leader.name %>" ondragstart="drag(event)"><%= leader.name %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+
+      <div class="span10">
+        <h3>Days Of Week</h3>
+        <table class="table table-bordered">
+          <tr>
+            <td>Monday</td>
+            <td>Tuesday</td>
+            <td>Wednesday</td>
+            <td>Thursday</td>
+            <td>Friday</td>
+            <td>Saturday</td>
+            <td>Sunday</td>
+          </tr>
+          <tr>
+            <td ondrop="drop(event)" ondragover="allowDrop(event)" id="monday" class="namebox">
+              <%= hidden_field_tag 'hiddenmonday', '', class: 'span1' %><br/><br/><br/><br/>
+            </td>
+            <td ondrop="drop(event)" ondragover="allowDrop(event)" id="tuesday" class="namebox">
+              <%= hidden_field_tag 'hiddentuesday', '', class: 'span1' %><br/><br/><br/><br/>
+            </td>
+            <td ondrop="drop(event)" ondragover="allowDrop(event)" id="wednesday" class="namebox">
+              <%= hidden_field_tag 'hiddenwednesday', '', class: 'span1' %><br/><br/><br/><br/>
+            </td>
+            <td ondrop="drop(event)" ondragover="allowDrop(event)" id="thursday" class="namebox">
+              <%= hidden_field_tag 'hiddenthursday', '', class: 'span1' %><br/><br/><br/><br/>
+            </td>
+            <td ondrop="drop(event)" ondragover="allowDrop(event)" id="friday" class="namebox">
+              <%= hidden_field_tag 'hiddenfriday', '', class: 'span1' %><br/><br/><br/><br/>
+            </td>
+            <td ondrop="drop(event)" ondragover="allowDrop(event)" id="saturday" class="namebox">
+              <%= hidden_field_tag 'hiddensaturday', '', class: 'span1' %><br/><br/><br/><br/>
+            </td>
+            <td ondrop="drop(event)" ondragover="allowDrop(event)" id="sunday" class="namebox">
+              <%= hidden_field_tag 'hiddensunday', '', class: 'span1' %><br/><br/><br/><br/>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <hr/>
+    <%=  submit_tag("Submit", :class=>'btn btn-primary') %>
+    <button class="btn btn-default">Cancel</button>
+<% end %>
+
+
+<script>
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        var box = document.getElementById(ev.target.id);
+        var str = "hidden" + ev.target.id
+        var hbox = document.getElementById(str);
+        if (hbox) {
+
+            str = data + '<input type="hidden" class="span1" id="' + ev.target.id + '" name="' + ev.target.id + '" type="text" value="' + data + '">';
+            box.innerHTML = str;
+        };
+    }
+</script>

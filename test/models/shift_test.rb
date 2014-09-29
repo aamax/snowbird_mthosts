@@ -406,5 +406,21 @@ class ShiftTest < ActiveSupport::TestCase
     end
   end
 
+  describe 'assign team leaders' do
+    before do
+      @tl = ShiftType.find_by_short_name('TL')
+      @tl_shifts = Shift.where("shift_type_id = #{@tl.id}")
+    end
 
+    it 'should set all monday shifts for team leader 1' do
+      u = User.with_role(:team_leader).first
+      params = {'monday' => u.id}
+      Shift.assign_team_leaders(params)
+      shift_list = Shift.team_leader_shifts
+      shift_list.each do |shift|
+        next if shift.shift_date.cwday != 1
+        shift.user_id.must_equal u.id
+      end
+    end
+  end
 end
