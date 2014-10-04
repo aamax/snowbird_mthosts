@@ -72,6 +72,10 @@ class User < ActiveRecord::Base
     super and self.has_role?(:admin) ? true : (self.active_user? || (self.email == 'jcollins@snowbird.com'))
   end
 
+  def non_meeting_shifts
+    retval = self.shifts.delete_if {|s| !s.shift_type.is_working? }
+  end
+
   def inactive_message
     "Sorry, this account has been deactivated."
   end
@@ -79,8 +83,8 @@ class User < ActiveRecord::Base
   def tour_ratio
     ratio = 0.0
     tours = 0.0
-    total = self.shifts.size
-    self.shifts.each do |s|
+    total = self.non_meeting_shifts.size
+    self.non_meeting_shifts.each do |s|
       tours += 1 if s.shift_type.is_tour?
     end
     ratio = tours / total if total != 0

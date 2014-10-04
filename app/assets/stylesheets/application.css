@@ -11,3 +11,7 @@
 .namebox {
     font-size: 8px;
 }
+
+.bad_ratio {
+    color: red;
+}

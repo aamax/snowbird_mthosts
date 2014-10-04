@@ -29,7 +29,14 @@
       <%= user.city %> <%= user.city.blank? ? " #{user.state} #{user.zip}" : ", #{user.state} #{user.zip}" %><br/><br/>
 
       Survey Total: <%= "TBD" %> <br/>
-      Shifts Selected: <%= user.shifts.length %>  <br/>
+      Shifts Selected: <%= user.shifts.size %>  <br/>
+      Tour Ratio:
+      <% if user.tour_ratio > 50 %>
+          <span class="bad_ratio"><%= user.tour_ratio.round(2) %></span>
+      <% else %>
+          <%= user.tour_ratio.round(2) %>
+      <% end %>
+      <br/>
       Seniority: <%= user.seniority %><br/>
       Start Year:  <%= user.snowbird_start_year %> <br/>
 

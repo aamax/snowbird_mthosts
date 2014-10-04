@@ -33,7 +33,11 @@ class ShiftType < ActiveRecord::Base
   end
 
   def is_tour?
-    self.description.downcase.include? 'tour'
+    self.tasks.nil? ? false : self.tasks.downcase.include?('tour')
+  end
+
+  def is_working?
+    self.short_name[0] != 'M'
   end
 
 end

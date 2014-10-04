@@ -37,8 +37,15 @@ class UserTest < ActiveSupport::TestCase
 
   describe 'tour ratio' do
     before do
-      @p2.description = "peruvian morning tour"
+      @p2.tasks = "peruvian morning tour"
       @p2.save
+    end
+
+    it 'should not count meetings in calc' do
+      mtg = FactoryGirl.create(:shift_type, 'short_name' => 'M1')
+      shift = FactoryGirl.create(:shift, :shift_type_id => mtg.id, :shift_date => Date.today)
+      @user.shifts << shift
+      @user.tour_ratio.must_equal 0
     end
 
     it 'should have a 0 ratio if user has no shifts' do
