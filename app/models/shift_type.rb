@@ -32,4 +32,8 @@ class ShiftType < ActiveRecord::Base
     ShiftType.find_by_short_name('TL')
   end
 
+  def is_tour?
+    self.description.downcase.include? 'tour'
+  end
+
 end

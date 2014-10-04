@@ -78,23 +78,36 @@ class SurveysController < ApplicationController
     @surveys = Survey.all.sort {|a,b| a.date <=> b.date }
 
     if @surveys.empty?
-      respond_with "no data"
-    else
       dates = []
-      names = User.all.map {|u| "#{u.id},#{u.name}" }
+      names = User.active_users.map {|u| "#{u.id},#{u.name}" }
 
-      @surveys.each do |s|
-        dates << s.date unless dates.include? s.date
-      end
-      dates.sort!
-      header = "Name," + dates.map {|d| d.strftime('%Y%m%d')}.join(',')
+      header = "Name,Total"
 
       csv_string = CSV.generate do |csv|
         csv << header.split(',')
 
         names.each do |n|
           arr = [n.split(',')[1]] + survey_list(n.split(',')[0], @surveys, dates)
+          arr << 0
+          csv << arr
+        end
+      end
+    else
+      dates = []
+      names = User.active_users.map {|u| "#{u.id},#{u.name}" }
 
+      @surveys.each do |s|
+        dates << s.date unless dates.include? s.date
+      end
+      dates.sort!
+      header = "Name," + dates.map {|d| d.strftime('%Y%m%d')}.join(',') + ",Total"
+
+      csv_string = CSV.generate do |csv|
+        csv << header.split(',')
+
+        names.each do |n|
+          arr = [n.split(',')[1]] + survey_list(n.split(',')[0], @surveys, dates)
+          arr << arr[1..arr.length].inject(0, :+)
           csv << arr
         end
       end

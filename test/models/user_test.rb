@@ -35,6 +35,64 @@ class UserTest < ActiveSupport::TestCase
     @start_date = (Date.today()  + 20.days)
   end
 
+  describe 'tour ratio' do
+    before do
+      @p2.description = "peruvian morning tour"
+      @p2.save
+    end
+
+    it 'should have a 0 ratio if user has no shifts' do
+      @user.shifts.size.must_equal 0
+      @user.tour_ratio.must_equal 0
+    end
+
+    it 'should have a ratio of 100 if all shifts are tours' do
+      (1..10).each do |s|
+        ashift = FactoryGirl.create(:shift, :shift_type_id => @p2.id, :shift_date => Date.today - s.days)
+        @user.shifts << ashift
+      end
+
+      @user.tour_ratio.must_equal 100
+    end
+
+    it 'should have a ratio of 50 if half of the shifts are tours' do
+      (1..10).each do |s|
+        ashift = FactoryGirl.create(:shift, :shift_type_id => @p2.id, :shift_date => Date.today - s.days)
+        @user.shifts << ashift
+        ashift = FactoryGirl.create(:shift, :shift_type_id => @c4.id, :shift_date => Date.today - 1.month - s.days)
+        @user.shifts << ashift
+      end
+
+      @user.tour_ratio.must_equal 50
+    end
+
+    it 'should have a ratio of 25 if a quarter of the shifts are tours' do
+      (1..5).each do |s|
+        ashift = FactoryGirl.create(:shift, :shift_type_id => @p2.id, :shift_date => Date.today - s.days)
+        @user.shifts << ashift
+      end
+      (1..15).each do |s|
+        ashift = FactoryGirl.create(:shift, :shift_type_id => @c4.id, :shift_date => Date.today - 1.month - s.days)
+        @user.shifts << ashift
+      end
+
+      @user.tour_ratio.must_equal 25
+    end
+
+    it 'should have a ratio of 75 is 3 quarters of the shifts are tours' do
+      (1..15).each do |s|
+        ashift = FactoryGirl.create(:shift, :shift_type_id => @p2.id, :shift_date => Date.today - s.days)
+        @user.shifts << ashift
+      end
+      (1..5).each do |s|
+        ashift = FactoryGirl.create(:shift, :shift_type_id => @c4.id, :shift_date => Date.today - 1.month - s.days)
+        @user.shifts << ashift
+      end
+
+      @user.tour_ratio.must_equal 75
+    end
+  end
+
   describe "is_trainee_on_date" do
     before do
       r1s = [@g1.id, @g2.id, @g3.id, @g4.id]

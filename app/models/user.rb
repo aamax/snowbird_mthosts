@@ -76,6 +76,17 @@ class User < ActiveRecord::Base
     "Sorry, this account has been deactivated."
   end
 
+  def tour_ratio
+    ratio = 0.0
+    tours = 0.0
+    total = self.shifts.size
+    self.shifts.each do |s|
+      tours += 1 if s.shift_type.is_tour?
+    end
+    ratio = tours / total if total != 0
+    ratio * 100
+  end
+
   def seniority
     if (self.active_user != true) && (self.name != 'John Cotter')
       retval = 'InActive'
