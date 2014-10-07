@@ -187,7 +187,7 @@ class ShiftsController < ApplicationController
   end
 
   def edit_team_leader_shifts
-    @leaders = User.with_role(:team_leader)
+    @leaders = User.with_role(:team_leader).delete_if {|u| !u.active_user}
     render 'edit_team_leader_shifts'
   end
 
