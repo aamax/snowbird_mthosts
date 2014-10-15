@@ -19,6 +19,7 @@
         <li class='disabled'>Host Program Info</li>
         <li><%= link_to "Shift Card", "/shiftcard" %></li>
         <li><%= link_to "Mt Host Manual", "/docs/HostManual2014_15.pdf", :target => "_blank"  %></li>
+        <li><%= link_to "Team Leader Manual", "/docs/team_lead_manual_2014_15.pdf", :target => "_blank"  %></li>
         <li><%= link_to "Parking Policy 2012-13", "/docs/parking_policy.pdf", :target => "_blank" %></li>
         <li><%= link_to "Parking Policy 2013-14", "/docs/parking_policy_2013_14.doc", :target => "_blank" %></li>
         <li><%= link_to "Host Phone List", "/show_contact_info" %></li>
@@ -98,38 +99,42 @@
         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= current_user.name %>
           <b class="caret"></b></a>
         <ul class="dropdown-menu">
-          <% if current_user.email == MAX_EMAIL %>
-              <li class="dropdown">
-                <%= link_to "Max's Menu", "#", :class => "dropdown-toggle", :data => {:toggle => "dropdown"}, :id => "admin_menu" %>
-                <ul class="dropdown-menu">
-                  <li class='disabled'>Operations</li>
-                  <li><%= link_to "Reset passwords and confirmations for all.", "/reset_confirms_and_passwords",
-                                  :confirm => "You sure you want to reset confirmations and passwords?" %></li>
-                  <li><%= link_to "Clear all Host Assignments", "/clear_assignments",
-                                  :confirm => "You sure you want to clear the assignments?" %></li>
-                  <li><%= link_to "DELETE All Shifts", "/delete_shifts",
-                                  :confirm => "You sure you want to delete all shifts?" %></li>
-                  <li><%= link_to "DELETE All Surveys", "/delete_surveys",
-                                  :confirm => "You sure you want to delete all surveys?" %></li>
-                  <li><%= link_to "Set all Hosts As Rookies", "/set_start_year/#{SysConfig.first.season_year}",
-                                  :confirm => "You sure you want to reset all the host seniorities?" %></li>
-                  <li><%= link_to "Set all Hosts As Group 3 (Newer)", "/set_start_year/#{SysConfig.first.group_3_year}",
-                                  :confirm => "You sure you want to reset all the host seniorities?" %></li>
-                  <li><%= link_to "Set all Hosts As Group 2 (Middle)", "/set_start_year/#{SysConfig.first.group_2_year}",
-                                  :confirm => "You sure you want to reset all the host seniorities?" %></li>
-                  <li><%= link_to "Set all Hosts As Group 1 (Senior)", "/set_start_year/#{SysConfig.first.group_1_year}",
-                                  :confirm => "You sure you want to reset all the host seniorities?" %></li>
-                  <li><%= link_to "Set all hosts inactive", "#",
-                                  :confirm => "You sure you want to set all hosts as inactive?" %></li>
-                  <li><%= link_to "Initialize All Host Confirmations", "/init_confirmations",
-                                  :confirm => "Are you sure you want to initialize all user confirmations?" %></li>
-                </ul>
-              </li>
-          <% end %>
           <li class="divider"></li>
           <li>&nbsp;&nbsp; <%= DateTime.current.strftime('%Y-%m-%d %H:%M') %></li>
+
           <% if !session[:admin_user_id].nil? %>
             <li><a href="/un_ghost_user"><i class="icon-user icon_red icon-large icon_obj" title="Un-Ghost This User">&nbsp;&nbsp; UnGhost User</i></a></li>
+          <% elsif current_user.admin? %>
+            <li><%= select_tag(:ghost_user_id, content_tag(:option,'select Host to Ghost...',:value=>"")+
+                               options_from_collection_for_select(User.active_users, "id", "name")) %>
+            </li>
+          <% end %>
+
+
+          <% if current_user.email == MAX_EMAIL %>
+              <li class='disabled'>Operations</li>
+              <li><%= link_to "Reset passwords and confirmations for all.", "/reset_confirms_and_passwords",
+                              :confirm => "You sure you want to reset confirmations and passwords?" %></li>
+              <li><%= link_to "Clear all Host Assignments", "/clear_assignments",
+                              :confirm => "You sure you want to clear the assignments?" %></li>
+              <li><%= link_to "DELETE All Shifts", "/delete_shifts",
+                              :confirm => "You sure you want to delete all shifts?" %></li>
+              <li><%= link_to "DELETE All Surveys", "/delete_surveys",
+                              :confirm => "You sure you want to delete all surveys?" %></li>
+              <li><%= link_to "Set all Hosts As Rookies", "/set_start_year/#{SysConfig.first.season_year}",
+                              :confirm => "You sure you want to reset all the host seniorities?" %></li>
+              <li><%= link_to "Set all Hosts As Group 3 (Newer)", "/set_start_year/#{SysConfig.first.group_3_year}",
+                              :confirm => "You sure you want to reset all the host seniorities?" %></li>
+              <li><%= link_to "Set all Hosts As Group 2 (Middle)", "/set_start_year/#{SysConfig.first.group_2_year}",
+                              :confirm => "You sure you want to reset all the host seniorities?" %></li>
+              <li><%= link_to "Set all Hosts As Group 1 (Senior)", "/set_start_year/#{SysConfig.first.group_1_year}",
+                              :confirm => "You sure you want to reset all the host seniorities?" %></li>
+              <li><%= link_to "Set all hosts inactive", "#",
+                              :confirm => "You sure you want to set all hosts as inactive?" %></li>
+              <li><%= link_to "Initialize All Host Confirmations", "/init_confirmations",
+                              :confirm => "Are you sure you want to initialize all user confirmations?" %></li>
+
+              <li class="divider"></li>
           <% end %>
 
           <li><%= link_to raw("<i class='icon-off'></i> Log Out"), destroy_user_session_path, :method => :delete %></li>
@@ -138,3 +143,15 @@
     </ul>
   </div>
 </div>
+
+<script>
+    $(function(){
+        $('#ghost_user_id').bind('change', function () {
+            var url = "/ghost_user/" + $(this).val()
+            if (url) {
+                window.location.replace(url);
+            }
+            return false;
+        });
+    });
+</script>
