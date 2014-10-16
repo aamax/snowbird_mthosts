@@ -66,7 +66,7 @@ group :test, :development do
   gem "minitest-stub-const"
   gem "minitest-reporters", '>= 0.5.0'
   gem 'pry'
-  gem "turn"
+ # gem "turn"
   gem "factory_girl_rails", ">= 4.2.0"
 
   gem "capybara-webkit"

@@ -176,21 +176,12 @@ class Shift < ActiveRecord::Base
       # if user is already working this day
       return false if test_user.is_working?(self.shift_date)
       return false if self.shadow? && !test_user.rookie?
+      return false if !test_user.team_leader? && self.team_leader?
+      return true if test_user.team_leader?
 
       bingo_start = HostConfig.bingo_start_date
       round = HostUtility.get_current_round(bingo_start, Date.today, test_user)
       shift_count = test_user.shifts.count
-
-      if self.team_leader?
-        return false if ((round < 5) && (shift_count >= 18))
-        return test_user.team_leader? ? true : false
-      end
-      if test_user.has_role? :team_leader
-        shift_count = 0
-        test_user.shifts.each do |s|
-          shift_count += 1 unless s.team_leader?
-        end
-      end
 
       if !test_user.rookie? && (round == 0)
         return false
