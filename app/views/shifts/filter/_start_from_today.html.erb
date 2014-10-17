@@ -1,8 +1,6 @@
 Start From Today:
-<% if params['filter'] %>
-    <%= f.check_box(:start_from_today, :checked => (params['filter']['start_from_today'] == '1')) %>
-<% else %>
-    <%= f.check_box(:start_from_today, :checked => true) %>
-<% end %>
+
+<%= f.check_box(:start_from_today, :checked => @from_today) %>
+
 <br/><br/>
 

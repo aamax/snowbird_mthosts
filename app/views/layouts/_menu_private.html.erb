@@ -106,7 +106,7 @@
             <li><a href="/un_ghost_user"><i class="icon-user icon_red icon-large icon_obj" title="Un-Ghost This User">&nbsp;&nbsp; UnGhost User</i></a></li>
           <% elsif current_user.admin? %>
             <li><%= select_tag(:ghost_user_id, content_tag(:option,'select Host to Ghost...',:value=>"")+
-                               options_from_collection_for_select(User.active_users, "id", "name")) %>
+                               options_from_collection_for_select(User.active_users.order(:name), "id", "name")) %>
             </li>
           <% end %>
 

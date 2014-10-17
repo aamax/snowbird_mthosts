@@ -121,6 +121,10 @@ class User < ActiveRecord::Base
     self.email == 'jecotterii@gmail.com'
   end
 
+  def is_max?
+    self.email.downcase == MAX_EMAIL
+  end
+
   def shifts_worked
     worked = shifts
     worked.delete_if {|s| (s.shift_date > Date.today) || (s.shift_status_id == -1) }

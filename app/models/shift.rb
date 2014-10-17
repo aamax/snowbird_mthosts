@@ -175,6 +175,7 @@ class Shift < ActiveRecord::Base
     if self.user_id.nil?
       # if user is already working this day
       return false if test_user.is_working?(self.shift_date)
+      return true if test_user.admin?
       return false if self.shadow? && !test_user.rookie?
       return false if !test_user.team_leader? && self.team_leader?
       return true if test_user.team_leader?

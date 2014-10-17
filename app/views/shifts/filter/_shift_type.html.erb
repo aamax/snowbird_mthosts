@@ -1,7 +1,4 @@
 <%= f.label(:shifttype, "Shift Type") %>
-<% if params['filter'].nil? %>
-    <%= f.select("shifttype", @shift_types, {:include_blank => true, :multiple => true}, { :class=>"span1"})  %>
-<% else %>
-    <%= f.select("shifttype", @shift_types, {:include_blank => true, :multiple => true, :selected => params['filter']['shifttype']},
-                 { :class=>"span1"})  %>
-<% end %>
+
+<%= f.select("shifttype", @shift_types, {:include_blank => true, :multiple => true, :selected => @sts},
+             { :class=>"span1"})  %>

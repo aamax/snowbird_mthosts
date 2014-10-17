@@ -1,7 +1,4 @@
 Show Only Unselected Shifts:
-<% if params['filter'] %>
-    <%= f.check_box(:show_unselected, :checked => (params['filter']['show_unselected'] == '1')) %>
-<% else %>
-    <%= f.check_box(:show_unselected, :checked => false) %>
-<% end %>
+
+<%= f.check_box(:show_unselected, :checked => @unselected) %>
 <br/>

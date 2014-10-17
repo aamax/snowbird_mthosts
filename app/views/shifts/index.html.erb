@@ -93,10 +93,10 @@
         </td>
         <td class="align-left">
           <% if @can_select && !current_user.supervisor? %>
-              <a href=<%= "select_shift/#{s.id}" %> class='select_btn' ><i class="icon-male btn btn-primary" title="select shift">&nbsp;&nbsp;Select</i></a>
+              <a href=<%= "select_shift/#{s.id}/?test=hello" %> class='select_btn' ><i class="icon-male btn btn-primary" title="select shift">&nbsp;&nbsp;Select</i></a>
           <% else %>
               <% if (s.can_select(current_user) == true) && !current_user.supervisor? %>
-                <a href=<%= "select_shift/#{s.id}" %> class='select_btn' ><i class="icon-male btn btn-primary" title="select shift">&nbsp;&nbsp;Select</i></a>
+                <a href=<%= "select_shift/#{s.id}/?test=hello" %> class='select_btn' ><i class="icon-male btn btn-primary" title="select shift">&nbsp;&nbsp;Select</i></a>
               <% end %>
           <% end %>
           <% if (s.can_drop(current_user) == true) %>

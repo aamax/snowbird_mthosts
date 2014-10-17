@@ -2,18 +2,14 @@
 <table>
   <tr>
     <td>
-      <% if params['filter'].nil? %>
-          <%= f.text_field(:date, :size => 20, :readonly=>'readonly', :class=>'shift_date') %>
-      <% else %>
-          <%= f.text_field(:date, :size => 20, :readonly=>'readonly', :class=>'shift_date',
-                           :value => params['filter']['date']) %>
-      <% end %>
+      <%= f.text_field(:date, :size => 20, :readonly=>'readonly', :class=>'shift_date',
+                       :value => @date) %>
     </td>
     <td>
       <%=  link_to "<i class='icon-calendar'></i>".html_safe, "#", :class=>"btn cal_icon",
                    :id=>"set_date_btn", :title => 'set date',
                    "data-date-format"=>"yyyy-mm-dd",
-                   "data-date"=>Date.today.strftime('%Y-%m-%d') %>
+                   "data-date"=>@dt %>
       <br/>
     </td>
     <td>
