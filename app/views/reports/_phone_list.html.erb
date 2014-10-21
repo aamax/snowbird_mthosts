@@ -1,0 +1,48 @@
+<h1><%= @title %></h1>
+
+<%= link_to "Export List", "/reports/phone_list.csv" %>
+<br/><br/>
+
+<table class="table table-striped">
+  <tr>
+    <th>First</th>
+    <th>Last</th>
+    <th>Mobile</th>
+    <th>Home</th>
+    <th>Mailing</th>
+    <th>Email</th>
+    <th>is Rookie?</th>
+  </tr>
+
+  <% @user_list.each do |u| %>
+    <tr>
+        <td>
+            <%= u.first_name %>
+        </td>
+
+        <td>
+            <%= u.last_name %>
+        </td>
+
+        <td>
+          <%= u.cell_phone %>
+        </td>
+
+        <td>
+          <%= u.home_phone %>
+        </td>
+
+        <td>
+          <%= "#{u.address}" %>
+        </td>
+
+        <td>
+          <%= u.email %>
+        </td>
+
+        <td>
+          <%= u.rookie? ? "YES" : "" %>
+        </td>
+    </tr>
+  <% end %>
+</table>

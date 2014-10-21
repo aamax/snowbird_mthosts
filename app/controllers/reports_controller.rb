@@ -14,6 +14,27 @@ class ReportsController < ApplicationController
         @non_confirmed = User.where(confirmed: false, :active_user => true).sort {|a,b| a.name <=> b.name }
         @confirmed = User.where(confirmed: true, :active_user => true).sort {|a,b| a.name <=> b.name }
       end
+    elsif params[:id] == 'phone_list'
+      @report = 'phone_list'
+      @title = "Mt Host Phone and Address List - Season Starting in #{HostConfig.season_year}"
+
+      @user_list = User.active_users.sort {|a, b| a.last_name <=> b.last_name }
+
+      # show page or export csv is format is .csv
+      respond_to do |format|
+        format.html
+        format.csv do
+
+          file = CSV.generate do |csv|
+            csv << "Last Name,First Name,Mobile,Home,Mailing,Email,is Rookie?".split(',')
+            @user_list.each do |user|
+              csv << [user.first_name,user.last_name,user.cell_phone,user.home_phone,user.address,user.email,user.rookie? ? "YES" : ""]
+            end
+          end
+          render text: file
+        end
+        format.xls
+      end
     elsif params[:id] == 'shifts_by_host'
       @report = 'shifts_by_host'
       @title = "Shift By User Report"

@@ -91,6 +91,10 @@ class User < ActiveRecord::Base
     ratio * 100
   end
 
+  def address
+    "#{self.street}, #{self.city}, #{self.state} #{self.zip}"
+  end
+
   def seniority
     if (self.active_user != true) && (self.name != 'John Cotter')
       retval = 'InActive'
@@ -454,6 +458,14 @@ class User < ActiveRecord::Base
     else
       'You may select up to 18 shifts.'
     end
+  end
+
+  def first_name
+    self.name.split(' ')[0]
+  end
+
+  def last_name
+    self.name.split(' ')[1..self.name.length].join(' ')
   end
 
   private
