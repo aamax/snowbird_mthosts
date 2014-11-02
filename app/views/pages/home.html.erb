@@ -8,20 +8,19 @@
   </div>
 </div>
 
+<% if !msg.content.blank? %>
 <div class='row'>
   <div class='span12'>
-    <div id="extras_display" class="collapse <%= msg.content.blank? ? 'out' : 'in'  %>">
+    <div id="extras_display" class="collapse in">
       <%= render '/pages/home_page_message', :msg => msg %>
     </div>
   </div>
 </div>
+<% end %>
 
 
 <div class='myhome_page'>
   <div class='row'>
-    <div class='span6'>
-      <%= render '/shared/hosts_working_today', :user => current_user %>
-    </div>
     <div class='span6'>
       <% unless current_user.supervisor? %>
           <%= render '/shared/next_three_shifts', :user => current_user %>
@@ -31,6 +30,9 @@
           <br/>
           <%= render '/shared/user_profile_box', :user => current_user %>
       <% end %>
+    </div>
+    <div class='span6'>
+      <%= render '/shared/hosts_working_today', :user => current_user %>
     </div>
   </div>
 

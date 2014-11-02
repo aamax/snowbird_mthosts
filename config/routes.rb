@@ -15,6 +15,7 @@ Mthost::Application.routes.draw do
   match '/export_surveys_to_csv', :to => "surveys#export_to_csv"
   match '/get_survey_users', :to => "users#get_survey_users"
   match '/get_user_surveys', :to => 'users#get_user_surveys'
+  match '/delete_surveys', :to => "surveys#delete_surveys"
 
   match '/download_end_of_year', :to =>  "exports#eoy_download"
   match '/shifts_by_date', :to => 'shifts#shifts_by_date_view'
@@ -37,7 +38,6 @@ Mthost::Application.routes.draw do
   match '/delete_shifts', :to => "shifts#delete_shifts"
   match '/reset_confirms_and_passwords', :to => "users#reset_confirms_and_passwords"
   match '/init_confirmations', :to => "users#init_confirmations"
-  match '/delete_surveys', :to => "surveys#delete_surveys"
 
 
   post '/set_user_active/:value', :to => "users#set_user_active"
