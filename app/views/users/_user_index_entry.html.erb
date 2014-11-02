@@ -18,8 +18,8 @@
   <strong>Address:</strong><br/>
   <%= object.street %> <br/>
   <%= object.city %>, <%= object.state %> <%= object.zip %><br/> <br/>
-  <strong>Home Phone:</strong> <%= object.home_phone %><br/>
-  <strong>Cell Phone:</strong> <%= object.cell_phone %>
+  <strong>Home Phone:</strong> <%= number_to_phone(object.home_phone) %><br/>
+  <strong>Cell Phone:</strong> <%= number_to_phone(object.cell_phone) %>
 </td>
 
 <td>

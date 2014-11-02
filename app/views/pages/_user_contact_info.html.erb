@@ -2,10 +2,10 @@
   <%= object.name %>
 </td>
 <td>
-  <%= object.home_phone %>
+  <%= number_to_phone(object.home_phone) %>
 </td>
 <td>
-  <%= object.cell_phone %>
+  <%= number_to_phone(object.cell_phone) %>
 </td>
 <td>
   <%= link_to object.email, "/send_mail/#{object.email}" %>

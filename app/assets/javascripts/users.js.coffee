@@ -28,6 +28,8 @@ $(->
     validate_pword()
   )
 
+  $(".phone_edit").mask("(999) 999-9999")
+
   validate_pword = () ->
     pword = $("#user_password").val()
     pconf = $("#user_password_confirmation").val()

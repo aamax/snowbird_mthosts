@@ -21,8 +21,8 @@
       <% unless user.nickname.blank? %>
           Nick Name: <%= user.nickname %><br/>
       <% end %>
-      Cell: <%= user.cell_phone %> <br/>
-      Home: <%= user.home_phone %> <br/><br/>
+      Cell: <%= number_to_phone(user.cell_phone) %> <br/>
+      Home: <%= number_to_phone(user.home_phone) %> <br/><br/>
     </div>
     <div class='span4'>
       <%= user.street %><br/>

@@ -11,7 +11,7 @@
     <th>Home</th>
     <th>Mailing</th>
     <th>Email</th>
-    <th>is Rookie?</th>
+    <th>Rookie?</th>
   </tr>
 
   <% @user_list.each do |u| %>
@@ -25,11 +25,11 @@
         </td>
 
         <td>
-          <%= u.cell_phone %>
+          <%= number_to_phone(u.cell_phone) %>
         </td>
 
         <td>
-          <%= u.home_phone %>
+          <%= number_to_phone(u.home_phone) %>
         </td>
 
         <td>
