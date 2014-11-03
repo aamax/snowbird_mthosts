@@ -13,8 +13,10 @@ class ShiftTest < ActiveSupport::TestCase
     @g3 = ShiftType.find_by_short_name('G3weekend')
     @g4 = ShiftType.find_by_short_name('G4weekend')
     @g5 = ShiftType.find_by_short_name('G5')
-    @c3 = ShiftType.find_by_short_name('C3')
-    @c4 = ShiftType.find_by_short_name('C4')
+    @c1 = ShiftType.find_by_short_name('C1weekend')
+    @c2 = ShiftType.find_by_short_name('C2weekend')
+    @c3 = ShiftType.find_by_short_name('C3weekend')
+    @c4 = ShiftType.find_by_short_name('C4weekend')
     @bg = ShiftType.find_by_short_name('BG')
     @sh = ShiftType.find_by_short_name('SH')
 
@@ -51,7 +53,7 @@ class ShiftTest < ActiveSupport::TestCase
 
     # date is not weekend or friday
     it 'date is not weekend or friday' do
-      shift = Shift.find_by_shift_type_id(@c3.id)
+      shift = Shift.find_by_shift_type_id(@c1.id)
       shift.trainee_can_pick?.must_equal false
     end
 
@@ -78,15 +80,20 @@ class ShiftTest < ActiveSupport::TestCase
         @weekend_shift2.trainee_can_pick?.must_equal true
       end
 
-      # 2 trainees on weekend
-      it 'two on weekend returns false' do
+      # 3 trainees on weekend
+      it 'three on weekend returns false' do
         @rookie3 = FactoryGirl.create(:user, :email => 'f3.user@example.com', :start_year => @sys_config.season_year, :active_user => true)
         @rookie3.shifts << @sh3
         @rookie3.shifts << @sh4
         @rookie3.shifts << @weekend_shift2
         @weekend_shift3 = FactoryGirl.create(:shift, :shift_date => @weekend_shift.shift_date,
                                              :shift_type_id => @g1_weekend.id, :user_id => nil)
-        @weekend_shift3.trainee_can_pick?.must_equal false
+        @weekend_shift3.trainee_can_pick?.must_equal true
+
+        @rookie3.shifts << @weekend_shift3
+        @weekend_shift4 = FactoryGirl.create(:shift, :shift_date => @weekend_shift.shift_date,
+                                             :shift_type_id => @g1_weekend.id, :user_id => nil)
+        @weekend_shift4.trainee_can_pick?.must_equal false
       end
     end
   end
@@ -362,14 +369,14 @@ class ShiftTest < ActiveSupport::TestCase
     end
 
     describe 'should return false' do
-      it 'shift is C3' do
-        @c3s = FactoryGirl.create(:shift, :shift_type_id => @c3.id, :shift_date => Date.today)
-        @c3s.round_one_rookie_shift?.must_equal false
+      it 'shift is C1' do
+        @c1s = FactoryGirl.create(:shift, :shift_type_id => @c1.id, :shift_date => Date.today)
+        @c1s.round_one_rookie_shift?.must_equal false
       end
 
-      it 'shift is C4' do
-        @c4s = FactoryGirl.create(:shift, :shift_type_id => @c4.id, :shift_date => Date.today)
-        @c4s.round_one_rookie_shift?.must_equal false
+      it 'shift is C2' do
+        @c2s = FactoryGirl.create(:shift, :shift_type_id => @c2.id, :shift_date => Date.today)
+        @c2s.round_one_rookie_shift?.must_equal false
       end
 
       it 'shift is G3 Friday' do

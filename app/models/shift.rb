@@ -146,7 +146,7 @@ class Shift < ActiveRecord::Base
   end
 
   def round_one_rookie_shift?
-    retval = ['G1','G2', 'G3','G4'].include?(self.short_name)
+    retval = ['G1','G2', 'G3','G4', 'C3', 'C4'].include?(self.short_name)
     if retval == true
       retval = false if (self.full_short_name.downcase == 'g3friday') || (self.full_short_name.downcase == 'g4friday')
     end
@@ -154,7 +154,7 @@ class Shift < ActiveRecord::Base
   end
 
   def standard_shift?
-    ['P1', 'P2', 'P3', 'P4', 'C1', 'C2', 'C3', 'C4', 'G5', 'G6', 'G7', 'G8', 'TL'].include? self.short_name
+    ['P1', 'P2', 'P3', 'P4', 'C1', 'C2', 'G5', 'G6', 'G7', 'G8', 'TL'].include? self.short_name
   end
 
   def trainee_can_pick?
@@ -162,7 +162,8 @@ class Shift < ActiveRecord::Base
     return false unless ((suffix.include? 'weekend') || (suffix.include? 'friday'))
     users = self.users_on_date.delete_if {|u| !u.is_trainee_on_date(self.shift_date)}
     return false if ((users.count >=1) && (suffix.include? 'friday'))
-    return false if ((users.count >=2) && (suffix.include? 'weekend'))
+    return false if ((users.count >=3) && (suffix.include? 'weekend'))
+    return false if !self.round_one_rookie_shift?
     true
   end
 
@@ -189,30 +190,52 @@ class Shift < ActiveRecord::Base
       end
 
       if test_user.rookie?
-        round_one_shift_count = test_user.round_one_type_count
         shadow_count = test_user.shadow_count
         if (self.shadow?)
           return false if shadow_count >= 2
+          round_one_shift_count = test_user.round_one_type_count
           return false if (round_one_shift_count > 0) && (test_user.first_round_one_end_date <= self.shift_date)
         else
           return false if (shadow_count < 2)
+
           max_shadow_date = test_user.last_shadow
           return false if (max_shadow_date >= self.shift_date)
-          first_round_one_date = test_user.first_round_one_end_date
-          first_non_round_one_date = test_user.first_non_round_one_end_date
+
+          return false if (shift_count >= (round * 5 + 2) && round > 0 && round < 3)
+          return false if round.between?(3,4) && (shift_count >= 16)
+          return false if (round == 0) && (shift_count >= 7)
+
+          round_one_shift_count = test_user.round_one_type_count
+
           if round_one_shift_count < 5
+            return false if (self.shift_date <= max_shadow_date)
             return false if (!self.round_one_rookie_shift?)
+
+            first_non_round_one_date = test_user.first_non_round_one_end_date
             return false if (!first_non_round_one_date.nil? && (self.shift_date >= first_non_round_one_date))
-            return false if (self.shift_date < max_shadow_date)
+
+            shifts_on_date = Shift.where(shift_date: self.shift_date).delete_if {|s| s.user.nil? || s.user.is_trainee_on_date(self.shift_date)}
+
+            return false if shifts_on_date.length >= 3
+
+            training_shift_types = shifts_on_date.map {|s| s.short_name }
+            if short_name == 'G1'
+              return false if training_shift_types.include? 'G2'
+            elsif short_name == 'G2'
+              return false if training_shift_types.include? 'G1'
+            elsif short_name == 'G3'
+              return false if training_shift_types.include? 'G4'
+            elsif short_name == 'G4'
+              return false if training_shift_types.include? 'G3'
+            elsif short_name == 'C3'
+              return false if training_shift_types.include? 'C4'
+            elsif short_name == 'C4'
+              return false if training_shift_types.include? 'C3'
+            end
           else
             return false if (!self.round_one_rookie_shift?) && (test_user.round_one_end_date > self.shift_date)
           end
 
-          # if round one or less then no more than 7 shifts selected for rookies
-          return false if (shift_count >= (round * 5 + 2) && round > 0 && round < 3)
-          return false if round.between?(3,4) && (shift_count >= 16)
-          return false if (round == 0) && (shift_count >= 7)
-          return false if (self.shift_date <= max_shadow_date)
           return false if (!self.round_one_rookie_shift? && (self.shift_date <= test_user.round_one_end_date))
 
           if test_user.is_trainee_on_date(self.shift_date)

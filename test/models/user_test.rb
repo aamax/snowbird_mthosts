@@ -28,8 +28,8 @@ class UserTest < ActiveSupport::TestCase
     @g5 = ShiftType.find_by_short_name('G5')
     @c1 = ShiftType.find_by_short_name('C1')
     @c2 = ShiftType.find_by_short_name('C2')
-    @c3 = ShiftType.find_by_short_name('C3')
-    @c4 = ShiftType.find_by_short_name('C4')
+    @c3 = ShiftType.find_by_short_name('C3weekend')
+    @c4 = ShiftType.find_by_short_name('C4weekend')
     @bg = ShiftType.find_by_short_name('BG')
 
     @start_date = (Date.today()  + 20.days)

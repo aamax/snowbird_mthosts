@@ -29,8 +29,10 @@ namespace :db do
       @g2f = FactoryGirl.create(:shift_type, short_name: 'G2friday')
       @g3f = FactoryGirl.create(:shift_type, short_name: 'G3friday')
       @g4f = FactoryGirl.create(:shift_type, short_name: 'G4friday')
-      @c3 = FactoryGirl.create(:shift_type, short_name: 'C3')
-      @c4 = FactoryGirl.create(:shift_type, short_name: 'C4')
+      @c1 = FactoryGirl.create(:shift_type, short_name: 'C1weekend')
+      @c2 = FactoryGirl.create(:shift_type, short_name: 'C2weekend')
+      @c3 = FactoryGirl.create(:shift_type, short_name: 'C3weekend')
+      @c4 = FactoryGirl.create(:shift_type, short_name: 'C4weekend')
 
       @start_date = (Date.today()  + 20.days)
       curr_date = @start_date - 1.day
@@ -51,6 +53,8 @@ namespace :db do
         FactoryGirl.create(:shift, shift_date: curr_date, shift_type_id: @g4f.id)
         FactoryGirl.create(:shift, shift_date: curr_date, shift_type_id: @c3.id)
         FactoryGirl.create(:shift, shift_date: curr_date, shift_type_id: @c4.id)
+        FactoryGirl.create(:shift, shift_date: curr_date, shift_type_id: @c1.id)
+        FactoryGirl.create(:shift, shift_date: curr_date, shift_type_id: @c2.id)
         FactoryGirl.create(:shift, shift_date: curr_date, shift_type_id: @tl.id)
         FactoryGirl.create(:shift, shift_date: curr_date, shift_type_id: @sh.id)
         FactoryGirl.create(:shift, shift_date: curr_date, shift_type_id: @sh.id)
