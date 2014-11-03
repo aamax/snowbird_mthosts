@@ -10,7 +10,7 @@ class ShiftsController < ApplicationController
     @days = DAYNAMES.map{|u| ["#{u}", "#{u[0...3]}"]}
     @shift_types = ShiftType.all.map {|st| st.short_name[0..1] }.uniq.sort {|a,b| a <=> b }
     @users = User.active_users.map{|u| ["#{u.name}"]}.sort
-    per_page = 150
+    per_page = 80
 
     @sts = @usrs = ''
     @dow = {}
@@ -69,7 +69,7 @@ class ShiftsController < ApplicationController
       s.user_id = current_user.id
       s.save
     else
-      redirect_to :back, :alert => "Sorry - this shift has already been taken. Please try a different shift"
+      redirect_to :shifts_path, :alert => "Sorry - this shift has already been taken. Please try a different shift"
       return
     end
 
