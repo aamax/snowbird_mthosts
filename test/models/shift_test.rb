@@ -177,6 +177,15 @@ class ShiftTest < ActiveSupport::TestCase
 
       @weekend_shift3.can_select(r).must_equal false
     end
+
+    # TODO finish these tests....
+    # 1 rookie on g1, can select g3 or g4 or c3 or c4 - not g2
+    # 1 rookie on g2, can select g3, or g4 or c3 or c4 - not g1
+    # 1 rookie on g3, can select g1 or g2 or c3 or c4 - not g4
+    # 1 rookie on g4, can select g1, or g2 or c3 or c4 - not g3
+    # 1 rookie on c3, can select g1, g2, g3, or g4 - not C4
+    # 1 rookie on c4, can select g1, g2, g3, or g4 - not C3
+
   end
   
   describe 'can select edge cases' do
