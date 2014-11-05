@@ -16,9 +16,9 @@ class UsersController < ApplicationController
 
   def index
     if current_user.has_role? :admin
-      @inactive_users = User.inactive_users
+      @inactive_users = User.includes(:shifts).inactive_users
     end
-    @users = User.active_users
+    @users = User.includes(:shifts).active_users
     @users.sort! {|a,b| a.name <=> b.name }
 
     @users.each do |u|

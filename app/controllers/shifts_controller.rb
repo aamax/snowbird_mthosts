@@ -10,7 +10,8 @@ class ShiftsController < ApplicationController
     @days = DAYNAMES.map{|u| ["#{u}", "#{u[0...3]}"]}
     @shift_types = ShiftType.all.map {|st| st.short_name[0..1] }.uniq.sort {|a,b| a <=> b }
     @users = User.active_users.map{|u| ["#{u.name}"]}.sort
-    per_page = 150
+    per_page = SysConfig.first.shift_count
+    per_page ||= 80
 
     @sts = @usrs = ''
     @dow = {}
@@ -36,16 +37,16 @@ class ShiftsController < ApplicationController
       @holidays = (params['filter']['holiday_shifts'] == '1')
       @unselected = (params['filter']['show_unselected'] == '1')
       if @can_select == false
-        @shifts = Shift.from_today(@from_today).by_shift_type(@sts).by_date(@dt).by_day_of_week(@dow).by_users(@usrs).by_holidays(@holidays).by_unselected(@unselected).paginate(:page => params[:page], :per_page => per_page)
+        @shifts = Shift.includes(:user).includes(:shift_type).from_today(@from_today).by_shift_type(@sts).by_date(@dt).by_day_of_week(@dow).by_users(@usrs).by_holidays(@holidays).by_unselected(@unselected).paginate(:page => params[:page], :per_page => per_page)
       else
-        @shifts = Shift.from_today(@from_today).by_shift_type(@sts).by_date(@dt).by_day_of_week(@dow).by_holidays(@holidays).by_users(@usrs).by_unselected(true).delete_if {|s| s.can_select(current_user) == false }.paginate(:page => params[:page], :per_page => per_page)
+        @shifts = Shift.includes(:user).includes(:shift_type).from_today(@from_today).by_shift_type(@sts).by_date(@dt).by_day_of_week(@dow).by_holidays(@holidays).by_users(@usrs).by_unselected(true).delete_if {|s| s.can_select(current_user) == false }.paginate(:page => params[:page], :per_page => per_page)
       end
     elsif current_user.has_role? :admin
       @can_select = false
-      @shifts = Shift.from_today(true).paginate(:page => params[:page], :per_page => per_page)
+      @shifts = Shift.includes(:user).includes(:shift_type).from_today(true).paginate(:page => params[:page], :per_page => per_page)
     else
       @can_select = true
-      @shifts = Shift.from_today(true).delete_if {|s| s.can_select(current_user) == false }.paginate(:page => params[:page], :per_page => per_page)
+      @shifts = Shift.includes(:user).includes(:shift_type).from_today(true).delete_if {|s| s.can_select(current_user) == false }.paginate(:page => params[:page], :per_page => per_page)
     end
   end
 
@@ -69,7 +70,7 @@ class ShiftsController < ApplicationController
       s.user_id = current_user.id
       s.save
     else
-      redirect_to :back, :alert => "Sorry - this shift has already been taken. Please try a different shift"
+      redirect_to :shifts_path, :alert => "Sorry - this shift has already been taken. Please try a different shift"
       return
     end
 

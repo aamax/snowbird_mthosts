@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131122015032) do
+ActiveRecord::Schema.define(:version => 20141105051953) do
 
   create_table "galleries", :force => true do |t|
     t.string   "name"
@@ -87,6 +87,7 @@ ActiveRecord::Schema.define(:version => 20131122015032) do
     t.date     "bingo_start_date"
     t.datetime "created_at",        :null => false
     t.datetime "updated_at",        :null => false
+    t.integer  "shift_count"
   end
 
   create_table "users", :force => true do |t|

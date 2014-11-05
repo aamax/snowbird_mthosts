@@ -14,7 +14,7 @@
 #
 
 class SysConfig < ActiveRecord::Base
-  attr_accessible :season_year, :group_1_year, :group_2_year, :group_3_year, :season_start_date, :bingo_start_date
+  attr_accessible :season_year, :group_1_year, :group_2_year, :group_3_year, :season_start_date, :bingo_start_date, :shift_count
 
   after_save :initialize_values
 
