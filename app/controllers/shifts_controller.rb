@@ -10,7 +10,8 @@ class ShiftsController < ApplicationController
     @days = DAYNAMES.map{|u| ["#{u}", "#{u[0...3]}"]}
     @shift_types = ShiftType.all.map {|st| st.short_name[0..1] }.uniq.sort {|a,b| a <=> b }
     @users = User.active_users.map{|u| ["#{u.name}"]}.sort
-    per_page = 80
+    per_page = SysConfig.first.shift_count
+    per_page ||= 80
 
     @sts = @usrs = ''
     @dow = {}

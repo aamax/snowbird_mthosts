@@ -12,7 +12,6 @@ end
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem "pg", ">= 0.14.1"
-gem "minitest-wscolor", ">= 0.0.3", :group => :test
 gem "capybara", ">= 2.0.2", :group => :test
 gem "devise", ">= 2.2.3"
 gem "cancan", ">= 1.6.8"
@@ -65,6 +64,7 @@ group :test, :development do
   gem "minitest-rails-capybara"
   gem "minitest-stub-const"
   gem "minitest-reporters", '>= 0.5.0'
+  gem "minitest-wscolor", ">= 0.0.3", :group => :test
   gem 'pry'
  # gem "turn"
   gem "factory_girl_rails", ">= 4.2.0"
