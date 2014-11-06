@@ -127,6 +127,21 @@ class ShiftTest < ActiveSupport::TestCase
                                  :shift_type_id => @sh.id, :user_id => nil)
         r.shifts << sh1
         r.shifts << sh2
+
+        @weekend_shiftg2 = FactoryGirl.create(:shift, :shift_date => @day4,
+                                              :shift_type_id => @g2.id, :user_id => nil)
+        @weekend_shiftg3 = FactoryGirl.create(:shift, :shift_date => @day4,
+                                              :shift_type_id => @g3.id, :user_id => nil)
+        @weekend_shiftg4 = FactoryGirl.create(:shift, :shift_date => @day4,
+                                              :shift_type_id => @g4.id, :user_id => nil)
+        @weekend_shiftc1 = FactoryGirl.create(:shift, :shift_date => @day4,
+                                              :shift_type_id => @c1.id, :user_id => nil)
+        @weekend_shiftc2 = FactoryGirl.create(:shift, :shift_date => @day4,
+                                              :shift_type_id => @c2.id, :user_id => nil)
+        @weekend_shiftc3 = FactoryGirl.create(:shift, :shift_date => @day4,
+                                              :shift_type_id => @c3.id, :user_id => nil)
+        @weekend_shiftc4 = FactoryGirl.create(:shift, :shift_date => @day4,
+                                              :shift_type_id => @c4.id, :user_id => nil)
       end
     end
 
@@ -179,7 +194,20 @@ class ShiftTest < ActiveSupport::TestCase
     end
 
     # TODO finish these tests....
-    # 1 rookie on g1, can select g3 or g4 or c3 or c4 - not g2
+    it "1 rookie on g1, can select g3 or g4 or c3 or c4 - not g2" do
+      @weekend_shift = FactoryGirl.create(:shift, :shift_date => @day4,
+                                          :shift_type_id => @g1_weekend.id, :user_id => nil)
+
+      @rookies[0].shifts << @weekend_shift
+      @weekend_shiftg2.can_select(@rookies[2]).must_equal false
+      @weekend_shiftg3.can_select(@rookies[2]).must_equal true
+      @weekend_shiftg4.can_select(@rookies[2]).must_equal true
+      @weekend_shiftc1.can_select(@rookies[2]).must_equal false
+      @weekend_shiftc2.can_select(@rookies[2]).must_equal false
+      @weekend_shiftc3.can_select(@rookies[2]).must_equal true
+      @weekend_shiftc4.can_select(@rookies[2]).must_equal true
+    end
+
     # 1 rookie on g2, can select g3, or g4 or c3 or c4 - not g1
     # 1 rookie on g3, can select g1 or g2 or c3 or c4 - not g4
     # 1 rookie on g4, can select g1, or g2 or c3 or c4 - not g3
