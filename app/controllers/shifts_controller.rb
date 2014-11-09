@@ -27,7 +27,7 @@ class ShiftsController < ApplicationController
     if params['filter']
       @show_expanded = params['filter']['show_expanded'] == '1'
 
-      @sts = params['filter']['shifttype']
+      @sts = params['filter']['shifttype'].reject{ |e| e.empty? }
       @dow = params['filter']['dayofweek'].reject{ |e| e.empty? }
       @dt = params['filter']['date']
       @date = @dt

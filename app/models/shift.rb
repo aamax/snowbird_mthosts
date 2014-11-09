@@ -78,7 +78,14 @@ class Shift < ActiveRecord::Base
 
   def self.by_shift_type(sts)
     return scoped unless sts.present?
-    types = ShiftType.where("short_name like '#{sts}%'")
+    types = []
+
+    ShiftType.all.each do |st|
+      if sts.include? st.abbreviated_name
+        types << st
+      end
+    end
+
     return scoped if types.nil? || (types.length == 0)
     where("shift_type_id in (#{types.map {|t| t.id}.join(',')})")
   end
@@ -179,11 +186,12 @@ class Shift < ActiveRecord::Base
       return true if test_user.admin?
       return false if self.shadow? && !test_user.rookie?
       return false if !test_user.team_leader? && self.team_leader?
-      return true if test_user.team_leader?
 
       bingo_start = HostConfig.bingo_start_date
       round = HostUtility.get_current_round(bingo_start, Date.today, test_user)
       shift_count = test_user.shifts.count
+
+      return true if (test_user.team_leader? && (shift_count < 18))
 
       if !test_user.rookie? && (round == 0)
         return false

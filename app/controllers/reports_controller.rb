@@ -5,7 +5,7 @@ class ReportsController < ApplicationController
   respond_to :html
 
   def show
-    @seniority = ['Group1 (Senior)', 'Group2 (Middle)', 'Group3 (Newer)', 'Rookie' ]
+    @seniority = ['Group1 (Senior)', 'Group2 (Middle)', 'Group3 (Newer)', 'Rookie', 'Team Leaders' ]
     if params[:id] == 'confirmations'
       @report = 'confirmations'
       unless current_user.has_role? :admin
@@ -46,12 +46,13 @@ class ReportsController < ApplicationController
         u.name = "#{name_array[-1]}, #{name_array[0..-2].join(' ')}"
       end
       @hosts = users.sort { |a, b| a.name <=> b.name }
+      @hosts.delete_if {|h| h.email == COTTER_EMAIL }
       if params['filter'] && params['filter']['Seniority']
         filters = params['filter']['Seniority'].reject {|e| e.empty?}
         if filters.count > 0
-          if !filters.include? @seniority[0]
+          if (!filters.include? @seniority[0])
             # filter out senior hosts
-            @hosts = @hosts.delete_if {|h| h.group_1? }
+            @hosts = @hosts.delete_if {|h| h.group_1_only? }
           end
           if !filters.include? @seniority[1]
             # filter out middle
@@ -64,6 +65,9 @@ class ReportsController < ApplicationController
           if !filters.include? @seniority[3]
             # filter out rookies
             @hosts = @hosts.delete_if {|h| h.rookie? }
+          end
+          if !filters.include? @seniority[4]
+            @hosts = @hosts.delete_if {|h| h.team_leader? }
           end
         end
       end
@@ -83,7 +87,7 @@ class ReportsController < ApplicationController
       @total_assigned_shifts = Shift.assigned
       @total_open_shifts = Shift.un_assigned
 
-      @seniority = ['Group1 (Senior)', 'Group2 (Middle)', 'Group3 (Newer)', 'Rookie' ]
+      @seniority = ['Group1 (Senior)', 'Group2 (Middle)', 'Group3 (Newer)', 'Rookie', 'Team Leaders' ]
 
       respond_to do |format|
         format.html

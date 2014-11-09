@@ -8,3 +8,4 @@ MEETINGS = [{:who=>:rookie, :when=>"2014-11-1", :time=>"8:00am",:what=>"Rookie T
 HOLIDAYS = [Date.new(2014,12,24),Date.new(2014,12,25),Date.new(2014,12,31),Date.new(2015,1,1)]
 
 MAX_EMAIL = 'aamaxworks@gmail.com'
+COTTER_EMAIL = 'jecotterii@gmail.com'

@@ -40,4 +40,8 @@ class ShiftType < ActiveRecord::Base
     self.short_name[0] != 'M'
   end
 
+  def abbreviated_name
+    self.short_name[0..1]
+  end
+
 end

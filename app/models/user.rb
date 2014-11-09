@@ -58,14 +58,15 @@ class User < ActiveRecord::Base
   scope :non_confirmed_users, -> {where(confirmed: false)}
 
   scope :rookies, -> {where("start_year = #{HostConfig.season_year} and active_user = true")}
-  #scope :group1, -> {where("(start_year < ?) and (start_year >= ?) and (active_user = true)", HostConfig.season_year, HostConfig.group_1_year)}
-  #scope :group2, -> {where("(start_year <= ?) and (start_year > ?) and (active_user = true)", HostConfig.group_2_year, HostConfig.group_3_year)}
-  #scope :group3, -> {where("(start_year <= ?) and (active_user = true)", HostConfig.group_3_year)}
   scope :group3, -> {where("(start_year < ?) and (start_year >= ?) and (active_user = true)", HostConfig.season_year, HostConfig.group_3_year)}
   scope :group2, -> {where("(start_year <= ?) and (start_year > ?) and (active_user = true)", HostConfig.group_2_year, HostConfig.group_1_year)}
   scope :group1, -> {where("(start_year <= ?) and (active_user = true)", HostConfig.group_1_year)}
 
   before_destroy :clear_shifts_on_destroy
+
+  def self.team_leader_count
+    User.all.delete_if {|u| !u.team_leader?}.length
+  end
 
   # don't allow non active users to log into the system
   def active_for_authentication?
@@ -172,6 +173,10 @@ class User < ActiveRecord::Base
   def group_1?
     #(self.start_year < HostConfig.season_year) && (self.start_year >= HostConfig.group_1_year)
     self.start_year <= HostConfig.group_1_year
+  end
+
+  def group_1_only?
+    self.start_year <= HostConfig.group_1_year && !self.team_leader?
   end
 
   def shadow_count
