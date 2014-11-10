@@ -74,7 +74,12 @@ class User < ActiveRecord::Base
   end
 
   def non_meeting_shifts
-    retval = self.shifts.includes(:shift_type).delete_if {|s| !s.shift_type.is_working? }
+    arr = ShiftType.where("short_name like 'M%'").map {|st| st.id}
+    retval = []
+    self.shifts.each do |s|
+      retval << s if !arr.include? s.shift_type_id
+    end
+    retval #= self.shifts.delete_if {|s| arr.include? s.shift_type_id }
   end
 
   def inactive_message
@@ -85,8 +90,14 @@ class User < ActiveRecord::Base
     ratio = 0.0
     tours = 0.0
     total = self.non_meeting_shifts.size
+
+    tourshifts = []
+    ShiftType.all.each do |st|
+      tourshifts << st.id if (!st.tasks.nil? && st.tasks.downcase.include?('tour'))
+    end
+
     self.non_meeting_shifts.each do |s|
-      tours += 1 if s.shift_type.is_tour?
+      tours += 1 if tourshifts.include? s.id
     end
     ratio = tours / total if total != 0
     ratio * 100
@@ -279,6 +290,8 @@ class User < ActiveRecord::Base
   def get_meetings
     meetings = []
     first_date = SysConfig.first.season_start_date
+    shift_types = {}
+    ShiftType.all.each {|st| shift_types[st.short_name] = st.id }
     MEETINGS.each do |m|
       unless self.rookie?
         if ((m[:type] == "M1") || (m[:type] == "M3"))
@@ -288,10 +301,10 @@ class User < ActiveRecord::Base
 
       if m[:when] >= first_date.strftime("%Y-%m-%d")
         s_date = DateTime.parse(m[:when])
-        st = ShiftType.find_by_short_name(m[:type])
+        st = shift_types[m[:type]]
         next if st.nil?
         new_shift = Shift.new(:user_id=>self.id,
-                              :shift_type_id=>st.id,
+                              :shift_type_id=>st,
                               :shift_date=>s_date,
                               :shift_status_id => 1,
                               :day_of_week=>s_date.strftime("%a"))

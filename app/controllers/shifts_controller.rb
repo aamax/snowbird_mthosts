@@ -27,7 +27,7 @@ class ShiftsController < ApplicationController
     if params['filter']
       @show_expanded = params['filter']['show_expanded'] == '1'
 
-      @sts = params['filter']['shifttype'].reject{ |e| e.empty? }
+      @sts = params['filter']['shifttype'].reject{ |e| e.empty? } unless params['filter']['shifttype'] == ''
       @dow = params['filter']['dayofweek'].reject{ |e| e.empty? }
       @dt = params['filter']['date']
       @date = @dt
@@ -70,7 +70,7 @@ class ShiftsController < ApplicationController
       s.user_id = current_user.id
       s.save
     else
-      redirect_to :shifts_path, :alert => "Sorry - this shift has already been taken. Please try a different shift"
+      redirect_to "/shifts", :alert => "Sorry - this shift has already been taken. Please try a different shift"
       return
     end
 
