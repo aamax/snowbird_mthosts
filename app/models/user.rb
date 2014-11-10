@@ -97,9 +97,14 @@ class User < ActiveRecord::Base
     end
 
     self.non_meeting_shifts.each do |s|
-      tours += 1 if tourshifts.include? s.id
+      tours += 1 if tourshifts.include? s.shift_type_id
     end
     ratio = tours / total if total != 0
+
+
+    puts "ratio: #{ratio}  total: #{total}  tours: #{tours}  shifts: #{self.non_meeting_shifts.size}"
+    puts "tourshifts: #{tourshifts}"
+
     ratio * 100
   end
 
