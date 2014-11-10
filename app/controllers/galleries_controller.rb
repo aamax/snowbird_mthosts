@@ -2,7 +2,7 @@ class GalleriesController < ApplicationController
   load_and_authorize_resource
 
   def index
-    @galleries = Gallery.all
+    @galleries = Gallery.includes(:user).all
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @galleries }

@@ -51,7 +51,7 @@
    curr_date = ""
 %>
 <div class="shift_page_body">
-    <% @shifts.each do |s| %>
+    <% @shifts.includes(:user).includes(:shift_type).each do |s| %>
       <% if curr_date != s.shift_date  %>
            <% if curr_date != ''  %>
               </table>

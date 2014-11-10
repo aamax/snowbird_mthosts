@@ -74,7 +74,7 @@ class User < ActiveRecord::Base
   end
 
   def non_meeting_shifts
-    retval = self.shifts.delete_if {|s| !s.shift_type.is_working? }
+    retval = self.shifts.includes(:shift_type).delete_if {|s| !s.shift_type.is_working? }
   end
 
   def inactive_message
@@ -302,8 +302,8 @@ class User < ActiveRecord::Base
   end
 
   def get_working_shifts
-    user = User.find_by_id(id)
-    shifts = user.shifts
+    user = User.includes(:shifts).find_by_id(id)
+    shifts = user.shifts.includes(:shift_type)
     shifts ||= []
     working_shifts = shifts + get_meetings
     working_shifts = working_shifts.flatten

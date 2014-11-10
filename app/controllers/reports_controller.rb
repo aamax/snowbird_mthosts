@@ -40,7 +40,7 @@ class ReportsController < ApplicationController
       @title = "Shift By User Report"
       #@hosts = User.group3.sort {|a, b| a.name <=> b.name} + User.group2.sort {|a, b| a.name <=> b.name} +
       #    User.group1.sort {|a, b| a.name <=> b.name} + User.rookies.sort {|a, b| a.name <=> b.name}
-      users = User.active_users
+      users = User.includes(:shifts).active_users
       users.map do |u|
         name_array = u.name.split(' ')
         u.name = "#{name_array[-1]}, #{name_array[0..-2].join(' ')}"

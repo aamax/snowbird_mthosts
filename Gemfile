@@ -73,3 +73,5 @@ group :test, :development do
   #gem "database_cleaner", :git => 'git://github.com/bmabey/database_cleaner.git'
 end
 
+gem "bullet", :group => "development"
+

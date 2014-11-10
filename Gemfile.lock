@@ -66,6 +66,9 @@ GEM
     bootstrap-will_paginate (0.0.10)
       will_paginate
     builder (3.0.4)
+    bullet (4.14.0)
+      activesupport (>= 3.0.0)
+      uniform_notifier (>= 1.6.0)
     cancan (1.6.10)
     capybara (2.0.2)
       mime-types (>= 1.16)
@@ -370,6 +373,7 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
+    uniform_notifier (1.6.2)
     warden (1.2.3)
       rack (>= 1.0)
     websocket (1.2.1)
@@ -392,6 +396,7 @@ DEPENDENCIES
   bootstrap-datepicker-rails
   bootstrap-sass (~> 2.1.1.0)
   bootstrap-will_paginate
+  bullet
   cancan (>= 1.6.8)
   capybara (>= 2.0.2)
   capybara-webkit
