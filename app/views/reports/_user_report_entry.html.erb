@@ -3,9 +3,9 @@
   <br/>(seniority: <%= object.seniority %> )
 </td>
     <td><%= object.shifts.count %> </td>
-    <td><%= object.shifts_worked.count %></td>
-    <td><%= object.pending_shifts.count %></td>
-    <td><%= object.missed_shifts.count %></td>
+    <td><%= object.tours.count %></td>
+    <td><%= "%.2f" % object.tour_ratio %></td>
+    <td></td>
     <td><%= object.notes %></td>
 
 

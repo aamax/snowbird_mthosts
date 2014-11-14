@@ -1,5 +1,6 @@
 # == Schema Information
 #
+
 # Table name: users
 #
 #  id                     :integer          not null, primary key
@@ -88,19 +89,22 @@ class User < ActiveRecord::Base
 
   def tour_ratio
     ratio = 0.0
-    tours = 0.0
     total = self.non_meeting_shifts.size
 
+    ratio = tours.length.to_f / total if total != 0
+    ratio * 100
+  end
+
+  def tours
     tourshifts = []
     ShiftType.all.each do |st|
       tourshifts << st.id if (!st.tasks.nil? && st.tasks.downcase.include?('tour'))
     end
-
+    retval = []
     self.non_meeting_shifts.each do |s|
-      tours += 1 if tourshifts.include? s.shift_type_id
+      retval << s if tourshifts.include? s.shift_type_id
     end
-    ratio = tours / total if total != 0
-    ratio * 100
+    retval
   end
 
   def address
