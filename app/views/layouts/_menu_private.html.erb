@@ -22,7 +22,10 @@
         <li><%= link_to "Team Leader Manual", "/docs/team_lead_manual_2014_15.pdf", :target => "_blank"  %></li>
         <li><%= link_to "Parking Policy 2012-13", "/docs/parking_policy.pdf", :target => "_blank" %></li>
         <li><%= link_to "Parking Policy 2013-14", "/docs/parking_policy_2013_14.doc", :target => "_blank" %></li>
-        <li><%= link_to "Exercises & Stretches", "/docs/exercises_stretches.doc" %></li>
+
+        <li class='disabled'>Nutrition, Safety & Health</li>
+        <li><%= link_to "Exercises & Stretches", "/docs/exercises_stretches.doc", :target => "_blank" %></li>
+        <li><%= link_to "Ski Injury Prevention For Hosties!", "https://prezi.com/ffsph3ej3dyo/ski-injury-prevention/", :target => "_blank" %></li>
 
         <li class='disabled'>General Links & Resources</li>
 		<li><%= link_to '24 Hour Cottonwood Canyons Weather Report',
@@ -96,7 +99,7 @@
   </ul>
   <div class="pull-right">
     <ul class="nav pull-right">
-      <li><%= link_to 'About The Hosts', '/about' %></li>
+      <li><%= link_to 'About The Hosts', '/pages/about' %></li>
       <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= current_user.name %>
           <b class="caret"></b></a>

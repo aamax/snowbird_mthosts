@@ -11,6 +11,7 @@ Mthost::Application.routes.draw do
   resources :sys_configs
   resources :reports
   resources :surveys
+  resources :pages
 
   match '/export_surveys_to_csv', :to => "surveys#export_to_csv"
   match '/get_survey_users', :to => "users#get_survey_users"
@@ -26,7 +27,6 @@ Mthost::Application.routes.draw do
   post '/shifts/assign_team_leaders', :to => 'shifts#assign_team_leaders'
   get '/assign_team_leaders', :to => 'shifts#edit_team_leader_shifts'
 
-  resources :pages
   match '/show_contact_info', :to => "pages#show_contact_info"
   match '/select_hosts_for_email', :to => "mail#select_hosts_for_email"
   match '/send_custom_mail', :to => "mail#send_custom_mail"
