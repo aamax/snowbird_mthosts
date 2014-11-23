@@ -15,9 +15,10 @@
 //= require angular
 //= require ng-rails-csrf
 //= require angular-resource
+//= require ./angular/services/shifttypeResource
+//= require_tree ./angular/services/.
 //= require_tree ./angular/controllers/.
 // require_tree ./angular/directives/.
-//= require_tree ./angular/services/.
 //= require_tree ./angular/.
 //= require angular/directives/gravatar-directive
 //= require /md5-service
