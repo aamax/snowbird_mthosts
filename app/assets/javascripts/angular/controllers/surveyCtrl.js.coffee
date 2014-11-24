@@ -128,5 +128,5 @@ padstr = (value, length) ->
 
 
 
-@SurveyCtrl.$inject = ["$scope", "$resource", "$http"]
+#@SurveyCtrl.$inject = ["$scope", "$resource", "$http"]
 

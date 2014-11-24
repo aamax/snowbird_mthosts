@@ -51,7 +51,8 @@ test:
 production:
   adapter: postgresql
   encoding: unicode
-  database: mthost2_production
+  database: mthost_development
   pool: 5
-  username: mthost2
-  password: 
+  username: root
+  password:
+  template: template0

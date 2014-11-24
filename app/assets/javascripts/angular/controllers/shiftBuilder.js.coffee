@@ -2,4 +2,4 @@
   $scope.date_type = "multiple"
 
 
-@ShiftBuilderCtrl.$inject = ["$scope"]
+#@ShiftBuilderCtrl.$inject = ["$scope"]
