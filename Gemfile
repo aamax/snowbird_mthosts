@@ -37,7 +37,7 @@ gem 'nokogiri'
 gem 'ng-rails-csrf', :git => "git://github.com/xrd/ng-rails-csrf.git" #helps rails csrf with angular
 #gem 'ngmin-rails'
 #gem 'ngannotate-rails'
-gem 'angularjs-rails'
+gem 'angularjs-rails', "1.2"
 
 gem 'gon'
 
