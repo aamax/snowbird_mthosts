@@ -18,8 +18,8 @@
 //= require angular-resource
 
 //= require_tree ./angular/controllers/.
-//= require ./angular/services/shifttypeResource
-//= require ./angular/services/shiftResource
+// require ./angular/services/shifttypeResource
+// require ./angular/services/shiftResource
 
 //= require ./angular/services/services
 // require_tree ./angular/services/.
