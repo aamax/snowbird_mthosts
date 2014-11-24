@@ -12,22 +12,26 @@
 //
 //= require jquery
 //= require jquery_ujs
+
 //= require angular
 //= require ng-rails-csrf
 //= require angular-resource
-//= require ./angular/services/shifttypeResource
-//= require_tree ./angular/services/.
 //= require_tree ./angular/controllers/.
+//= require ./angular/services/services
+//= require_tree ./angular/services/.
 // require_tree ./angular/directives/.
 //= require_tree ./angular/.
 //= require angular/directives/gravatar-directive
+
 //= require /md5-service
 //= require tinymce-jquery
 //= require bootstrap
 //= require bootstrap-datepicker
 //= require bootstrap/load-image.min
 //= require bootstrap/image-gallery.min
+
 //= require angular-strap
+
 //= require_tree .
 
 $(document).ready(function() {

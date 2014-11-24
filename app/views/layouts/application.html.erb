@@ -1,5 +1,7 @@
 <!DOCTYPE html>
+
 <html ng-app="mthosts">
+
 <head>
   <title>Snowbird Mountain Host Site<%= @title.nil? ? "" : " | #{@title}" %></title>
 
@@ -12,6 +14,7 @@
   <%= csrf_meta_tags %>
   <%= favicon_link_tag 'logo.jpg' %>
 </head>
+
 <body>
 <header>
   <%= render :partial => '/layouts/menu' %>

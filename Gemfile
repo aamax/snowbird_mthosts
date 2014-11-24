@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-gem 'rails', '3.2.13'
+gem 'rails', '3.2.21'
 ruby '2.1.0'
 
 group :assets do
@@ -9,6 +9,7 @@ group :assets do
   gem 'bootstrap-sass', '~> 2.1.1.0'
   gem 'therubyracer'
 end
+
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem "pg", ">= 0.14.1"
@@ -32,8 +33,10 @@ gem 'awesome_print'
 gem 'gravatar_image_tag', '1.0.0.pre2'
 gem 'will_paginate', "~>3.0.2"
 gem 'nokogiri'
+
 gem 'ng-rails-csrf', :git => "git://github.com/xrd/ng-rails-csrf.git" #helps rails csrf with angular
-gem 'ngmin-rails'
+#gem 'ngmin-rails'
+#gem 'ngannotate-rails'
 gem 'angularjs-rails'
 
 gem 'gon'

@@ -45,3 +45,8 @@ angular.module("UserServices", []).factory "userResource", ($resource, $rootScop
   getUserResource: ->
     _hosts
 
+.controller("ShiftTypeCtrl", ["$scope", "$resource", "shiftTypeResource", ShiftTypeCtrl])
+.controller("ShiftTypeModalCtrl", ["$scope", "$resource", "shiftTypeResource", ShiftTypeModalCtrl])
+.controller("SurveyCtrl", ["$scope", "$resource", "$http", SurveyCtrl])
+.controller("ShiftBuilderCtrl", ["$scope", ShiftBuilderCtrl])
+
