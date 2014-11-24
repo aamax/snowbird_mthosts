@@ -50,3 +50,7 @@ angular.module("UserServices", []).factory "userResource", ($resource, $rootScop
 .controller("SurveyCtrl", ["$scope", "$resource", "$http", SurveyCtrl])
 .controller("ShiftBuilderCtrl", ["$scope", ShiftBuilderCtrl])
 
+ShiftTypeCtrl.$inject = ["$scope", "$resource", "shiftTypeResource"]
+ShiftTypeModalCtrl.$inject = ["$scope", "$resource", "shiftTypeResource"]
+SurveyCtrl.$inject = ["$scope", "$resource", "$http"]
+ShiftBuilderCtrl.$inject = ["$scope"]
