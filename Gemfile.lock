@@ -262,7 +262,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  angularjs-rails (= 1.2)
+  angularjs-rails
   annotate!
   ansi
   awesome_print

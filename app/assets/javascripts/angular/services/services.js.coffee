@@ -38,82 +38,82 @@ angular.module("UserServices", []).factory "userResource", ($resource, $rootScop
   getUserResource: ->
     _hosts
 
-angular.module("ShiftTypeServices", []).factory "shiftTypeResource", ($resource, $rootScope) ->
-  _loadedShiftTypes    = []
-  _currShiftType = undefined
-  _isShowForm = true
-  _shiftTypes = $resource('/shift_types/:id', {id: '@id'}, {update: {method: 'put'}})
+#angular.module("ShiftTypeServices", []).factory "shiftTypeResource", ($resource, $rootScope) ->
+#  _loadedShiftTypes    = []
+#  _currShiftType = undefined
+#  _isShowForm = true
+#  _shiftTypes = $resource('/shift_types/:id', {id: '@id'}, {update: {method: 'put'}})
+#
+#  loadShiftTypes: ->
+#    _loadedShiftTypes = _shiftTypes.query( ->
+#      $rootScope.$broadcast "shiftTypesLoaded"
+#    )
+#
+#  getShiftTypes: ->
+#    _loadedShiftTypes.slice()
+#
+#  getIsShowForm: ->
+#    _isShowForm
+#
+#  setIsShowForm: (value) ->
+#    _isShowForm = value
+#
+#  getCurrentShiftType: ->
+#    _currShiftType
+#
+#  setCurrentShiftType: (st) ->
+#    _currShiftType = st
+#
+#  getNewShiftTypeResource: ->
+#    str = new _shiftTypes()
+#    str
+#
+#angular.module("ShiftServices", []).factory "shiftResource", ($resource, $rootScope) ->
+#  _loadedShifts    = []
+#  _currShift = undefined
+#  _isShowForm = true
+#  _shifts = $resource('/shifts/:id', {id: '@id'}, {update: {method: 'put'} })
+#
+#  loadShifts: ->
+#    _loadedShifts = _shifts.query( ->
+#      $rootScope.$broadcast "shiftsLoaded"
+#    )
+#
+#  getShifts: ->
+#    _loadedShifts.slice()
+#
+#  getIsShowForm: ->
+#    _isShowForm
+#
+#  setIsShowForm: (value) ->
+#    _isShowForm = value
+#
+#  getCurrentShift: ->
+#    _currShift
+#
+#  setCurrentShift: (s) ->
+#    _currShift = s
+#
+#  getNewShiftResource: ->
+#    sr = new _shifts()
+#    sr
 
-  loadShiftTypes: ->
-    _loadedShiftTypes = _shiftTypes.query( ->
-      $rootScope.$broadcast "shiftTypesLoaded"
-    )
+#angular.module("mthosts", ["ngResource",
+#                        "ng-rails-csrf",
+#                        "UserServices",
+#                        'md5',
+#                        'ui-gravatar',
+#                        "ShiftTypeServices",
+#                        'ShiftServices'])
+#
+#.controller("ShiftTypeCtrl", ["$scope", "$resource", "shiftTypeResource", ShiftTypeCtrl])
+#.controller("ShiftTypeModalCtrl", ["$scope", "$resource", "shiftTypeResource", ShiftTypeModalCtrl])
+#.controller("SurveyCtrl", ["$scope", "$resource", "$http", SurveyCtrl])
+#.controller("ShiftBuilderCtrl", ["$scope", ShiftBuilderCtrl])
 
-  getShiftTypes: ->
-    _loadedShiftTypes.slice()
-
-  getIsShowForm: ->
-    _isShowForm
-
-  setIsShowForm: (value) ->
-    _isShowForm = value
-
-  getCurrentShiftType: ->
-    _currShiftType
-
-  setCurrentShiftType: (st) ->
-    _currShiftType = st
-
-  getNewShiftTypeResource: ->
-    str = new _shiftTypes()
-    str
-
-angular.module("ShiftServices", []).factory "shiftResource", ($resource, $rootScope) ->
-  _loadedShifts    = []
-  _currShift = undefined
-  _isShowForm = true
-  _shifts = $resource('/shifts/:id', {id: '@id'}, {update: {method: 'put'} })
-
-  loadShifts: ->
-    _loadedShifts = _shifts.query( ->
-      $rootScope.$broadcast "shiftsLoaded"
-    )
-
-  getShifts: ->
-    _loadedShifts.slice()
-
-  getIsShowForm: ->
-    _isShowForm
-
-  setIsShowForm: (value) ->
-    _isShowForm = value
-
-  getCurrentShift: ->
-    _currShift
-
-  setCurrentShift: (s) ->
-    _currShift = s
-
-  getNewShiftResource: ->
-    sr = new _shifts()
-    sr
-
-angular.module("mthosts", ["ngResource",
-                        "ng-rails-csrf",
-                        "UserServices",
-                        'md5',
-                        'ui-gravatar',
-                        "ShiftTypeServices",
-                        'ShiftServices'])
-
-.controller("ShiftTypeCtrl", ["$scope", "$resource", "shiftTypeResource", ShiftTypeCtrl])
-.controller("ShiftTypeModalCtrl", ["$scope", "$resource", "shiftTypeResource", ShiftTypeModalCtrl])
-.controller("SurveyCtrl", ["$scope", "$resource", "$http", SurveyCtrl])
-.controller("ShiftBuilderCtrl", ["$scope", ShiftBuilderCtrl])
-
-ShiftTypeCtrl.$inject = ["$scope", "$resource", "shiftTypeResource"]
-ShiftTypeModalCtrl.$inject = ["$scope", "$resource", "shiftTypeResource"]
-SurveyCtrl.$inject = ["$scope", "$resource", "$http"]
-ShiftBuilderCtrl.$inject = ["$scope"]
+#ShiftTypeCtrl.$inject = ["$scope", "$resource", "shiftTypeResource"]
+#ShiftTypeModalCtrl.$inject = ["$scope", "$resource", "shiftTypeResource"]
+#SurveyCtrl.$inject = ["$scope", "$resource", "$http"]
+#ShiftBuilderCtrl.$inject = ["$scope"]
 
 

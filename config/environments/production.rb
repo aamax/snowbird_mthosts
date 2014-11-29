@@ -1,3 +1,5 @@
+require 'uglifier'
+
 Mthost::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
@@ -9,6 +11,7 @@ Mthost::Application.configure do
   config.action_controller.perform_caching = true
 
   # Disable Rails's static asset server (Apache or nginx will already do this)
+  #config.serve_static_assets = false
   config.serve_static_assets = false
 
   # Compress JavaScripts and CSS
@@ -19,6 +22,7 @@ Mthost::Application.configure do
 
   # Generate digests for assets URLs
   config.assets.digest = true
+  config.assets.js_compressor                = Uglifier.new(:mangle => false)
 
   # Defaults to nil and saved in location specified by config.assets.prefix
   # config.assets.manifest = YOUR_PATH

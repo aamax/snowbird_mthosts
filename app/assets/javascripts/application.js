@@ -17,15 +17,12 @@
 //= require ng-rails-csrf
 //= require angular-resource
 
-//= require_tree ./angular/controllers/.
-// require ./angular/services/shifttypeResource
-// require ./angular/services/shiftResource
-
-//= require ./angular/services/services
-// require_tree ./angular/services/.
-// require_tree ./angular/directives/.
-//= require_tree ./angular/.
+//= require_tree ./angular/services/.
 //= require angular/directives/gravatar-directive
+//= require_tree ./angular/controllers/.
+
+
+//= require_tree ./angular/.
 
 //= require /md5-service
 //= require tinymce-jquery
