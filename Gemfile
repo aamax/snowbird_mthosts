@@ -53,6 +53,7 @@ gem 'newrelic_rpm'
 group :development do
   #gem 'debugger'
   gem 'annotate', :git => 'git://github.com/ctran/annotate_models.git'
+  gem "bullet"
 end
 
 # group :test do
@@ -76,5 +77,5 @@ group :test, :development do
   #gem "database_cleaner", :git => 'git://github.com/bmabey/database_cleaner.git'
 end
 
-gem "bullet", :group => "development"
+
 

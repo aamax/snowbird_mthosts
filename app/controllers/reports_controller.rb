@@ -95,7 +95,7 @@ class ReportsController < ApplicationController
           file = CSV.generate do |csv|
             csv << "Last Name,First Name,Total,Tours,Ratio,,Comments".split(',')
             @hosts.each do |user|
-              csv << "#{user.name},#{user.shifts.count},#{user.tours.count},#{user.ratio},,#{user.notes}".split(',')
+              csv << "#{user.name},#{user.shifts.count},#{user.tours.count},#{user.tour_ratio},,#{user.notes}".split(',')
             end
           end
           render text: file
