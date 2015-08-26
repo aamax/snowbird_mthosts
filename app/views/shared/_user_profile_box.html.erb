@@ -1,54 +1,57 @@
 
 <div class='user_profile_box span6' >
   <div class='row'>
-    <div class='span2 col1'>
-      <%= user.name %>
+    <% unless user.nil? %>
+        <div class='span2 col1'>
 
-      <% if ((current_user.has_role? :admin) || (current_user.id == user.id)) %>
-          <a href='<%= edit_user_path(user) %>'>
-      <i class='icon-wrench icon-large icon_blue icon_obj' title='Edit User'></i></a><br/>
-      <% end %>
-      <%= if user.head_shot.nil? || (user.head_shot == '')
-            gravatar_image_tag(user.email, :alt => user.name)
-          else
-            image_tag user.head_shot
-          end
-      %><br/>
-      <%= link_to user.email, "/send_mail/#{user.email}" %> <br/>
-      <% unless user.alt_email.blank? %>
-        <strong>Alt Email: </strong> <%= link_to user.alt_email, "/send_mail/#{user.alt_email}" %> <br/>
-      <% end %>
-      <% unless user.nickname.blank? %>
-          Nick Name: <%= user.nickname %><br/>
-      <% end %>
-      Cell: <%= number_to_phone(user.cell_phone) %> <br/>
-      Home: <%= number_to_phone(user.home_phone) %> <br/><br/>
-    </div>
-    <div class='span4'>
-      <%= user.street %><br/>
-      <%= user.city %> <%= user.city.blank? ? " #{user.state} #{user.zip}" : ", #{user.state} #{user.zip}" %><br/><br/>
+          <%= user.name %>
 
-      Survey Total: <%= "TBD" %> <br/>
-      Shifts Selected: <%= user.shifts.size %>  <br/>
-      Tour Ratio:
-      <% if user.tour_ratio > 50 %>
-          <span class="bad_ratio"><%= user.tour_ratio.round(2) %></span>
-      <% else %>
-          <%= user.tour_ratio.round(2) %>
-      <% end %>
-      <br/>
-      Seniority: <%= user.seniority %><br/>
-      Start Year:  <%= user.snowbird_start_year %> <br/>
+          <% if ((current_user.has_role? :admin) || (current_user.id == user.id)) %>
+              <a href='<%= edit_user_path(user) %>'>
+                <i class='icon-wrench icon-large icon_blue icon_obj' title='Edit User'></i></a><br/>
+          <% end %>
+          <%= if user.head_shot.nil? || (user.head_shot == '')
+                gravatar_image_tag(user.email, :alt => user.name)
+              else
+                image_tag user.head_shot
+              end
+          %><br/>
+          <%= link_to user.email, "/send_mail/#{user.email}" %> <br/>
+          <% unless user.alt_email.blank? %>
+              <strong>Alt Email: </strong> <%= link_to user.alt_email, "/send_mail/#{user.alt_email}" %> <br/>
+          <% end %>
+          <% unless user.nickname.blank? %>
+              Nick Name: <%= user.nickname %><br/>
+          <% end %>
+          Cell: <%= number_to_phone(user.cell_phone) %> <br/>
+          Home: <%= number_to_phone(user.home_phone) %> <br/><br/>
+        </div>
+        <div class='span4'>
+          <%= user.street %><br/>
+          <%= user.city %> <%= user.city.blank? ? " #{user.state} #{user.zip}" : ", #{user.state} #{user.zip}" %><br/><br/>
 
-      <% if user.roles.length > 0 %>
+          Survey Total: <%= "TBD" %> <br/>
+          Shifts Selected: <%= user.shifts.size %>  <br/>
+          Tour Ratio:
+          <% if user.tour_ratio > 50 %>
+              <span class="bad_ratio"><%= user.tour_ratio.round(2) %></span>
+          <% else %>
+              <%= user.tour_ratio.round(2) %>
+          <% end %>
           <br/>
-          Roles:
-          <ul>
-            <% user.roles.each do |r| %>
-                <li><%= r.name %></li>
-            <% end %>
-          </ul>
-      <% end %>
-    </div>
+          Seniority: <%= user.seniority %><br/>
+          Start Year:  <%= user.snowbird_start_year %> <br/>
+
+          <% if user.roles.length > 0 %>
+              <br/>
+              Roles:
+              <ul>
+                <% user.roles.each do |r| %>
+                    <li><%= r.name %></li>
+                <% end %>
+              </ul>
+          <% end %>
+        </div>
+    <% end %>
   </div>
 </div>
