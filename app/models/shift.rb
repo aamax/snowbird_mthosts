@@ -23,19 +23,24 @@ class Shift < ActiveRecord::Base
   belongs_to :user
   belongs_to :shift_type
 
-  date_regex = /^(19|20)\d\d[. -\/](0[1-9]|1[012])[. -\/](0[1-9]|[12][0-9]|3[01])$/
+  date_regex = /\A(19|20)\d\d[. -\/](0[1-9]|1[012])[. -\/](0[1-9]|[12][0-9]|3[01])\z/
 
   validates   :shift_type_id,  :presence => true
 
   validates :shift_date, :presence => true,
             :format => { :with => date_regex }
 
-  default_scope :order => "shift_date asc, shift_type_id asc", :conditions => "shift_date >= '#{HostConfig.season_start_date}'"
-  scope :last_year, where("shifts.shift_date < '#{HostConfig.season_start_date}'").order("shifts.shift_date")
+  default_scope {order("shift_date asc, shift_type_id asc")}
+  #default_scope where("shift_date >= '#{HostConfig.season_start_date}'")
+
+
+
+
+  scope :last_year, -> {where("shifts.shift_date < '#{HostConfig.season_start_date}'").order("shifts.shift_date")}
   scope :currentuser, lambda{|userid| where :user_id => userid}
-  scope :assigned, where("shifts.user_id is not null").order("shifts.shift_date")
-  scope :un_assigned, where("shifts.user_id is null").order("shifts.shift_date")
-  scope :team_leader_shifts, where("shifts.shift_type_id = #{ShiftType.team_lead_type.id}")
+  scope :assigned, -> {where("shifts.user_id is not null").order("shifts.shift_date")}
+  scope :un_assigned, -> {where("shifts.user_id is null").order("shifts.shift_date")}
+  scope :team_leader_shifts, -> {where("shifts.shift_type_id = #{ShiftType.team_lead_type.id}")}
 
   # shift status values:
   #      worked = 1
@@ -44,7 +49,7 @@ class Shift < ActiveRecord::Base
   scope :currentuserworked, lambda{ |userid| where("user_id = #{userid} and shift_status = 1 and shift_date <= #{Date.today}")}
   scope :currentuserpending, lambda{|userid| where("user_id = #{userid} and shift_status = 1 and shift_date > #{Date.today}") }
   scope :currentusermissed, lambda{|userid| where :user_id => userid, :shift_status => -1}
-  scope :distinctDates, :select => ('distinct on (shift_date) shift_date, shift_type_id')
+  #scope :distinctDates, :select => ('distinct on (shift_date) shift_date, shift_type_id')
 
   def self.assign_team_leaders(params)
     days = {'monday' => 1, 'tuesday' => 2, 'wednesday' => 3, 'thursday' => 4, 'friday' => 5, 'saturday' => 6, 'sunday' => 7}

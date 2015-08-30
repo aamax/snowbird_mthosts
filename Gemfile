@@ -1,14 +1,20 @@
 source 'https://rubygems.org'
-gem 'rails', '3.2.21'
+gem 'rails', '4.2.3'
 ruby '2.2.3'
 
 group :assets do
-  gem 'sass-rails',   '~> 3.2.6'
-  gem 'coffee-rails', '~> 3.2.1'
-  gem 'uglifier', '>= 1.0.3'
-  gem 'bootstrap-sass', '~> 2.1.1.0'
+ # gem 'sass-rails' #,   '~> 3.2.6'
+  gem 'sass-rails', '~> 5.0'
+  #gem 'coffee-rails' #, '~> 3.2.1'
+  gem 'coffee-rails', '~> 4.1.0'
+  gem 'uglifier', '>= 1.3.0'
+  #gem 'bootstrap-sass', '~> 2.1.1.0'
+  gem 'bootstrap-sass', '~> 3.2.0'
+  gem 'autoprefixer-rails'
   gem 'therubyracer'
 end
+
+gem 'rails_12factor', group: :production
 
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
@@ -68,14 +74,16 @@ group :test, :development do
   gem "minitest-rails-capybara"
   gem "minitest-stub-const"
   gem "minitest-reporters", '>= 0.5.0'
-  gem "minitest-wscolor", ">= 0.0.3", :group => :test
+  #gem "minitest-wscolor"#, ">= 0.0.3"
   gem 'pry'
  # gem "turn"
-  gem "factory_girl_rails", ">= 4.2.0"
+  gem "factory_girl_rails", ">= 4.2.3"
 
   gem "capybara-webkit"
   #gem "database_cleaner", :git => 'git://github.com/bmabey/database_cleaner.git'
 end
+
+gem 'protected_attributes'
 
 
 
