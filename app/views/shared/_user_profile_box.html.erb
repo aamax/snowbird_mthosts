@@ -31,7 +31,7 @@
           <%= user.city %> <%= user.city.blank? ? " #{user.state} #{user.zip}" : ", #{user.state} #{user.zip}" %><br/><br/>
 
           Survey Total: <%= "TBD" %> <br/>
-          Shifts Selected: <%= user.shifts.size %>  <br/>
+          Shifts Selected: <%= user.shifts.count %>  <br/>
           Tour Ratio:
           <% if user.tour_ratio > 50 %>
               <span class="bad_ratio"><%= user.tour_ratio.round(2) %></span>
