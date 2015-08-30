@@ -41,8 +41,8 @@ gem 'angularjs-rails'
 
 gem 'gon'
 
-gem "paperclip", "~> 3.0"
-gem 'aws-sdk'
+# gem "paperclip", "~> 3.0"
+# gem 'aws-sdk'
 
 gem 'rollbar'
 gem 'unicorn'
