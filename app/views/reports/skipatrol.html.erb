@@ -1,8 +1,8 @@
 <div class="row">
-  <div class="span12">
+  <div class="col-sm-12 col-md-12">
     <h1>Ski Patrol Mt Host Reports</h1>  <br/>
     <%= form_tag("/skipatrol") do %>
-        <%= text_field_tag "date", "", :id => "filter_date", :class=>"span2 shift_date",
+        <%= text_field_tag "date", "", :id => "filter_date", :class=>"col-sm-2 col-md-2 shift_date",
                            :value=>@date, :readonly=>'readonly' %>&nbsp;
         <%=  link_to "<i class='icon-calendar'></i>".html_safe, "#", :class=>"btn cal_icon",
                      :id=>"set_date_btn",
@@ -17,37 +17,37 @@
 
 
 <div class="row">
-  <div class="span6">
+  <div class="col-sm-6 col-md-6">
     <%= render "skipatrol_day", :date => @date, :shifts => @day1 %>
   </div>
 
-  <div class="span6">
+  <div class="col-sm-6 col-md-6">
     <%= render "skipatrol_day", :date => @date + 1.day, :shifts => @day2 %>
   </div>
 </div>
 
 <div class="row">
-  <div class="span6">
+  <div class="col-sm-6 col-md-6">
     <%= render "skipatrol_day", :date => @date + 2.days, :shifts => @day3 %>
   </div>
 
-  <div class="span6">
+  <div class="col-sm-6 col-md-6">
     <%= render "skipatrol_day", :date => @date + 3.day, :shifts => @day4 %>
   </div>
 </div>
 
 <div class="row">
-  <div class="span6">
+  <div class="col-sm-6 col-md-6">
     <%= render "skipatrol_day", :date => @date + 4.days, :shifts => @day5 %>
   </div>
 
-  <div class="span6">
+  <div class="col-sm-6 col-md-6">
     <%= render "skipatrol_day", :date => @date + 5.day, :shifts => @day6 %>
   </div>
 </div>
 
 <div class="row">
-  <div class="span6">
+  <div class="col-sm-6 col-md-6">
     <%= render "skipatrol_day", :date => @date + 6.day, :shifts => @day7 %>
   </div>
 </div>

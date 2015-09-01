@@ -1,5 +1,5 @@
 
-<td class="span2">
+<td class="col-sm-2 col-md-2">
   <% if object.shift_date.nil? %>
       UnSet
   <% else %>
@@ -8,13 +8,13 @@
   <% end %>
 </td>
 
-<td class="span3">
+<td class="col-sm-3 col-md-3">
   <%=  "#{object.short_name[0..1]} - #{object.shift_type.description }" %>
 </td>
-<td class="span3">
+<td class="col-sm-3 col-md-3">
   <%= "#{object.shift_type.start_time} - #{object.shift_type.end_time}" %>
 </td>
-<td class="span3">
+<td class="col-sm-3 col-md-3">
   <%=   object.shift_type.tasks %>
 </td>
 

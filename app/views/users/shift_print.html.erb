@@ -7,10 +7,10 @@ Click<strong><%= link_to " Here ", "/users/#{@user.id}" %></strong>to return to 
 <table class="table table-condensed table-striped">
 
   <tr class="headerrow">
-    <th class="span2" >Shift Date</th>
-    <th class='span3' >Shift Name</th>
-    <th class='span3' >Times</th>
-    <th class='span3' >Tasks/Description</th>
+    <th class="col-sm-2 col-md-2" >Shift Date</th>
+    <th class='col-sm-3 col-md-3' >Shift Name</th>
+    <th class='col-sm-3 col-md-3' >Times</th>
+    <th class='col-sm-3 col-md-3' >Tasks/Description</th>
     </strong>
   </tr>
   <% @user.working_shifts.each do |object| %>

@@ -1,6 +1,6 @@
 <%= f.label(:dayofweek, "Day Of Week") %>
 
 <%= f.select("dayofweek", @days, {:selected => @dow.reject {|e| e.empty?}},
-             {:class=>"span1", :multiple => true })  %>
+             {:class=>"col-sm-1 col-md-1", :multiple => true })  %>
 
 

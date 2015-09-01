@@ -4,10 +4,10 @@
 
     <div id="introduction">
       <div class="row">
-        <div class="span2">
+        <div class="col-sm-2 col-md-2">
           &nbsp;
         </div>
-        <div class="span8">
+        <div class="col-sm-8 col-md-8">
           <h1>Welcome to the Shift Builder!</h1>
           <br/>
           <div class="intro_text message_window round">
@@ -28,17 +28,17 @@
         </div>
       </div>
       <div class="row">
-        <div class="span7" >
+        <div class="col-sm-7 col-md-7" >
           &nbsp;
         </div>
 
-        <div class="span1">
+        <div class="col-sm-1 col-md-1">
           &nbsp;
         </div>
-        <div class="span1" >
+        <div class="col-sm-1 col-md-1" >
           <%=  link_to "Next", "#", :class=>"btn wiz_nav_btns", :id=>"intro_next" %>
         </div>
-        <div class="span3" >
+        <div class="col-sm-3 col-md-3" >
           &nbsp;
         </div>
       </div>
@@ -46,34 +46,34 @@
 
     <div id="select_shifts">
       <div class="row">
-        <div class="span2">
+        <div class="col-sm-2 col-md-2">
           &nbsp;
         </div>
-        <div class="span8">
+        <div class="col-sm-8 col-md-8">
           <h1>Select Shifts For the Work Day...</h1>
           <br/>
           <div class="intro_text message_window round">
             <div class="row">
-              <div class="span3">
+              <div class="col-sm-3 col-md-3">
                 <h3>Available Shifts</h3>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <%= select_tag "day[available_shifts]",
                                  options_from_collection_for_select(@shift_types, :id, :short_name),
-                                 {:multiple => true, :class=>"span2", :size=>20} %>
+                                 {:multiple => true, :class=>"col-sm-2 col-md-2", :size=>20} %>
               </div>
-              <div class="span2" style="text-align: center;">
+              <div class="col-sm-2 col-md-2" style="text-align: center;">
                 <br/><br/><br/><br/><br/><br/>
                 <%=  link_to ">>", "#", :class=>"btn btn-success shift_select_btn",
                              :id=>"shift_select_btn" %><br/><br/>
                 <%=  link_to "<<", "#", :class=>"btn btn-danger shift_deselect_button",
                              :id=>"shift_unselect_btn" %>
               </div>
-              <div class="span2">
+              <div class="col-sm-2 col-md-2">
                 <h3>Selected Shifts</h3>
 
                 <%= select_tag "day[selected_shifts]",
                                @selected_shifts,
-                               {:multiple => true, :class=>"span2", :size=>20} %>
+                               {:multiple => true, :class=>"col-sm-2 col-md-2", :size=>20} %>
 
                 <div style="float: right;">
                   <%= link_to "Clear Shifts", "#", :id=>"clear_shifts_btn", :class=>"btn btn-warning" %>
@@ -81,7 +81,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="span8">
+              <div class="col-sm-8 col-md-8">
                 <br/>
                 <p>
                   Press the "Next" button to proceed to the date selection page
@@ -93,17 +93,17 @@
       </div>
 
       <div class="row">
-        <div class="span7" >
+        <div class="col-sm-7 col-md-7" >
           &nbsp;
         </div>
 
-        <div class="span1">
+        <div class="col-sm-1 col-md-1">
           <%=  link_to "Back", "#", :class=>"btn wiz_nav_btns", :id=>"shifts_back" %>
         </div>
-        <div class="span1" >
+        <div class="col-sm-1 col-md-1" >
           <%=  link_to "Next", "#", :class=>"btn wiz_nav_btns", :id=>"shifts_next" %>
         </div>
-        <div class="span3" >
+        <div class="col-sm-3 col-md-3" >
           &nbsp;
         </div>
       </div>
@@ -111,16 +111,16 @@
 
     <div id="select_dates">
       <div class="row">
-        <div class="span2">
+        <div class="col-sm-2 col-md-2">
           &nbsp;
         </div>
-        <div class="span8">
+        <div class="col-sm-8 col-md-8">
           <h1>Select the Dates for this Shift Set...</h1>
           <br/>
 
           <div class="intro_text message_window round">
             <div class="row">
-              <div class="span3">
+              <div class="col-sm-3 col-md-3">
                 <br/><br/>
                 <strong>Date Selection Type</strong><br/>
                 <input type="radio" ng-model="date_type" value="single" >  Single Date <br/>
@@ -131,7 +131,7 @@
                 <table>
                   <tr>
                     <td><%= text_field_tag "start_date", "",
-                                           :class=>"span2 start_date", :readonly=>'readonly' %>&nbsp;</td>
+                                           :class=>"col-sm-2 col-md-2 start_date", :readonly=>'readonly' %>&nbsp;</td>
                     <td style="vertical-align: top;">
                       <%=  link_to "&nbsp;<i class='icon-calendar'></i>&nbsp;".html_safe, "#",
                                    :class=>"btn cal_icon_start",
@@ -148,7 +148,7 @@
                   <table>
                     <tr>
                       <td><%= text_field_tag "end_date", "",
-                                             :class=>"span2 end_date", :readonly=>'readonly' %>&nbsp;</td>
+                                             :class=>"col-sm-2 col-md-2 end_date", :readonly=>'readonly' %>&nbsp;</td>
                       <td style="vertical-align: top;">
                         <%=  link_to "&nbsp;<i class='icon-calendar'></i>&nbsp;".html_safe, "#",
                                      :class=>"btn cal_icon_end",
@@ -161,24 +161,24 @@
               </div>
 
               <div class="single_date">
-                <div class="span2">&nbsp;</div>
+                <div class="col-sm-2 col-md-2">&nbsp;</div>
               </div>
 
               <div class="multi_date">
-                <div class="span2">
+                <div class="col-sm-2 col-md-2">
                   <br/><br/><br/><br/>
                   Days of the Week  <br/>
                   <%= select_tag 'days_of_the_week',
-                                 options_for_select(@days_of_week),{ :multiple => true, :size =>7 , :class=>"span2" } %>
+                                 options_for_select(@days_of_week),{ :multiple => true, :size =>7 , :class=>"col-sm-2 col-md-2" } %>
 
                 </div>
               </div>
 
-              <div class="span2">
+              <div class="col-sm-2 col-md-2">
                 <strong>Selected Dates:</strong>
                 <%=  select_tag "selected_dates",
                                 @selected_dates,
-                                {:multiple => true, :class=>"span2",:size=>22, :readonly=>"readonly"} %>
+                                {:multiple => true, :class=>"col-sm-2 col-md-2",:size=>22, :readonly=>"readonly"} %>
 
                 <br/>
                 <%=  link_to "Update dates", "#", :class=>"btn btn-info", :id=>"update_dates" %>
@@ -193,16 +193,16 @@
       </div>
 
       <div class="row">
-        <div class="span7">
+        <div class="col-sm-7 col-md-7">
           &nbsp;
         </div>
-        <div class="span1">
+        <div class="col-sm-1 col-md-1">
           <%=  link_to "Back", "#", :class=>"btn wiz_nav_btns", :id=>"dates_back" %>
         </div>
-        <div class="span1" >
+        <div class="col-sm-1 col-md-1" >
           <%=  link_to "Next", "#", :class=>"btn wiz_nav_btns", :id=>"dates_next" %>
         </div>
-        <div class="span3" >
+        <div class="col-sm-3 col-md-3" >
           &nbsp;
         </div>
       </div>
@@ -210,10 +210,10 @@
 
     <div id="set_options">
       <div class="row">
-        <div class="span1">
+        <div class="col-sm-1 col-md-1">
           &nbsp;
         </div>
-        <div class="span10">
+        <div class="col-sm-10 col-md-10">
           <h1>Set the Final Options...</h1>
           <br/>
           <div class="intro_text message_window round">
@@ -235,14 +235,14 @@
               <% end %>
             </p>
             <br/> <br/><br/><br/><br/>
-            <div class="span2">
+            <div class="col-sm-2 col-md-2">
               WARNING:
             </div>
-            <div class="span5">be careful if you select to replace shifts (option 1 above),
+            <div class="col-sm-5 col-md-5">be careful if you select to replace shifts (option 1 above),
             You will be automatically losing any shifts you may have created before.<br/>
             </div>
             <br/> <br/>
-            <div class="row"><div class="warning span4"><br/>You've been warned!</div></div>
+            <div class="row"><div class="warning col-sm-4 col-md-4"><br/>You've been warned!</div></div>
             <br/>
             <p>
               Press the "Next" button to proceed to finish the creation process.
@@ -252,17 +252,17 @@
       </div>
 
       <div class="row">
-        <div class="span7" >
+        <div class="col-sm-7 col-md-7" >
           &nbsp;
         </div>
 
-        <div class="span1">
+        <div class="col-sm-1 col-md-1">
           <%=  link_to "Back", "#", :class=>"btn wiz_nav_btns", :id=>"confirm_back" %>
         </div>
-        <div class="span1" >
+        <div class="col-sm-1 col-md-1" >
           <%=  link_to "Next", "#", :class=>"btn wiz_nav_btns", :id=>"confirm_next" %>
         </div>
-        <div class="span3" >
+        <div class="col-sm-3 col-md-3" >
           &nbsp;
         </div>
       </div>
@@ -270,44 +270,44 @@
 
     <div id="confirmation">
       <div class="row">
-        <div class="span1">
+        <div class="col-sm-1 col-md-1">
           &nbsp;
         </div>
-        <div class="span10">
+        <div class="col-sm-10 col-md-10">
           <h1>Confirm and Finish Creating Shifts!</h1>
           <br/>
           <div class="intro_text message_window round">
             <div class="row">
-              <div class="span1">
+              <div class="col-sm-1 col-md-1">
                 &nbsp;
               </div>
-              <div class="span2">
+              <div class="col-sm-2 col-md-2">
                 <h3>Selected Shifts</h3><br/>
 
                 <%= select_tag "confirm[selected_shifts]",
                                @selected_shifts,
-                               {:multiple => true, :class=>"span2", :size=>19, :readonly=>"readonly"} %>
+                               {:multiple => true, :class=>"col-sm-2 col-md-2", :size=>19, :readonly=>"readonly"} %>
               </div>
 
-              <div class="span2">
+              <div class="col-sm-2 col-md-2">
                 <h3>Selected Dates</h3><br/>
 
                 <%=  select_tag "confirm[selected_dates]",
                                 @selected_dates,
-                                {:multiple => true, :class=>"span2",:size=>19, :readonly=>"readonly"} %>
+                                {:multiple => true, :class=>"col-sm-2 col-md-2",:size=>19, :readonly=>"readonly"} %>
 
               </div>
 
-              <div class="span4">
+              <div class="col-sm-4 col-md-4">
                 <strong>Options</strong> <br/><br/>
                 <%= text_area_tag(:confirm_option,
                                   "You have elected to add shifts to existing shifts. This is a safe way of populating shifts and will not destroy any shifts you've already set up.",
-                                  :readonly=>"readonly", :rows=>10, :class=>"span4") %>
+                                  :readonly=>"readonly", :rows=>10, :class=>"col-sm-4 col-md-4") %>
               </div>
 
             </div>
             <div class="row">
-              <div class="span8">
+              <div class="col-sm-8 col-md-8">
                 <br/>
                 <p>
                   Press the "Finish" button to process your selections or "Back" to fix selections.  <br/>
@@ -320,24 +320,24 @@
       </div>
 
       <div class="row">
-        <div class="span2" >
+        <div class="col-sm-2 col-md-2" >
           &nbsp;
         </div>
-        <div class="span1">
+        <div class="col-sm-1 col-md-1">
           <%=  link_to "Cancel", shifts_path, :class=>"btn wiz_nav_btns", :id=>"cancel" %>
         </div>
-        <div class="span4" >
+        <div class="col-sm-4 col-md-4" >
           &nbsp;
         </div>
 
-        <div class="span1">
+        <div class="col-sm-1 col-md-1">
           <%=  link_to "Back", "#", :class=>"btn wiz_nav_btns", :id=>"finish_back" %>
         </div>
-        <div class="span1" >
+        <div class="col-sm-1 col-md-1" >
           <%= submit_tag 'Finish', :class=>"btn wiz_nav_btns", :id=>"finish" %>
 
         </div>
-        <div class="span3" >
+        <div class="col-sm-3 col-md-3" >
           &nbsp;
         </div>
       </div>

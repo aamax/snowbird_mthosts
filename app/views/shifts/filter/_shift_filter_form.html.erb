@@ -3,7 +3,7 @@
     <h4>Filter:</h4>
     <div class='filter_box'>
       <div class='row'>
-        <div class='span3'>
+        <div class='col-sm-3 col-md-3'>
           <strong>Options</strong> <br/> <br/>
           <%= render 'shifts/filter/start_from_today', :f => f %>
           <%= render 'shifts/filter/show_expanded', :f => f %><br/>
@@ -15,15 +15,15 @@
           <%= render 'shifts/filter/show_holidays', :f => f %>
         </div>
 
-        <div class='span2'>
+        <div class='col-sm-2 col-md-2'>
           <%= render 'shifts/filter/day_of_week', :f => f %>
         </div>
 
-        <div class='span3'>
+        <div class='col-sm-3 col-md-3'>
           <%= render 'shifts/filter/shift_type', :f => f %>
         </div>
 
-        <div class='span3'>
+        <div class='col-sm-3 col-md-3'>
           <%= render 'shifts/filter/host', :f => f %>    <br/>
           <%= render 'shifts/filter/date', :f => f %>
         </div>

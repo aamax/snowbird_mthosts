@@ -4,7 +4,7 @@
 <% @non_confirmed.in_groups_of(4).each do |u_array| %>
     <div class="row">
       <% u_array.each do |u| %>
-          <div class="span3">
+          <div class="col-sm-3 col-md-3">
             <%= "&nbsp;".html_safe if u.nil? %>
             <%= u.name unless u.nil?%>
           </div>
@@ -17,7 +17,7 @@
 <% @confirmed.in_groups_of(4).each do |u_array| %>
     <div class="row">
       <% u_array.each do |u| %>
-          <div class="span3">
+          <div class="col-sm-3 col-md-3">
             <%= "&nbsp;".html_safe if u.nil? %>
             <%= u.name unless u.nil?%>
           </div>

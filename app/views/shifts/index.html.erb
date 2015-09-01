@@ -5,7 +5,7 @@
     <%= will_paginate(@shifts, :renderer => 'BootstrapPaginationHelper::LinkRenderer') %>
 
     <div class='row'>
-      <div class='span4'>
+      <div class='col-sm-4 col-md-4'>
         <% if current_user.has_role? :admin %>
             <button type="button" class="btn" data-toggle="collapse" data-target="#stats_display" >
               Open Stats:&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
@@ -23,7 +23,7 @@
     <div id="stats_display" class="collapse <%= current_user.shift_status_message.length > 0 ? "in": "out" %>">
       <% if current_user.has_role? :admin %>
         <div class='row'>
-            <div class='span5'>
+            <div class='col-sm-5 col-md-5'>
               <h4>Shift Stats:</h4>
               <strong>Total Shifts:</strong>  <%= Shift.all.length %><br/>
               <strong>Assigned Shifts:</strong>   <%= Shift.assigned.length %><br/>

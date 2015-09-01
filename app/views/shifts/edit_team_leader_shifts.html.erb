@@ -3,7 +3,7 @@
 <hr/>
 <%= form_tag('/shifts/assign_team_leaders') do %>
     <div class="row">
-      <div class="span2">
+      <div class="col-sm-2 col-md-2">
         <h3>Leaders</h3>
         <div class="leader_box">
           <ul>
@@ -14,7 +14,7 @@
         </div>
       </div>
 
-      <div class="span10">
+      <div class="col-sm-10 col-md-10">
         <h3>Days Of Week</h3>
         <table class="table table-bordered">
           <tr>
@@ -28,25 +28,25 @@
           </tr>
           <tr>
             <td ondrop="drop(event)" ondragover="allowDrop(event)" id="monday" class="namebox">
-              <%= hidden_field_tag 'hiddenmonday', '', class: 'span1' %><br/><br/><br/><br/>
+              <%= hidden_field_tag 'hiddenmonday', '', class: 'col-sm-1 col-md-1' %><br/><br/><br/><br/>
             </td>
             <td ondrop="drop(event)" ondragover="allowDrop(event)" id="tuesday" class="namebox">
-              <%= hidden_field_tag 'hiddentuesday', '', class: 'span1' %><br/><br/><br/><br/>
+              <%= hidden_field_tag 'hiddentuesday', '', class: 'col-sm-1 col-md-1' %><br/><br/><br/><br/>
             </td>
             <td ondrop="drop(event)" ondragover="allowDrop(event)" id="wednesday" class="namebox">
-              <%= hidden_field_tag 'hiddenwednesday', '', class: 'span1' %><br/><br/><br/><br/>
+              <%= hidden_field_tag 'hiddenwednesday', '', class: 'col-sm-1 col-md-1' %><br/><br/><br/><br/>
             </td>
             <td ondrop="drop(event)" ondragover="allowDrop(event)" id="thursday" class="namebox">
-              <%= hidden_field_tag 'hiddenthursday', '', class: 'span1' %><br/><br/><br/><br/>
+              <%= hidden_field_tag 'hiddenthursday', '', class: 'col-sm-1 col-md-1' %><br/><br/><br/><br/>
             </td>
             <td ondrop="drop(event)" ondragover="allowDrop(event)" id="friday" class="namebox">
-              <%= hidden_field_tag 'hiddenfriday', '', class: 'span1' %><br/><br/><br/><br/>
+              <%= hidden_field_tag 'hiddenfriday', '', class: 'col-sm-1 col-md-1' %><br/><br/><br/><br/>
             </td>
             <td ondrop="drop(event)" ondragover="allowDrop(event)" id="saturday" class="namebox">
-              <%= hidden_field_tag 'hiddensaturday', '', class: 'span1' %><br/><br/><br/><br/>
+              <%= hidden_field_tag 'hiddensaturday', '', class: 'col-sm-1 col-md-1' %><br/><br/><br/><br/>
             </td>
             <td ondrop="drop(event)" ondragover="allowDrop(event)" id="sunday" class="namebox">
-              <%= hidden_field_tag 'hiddensunday', '', class: 'span1' %><br/><br/><br/><br/>
+              <%= hidden_field_tag 'hiddensunday', '', class: 'col-sm-1 col-md-1' %><br/><br/><br/><br/>
             </td>
           </tr>
         </table>
@@ -76,7 +76,7 @@
         var hbox = document.getElementById(str);
         if (hbox) {
 
-            str = data + '<input type="hidden" class="span1" id="' + ev.target.id + '" name="' + ev.target.id + '" type="text" value="' + data + '">';
+            str = data + '<input type="hidden" class="col-sm-1 col-md-1" id="' + ev.target.id + '" name="' + ev.target.id + '" type="text" value="' + data + '">';
             box.innerHTML = str;
         };
     }

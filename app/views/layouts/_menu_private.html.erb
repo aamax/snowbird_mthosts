@@ -1,4 +1,4 @@
-<div class="nav-collapse collapse">
+<div class="collapse navbar-collapse">
   <ul class="nav">
     <li class="divider-vertical"></li>
 
@@ -12,38 +12,38 @@
       <%= link_to "Resources", "#", :class => "dropdown-toggle", :data => {:toggle => "dropdown"}, :id => "document_menu" %>
 
       <ul class="dropdown-menu" padding-left="20px">
-        <li class='disabled'>Host Program Info</li>
+        <li class="disabled">Host Program Info</li>
         <li><%= link_to "Shift Card", "/shiftcard" %></li>
         <li><%= link_to "Mt Host Manual", "/docs/HostManual2014_15.pdf", :target => "_blank"  %></li>
         <li><%= link_to "Team Leader Manual", "/docs/team_lead_manual_2014_15.pdf", :target => "_blank"  %></li>
         <li><%= link_to "Parking Policy 2012-13", "/docs/parking_policy.pdf", :target => "_blank" %></li>
         <li><%= link_to "Parking Policy 2013-14", "/docs/parking_policy_2013_14.doc", :target => "_blank" %></li>
 
-        <li class='disabled'>Nutrition, Safety & Health</li>
-        <li><%= link_to "Exercises & Stretches", "/docs/exercises_stretches.doc", :target => "_blank" %></li>
+        <li class="disabled">Nutrition, Safety &amp; Health</li>
+        <li><%= link_to "Exercises &amp; Stretches", "/docs/exercises_stretches.doc", :target => "_blank" %></li>
         <li><%= link_to "Ski Injury Prevention For Hosties!", "https://prezi.com/ffsph3ej3dyo/ski-injury-prevention/", :target => "_blank" %></li>
 
-        <li class='disabled'>General Links & Resources</li>
-		<li><%= link_to '24 Hour Cottonwood Canyons Weather Report',
-                        'http://www.wrh.noaa.gov/slc/snow/mtnwx/mtnForecast.php?forecast=cottonwood',
-		                :target => '_blank' %>
+        <li class="disabled">General Links &amp; Resources</li>
+        <li><%= link_to '24 Hour Cottonwood Canyons Weather Report',
+          'http://www.wrh.noaa.gov/slc/snow/mtnwx/mtnForecast.php?forecast=cottonwood',
+          :target => '_blank' %>
         </li>
-        <li><%= link_to "National Weather Service Report",                      
-					"http://forecast.weather.gov/MapClick.php?site=slc&textField1=40.58194&textField2=-111.65444#.Ulsm6GTwKPA",
-                        :target => "_blank"%></li>
-        <li><%= link_to "Utah Avalanche Center Home Page", 
-							"http://utahavalanchecenter.org/advisory/salt-lake/04/28/2013", :target => "_blank" %></li>
+        <li><%= link_to "National Weather Service Report",
+          "http://forecast.weather.gov/MapClick.php?site=slc&amp;textField1=40.58194&amp;textField2=-111.65444#.Ulsm6GTwKPA",
+          :target => "_blank"%></li>
+        <li><%= link_to "Utah Avalanche Center Home Page",
+          "http://utahavalanchecenter.org/advisory/salt-lake/04/28/2013", :target => "_blank" %></li>
         <li><%= link_to "Wasatch Snow Info Site", "http://www.wasatchsnowinfo.com/", :target => "_blank" %></li>
         <li><%= link_to "UTA Home Page", "http://www.rideuta.com/" %></li>
 
-        <li class='disabled'>Snowbird Links</li>
+        <li class="disabled">Snowbird Links</li>
         <li><%= link_to "Snowbird Home Page", "http://snowbird.com", :target => "_blank" %></li>
         <li><%= link_to "Snowbird Tickets Page", "http://www.snowbird.com/tickets-and-season-passes/" %></li>
         <li><%= link_to "Snowbird Mountain School", "https://tickets.snowbird.com/mountainschool/ItemList.aspx" %></li>
         <li><%= link_to "Snowbird Mountain Report", "http://www.snowbird.com/mountain-report", :target => "_blank" %></li>
         <li><%= link_to "Snowbird Trail Maps", "http://www.snowbird.com/winter/trail-maps/", :target => "_blank" %></li>
 
-        <li class='disabled'>Host Reports etc.</li>
+        <li class="disabled">Host Reports etc.</li>
         <li><%= link_to "Host Phone List", "/reports/phone_list" %></li>
       </ul>
     </li>
@@ -61,35 +61,35 @@
         <li><%= link_to "To: Group 3 Hosts", "/send_mail/" + "GROUP3", :target => "_blank" %></li>
         <li><%= link_to "To: Selected hosts", select_hosts_for_email_path %></li>
         <% if current_user.has_role? :admin %>
-            <li><%= link_to "To: All Hosts (includes inactives)", "/send_mail/" + "ALLHOSTS", :target => "_blank" %></li>
-            <li><%= link_to "To: All In-Active hosts", "/send_mail/" + "ALLINACTIVEHOSTS" %></li>
+        <li><%= link_to "To: All Hosts (includes inactives)", "/send_mail/" + "ALLHOSTS", :target => "_blank" %></li>
+        <li><%= link_to "To: All In-Active hosts", "/send_mail/" + "ALLINACTIVEHOSTS" %></li>
         <% end %>
       </ul>
     </li>
 
     <% if current_user.has_role? :admin %>
-        <li class="dropdown">
-          <%= link_to "Admin", "#", :class => "dropdown-toggle", :data => {:toggle => "dropdown"}, :id => "admin_menu" %>
+    <li class="dropdown">
+      <%= link_to "Admin", "#", :class => "dropdown-toggle", :data => {:toggle => "dropdown"}, :id => "admin_menu" %>
 
-          <ul class="dropdown-menu">
-            <li class='disabled'>Management</li>
-            <li><%= link_to "Manage Shift Types", shift_types_path %></li>
-            <li><%= link_to "Shift Creation Wizard", "#{shift_collections_path}/?date=#{Date.today}" %></li>
-            <li><%= link_to "Assign Team Leader Shifts", "/assign_team_leaders" %></li>
-            <li><%= link_to "Manage Configurations", edit_sys_config_path(SysConfig.first) %></li>
+      <ul class="dropdown-menu">
+        <li class="disabled">Management</li>
+        <li><%= link_to "Manage Shift Types", shift_types_path %></li>
+        <li><%= link_to "Shift Creation Wizard", "#{shift_collections_path}/?date=#{Date.today}" %></li>
+        <li><%= link_to "Assign Team Leader Shifts", "/assign_team_leaders" %></li>
+        <li><%= link_to "Manage Configurations", edit_sys_config_path(SysConfig.first) %></li>
 
-            <li><%= link_to "Manage Max's Message", edit_page_path('aamax') %></li>
-            <li class='disabled'>Exports</li>
-            <li><a href="/download_end_of_year">End of Year Shift Summary</a></li>
+        <li><%= link_to "Manage Max's Message", edit_page_path('aamax') %></li>
+        <li class="disabled">Exports</li>
+        <li><a href="/download_end_of_year">End of Year Shift Summary</a></li>
 
-            <li class='disabled'>Reports</li>
-            <li><a href="/reports/confirmations">Host Confirmations</a></li>
-            <li><a href="/reports/shifts_by_host">Shifts By Host</a></li>
-            <li><a href="/shifts_by_date">Hosts Working By Date</a></li>
-            <li><a href="/skipatrol">Ski Patrol Reporting</a></li>
+        <li class="disabled">Reports</li>
+        <li><a href="/reports/confirmations">Host Confirmations</a></li>
+        <li><a href="/reports/shifts_by_host">Shifts By Host</a></li>
+        <li><a href="/shifts_by_date">Hosts Working By Date</a></li>
+        <li><a href="/skipatrol">Ski Patrol Reporting</a></li>
 
-          </ul>
-        </li>
+      </ul>
+    </li>
     <% end %>
 
   </ul>
@@ -104,38 +104,38 @@
           <li>&nbsp;&nbsp; <%= DateTime.current.strftime('%Y-%m-%d %H:%M') %></li>
 
           <% if !session[:admin_user_id].nil? %>
-            <li><a href="/un_ghost_user"><i class="icon-user icon_red icon-large icon_obj" title="Un-Ghost This User">&nbsp;&nbsp; UnGhost User</i></a></li>
+          <li><a href="/un_ghost_user"><i class="icon-user icon_red icon-large icon_obj" title="Un-Ghost This User">&nbsp;&nbsp; UnGhost User</i></a></li>
           <% elsif current_user.admin? %>
-            <li><%= select_tag(:ghost_user_id, content_tag(:option,'select Host to Ghost...',:value=>"")+
-                               options_from_collection_for_select(User.active_users.order(:name), "id", "name")) %>
-            </li>
+          <li><%= select_tag(:ghost_user_id, content_tag(:option,'select Host to Ghost...',:value=>"")+
+            options_from_collection_for_select(User.active_users.order(:name), "id", "name")) %>
+          </li>
           <% end %>
 
 
           <% if current_user.email == MAX_EMAIL %>
-              <li class='disabled'>Operations</li>
-              <li><%= link_to "Reset passwords and confirmations for all.", "/reset_confirms_and_passwords",
-                              :confirm => "You sure you want to reset confirmations and passwords?" %></li>
-              <li><%= link_to "Clear all Host Assignments", "/clear_assignments",
-                              :confirm => "You sure you want to clear the assignments?" %></li>
-              <li><%= link_to "DELETE All Shifts", "/delete_shifts",
-                              :confirm => "You sure you want to delete all shifts?" %></li>
-              <li><%= link_to "DELETE All Surveys", "/delete_surveys",
-                              :confirm => "You sure you want to delete all surveys?" %></li>
-              <li><%= link_to "Set all Hosts As Rookies", "/set_start_year/#{SysConfig.first.season_year}",
-                              :confirm => "You sure you want to reset all the host seniorities?" %></li>
-              <li><%= link_to "Set all Hosts As Group 3 (Newer)", "/set_start_year/#{SysConfig.first.group_3_year}",
-                              :confirm => "You sure you want to reset all the host seniorities?" %></li>
-              <li><%= link_to "Set all Hosts As Group 2 (Middle)", "/set_start_year/#{SysConfig.first.group_2_year}",
-                              :confirm => "You sure you want to reset all the host seniorities?" %></li>
-              <li><%= link_to "Set all Hosts As Group 1 (Senior)", "/set_start_year/#{SysConfig.first.group_1_year}",
-                              :confirm => "You sure you want to reset all the host seniorities?" %></li>
-              <li><%= link_to "Set all hosts inactive", "#",
-                              :confirm => "You sure you want to set all hosts as inactive?" %></li>
-              <li><%= link_to "Initialize All Host Confirmations", "/init_confirmations",
-                              :confirm => "Are you sure you want to initialize all user confirmations?" %></li>
+          <li class="disabled">Operations</li>
+          <li><%= link_to "Reset passwords and confirmations for all.", "/reset_confirms_and_passwords",
+            :confirm => "You sure you want to reset confirmations and passwords?" %></li>
+          <li><%= link_to "Clear all Host Assignments", "/clear_assignments",
+            :confirm => "You sure you want to clear the assignments?" %></li>
+          <li><%= link_to "DELETE All Shifts", "/delete_shifts",
+            :confirm => "You sure you want to delete all shifts?" %></li>
+          <li><%= link_to "DELETE All Surveys", "/delete_surveys",
+            :confirm => "You sure you want to delete all surveys?" %></li>
+          <li><%= link_to "Set all Hosts As Rookies", "/set_start_year/#{SysConfig.first.season_year}",
+            :confirm => "You sure you want to reset all the host seniorities?" %></li>
+          <li><%= link_to "Set all Hosts As Group 3 (Newer)", "/set_start_year/#{SysConfig.first.group_3_year}",
+            :confirm => "You sure you want to reset all the host seniorities?" %></li>
+          <li><%= link_to "Set all Hosts As Group 2 (Middle)", "/set_start_year/#{SysConfig.first.group_2_year}",
+            :confirm => "You sure you want to reset all the host seniorities?" %></li>
+          <li><%= link_to "Set all Hosts As Group 1 (Senior)", "/set_start_year/#{SysConfig.first.group_1_year}",
+            :confirm => "You sure you want to reset all the host seniorities?" %></li>
+          <li><%= link_to "Set all hosts inactive", "#",
+            :confirm => "You sure you want to set all hosts as inactive?" %></li>
+          <li><%= link_to "Initialize All Host Confirmations", "/init_confirmations",
+            :confirm => "Are you sure you want to initialize all user confirmations?" %></li>
 
-              <li class="divider"></li>
+          <li class="divider"></li>
           <% end %>
 
           <li><%= link_to raw("<i class='icon-off'></i> Log Out"), destroy_user_session_path, :method => :delete %></li>

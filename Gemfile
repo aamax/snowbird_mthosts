@@ -3,13 +3,10 @@ gem 'rails', '4.2.3'
 ruby '2.2.3'
 
 group :assets do
- # gem 'sass-rails' #,   '~> 3.2.6'
-  gem 'sass-rails', '~> 5.0'
-  #gem 'coffee-rails' #, '~> 3.2.1'
+  #gem 'sass-rails', '~> 5.0'
+  gem 'bootstrap-sass' #, '~> 2.0.4.2'
   gem 'coffee-rails', '~> 4.1.0'
   gem 'uglifier', '>= 1.3.0'
-  #gem 'bootstrap-sass', '~> 2.1.1.0'
-  gem 'bootstrap-sass', '~> 3.2.0'
   gem 'autoprefixer-rails'
   gem 'therubyracer'
 end

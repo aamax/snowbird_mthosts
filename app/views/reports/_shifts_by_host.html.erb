@@ -3,14 +3,14 @@
         <%= f.label(:seniority, "Seniority") %>
         <% if params['filter'].nil? %>
             <%= f.select("Seniority", @seniority, {},
-                         {:class=>"span2", :multiple => true })  %>
+                         {:class=>"col-sm-2 col-md-2", :multiple => true })  %>
             <br/>
             <strong>Only Needing Shifts </strong>&nbsp;&nbsp;
             <%= f.check_box(:need_shifts, :checked => false) %>
 
         <% else %>
             <%= f.select("Seniority", @seniority, {:selected => params['filter']['Seniority'].reject {|e| e.empty?}},
-                         {:class=>"span2", :multiple => true})  %>
+                         {:class=>"col-sm-2 col-md-2", :multiple => true})  %>
             <br/>
             <strong>Only Needing Shifts </strong>&nbsp;&nbsp;
             <%= f.check_box(:need_shifts, :checked => (params['filter']['need_shifts'] == '1')) %>
@@ -35,12 +35,12 @@
 
     <table class="table table-striped table-bordered">
       <tr class="row">
-        <th class="span3">Host Name</th>
-        <th class="span1">Total</th>
-        <th class="span1">Tours</th>
-        <th class="span1">Ratio</th>
-        <th class="span1"></th>
-        <th class="span5">Comments</th>
+        <th class="col-sm-3 col-md-3">Host Name</th>
+        <th class="col-sm-1 col-md-1">Total</th>
+        <th class="col-sm-1 col-md-1">Tours</th>
+        <th class="col-sm-1 col-md-1">Ratio</th>
+        <th class="col-sm-1 col-md-1"></th>
+        <th class="col-sm-5 col-md-5">Comments</th>
       </tr>
       <% @hosts.each do |auser| %>
           <tr class="row" >
