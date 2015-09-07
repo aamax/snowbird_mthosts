@@ -30,7 +30,7 @@
               <strong>Open Shifts:</strong><br/>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>All Year: </strong><%= Shift.un_assigned.length %>
               <br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>From Today: </strong> <%= Shift.un_assigned.delete_if {|s| s.shift_date < Date.today }.length %><br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>From Today: </strong> <%= Shift.un_assigned.to_a.delete_if {|s| s.shift_date < Date.today }.length %><br/>
             </div>
         </div>
       <% end %>

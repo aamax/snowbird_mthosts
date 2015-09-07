@@ -1,7 +1,6 @@
-<% unless params[:controller] == "sessions" %>
-    <div class="nav-collapse collapse">
-      <ul class="nav pull-right">
-        <li><%= link_to 'About The Hosts', '/about', :target=>'_blank' %></li>
+
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav pull-right">
         <li class='dropdown'>
           <a class="dropdown-toggle" href="#" data-toggle="dropdown" id="sign-in-menu">Sign In<strong class="caret"></strong></a>
           <ul class='dropdown-menu'>
@@ -9,9 +8,9 @@
               <div class = 'login_header'> Enter Credential Below </div>
 
               <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
-                <input class="login_ctrl" placeholder="Username" autofocus="autofocus" id="user_email" name="user[email]" type="email" >
-                <input class='login_ctrl' id="user_password" name="user[password]" type="password" placeholder="Password">
-                <input class="btn btn-primary login_btn" type="submit" id="sign-in" value="Sign In">
+                  <input class="login_ctrl" placeholder="Username" autofocus="autofocus" id="user_email" name="user[email]" type="email" >
+                  <input class='login_ctrl' id="user_password" name="user[password]" type="password" placeholder="Password">
+                  <input class="btn btn-primary login_btn" type="submit" id="sign-in" value="Sign In">
                   <% if devise_mapping.rememberable? -%>
                       <br/><div class="login_ctrl"><%= f.check_box :remember_me %> Remember Me</div>
                   <% end -%>
@@ -21,6 +20,6 @@
             </li>
           </ul>
         </li>
+        <li><%= link_to 'About The Hosts', '/about', :target=>'_blank' %></li>
       </ul>
     </div>
-<% end %>

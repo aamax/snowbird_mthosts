@@ -66,7 +66,7 @@ class User < ActiveRecord::Base
   before_destroy :clear_shifts_on_destroy
 
   def self.team_leader_count
-    User.all.delete_if {|u| !u.team_leader?}.length
+    User.all.to_a.delete_if {|u| !u.team_leader?}.length
   end
 
   # don't allow non active users to log into the system
@@ -147,18 +147,18 @@ class User < ActiveRecord::Base
 
   def shifts_worked
     worked = shifts
-    worked.delete_if {|s| (s.shift_date > Date.today) || (s.shift_status_id == -1) }
+    worked.to_a.delete_if {|s| (s.shift_date > Date.today) || (s.shift_status_id == -1) }
     worked
   end
 
   def pending_shifts
     pending = shifts
-    pending.delete_if {|s| (s.shift_date <= Date.today) }
+    pending.to_a.delete_if {|s| (s.shift_date <= Date.today) }
   end
 
   def missed_shifts
     pending = shifts
-    pending.delete_if {|s| (s.shift_status_id == -1) }
+    pending.to_a.delete_if {|s| (s.shift_status_id == -1) }
   end
 
 
@@ -328,7 +328,7 @@ class User < ActiveRecord::Base
 
   def get_next_shifts(num)
     working_shifts = get_working_shifts
-    working_shifts.delete_if {|s| s.shift_date < Date.today }
+    working_shifts.to_a.delete_if {|s| s.shift_date < Date.today }
     limit = num - 1
     working_shifts[0..limit]
   end

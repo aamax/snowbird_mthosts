@@ -7,7 +7,7 @@
 
         Junior: <%= User.group2.length %> <br/>
 
-        Senior: <%= User.group1.delete_if {|u| u.team_leader? }.length %> <br/>
+        Senior: <%= User.group1.to_a.delete_if {|u| u.team_leader? }.length %> <br/>
 
         Team Leaders: <%= User.team_leader_count %> <br/>
       </div>
