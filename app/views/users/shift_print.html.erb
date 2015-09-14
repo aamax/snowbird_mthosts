@@ -13,7 +13,7 @@ Click<strong><%= link_to " Here ", "/users/#{@user.id}" %></strong>to return to 
     <th class='span3' >Tasks/Description</th>
     </strong>
   </tr>
-  <% @user.working_shifts.each do |object| %>
+  <% @user.get_working_shifts.each do |object| %>
       <tr>
         <%= render 'shift_entry_for_print', :object => object %>
       </tr>

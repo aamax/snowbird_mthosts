@@ -160,6 +160,10 @@ class Shift < ActiveRecord::Base
     return retval
   end
 
+  def meeting?
+    self.short_name[0] == 'M'
+  end
+
   def standard_shift?
     ['P1', 'P2', 'P3', 'P4', 'C1', 'C2', 'G5', 'G6', 'G7', 'G8', 'TL'].include? self.short_name
   end

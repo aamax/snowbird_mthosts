@@ -20,15 +20,10 @@ class UsersController < ApplicationController
     end
     @users = User.includes(:shifts).active_users
     @users = @users.sort {|a,b| a.name <=> b.name }
-
-    @users.each do |u|
-      add_meetings_to_shifts(u)
-    end
-    add_meetings_to_shifts(current_user)
   end
 
   def show
-    add_meetings_to_shifts(@user)
+
   end
 
   def edit
@@ -117,7 +112,6 @@ class UsersController < ApplicationController
 
   def shift_print
     @user = User.find(params[:id])
-    add_meetings_to_shifts(@user)
   end
 
   def set_start_year
@@ -159,14 +153,6 @@ class UsersController < ApplicationController
   end
 
   private
-
-  def add_meetings_to_shifts(u)
-    mtgs = u.get_meetings
-    u.working_shifts = u.shifts
-    u.working_shifts << mtgs if (mtgs.length > 0)
-    u.working_shifts = u.working_shifts.flatten.sort {|a,b| a.shift_date <=> b.shift_date }
-  end
-
   def process_user_roles params
     return if !current_user.has_role? :admin
     if params['role'].nil?

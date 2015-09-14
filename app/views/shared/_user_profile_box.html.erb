@@ -1,8 +1,8 @@
 
-<div class='user_profile_box span6' >
+<div class='user_profile_box span5' >
   <div class='row'>
     <% unless user.nil? %>
-        <div class='span2 col1'>
+        <div class='span5 col1'>
 
           <%= user.name %>
 
@@ -11,9 +11,9 @@
                 <i class='icon-wrench icon-large icon_blue icon_obj' title='Edit User'></i></a><br/>
           <% end %>
           <%= if user.head_shot.nil? || (user.head_shot == '')
-                gravatar_image_tag(user.email, :alt => user.name)
+                gravatar_image_tag(user.email, :alt => user.name, :width => '50px')
               else
-                image_tag user.head_shot
+                image_tag(user.head_shot, :width => '150px')
               end
           %><br/>
           <%= link_to user.email, "/send_mail/#{user.email}" %> <br/>
@@ -26,7 +26,7 @@
           Cell: <%= number_to_phone(user.cell_phone) %> <br/>
           Home: <%= number_to_phone(user.home_phone) %> <br/><br/>
         </div>
-        <div class='span4'>
+        <div class='span7'>
           <%= user.street %><br/>
           <%= user.city %> <%= user.city.blank? ? " #{user.state} #{user.zip}" : ", #{user.state} #{user.zip}" %><br/><br/>
 

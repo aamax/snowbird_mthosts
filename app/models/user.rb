@@ -284,6 +284,7 @@ class User < ActiveRecord::Base
 
   def is_working? shift_date
     self.shifts.each do |s|
+      next if s.meeting?
       if s.shift_date == shift_date
         return true
       end
@@ -291,39 +292,11 @@ class User < ActiveRecord::Base
     false
   end
 
-  def get_meetings
-    meetings = []
-    first_date = SysConfig.first.season_start_date
-    shift_types = {}
-    ShiftType.all.each {|st| shift_types[st.short_name] = st.id }
-    MEETINGS.each do |m|
-      unless self.rookie?
-        if ((m[:type] == "M1") || (m[:type] == "M3"))
-          next
-        end
-      end
-
-      if m[:when] >= first_date.strftime("%Y-%m-%d")
-        s_date = DateTime.parse(m[:when])
-        st = shift_types[m[:type]]
-        next if st.nil?
-        new_shift = Shift.new(:user_id=>self.id,
-                              :shift_type_id=>st,
-                              :shift_date=>s_date,
-                              :shift_status_id => 1,
-                              :day_of_week=>s_date.strftime("%a"))
-        meetings << new_shift
-      end
-    end
-    meetings
-  end
-
   def get_working_shifts
     user = User.includes(:shifts).find_by_id(id)
     shifts = user.shifts.includes(:shift_type)
     shifts ||= []
-    working_shifts = shifts + get_meetings
-    working_shifts = working_shifts.flatten
+    working_shifts = shifts.flatten
   end
 
   def get_next_shifts(num)
