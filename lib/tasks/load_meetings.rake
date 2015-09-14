@@ -11,16 +11,16 @@ namespace :data do
     ShiftType.all.each {|st| shift_types[st.short_name] = st.id }
 
     puts "iterate all users..."
+
     User.all.each do |u|
       next if u.supervisor? || (u.active_user == false)
 
       puts "adding meetings to: #{u.name}"
 
       MEETINGS.each do |m|
-
         next if ((m[:type] == "M1") || (m[:type] == "M3")) && !u.rookie?
 
-        s_date = DateTime.parse(m[:when])
+        s_date = Date.parse(m[:when])
         st = shift_types[m[:type]]
 
         new_shift = Shift.create(:user_id=>u.id,
@@ -28,7 +28,6 @@ namespace :data do
                                  :shift_date=>s_date,
                                  :shift_status_id => 1,
                                  :day_of_week=>s_date.strftime("%a"))
-
       end
     end
     puts "done..."

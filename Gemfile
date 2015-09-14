@@ -10,6 +10,7 @@ group :assets do
   gem 'therubyracer'
 end
 
+gem 'test-unit'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem "pg", ">= 0.14.1"
