@@ -19,7 +19,7 @@ class UsersController < ApplicationController
       @inactive_users = User.includes(:shifts).inactive_users
     end
     @users = User.includes(:shifts).active_users
-    @users.sort! {|a,b| a.name <=> b.name }
+    @users = @users.sort {|a,b| a.name <=> b.name }
 
     @users.each do |u|
       add_meetings_to_shifts(u)
@@ -29,7 +29,6 @@ class UsersController < ApplicationController
 
   def show
     add_meetings_to_shifts(@user)
-    @galleries = @user.galleries
   end
 
   def edit
