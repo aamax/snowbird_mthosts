@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 gem 'rails', '3.2.21'
-ruby '2.2.3'
+ruby '2.1.7'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.6'
@@ -10,7 +10,7 @@ group :assets do
   gem 'therubyracer'
 end
 
-gem 'test-unit'
+#gem 'test-unit'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem "pg", ">= 0.14.1"
