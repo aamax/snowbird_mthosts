@@ -100,42 +100,6 @@ class UserTest < ActiveSupport::TestCase
     end
   end
 
-  describe "is_trainee_on_date" do
-    before do
-      r1s = [@g1.id, @g2.id, @g3.id, @g4.id]
-      @shadows = Shift.where(:shift_type_id => @sh.id)
-      @round_ones = Shift.where("shift_type_id in (#{r1s.join(',')})")
-    end
-
-    it 'rookie no selections: false - needs shadows' do
-      @rookie_user.is_trainee_on_date(Shift.first.shift_date).must_equal false
-    end
-
-    it "rookie with 1 shadow: false - needs shadow" do
-      @rookie_user.shifts << @shadows[0]
-      @rookie_user.is_trainee_on_date(@shadows[0].shift_date + 3.days).must_equal false
-    end
-
-    it "rookie with 2 shadows: true" do
-      @rookie_user.shifts << @shadows[0]
-      @rookie_user.shifts << @shadows[1]
-      @rookie_user.is_trainee_on_date(@shadows[1].shift_date + 3.days).must_equal true
-    end
-
-    it "rookie with 2 shadows and 1 - 5 round one shifts: true" do
-      @rookie_user.shifts << @shadows[0]
-      @rookie_user.shifts << @shadows[1]
-      (0..3).each do |n|
-        @rookie_user.shifts << @round_ones[n]
-
-        @rookie_user.is_trainee_on_date(@round_ones[n].shift_date + 3.days).must_equal true
-      end
-
-      @rookie_user.shifts << @round_ones[4]
-      @rookie_user.is_trainee_on_date(@shadows[1].shift_date + 3.days).must_equal false
-    end
-  end
-
   describe "shadow date" do
     before  do
       @sys_config.bingo_start_date = (Date.today -  9.days)
@@ -149,27 +113,6 @@ class UserTest < ActiveSupport::TestCase
     end
     it "should return correct shadow date" do
       @last_date.must_equal @rookie_user.last_shadow
-    end
-  end
-
-  describe "last round1 date" do
-    before  do
-      @sys_config.bingo_start_date = (Date.today -  9.days)
-      @sys_config.save!
-      iCnt = 0
-      Shift.all.each do |s|
-        if ((s.can_select(@rookie_user) == true))
-          @rookie_user.shifts << s
-          if ((iCnt < 5) && (s.round_one_rookie_shift?))
-            @last_rookie_shift = s
-            iCnt += 1
-          end
-        end
-      end
-    end
-
-    it "should return correct shadow date" do
-      @last_rookie_shift.shift_date.must_equal @rookie_user.round_one_end_date
     end
   end
 

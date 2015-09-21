@@ -39,14 +39,14 @@ class ShiftsController < ApplicationController
       if @can_select == false
         @shifts = Shift.includes(:user).includes(:shift_type).from_today(@from_today).by_shift_type(@sts).by_date(@dt).by_day_of_week(@dow).by_users(@usrs).by_holidays(@holidays).by_unselected(@unselected).paginate(:page => params[:page], :per_page => per_page)
       else
-        @shifts = Shift.includes(:user).includes(:shift_type).from_today(@from_today).by_shift_type(@sts).by_date(@dt).by_day_of_week(@dow).by_holidays(@holidays).by_users(@usrs).by_unselected(true).delete_if {|s| s.can_select(current_user) == false }.paginate(:page => params[:page], :per_page => per_page)
+        @shifts = Shift.includes(:user).includes(:shift_type).from_today(@from_today).by_shift_type(@sts).by_date(@dt).by_day_of_week(@dow).by_holidays(@holidays).by_users(@usrs).by_unselected(true).to_a.delete_if {|s| s.can_select(current_user) == false }.paginate(:page => params[:page], :per_page => per_page)
       end
     elsif current_user.has_role? :admin
       @can_select = false
       @shifts = Shift.includes(:user).includes(:shift_type).from_today(true).paginate(:page => params[:page], :per_page => per_page)
     else
       @can_select = true
-      @shifts = Shift.includes(:user).includes(:shift_type).from_today(true).delete_if {|s| s.can_select(current_user) == false }.paginate(:page => params[:page], :per_page => per_page)
+      @shifts = Shift.includes(:user).includes(:shift_type).from_today(true).to_a.delete_if {|s| s.can_select(current_user) == false }.paginate(:page => params[:page], :per_page => per_page)
     end
     @shifts
   end
@@ -201,7 +201,7 @@ class ShiftsController < ApplicationController
   end
 
   def edit_team_leader_shifts
-    @leaders = User.with_role(:team_leader).delete_if {|u| !u.active_user}
+    @leaders = User.with_role(:team_leader).to_a.delete_if {|u| !u.active_user}
     render 'edit_team_leader_shifts'
   end
 

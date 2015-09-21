@@ -9,3 +9,5 @@ HOLIDAYS = [Date.new(2015,12,24),Date.new(2015,12,25),Date.new(2015,12,31),Date.
 
 MAX_EMAIL = 'aamaxworks@gmail.com'
 COTTER_EMAIL = 'jecotterii@gmail.com'
+
+SHADOW_COUNT = 4

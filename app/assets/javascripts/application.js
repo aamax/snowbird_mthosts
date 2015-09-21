@@ -24,7 +24,7 @@
 
 //= require_tree ./angular/.
 
-//= require /md5-service
+//= require md5-service
 //= require tinymce-jquery
 //= require bootstrap
 //= require bootstrap-datepicker

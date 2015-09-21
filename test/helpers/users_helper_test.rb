@@ -37,47 +37,33 @@ class UsersHelperTest < ActionView::TestCase
       HostConfig.initialize_values
     end
 
-    #it 'should report need a holiday if one not picked' do
-    #  [@rookie_user, @group1_user, @group2_user, @group3_user].each do |u|
-    #    u.has_holiday_shift?.must_equal false
-    #    u.shift_status_message.include?("NOTE:  You still need a <strong>Holiday Shift</strong>").must_equal true
-    #  end
-    #end
-    #
-    #it 'should not report need a holiday if one is picked' do
-    #  [@rookie_user, @group1_user, @group2_user, @group3_user].each do |u|
-    #    HOLIDAYS.each do |h|
-    #      shift = FactoryGirl.create(:shift, shift_date: h, shift_type_id: @g1.id)
-    #
-    #      u.shifts << shift
-    #      u.has_holiday_shift?.must_equal true
-    #    end
-    #  end
-    #end
-
     describe "rookie" do
       it "should report for prior to bingo shift selections" do
         config = SysConfig.first
         config.bingo_start_date = Date.today + 2.days
-        config.save
+        config.save!
         Shift.all.each do |s|
           next if @rookie_user.is_working? s.shift_date
-          break if @rookie_user.shifts.length >= 7
-
+          break if @rookie_user.shifts.length >= 5
           shadow_count = @rookie_user.shadow_count
-          if @rookie_user.shifts.length < 2
+          if @rookie_user.shifts.length < SHADOW_COUNT
             next unless s.shadow?
-            @rookie_user.shift_status_message.include?("#{shadow_count} of 2 selected.  Need #{2 - shadow_count} Shadow Shifts.").must_equal true
+            @rookie_user.shift_status_message.include?("#{shadow_count} of #{SHADOW_COUNT} selected.  Need #{SHADOW_COUNT - shadow_count} Shadow Shifts.").must_equal true
             @rookie_user.shifts << s
           else
-            next unless s.round_one_rookie_shift?
+            work_shifts = @rookie_user.non_meeting_shifts
+
+            HostUtility.get_current_round(config.bingo_start_date, Date.today, @rookie_user).must_equal 0
+
             @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
-            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length - 2} of 5 selected.  Need #{5 - (@rookie_user.shifts.length - 2)} Round 1 Rookie Shifts.").must_equal true
+            @rookie_user.shift_status_message.include?(
+                "#{work_shifts.length} of 5 Shifts Selected.  You need to pick #{5 - (work_shifts.length)}").must_equal true
+
             @rookie_user.shifts << s
           end
         end
         @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
-        @rookie_user.shift_status_message.include?("All Round One Rookie Shifts Selected.").must_equal true
+        @rookie_user.shift_status_message.include?("All required shifts selected for round 0. (5 of 5)").must_equal true
         bFound1 = false
         bFound2 = false
         @rookie_user.shift_status_message.each do |m|
@@ -98,23 +84,22 @@ class UsersHelperTest < ActionView::TestCase
         config.save
         Shift.all.each do |s|
           next if @rookie_user.is_working? s.shift_date
-          break if @rookie_user.shifts.length >= 7
+          break if @rookie_user.non_meeting_shifts.length >= 5
 
           shadow_count = @rookie_user.shadow_count
-          if @rookie_user.shifts.length < 2
+          if @rookie_user.non_meeting_shifts.length < SHADOW_COUNT
             next unless s.shadow?
-            @rookie_user.shift_status_message.include?("#{shadow_count} of 2 selected.  Need #{2 - shadow_count} Shadow Shifts.").must_equal true
+            @rookie_user.shift_status_message.include?("#{shadow_count} of #{SHADOW_COUNT} selected.  Need #{SHADOW_COUNT - shadow_count} Shadow Shifts.").must_equal true
             @rookie_user.shifts << s
           else
-            next unless s.round_one_rookie_shift?
             @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
 
-            @rookie_user.shift_status_message.include?("#{@rookie_user.shifts.length - 2} of 5 selected.  Need #{5 - (@rookie_user.shifts.length - 2)} Round 1 Rookie Shifts.").must_equal true
+            @rookie_user.shift_status_message.include?("#{@rookie_user.non_meeting_shifts.length} of 5 Shifts Selected.  You need to pick #{5 - (@rookie_user.non_meeting_shifts.length)}").must_equal true
             @rookie_user.shifts << s
           end
         end
         @rookie_user.shift_status_message.include?("All Shadow Shifts Selected.").must_equal true
-        @rookie_user.shift_status_message.include?("All Round One Rookie Shifts Selected.").must_equal true
+        @rookie_user.shift_status_message.include?("All required shifts selected for round 1. (5 of 5)").must_equal true
       end
 
       it "should report if shadow dropped after round 1 selections" do
@@ -127,14 +112,17 @@ class UsersHelperTest < ActionView::TestCase
           end
         end
 
-        @rookie_user.shifts[1].user_id = nil
-        @rookie_user.shifts[1].save
-        @rookie_user.shifts.delete_at(1)
+        @rookie_user.shifts.length.must_equal 10
 
-        @rookie_user.shifts.length.must_equal 11
+        @rookie_user.shifts[1].user_id = nil
+        @rookie_user.shifts[1].save!
+        @rookie_user.shifts.reload
+
+        @rookie_user.shifts.length.must_equal 9
         messages = @rookie_user.shift_status_message
-        messages.include?("1 of 2 selected.  Need 1 Shadow Shifts.").must_equal true
-        messages.include?( "1 of 2 selected.  Need 1 Shadow Shifts.").must_equal true
+
+        messages.include?("3 of 4 selected.  Need 1 Shadow Shifts.").must_equal true
+        messages.include?( "3 of 4 selected.  Need 1 Shadow Shifts.").must_equal true
         messages.include?( "Shifts Only Before: #{@rookie_user.first_non_shadow}").must_equal true
       end
     end

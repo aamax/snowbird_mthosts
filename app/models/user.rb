@@ -78,7 +78,7 @@ class User < ActiveRecord::Base
     arr = ShiftType.where("short_name like 'M%'").map {|st| st.id}
     retval = []
     self.shifts.each do |s|
-      retval << s if !arr.include? s.shift_type_id
+      retval << s if !arr.include?(s.shift_type_id)
     end
     retval #= self.shifts.delete_if {|s| arr.include? s.shift_type_id }
   end
@@ -141,6 +141,10 @@ class User < ActiveRecord::Base
     self.email == 'jecotterii@gmail.com'
   end
 
+  def trainer?
+    self.has_role? :trainer
+  end
+
   def is_max?
     self.email.downcase == MAX_EMAIL
   end
@@ -198,23 +202,23 @@ class User < ActiveRecord::Base
     iCnt = 0
     self.shifts.each do |s|
       iCnt += 1 if s.shadow?
-      break if iCnt >= 2
     end
     iCnt
   end
 
-  def round_one_type_count
-    iCnt = 0
-    self.shifts.each do |s|
-      if s.round_one_rookie_shift?
-        iCnt += 1
-        break if iCnt >= 5
-      else
-        break if !s.shadow?
-      end
-    end
-    iCnt
-  end
+  # TODO remove commented code
+  # def round_one_type_count
+  #   iCnt = 0
+  #   self.shifts.each do |s|
+  #     if s.round_one_rookie_shift?
+  #       iCnt += 1
+  #       break if iCnt >= 5
+  #     else
+  #       break if !s.shadow?
+  #     end
+  #   end
+  #   iCnt
+  # end
 
   def first_non_shadow
     dt = nil
@@ -228,46 +232,46 @@ class User < ActiveRecord::Base
   end
 
 
-  def round_one_end_date
-    dt = nil
-    iCnt = 0
-    self.shifts.each do |s|
-      if s.round_one_rookie_shift?
-        dt = s.shift_date
-        iCnt += 1
-      end
-      break if iCnt >= 5
-    end
-    dt
-  end
+  # def round_one_end_date
+  #   dt = nil
+  #   iCnt = 0
+  #   self.shifts.each do |s|
+  #     if s.round_one_rookie_shift?
+  #       dt = s.shift_date
+  #       iCnt += 1
+  #     end
+  #     break if iCnt >= 5
+  #   end
+  #   dt
+  # end
 
-  def first_round_one_end_date
-    dt = nil
-    iCnt = 0
-    self.shifts.each do |s|
-      if s.round_one_rookie_shift?
-        dt = s.shift_date
-        break
-      end
-    end
-    dt
-  end
+  # def first_round_one_end_date
+  #   dt = nil
+  #   iCnt = 0
+  #   self.shifts.each do |s|
+  #     if s.round_one_rookie_shift?
+  #       dt = s.shift_date
+  #       break
+  #     end
+  #   end
+  #   dt
+  # end
 
-  def first_non_round_one_end_date
-    dt = nil
-    iCnt = 0
-    self.shifts.each do |s|
-      if !s.round_one_rookie_shift? && !s.shadow?
-        dt = s.shift_date
-        break
-      end
-    end
-    dt
-  end
+  # def first_non_round_one_end_date
+  #   dt = nil
+  #   iCnt = 0
+  #   self.shifts.each do |s|
+  #     if !s.round_one_rookie_shift? && !s.shadow?
+  #       dt = s.shift_date
+  #       break
+  #     end
+  #   end
+  #   dt
+  # end
 
-  def has_non_round_one?
-    !first_non_round_one_end_date.nil?
-  end
+  # def has_non_round_one?
+  #   !first_non_round_one_end_date.nil?
+  # end
 
   def last_shadow
     dt = nil
@@ -277,7 +281,7 @@ class User < ActiveRecord::Base
         dt = s.shift_date
         iCnt += 1
       end
-      break if iCnt >= 2
+      break if iCnt >= SHADOW_COUNT
     end
     dt
   end
@@ -327,13 +331,12 @@ class User < ActiveRecord::Base
     retval
   end
 
-  def is_trainee_on_date(aDate)
-    return false unless self.rookie?
-    return false if self.last_shadow.nil? || (self.shadow_count < 2)
-    return true if self.round_one_end_date.nil? || (aDate <= self.round_one_end_date) || (self.round_one_type_count < 5 )
-
-    false
-  end
+  # def is_trainee_on_date(aDate)
+  #   return false unless self.rookie?
+  #   return true if self.last_shadow.nil? || (self.shadow_count < SHADOW_COUNT)
+  #
+  #   false
+  # end
 
   def shift_status_message
     msg = []
@@ -341,6 +344,7 @@ class User < ActiveRecord::Base
     num_selected = self.shifts.length
     round = HostUtility.get_current_round(HostConfig.bingo_start_date, Date.today, self)
     has_holiday = has_holiday_shift?
+    shifts_without_meetings = self.non_meeting_shifts
 
     msg << "You are currently in <strong>round #{round}</strong>." if round < 5
 
@@ -351,37 +355,31 @@ class User < ActiveRecord::Base
     end
 
     if self.rookie?
-      if shadow_count < 2
-        msg << "#{shadow_count} of 2 selected.  Need #{2 - shadow_count} Shadow Shifts."
+      if shadow_count < SHADOW_COUNT
+        msg << "#{shadow_count} of #{SHADOW_COUNT} selected.  Need #{SHADOW_COUNT - shadow_count} Shadow Shifts."
 
-        if self.shifts.count > 0
+        if shifts_without_meetings.count > 0
           msg << "Shifts Only Before: #{self.first_non_shadow.strftime("%Y-%m-%d")}" unless self.first_non_shadow.nil?
         end
       else
         msg << "All Shadow Shifts Selected."
 
-        if self.round_one_type_count < 5
-          if self.has_non_round_one?
-            msg << "Round 1 Type Shifts Only Between #{self.last_shadow} and #{self.first_non_round_one_end_date.strftime("%Y-%m-%d")}"
+        case round
+          when 0..4
+            limit = round * 5
+            limit = 16 if limit > 16
+            limit = 5 if limit == 0
+            if shifts_without_meetings.count < limit
+              msg << "#{shifts_without_meetings.count} of #{limit} Shifts Selected.  You need to pick #{limit - shifts_without_meetings.count}"
+            else
+              msg << "All required shifts selected for round #{round}. (#{shifts_without_meetings.count} of #{limit})"
+            end
           else
-            msg << "Round One Type Shifts Only After: #{self.last_shadow.strftime("%Y-%m-%d")}"
-          end
-          msg << "#{self.round_one_type_count} of 5 selected.  Need #{5 - self.round_one_type_count} Round 1 Rookie Shifts."
-        else
-          # shadows = 2.  round 1 = 5
-          msg << "All Round One Rookie Shifts Selected."
-          msg << "Round 1 Type Shifts Only Between #{self.last_shadow.strftime("%Y-%m-%d")} and #{self.round_one_end_date.strftime("%Y-%m-%d")}."
-          #if !self.first_non_round_one_end_date.nil?
-          #  msg << "Round 1 Type Shifts Only Between #{self.last_shadow.strftime("%Y-%m-%d")} and #{self.first_non_round_one_end_date.strftime("%Y-%m-%d")}."
-          #else
-          #  msg << "Round 1 Type Shifts Only Between #{self.last_shadow.strftime("%Y-%m-%d")} and #{self.round_one_end_date.strftime("%Y-%m-%d")}."
-          #end
-
-          msg << "Any Shifts After #{self.round_one_end_date.strftime("%Y-%m-%d")}"
-
-          round == 2 ? total_for_round = 12 : round <= 1 ? total_for_round = 7 : total_for_round = 16
-          msg << "#{self.shifts.count} of #{total_for_round} shifts selected." if (self.shifts.count <= total_for_round)
-          msg << "All Required Shifts Selected." if (self.shifts.count >= total_for_round)
+            if shifts_without_meetings.count < 16
+              msg << "#{shifts_without_meetings.count} of 16 Shifts Selected.  You need to pick #{16 - shifts_without_meetings.count}"
+            else
+              msg << "All required shifts selected." if has_holiday
+            end
         end
       end
     else
@@ -391,14 +389,14 @@ class User < ActiveRecord::Base
         when 1..4
           limit = round * 5
           limit = 18 if limit > 18
-          if num_selected < limit
-            msg << "#{num_selected} of #{limit} Shifts Selected.  You need to pick #{limit - num_selected}"
+          if shifts_without_meetings.count < limit
+            msg << "#{shifts_without_meetings.count} of #{limit} Shifts Selected.  You need to pick #{limit - shifts_without_meetings.count}"
           else
-            msg << "All required shifts selected for round #{round}. (#{num_selected} of #{limit})"
+            msg << "All required shifts selected for round #{round}. (#{shifts_without_meetings.count} of #{limit})"
           end
         else
           if num_selected < 18
-            msg << "#{num_selected} of 18 Shifts Selected.  You need to pick #{18 - num_selected}"
+            msg << "#{shifts_without_meetings.count} of 18 Shifts Selected.  You need to pick #{18 - shifts_without_meetings.count}"
           else
             msg << "All required shifts selected." if has_holiday
           end
@@ -411,49 +409,49 @@ class User < ActiveRecord::Base
     HostUtility.date_for_round(self, 1)
   end
 
-  def round1_msg
-    if self.rookie?
-      'You may select up to 7 shifts: (2) Shadow and (5) G1-G4 type shifts (excluding G3, G4 shifts on the Friday schedule)'
-    else
-      'You may select up to 5 shifts.'
-    end
-  end
+  # def round1_msg
+  #   if self.rookie?
+  #     'You may select up to 7 shifts: (2) Shadow and (5) G1-G4 type shifts (excluding G3, G4 shifts on the Friday schedule)'
+  #   else
+  #     'You may select up to 5 shifts.'
+  #   end
+  # end
 
   def round2_date
     HostUtility.date_for_round(self, 2)
   end
 
-  def round2_msg
-    if self.rookie?
-      'You may select up to 12 shifts: You may not select non-round one type shifts prior to the 5th one you have already selected'
-    else
-      'You may select up to 10 shifts.'
-    end
-  end
+  # def round2_msg
+  #   if self.rookie?
+  #     'You may select up to 12 shifts: You may not select non-round one type shifts prior to the 5th one you have already selected'
+  #   else
+  #     'You may select up to 10 shifts.'
+  #   end
+  # end
 
   def round3_date
     HostUtility.date_for_round(self, 3)
   end
 
-  def round3_msg
-    if self.rookie?
-      'You may select up to 16 shifts: You may not select non-round one type shifts prior to the 5th one you have already selected'
-    else
-      'You may select up to 15 shifts.'
-    end
-  end
+  # def round3_msg
+  #   if self.rookie?
+  #     'You may select up to 16 shifts: You may not select non-round one type shifts prior to the 5th one you have already selected'
+  #   else
+  #     'You may select up to 15 shifts.'
+  #   end
+  # end
 
   def round4_date
     HostUtility.date_for_round(self, 4)
   end
 
-  def round4_msg
-    if self.rookie?
-      'You may select up to 16 shifts: You may not select non-round one type shifts prior to the 5th one you have already selected'
-    else
-      'You may select up to 18 shifts.'
-    end
-  end
+  # def round4_msg
+  #   if self.rookie?
+  #     'You may select up to 16 shifts: You may not select non-round one type shifts prior to the 5th one you have already selected'
+  #   else
+  #     'You may select up to 18 shifts.'
+  #   end
+  # end
 
   def first_name
     self.name.split(' ')[0]

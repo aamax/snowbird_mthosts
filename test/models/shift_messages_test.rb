@@ -54,7 +54,7 @@ class UserMessageTest < ActiveSupport::TestCase
     config = SysConfig.first
     config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 1)
     config.save
-    shifts = Shift.find_all_by_shift_type_id(@p1.id)
+    shifts = Shift.where("shift_type_id = #{@p1.id}")
     [@group1_user, @group2_user, @group3_user].each do |u|
       shifts.each do |s|
         break if u.shifts.length > 5
@@ -72,7 +72,7 @@ class UserMessageTest < ActiveSupport::TestCase
     config = SysConfig.first
     config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 2)
     config.save
-    shifts = Shift.find_all_by_shift_type_id(@p1.id)
+    shifts = Shift.where("shift_type_id = #{@p1.id}")
     [@group1_user, @group2_user, @group3_user].each do |u|
       shifts.each do |s|
         u.shifts << s
@@ -90,7 +90,7 @@ class UserMessageTest < ActiveSupport::TestCase
     config = SysConfig.first
     config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 3)
     config.save
-    shifts = Shift.find_all_by_shift_type_id(@p1.id)
+    shifts = Shift.where("shift_type_id = #{@p1.id}")
     [@group1_user, @group2_user, @group3_user].each do |u|
       shifts.each do |s|
         u.shifts << s
@@ -108,7 +108,7 @@ class UserMessageTest < ActiveSupport::TestCase
     config = SysConfig.first
     config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 4)
     config.save
-    shifts = Shift.find_all_by_shift_type_id(@p1.id)
+    shifts = Shift.where("shift_type_id = #{@p1.id}")
     [@group1_user, @group2_user, @group3_user].each do |u|
       shifts.each do |s|
         u.shifts << s
@@ -130,7 +130,7 @@ class UserMessageTest < ActiveSupport::TestCase
     config = SysConfig.first
     config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 5)
     config.save
-    shifts = Shift.find_all_by_shift_type_id(@p1.id)
+    shifts = Shift.where("shift_type_id = #{@p1.id}")
     [@group1_user, @group2_user, @group3_user].each do |u|
       u.shifts << holiday_shift
 
@@ -153,7 +153,7 @@ class UserMessageTest < ActiveSupport::TestCase
     config = SysConfig.first
     config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 5)
     config.save
-    shifts = Shift.find_all_by_shift_type_id(@p1.id)
+    shifts = Shift.where("shift_type_id = #{@p1.id}")
     [@group1_user, @group2_user, @group3_user].each do |u|
       shifts.each do |s|
         # Don't allow a holiday shift

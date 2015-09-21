@@ -54,14 +54,18 @@ require "minitest/autorun"
 require "rails/test_help"
 require "minitest/rails"
 #require "active_support/testing/setup_and_teardown"
-#require 'minitest/reporters'
 require 'minitest/mock'
-#MiniTest::Reporters.use!
 
 # Add `gem "minitest/rails/capybara"` to the test group of your Gemfile
 # and uncomment the following if you want Capybara feature tests
 require "minitest/rails/capybara"
 
+require "minitest/reporters"
+Minitest::Reporters.use!(
+    Minitest::Reporters::DefaultReporter.new,
+    ENV,
+    Minitest.backtrace_filter
+)
 
 #require 'database_cleaner'
 #

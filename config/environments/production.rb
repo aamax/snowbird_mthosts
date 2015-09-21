@@ -3,6 +3,8 @@ require 'uglifier'
 Mthost::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
+  config.eager_load = true
+
   # Code is not reloaded between requests
   config.cache_classes = true
 
@@ -22,7 +24,7 @@ Mthost::Application.configure do
 
   # Generate digests for assets URLs
   config.assets.digest = true
-  config.assets.js_compressor                = Uglifier.new(:mangle => false)
+  config.assets.js_compressor = :uglifier #                = Uglifier.new(:mangle => false)
 
   # Defaults to nil and saved in location specified by config.assets.prefix
   # config.assets.manifest = YOUR_PATH

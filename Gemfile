@@ -1,16 +1,22 @@
 source 'https://rubygems.org'
-gem 'rails', '3.2.21'
-ruby '2.1.7'
+gem 'rails', '4.2.4'
+ruby '2.2.3'
 
-group :assets do
-  gem 'sass-rails',   '~> 3.2.6'
-  gem 'coffee-rails', '~> 3.2.1'
-  gem 'uglifier', '>= 1.0.3'
+  gem 'sass-rails',   '~> 4.0.5'
+  gem 'coffee-rails', '~> 4.1.0'
+  gem 'uglifier', '>= 1.3.0'
+
   gem 'bootstrap-sass', '~> 2.1.1.0'
   gem 'therubyracer'
-end
 
-#gem 'test-unit'
+# added to make upgrade easier
+gem 'protected_attributes'
+gem 'rails-observers'
+gem 'actionpack-page_caching'
+gem 'actionpack-action_caching'
+gem 'activerecord-deprecated_finders'
+
+
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem "pg", ">= 0.14.1"
@@ -21,7 +27,6 @@ gem "rolify", ">= 3.2.0"
 gem "figaro", ">= 0.5.3"
 gem "better_errors", ">= 0.6.0", :group => :development
 gem "binding_of_caller", ">= 0.7.1", :group => :development, :platforms => [:mri_19, :rbx]
-#gem 'spork', '0.9'
 
 gem 'tinymce-rails'
 
@@ -36,46 +41,30 @@ gem 'will_paginate', "~>3.0.2"
 gem 'nokogiri'
 
 gem 'ng-rails-csrf', :git => "git://github.com/xrd/ng-rails-csrf.git" #helps rails csrf with angular
-#gem 'ngmin-rails'
-#gem 'ngannotate-rails'
 gem 'angularjs-rails'
 
 gem 'gon'
 
-# gem "paperclip", "~> 3.0"
-# gem 'aws-sdk'
-
 gem 'rollbar'
 gem 'unicorn'
 
-#gem 'newrelic_rpm'
-
 
 group :development do
-  #gem 'debugger'
   gem 'annotate', :git => 'git://github.com/ctran/annotate_models.git'
   gem "bullet"
 end
 
-# group :test do
-#   gem 'm'
-# end
-
 group :test, :development do
-  #gem 'pry'
-  #gem 'pry-rails'
   gem "ansi"
   gem 'minitest-rails'
   gem "minitest-rails-capybara"
   gem "minitest-stub-const"
-  gem "minitest-reporters", '>= 0.5.0'
-  gem "minitest-wscolor", ">= 0.0.3", :group => :test
+  gem 'minitest-reporters', '~> 1.1.0'
+  #gem 'mini_backtrace'
   gem 'pry'
- # gem "turn"
   gem "factory_girl_rails", ">= 4.2.0"
 
   gem "capybara-webkit"
-  #gem "database_cleaner", :git => 'git://github.com/bmabey/database_cleaner.git'
 end
 
 
