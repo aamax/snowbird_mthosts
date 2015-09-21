@@ -9,6 +9,8 @@ ruby '2.2.3'
   gem 'bootstrap-sass', '~> 2.1.1.0'
   gem 'therubyracer'
 
+gem 'rails_12factor'
+
 # added to make upgrade easier
 gem 'protected_attributes'
 gem 'rails-observers'
