@@ -43,7 +43,7 @@ gem 'will_paginate', "~>3.0.2"
 gem 'nokogiri'
 
 gem 'ng-rails-csrf', :git => "git://github.com/xrd/ng-rails-csrf.git" #helps rails csrf with angular
-gem 'angularjs-rails', '~>1.2.26'
+gem 'angularjs-rails'  #, '~>1.2.26'
 
 gem 'gon'
 
