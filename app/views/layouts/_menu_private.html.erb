@@ -114,23 +114,25 @@
           <% if current_user.email == MAX_EMAIL %>
               <li class='disabled'>Operations</li>
               <li><%= link_to "Reset passwords and confirmations for all.", "/reset_confirms_and_passwords",
-                              :confirm => "You sure you want to reset confirmations and passwords?" %></li>
+                              data: {confirm: "You sure you want to reset confirmations and passwords?"} %></li>
               <li><%= link_to "Clear all Host Assignments", "/clear_assignments",
-                              :confirm => "You sure you want to clear the assignments?" %></li>
+                              data: {confirm: "You sure you want to clear the assignments?"} %></li>
               <li><%= link_to "DELETE All Shifts", "/delete_shifts",
-                              :confirm => "You sure you want to delete all shifts?" %></li>
+                              data: {confirm: "You sure you want to delete all shifts?"} %></li>
               <li><%= link_to "Set all Hosts As Rookies", "/set_start_year/#{SysConfig.first.season_year}",
-                              :confirm => "You sure you want to reset all the host seniorities?" %></li>
+                              data: {confirm: "You sure you want to reset all the host seniorities?"} %></li>
               <li><%= link_to "Set all Hosts As Group 3 (Newer)", "/set_start_year/#{SysConfig.first.group_3_year}",
-                              :confirm => "You sure you want to reset all the host seniorities?" %></li>
+                              data: {confirm: "You sure you want to reset all the host seniorities?"} %></li>
               <li><%= link_to "Set all Hosts As Group 2 (Middle)", "/set_start_year/#{SysConfig.first.group_2_year}",
-                              :confirm => "You sure you want to reset all the host seniorities?" %></li>
+                              data: {confirm: "You sure you want to reset all the host seniorities?"} %></li>
               <li><%= link_to "Set all Hosts As Group 1 (Senior)", "/set_start_year/#{SysConfig.first.group_1_year}",
-                              :confirm => "You sure you want to reset all the host seniorities?" %></li>
+                              data: {confirm: "You sure you want to reset all the host seniorities?"} %></li>
               <li><%= link_to "Set all hosts inactive", "#",
-                              :confirm => "You sure you want to set all hosts as inactive?" %></li>
+                              data: {confirm: "You sure you want to set all hosts as inactive?"} %></li>
               <li><%= link_to "Initialize All Host Confirmations", "/init_confirmations",
-                              :confirm => "Are you sure you want to initialize all user confirmations?" %></li>
+                              data: {confirm: "Are you sure you want to initialize all user confirmations?"} %></li>
+              <li><%= link_to "Populate Meeting Shifts To Users", "/init_meetings",
+                              data: {confirm: "Are you sure you want to populate all the meetings?"} %></li>
 
               <li class="divider"></li>
           <% end %>

@@ -344,6 +344,9 @@ class Shift < ActiveRecord::Base
     true
   end
 
+  def user_name
+    self.user.name
+  end
 
   private
   def set_day_of_week

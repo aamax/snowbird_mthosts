@@ -152,6 +152,11 @@ class UsersController < ApplicationController
     redirect_to :back, :notice => "All User Confirmations Have Been Reset..."
   end
 
+  def init_meetings
+    User.populate_meetings
+    redirect_to :back, :notice => "All Meetings have been processed."
+  end
+
   private
   def process_user_roles params
     return if !current_user.has_role? :admin

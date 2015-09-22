@@ -33,6 +33,7 @@ Mthost::Application.routes.draw do
   get '/delete_shifts', :to => "shifts#delete_shifts"
   get '/reset_confirms_and_passwords', :to => "users#reset_confirms_and_passwords"
   get '/init_confirmations', :to => "users#init_confirmations"
+  get '/init_meetings', :to => "users#init_meetings"
 
 
   post '/set_user_active/:value', :to => "users#set_user_active"
