@@ -2,7 +2,7 @@
 <div class='user_profile_box span5' >
   <div class='row'>
     <% unless user.nil? %>
-        <div class='span5 col1'>
+        <div class='span2 col1'>
 
           <%= user.name %>
 
@@ -26,7 +26,7 @@
           Cell: <%= number_to_phone(user.cell_phone) %> <br/>
           Home: <%= number_to_phone(user.home_phone) %> <br/><br/>
         </div>
-        <div class='span7'>
+        <div class='span3'>
           <%= user.street %><br/>
           <%= user.city %> <%= user.city.blank? ? " #{user.state} #{user.zip}" : ", #{user.state} #{user.zip}" %><br/><br/>
 

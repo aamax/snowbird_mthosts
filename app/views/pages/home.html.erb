@@ -3,26 +3,20 @@
 <br/>
 
 <div class='myhome_page'>
-  <div class='row'>
-    <div class='span6'>
-      <% unless current_user.supervisor? %>
+  <% unless current_user.supervisor? %>
+      <div class='row'>
+        <div class='span6'>
           <%= render '/shared/user_profile_box', :user => current_user %>
+        </div>
 
-          <div class='span1'>&nbsp;</div>
+        <div class='span1'>&nbsp;</div>
 
-          <div class='span6'>
-            <div class="row">
-              <%= render '/shared/next_three_shifts', :user => current_user %>
-            </div>
-
-            <br/>
-            <div class="row">
-              <%= render '/shared/shift_summary_box', :user => current_user %>
-            </div>
-          </div>
-      <% end %>
-    </div>
-
+        <div class='span5'>
+          <%= render '/shared/next_three_shifts', :user => current_user %>
+          <br/>
+          <%= render '/shared/shift_summary_box', :user => current_user %>
+        </div>
+  <% end %>
     </div>
   <br/>
   <div class="row">
