@@ -34,13 +34,18 @@ $(->
     pword = $("#user_password").val()
     pconf = $("#user_password_confirmation").val()
 
-    if (pword.length < 8)
-      $("#user_password_confirmation")[0].style.backgroundColor = "red"
+    if (pword.length == 0) && (pconf.length == 0) || (pconf == undefined)
+      $("#user_password")[0].style.backgroundColor = "white"
+      $("#user_password_confirmation")[0].style.backgroundColor = "white"
     else
-      if (pword != pconf)
-        $("#user_password_confirmation")[0].style.backgroundColor = "yellow"
+      if (pword.length < 8)
+        $("#user_password")[0].style.backgroundColor = "red"
+        $("#user_password_confirmation")[0].style.backgroundColor = "red"
       else
-        $("#user_password_confirmation")[0].style.backgroundColor = "white"
+        if (pword != pconf)
+          $("#user_password_confirmation")[0].style.backgroundColor = "yellow"
+        else
+          $("#user_password_confirmation")[0].style.backgroundColor = "white"
 
   $('.set_active').change(->
     # make ajax call to set active value for this user

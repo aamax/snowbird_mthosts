@@ -37,6 +37,8 @@ class UsersController < ApplicationController
   end
 
   def edit
+    @user = User.find(params[:id])
+    @user.password = ''
   end
 
   def new

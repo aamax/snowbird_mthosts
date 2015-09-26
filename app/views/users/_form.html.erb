@@ -27,7 +27,7 @@
 <strong>Cell Phone: </strong>
 <%= f.telephone_field :cell_phone, :placeholder => 'Cell Phone', class: 'phone_edit' %> <br/>
 <strong>Email: </strong>
-<%= f.email_field :email, :placeholder => 'Email', class: 'email_edit' %> <br/>
+<%= f.email_field :email, :placeholder => 'Email', class: 'email_edit', :autocomplete => :off %> <br/>
 <strong>Alt Email: </strong>
 <%= f.email_field :alt_email, :placeholder => 'Alternate Email', class: 'email_edit' %> <br/>
 
@@ -55,7 +55,7 @@
 <%= f.check_box :confirmed, :placeholder => "confirmed", class: 'active_edit', :required => !current_user.has_role?(:admin) %><br/>
 
 
-<%= f.password_field :password, class: 'password_edit', placeholder: 'Password' %> <br/>
+<%= f.password_field :password, class: 'password_edit', placeholder: 'Password', :autocomplete => :off %> <br/>
 <%= f.password_field :password_confirmation, class: 'password_edit', placeholder: 'Password Confirmation' %> <br/><br/>
 
     <% unless current_user.has_role? :admin %>
