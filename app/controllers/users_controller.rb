@@ -23,13 +23,13 @@ class UsersController < ApplicationController
   end
 
   def hosts_by_seniority
-    @users = User.includes(:shifts).active_users
+    @users = User.includes(:shifts).active_users.to_a.delete_if {|u| u.supervisor? }
     @rookies = User.rookies
-    @freshmen = User.group3.to_a.delete_if {|u| u.team_leader? }
-    @junior = User.group2.to_a.delete_if {|u| u.team_leader? }
-    @senior = User.group1.to_a.delete_if {|u| u.team_leader? }
-    @leaders = @users.to_a.delete_if {|u| !u.team_leader? }
-    @missing = @users - (@rookies + @freshmen + @junior + @senior + @leaders)
+    @freshmen =  User.group3.to_a.delete_if {|u| u.team_leader? }
+    @junior =  User.group2.to_a.delete_if {|u| u.team_leader? }
+    @senior =  User.group1.to_a.delete_if {|u| u.team_leader? }
+    @leaders =  User.active_users.to_a.delete_if {|u| !u.team_leader? }
+    @missing =  @users - (@rookies + @freshmen + @junior + @senior + @leaders)
   end
 
   def show

@@ -1,4 +1,10 @@
 <% if current_user.has_role? :admin %>
+    Team leaders: <%= @leaders.length %><br/>
+    Seniors: <%= @senior.length %><br/>
+    Juniors: <%= @junior.length %><br/>
+    Freshmen: <%= @freshmen.length %><br/>
+    Rookie: <%= @rookies.length %><br/>
+    All: <%= @users.length %><br/>
 
     <h1>MISSING  (<%= @missing.count %>)</h1>
     <table class='table table-striped'>
