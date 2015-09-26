@@ -11,6 +11,8 @@
 
         Team Leaders: <%= User.active_users.to_a.delete_if {|u| !u.team_leader? }.length %> <br/>
 
+        Trainers: <%= User.active_users.to_a.delete_if {|u| !u.trainer? }.length %><br/>
+
         All Hosts: <%= User.includes(:shifts).active_users.to_a.delete_if {|u| u.supervisor? }.length %> <br/>
       </div>
     </div>

@@ -1,5 +1,6 @@
 <% if current_user.has_role? :admin %>
     Team leaders: <%= @leaders.length %><br/>
+    Trainers: <%= @trainers.length %><br/>
     Seniors: <%= @senior.length %><br/>
     Juniors: <%= @junior.length %><br/>
     Freshmen: <%= @freshmen.length %><br/>
@@ -84,6 +85,18 @@
     </table>
     <hr/>
 
+    <h1>TRAINERS(<%= @trainers.count %>)</h1>
+    <table class='table table-striped'>
+      <tbody>
+
+      <% @trainers.each do |u| %>
+          <tr id=<%= "user_record_#{u.id}" %> class='user_entry' >
+            <%= render 'user_index_entry', object: u %>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <hr/>
 <% else %>
     You don't have permission to view this report.  Sorry!
 <% end %>

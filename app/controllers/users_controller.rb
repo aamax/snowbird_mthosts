@@ -29,6 +29,7 @@ class UsersController < ApplicationController
     @junior =  User.group2.to_a.delete_if {|u| u.team_leader? }
     @senior =  User.group1.to_a.delete_if {|u| u.team_leader? }.delete_if {|u| u.supervisor? }
     @leaders =  User.active_users.to_a.delete_if {|u| !u.team_leader? }
+    @trainers = User.active_users.to_a.delete_if {|u| !u.has_role? :trainer}
     @missing =  @users - (@rookies + @freshmen + @junior + @senior + @leaders)
   end
 
