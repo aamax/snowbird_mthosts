@@ -13,6 +13,10 @@
           <%= render 'shifts/filter/show_unselected', :f => f %> <br/>
 
           <%= render 'shifts/filter/show_holidays', :f => f %>
+
+          Show Meeting Shifts:
+          <%= f.check_box(:show_meetings, :checked => @meeting_flag) %>
+          <br/>
         </div>
 
         <div class='span2'>

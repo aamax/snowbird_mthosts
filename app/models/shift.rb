@@ -127,6 +127,17 @@ class Shift < ActiveRecord::Base
     where("shift_date in ('#{dates.join("','")}')")
   end
 
+  def self.with_meetings(flag)
+    return scoped if flag == true
+    return where("shift_type_id not in (#{types.join(',')})") if flag.nil?
+
+    types = ShiftType.where("short_name in ('M1', 'M2', 'M3', 'M4')").map {|st| st.id }
+
+    return scoped if (types.nil? || (types.length == 0))
+    where("shift_type_id not in (#{types.join(',')})")
+
+  end
+
   def self.from_today(ft)
     return scoped unless ft == true
     where("shift_date >= '#{Date.today}'")
