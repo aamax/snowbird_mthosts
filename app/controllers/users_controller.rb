@@ -22,6 +22,16 @@ class UsersController < ApplicationController
     @users = @users.sort {|a,b| a.name <=> b.name }
   end
 
+  def hosts_by_seniority
+    @users = User.includes(:shifts).active_users
+    @rookies = User.rookies
+    @freshmen = User.group3
+    @junior = User.group2
+    @senior = User.group3
+    @leaders = User.includes(:shifts).active_users.to_a.delete_if {|u| !u.team_leader? }
+    @missing = @users - (@rookies + @freshmen + @junior + @senior + @leaders)
+  end
+
   def show
 
   end

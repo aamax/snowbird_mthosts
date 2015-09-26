@@ -11,8 +11,7 @@
 
         Team Leaders: <%= User.team_leader_count %> <br/>
 
-        All Hosts: <%= User.active_users.length %><br/>
-
+        All Hosts: <%= User.active_users.length %> <br/>
       </div>
     </div>
 <% end %>
@@ -38,7 +37,7 @@
   <% @users.each do |u| %>
       <% next if u == current_user %>
       <tr id=<%= "user_record_#{u.id}" %> class='user_entry' >
-      <%= render 'user_index_entry', object: u %>
+        <%= render 'user_index_entry', object: u %>
       </tr>
   <% end %>
   </tbody>
@@ -52,11 +51,10 @@
       <% @inactive_users.each do |u| %>
           <% next if u == current_user %>
           <tr id=<%= "user_record_#{u.id}" %> class='user_entry' >
-          <%= render 'user_index_entry', object: u %>
+            <%= render 'user_index_entry', object: u %>
           </tr>
       <% end %>
       </tbody>
     </table>
 <% end %>
-
 

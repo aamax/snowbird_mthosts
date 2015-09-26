@@ -1,0 +1,83 @@
+<% if current_user.has_role? :admin %>
+
+    <h1>MISSING  (<%= @missing.count %>)</h1>
+    <table class='table table-striped'>
+      <tbody>
+
+      <% @missing.each do |u| %>
+          <tr id=<%= "user_record_#{u.id}" %> class='user_entry' >
+            <%= render 'user_index_entry', object: u %>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <hr/>
+
+    <h1>ROOKIES(<%= @rookies.count %>)</h1>
+    <table class='table table-striped'>
+      <tbody>
+
+      <% @rookies.each do |u| %>
+          <tr id=<%= "user_record_#{u.id}" %> class='user_entry' >
+            <%= render 'user_index_entry', object: u %>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <hr/>
+
+    <h1>FRESHMEN (<%= @freshmen.count %>)</h1>
+    <table class='table table-striped'>
+      <tbody>
+
+      <% @freshmen.each do |u| %>
+          <tr id=<%= "user_record_#{u.id}" %> class='user_entry' >
+            <%= render 'user_index_entry', object: u %>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <hr/>
+
+    <h1>JUNIOR (<%= @junior.count %>)</h1>
+    <table class='table table-striped'>
+      <tbody>
+
+      <% @junior.each do |u| %>
+          <tr id=<%= "user_record_#{u.id}" %> class='user_entry' >
+            <%= render 'user_index_entry', object: u %>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <hr/>
+
+    <h1>SENIOR (<%= @senior.count %>)</h1>
+    <table class='table table-striped'>
+      <tbody>
+
+      <% @senior.each do |u| %>
+          <tr id=<%= "user_record_#{u.id}" %> class='user_entry' >
+            <%= render 'user_index_entry', object: u %>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <hr/>
+
+    <h1>TEAM LEADERS(<%= @leaders.count %>)</h1>
+    <table class='table table-striped'>
+      <tbody>
+
+      <% @leaders.each do |u| %>
+          <tr id=<%= "user_record_#{u.id}" %> class='user_entry' >
+            <%= render 'user_index_entry', object: u %>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <hr/>
+
+<% else %>
+    You don't have permission to view this report.  Sorry!
+<% end %>
