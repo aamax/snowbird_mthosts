@@ -1,6 +1,6 @@
 <% if current_user.has_role? :admin %>
     <div class='row'>
-      <div class="span2">
+      <div class="span3">
         Rookies: <%= User.rookies.length %> <br/>
 
         Freshmen: <%= User.group3.length %> <br/>
@@ -10,6 +10,9 @@
         Senior: <%= User.group1.to_a.delete_if {|u| u.team_leader? }.length %> <br/>
 
         Team Leaders: <%= User.team_leader_count %> <br/>
+
+        All Hosts: <%= User.active_users.length %><br/>
+
       </div>
     </div>
 <% end %>
