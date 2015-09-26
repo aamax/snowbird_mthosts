@@ -3,15 +3,15 @@
       <div class="span3">
         Rookies: <%= User.rookies.length %> <br/>
 
-        Freshmen: <%= User.group3.length %> <br/>
+        Freshmen: <%= User.group3.to_a.delete_if {|u| u.team_leader? }.length %> <br/>
 
-        Junior: <%= User.group2.length %> <br/>
+        Junior: <%= User.group2.to_a.delete_if {|u| u.team_leader? }.length %> <br/>
 
-        Senior: <%= User.group1.to_a.delete_if {|u| u.team_leader? }.length %> <br/>
+        Senior: <%= User.group1.to_a.delete_if {|u| u.team_leader? }.delete_if {|u| u.supervisor? }.length %> <br/>
 
-        Team Leaders: <%= User.team_leader_count %> <br/>
+        Team Leaders: <%= User.active_users.to_a.delete_if {|u| !u.team_leader? }.length %> <br/>
 
-        All Hosts: <%= User.active_users.length %> <br/>
+        All Hosts: <%= User.includes(:shifts).active_users.to_a.delete_if {|u| u.supervisor? }.length %> <br/>
       </div>
     </div>
 <% end %>
