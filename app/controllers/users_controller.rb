@@ -27,7 +27,7 @@ class UsersController < ApplicationController
     @rookies = User.rookies
     @freshmen = User.group3
     @junior = User.group2
-    @senior = User.group3
+    @senior = User.group1
     @leaders = User.includes(:shifts).active_users.to_a.delete_if {|u| !u.team_leader? }
     @missing = @users - (@rookies + @freshmen + @junior + @senior + @leaders)
   end
