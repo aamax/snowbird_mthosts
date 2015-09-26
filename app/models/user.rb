@@ -151,18 +151,20 @@ class User < ActiveRecord::Base
 
   def shifts_worked
     worked = shifts
-    worked.to_a.delete_if {|s| (s.shift_date > Date.today) || (s.shift_status_id == -1) }
+    worked = worked.to_a.delete_if {|s| (s.shift_date > Date.today) || (s.shift_status_id == -1) }
     worked
   end
 
   def pending_shifts
     pending = shifts
-    pending.to_a.delete_if {|s| (s.shift_date <= Date.today) }
+    pending = pending.to_a.delete_if {|s| (s.shift_date <= Date.today) }
+    pending
   end
 
   def missed_shifts
-    pending = shifts
-    pending.to_a.delete_if {|s| (s.shift_status_id == -1) }
+    missed = shifts
+    missed = missed.to_a.delete_if {|s| (s.shift_status_id != -1) }
+    missed
   end
 
 

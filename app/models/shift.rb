@@ -133,8 +133,8 @@ class Shift < ActiveRecord::Base
   end
 
   def status_string
-    value = "Worked" if ((self.shift_status_id == 1) && (self.shift_date <= Date.today))
-    value = "Pending" if ((self.shift_status_id == 1) && (self.shift_date > Date.today))
+    value = "Worked" if ((self.shift_status_id != -1) && (self.shift_date <= Date.today))
+    value = "Pending" if ((self.shift_status_id != -1) && (self.shift_date > Date.today))
     value ||= "Missed"
     value
   end
@@ -144,7 +144,7 @@ class Shift < ActiveRecord::Base
   end
 
   def status_operation
-    self.shift_status_id == 1 ? value = "Missed" : value = "Worked"
+    self.shift_status_id == -1 ? value = "Missed" : value = "Worked"
     value
   end
 
