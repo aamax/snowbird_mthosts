@@ -83,9 +83,11 @@ hide_all_pages = ->
   $("#select_dates").hide()
   $("#set_options").hide()
   $("#confirmation").hide()
-process_date_selections = ->
+
+clear_date_selections = ->
   $("#selected_dates option").remove()
 
+process_date_selections = ->
   # if no date in single, alert error...
   if $("#start_date").val() is ""
     alert "ERROR: Start Date Must Be Set."
@@ -221,6 +223,9 @@ $(document).ready ->
 
   $("#update_dates").click (ev) ->
     process_date_selections()
+
+  $("#clear_dates").click (ev) ->
+    clear_date_selections()
 
   setupShiftBuilderDatePicker()
   update_display()
