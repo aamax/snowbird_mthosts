@@ -48,7 +48,7 @@ gem 'angularjs-rails'  #, '~>1.2.26'
 gem 'gon'
 
 gem 'rollbar'
-gem 'unicorn'
+gem 'puma'
 
 
 group :development do
