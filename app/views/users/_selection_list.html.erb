@@ -8,7 +8,7 @@
     </tr>
 
 
-    <% current_user.shifts.includes(:shift_type).each do |s| %>
+    <% current_user.get_shift_list.each do |s| %>
         <tr>
           <td><%= "#{s.day_of_week}:#{s.shift_date.strftime('%Y-%m-%d')}" %></td>
 

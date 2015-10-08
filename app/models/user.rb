@@ -298,6 +298,10 @@ class User < ActiveRecord::Base
     false
   end
 
+  def get_shift_list
+    self.shifts.includes(:shift_type).sort {|a,b| a.shift_date <=> b.shift_date }
+  end
+
   def get_working_shifts
     user = User.includes(:shifts).find_by_id(id)
     shifts = user.shifts.includes(:shift_type)
