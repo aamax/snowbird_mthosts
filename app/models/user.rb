@@ -302,7 +302,7 @@ class User < ActiveRecord::Base
     user = User.includes(:shifts).find_by_id(id)
     shifts = user.shifts.includes(:shift_type)
     shifts ||= []
-    working_shifts = shifts.flatten
+    working_shifts = shifts.flatten.sort {|a,b| a.shift_date <=> b.shift_date }
   end
 
   def get_next_shifts(num)
