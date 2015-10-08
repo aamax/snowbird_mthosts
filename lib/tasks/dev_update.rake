@@ -9,4 +9,14 @@ namespace :data do
 
     puts "done..."
   end
+
+  task :add_shortname => :environment do
+    puts "adding shortname to all shifts"
+
+    Shift.all.each do |s|
+      s.short_name = s.shift_type.short_name[0..1]
+      s.save
+    end
+    puts "done adding short names..."
+  end
 end

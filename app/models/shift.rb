@@ -159,9 +159,9 @@ class Shift < ActiveRecord::Base
     value
   end
 
-  def short_name
-    self.shift_type.short_name[0..1]
-  end
+  # def short_name
+  #   self.shift_type.short_name[0..1]
+  # end
 
   def full_short_name
     self.shift_type.short_name
