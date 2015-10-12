@@ -34,7 +34,7 @@ $(->
     pword = $("#user_password").val()
     pconf = $("#user_password_confirmation").val()
 
-    if (pword.length == 0) && (pconf.length == 0) || (pconf == undefined)
+    if (pword.length == 0) && ((pconf.length == 0) || (pconf == undefined))
       $("#user_password")[0].style.backgroundColor = "white"
       $("#user_password_confirmation")[0].style.backgroundColor = "white"
     else
@@ -42,6 +42,8 @@ $(->
         $("#user_password")[0].style.backgroundColor = "red"
         $("#user_password_confirmation")[0].style.backgroundColor = "red"
       else
+        $("#user_password")[0].style.backgroundColor = "white"
+
         if (pword != pconf)
           $("#user_password_confirmation")[0].style.backgroundColor = "yellow"
         else
