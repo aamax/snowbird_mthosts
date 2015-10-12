@@ -223,7 +223,8 @@ class Shift < ActiveRecord::Base
       return true if test_user.admin?
       return false if self.shadow? && !test_user.rookie?
       return false if !test_user.team_leader? && self.team_leader?
-      return false if self.trainer?
+      return false if self.trainer? && !test_user.trainer?
+      return true if test_user.team_leader? && self.team_leader?
 
       bingo_start = HostConfig.bingo_start_date
       round = HostUtility.get_current_round(bingo_start, Date.today, test_user)
