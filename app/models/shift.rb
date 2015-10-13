@@ -228,21 +228,7 @@ class Shift < ActiveRecord::Base
 
       bingo_start = HostConfig.bingo_start_date
       round = HostUtility.get_current_round(bingo_start, Date.today, test_user)
-      shift_count = test_user.shifts.to_a.delete_if {|s| s.trainer? || s.meeting? }.count
-
-      return true if (shift_count < 18) && (self.short_name == 'TL') && test_user.team_leader?
-      if !test_user.rookie? && (round == 0)
-        return false
-      end
-
-      if test_user.team_leader?
-        if (round < 5) && (round > 0)
-          shifts = test_user.shifts.to_a.delete_if {|s| s.short_name == 'TL'}
-
-          return false if (shifts.count >= (round * 5))
-          return true if shift_count < 18
-        end
-      end
+      shift_count = test_user.shifts.to_a.delete_if {|s| s.trainer? || s.meeting? || s.team_leader? }.count
 
       if test_user.rookie?
         return false if !self.shadow? && (test_user.last_shadow.nil? || (self.shift_date < test_user.last_shadow))
