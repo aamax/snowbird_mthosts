@@ -14,7 +14,7 @@ namespace :data do
     puts "adding shortname to all shifts"
 
     Shift.all.each do |s|
-      s.short_name = s.shift_type.short_name[0..1]
+      s.short_name = s.shift_type.short_name[0..1].upcase
       s.save
     end
     puts "done adding short names..."

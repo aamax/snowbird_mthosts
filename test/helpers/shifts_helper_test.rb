@@ -152,19 +152,12 @@ class ShiftsHelperTest < ActionView::TestCase
         @team_leader.shifts.count.must_equal 12
       end
 
-      it "cannot select shifts before bingo if not TL shift" do
+      it "can select shifts before bingo if not TL shift" do
         shifts = Shift.all
-        unselected = shifts.to_a.delete_if {|s| !s.user_id.nil? }
-        @senior_user.shifts << unselected[0]
-        target_shift = unselected[0]
+        unselected = shifts.to_a.delete_if {|s| !s.user_id.nil? || @team_leader.is_working?(s.shift_date) || s.shadow? }
 
-        target_shift.can_select(@team_leader).must_equal false
-        shifts.each do |s|
-          if s.short_name != "TL"
-            s.can_select(@team_leader).must_equal false
-          else
-            s.can_select(@team_leader).must_equal true
-          end
+        unselected.each do |s|
+          s.can_select(@team_leader).must_equal true
         end
       end
 
@@ -447,7 +440,7 @@ class ShiftsHelperTest < ActionView::TestCase
 
       it 'no one can select trainer shifts' do
         @t_shifts.each do |ts|
-          ts.can_select(@trainer).must_equal false
+          ts.can_select(@trainer).must_equal true
           ts.can_select(@rookie_user).must_equal false
           ts.can_select(@newer_user).must_equal false
           ts.can_select(@middle_user).must_equal false

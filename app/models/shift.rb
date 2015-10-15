@@ -17,8 +17,7 @@
 class Shift < ActiveRecord::Base
   attr_accessible :user_id, :shift_type_id, :shift_status_id, :shift_date, :day_of_week
 
-  before_save :set_day_of_week
-
+  before_save :set_day_of_week, :set_short_name
 
   belongs_to :user
   belongs_to :shift_type
@@ -224,13 +223,16 @@ class Shift < ActiveRecord::Base
       return false if self.shadow? && !test_user.rookie?
       return false if !test_user.team_leader? && self.team_leader?
       return false if self.trainer? && !test_user.trainer?
-      return true if test_user.team_leader? && self.team_leader?
 
       bingo_start = HostConfig.bingo_start_date
       round = HostUtility.get_current_round(bingo_start, Date.today, test_user)
-      shift_count = test_user.shifts.to_a.delete_if {|s| s.trainer? || s.meeting? || s.team_leader? }.count
+      shift_count = test_user.shifts.to_a.delete_if {|s| s.trainer? || s.meeting? }.count
 
-      if test_user.rookie?
+      if test_user.team_leader?
+        if round <= 4
+          return false if shift_count >= 18
+        end
+      elsif test_user.rookie?
         return false if !self.shadow? && (test_user.last_shadow.nil? || (self.shift_date < test_user.last_shadow))
 
         shadow_count = test_user.shadow_count
@@ -250,7 +252,7 @@ class Shift < ActiveRecord::Base
           return false if round <= 0
 
           return false if (shift_count >= (round * 5))
-          return false if (round <= 4) && (test_user.shifts.count >= 18)
+          return false if (round <= 4) && (shift_count >= 18)
         end
       end
       retval = true
@@ -349,6 +351,10 @@ class Shift < ActiveRecord::Base
   private
   def set_day_of_week
     self.day_of_week = self.shift_date.strftime("%a")
+  end
+
+  def set_short_name
+    self.short_name = self.shift_type.short_name[0..1].upcase
   end
 
 end
