@@ -137,7 +137,7 @@ class MailController < ApplicationController
     if (users.nil? || users == [])
       @emailaddress = nil
     else
-      users.uniq!
+      users = users.uniq
       @emailaddress = users.compact.map {|u| u.email}.join(',')
     end
 
