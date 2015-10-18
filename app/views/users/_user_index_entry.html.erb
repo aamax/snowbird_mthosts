@@ -46,7 +46,14 @@
   <strong>Seniority:</strong> <%= object.seniority %><br/>
   <strong>Last Signed In:</strong>
         <%= object.last_sign_in_at.nil? ? "---" :
-              object.last_sign_in_at.in_time_zone("Mountain Time (US & Canada)").strftime("%Y-%m-%d %H:%M") %>
+              object.last_sign_in_at.in_time_zone("Mountain Time (US & Canada)").strftime("%Y-%m-%d %H:%M") %> <br/>
+  <% if current_user.admin? && !object.notes.blank? %>
+    <br/>
+      <div class="user_notes_box">
+        <strong>NOTES: </strong><br/>
+        <%= object.notes %>
+      </div>
+  <% end %>
 </td>
 
 <td>
