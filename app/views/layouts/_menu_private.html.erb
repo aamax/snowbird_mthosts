@@ -9,7 +9,7 @@
     <li><a href=<%= "/users/#{current_user.id}" %>>Profile</a></li>
 
     <li class="dropdown">
-      <%= link_to "Resources", "#", :class => "dropdown-toggle", :data => {:toggle => "dropdown"}, :id => "document_menu" %>
+      <%= link_to "Host Info", "#", :class => "dropdown-toggle", :data => {:toggle => "dropdown"}, :id => "host_resource_menu" %>
 
       <ul class="dropdown-menu" padding-left="20px">
         <li class='disabled'>Host Program Info</li>
@@ -20,6 +20,22 @@
         <li><%= link_to "Parking Policy 2012-13", "/docs/parking_policy.pdf", :target => "_blank" %></li>
         <li><%= link_to "Parking Policy 2013-14", "/docs/parking_policy_2013_14.doc", :target => "_blank" %></li>
 
+        <li class='disabled'>Snowbird Links</li>
+        <li><%= link_to "Snowbird Home Page", "http://snowbird.com", :target => "_blank" %></li>
+        <li><%= link_to "Snowbird Tickets Page", "http://www.snowbird.com/tickets-and-season-passes/" %></li>
+        <li><%= link_to "Snowbird Mountain School", "https://tickets.snowbird.com/mountainschool/ItemList.aspx" %></li>
+        <li><%= link_to "Snowbird Mountain Report", "http://www.snowbird.com/mountain-report", :target => "_blank" %></li>
+        <li><%= link_to "Snowbird Trail Maps", "http://www.snowbird.com/winter/trail-maps/", :target => "_blank" %></li>
+
+        <li class='disabled'>Host Reports etc.</li>
+        <li><%= link_to "Host Phone List", "/reports/phone_list" %></li>
+      </ul>
+    </li>
+
+    <li class="dropdown">
+      <%= link_to "Resources", "#", :class => "dropdown-toggle", :data => {:toggle => "dropdown"}, :id => "document_menu" %>
+
+      <ul class="dropdown-menu" padding-left="20px">
         <li class='disabled'>Nutrition, Safety & Health</li>
         <li><%= link_to "Exercises & Stretches", "/docs/exercises_stretches.doc", :target => "_blank" %></li>
         <li><%= link_to "Ski Injury Prevention For Hosties!", "https://prezi.com/ffsph3ej3dyo/ski-injury-prevention/", :target => "_blank" %></li>
@@ -36,16 +52,6 @@
 							"http://utahavalanchecenter.org/advisory/salt-lake/04/28/2013", :target => "_blank" %></li>
         <li><%= link_to "Wasatch Snow Info Site", "http://www.wasatchsnowinfo.com/", :target => "_blank" %></li>
         <li><%= link_to "UTA Home Page", "http://www.rideuta.com/" %></li>
-
-        <li class='disabled'>Snowbird Links</li>
-        <li><%= link_to "Snowbird Home Page", "http://snowbird.com", :target => "_blank" %></li>
-        <li><%= link_to "Snowbird Tickets Page", "http://www.snowbird.com/tickets-and-season-passes/" %></li>
-        <li><%= link_to "Snowbird Mountain School", "https://tickets.snowbird.com/mountainschool/ItemList.aspx" %></li>
-        <li><%= link_to "Snowbird Mountain Report", "http://www.snowbird.com/mountain-report", :target => "_blank" %></li>
-        <li><%= link_to "Snowbird Trail Maps", "http://www.snowbird.com/winter/trail-maps/", :target => "_blank" %></li>
-
-        <li class='disabled'>Host Reports etc.</li>
-        <li><%= link_to "Host Phone List", "/reports/phone_list" %></li>
       </ul>
     </li>
 
