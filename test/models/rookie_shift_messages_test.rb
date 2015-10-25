@@ -81,7 +81,7 @@ class RookieMessageTest < ActiveSupport::TestCase
         @rookie_user.shifts << s
       end
     end
-    @rookie_user.shifts.count.must_equal 16
+    @rookie_user.shifts.count.must_equal 20
     @rookie_user.shadow_count.must_equal SHADOW_COUNT
     @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 5)
     @sys_config.save

@@ -226,7 +226,7 @@ class Shift < ActiveRecord::Base
 
       bingo_start = HostConfig.bingo_start_date
       round = HostUtility.get_current_round(bingo_start, Date.today, test_user)
-      shift_count = test_user.shifts.to_a.delete_if {|s| s.trainer? }.count
+      shift_count = test_user.shifts.to_a.count
 
       if test_user.team_leader?
         if round <= 4
@@ -250,9 +250,15 @@ class Shift < ActiveRecord::Base
         if round < 5
           # if pre bingo - return false
           return false if round <= 0
-
-          return false if (shift_count >= (round * 5))
           return false if (round <= 4) && (shift_count >= 20)
+
+          #return false if (shift_count >= (round * 5))
+          if test_user.trainer?
+            non_trainer_shift_count = test_user.shifts.to_a.delete_if {|s| s.trainer? }.count
+            return false if (non_trainer_shift_count >= (round * 5))
+          else
+            return false if (shift_count >= (round * 5))
+          end
         end
       end
       retval = true

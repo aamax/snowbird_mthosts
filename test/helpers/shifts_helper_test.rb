@@ -251,7 +251,7 @@ class ShiftsHelperTest < ActionView::TestCase
           next if (s.short_name == "TL") || (s.short_name == 'SH') || @senior_user.is_working?(s.shift_date)
 
           can_select = s.can_select(@senior_user)
-          if @senior_user.shifts.count < 18
+          if @senior_user.shifts.count < 20
             can_select.must_equal true
             @senior_user.shifts << s
           else
@@ -388,7 +388,7 @@ class ShiftsHelperTest < ActionView::TestCase
           end
         end
 
-        @rookie_user.shifts.count.must_equal 16
+        @rookie_user.shifts.count.must_equal 20
         @rookie_user.shadow_count.must_equal 4
       end
 
@@ -402,7 +402,7 @@ class ShiftsHelperTest < ActionView::TestCase
             @rookie_user.shifts << s if can_select
           end
         end
-        @rookie_user.shifts.count.must_equal 16
+        @rookie_user.shifts.count.must_equal 20
         @rookie_user.shadow_count.must_equal 4
 
         @sys_config.bingo_start_date = Date.today - 20.day

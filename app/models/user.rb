@@ -350,7 +350,7 @@ class User < ActiveRecord::Base
     num_selected = self.shifts.length
     round = HostUtility.get_current_round(HostConfig.bingo_start_date, Date.today, self)
     has_holiday = has_holiday_shift?
-    shifts_without_meetings = self.non_meeting_shifts
+    shifts_without_meetings = self.shifts #non_meeting_shifts
 
     msg << "You are currently in <strong>round #{round}</strong>." if round < 5
     msg << "You have #{num_selected} shifts selected.</strong>."
@@ -373,7 +373,7 @@ class User < ActiveRecord::Base
         case round
           when 0..4
             limit = round * 5
-            limit = 16 if limit > 16
+            limit = 20 if limit > 20
             limit = 5 if limit == 0
             if shifts_without_meetings.count < limit
               msg << "#{shifts_without_meetings.count} of #{limit} Shifts Selected.  You need to pick #{limit - shifts_without_meetings.count}"
@@ -381,8 +381,8 @@ class User < ActiveRecord::Base
               msg << "All required shifts selected for round #{round}. (#{shifts_without_meetings.count} of #{limit})"
             end
           else
-            if shifts_without_meetings.count < 16
-              msg << "#{shifts_without_meetings.count} of 16 Shifts Selected.  You need to pick #{16 - shifts_without_meetings.count}"
+            if shifts_without_meetings.count < 20
+              msg << "#{shifts_without_meetings.count} of 20 Shifts Selected.  You need to pick #{20 - shifts_without_meetings.count}"
             else
               msg << "All required shifts selected." if has_holiday
             end
@@ -394,15 +394,15 @@ class User < ActiveRecord::Base
           msg << "No Selections Until #{HostConfig.bingo_start_date + day_offset.days}."
         when 1..4
           limit = round * 5
-          limit = 18 if limit > 18
+          limit = 20 if limit > 20
           if shifts_without_meetings.count < limit
             msg << "#{shifts_without_meetings.count} of #{limit} Shifts Selected.  You need to pick #{limit - shifts_without_meetings.count}"
           else
             msg << "All required shifts selected for round #{round}. (#{shifts_without_meetings.count} of #{limit})"
           end
         else
-          if num_selected < 18
-            msg << "#{shifts_without_meetings.count} of 18 Shifts Selected.  You need to pick #{18 - shifts_without_meetings.count}"
+          if num_selected < 20
+            msg << "#{shifts_without_meetings.count} of 20 Shifts Selected.  You need to pick #{20 - shifts_without_meetings.count}"
           else
             msg << "All required shifts selected." if has_holiday
           end

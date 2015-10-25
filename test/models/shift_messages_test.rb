@@ -45,9 +45,9 @@ class UserMessageTest < ActiveSupport::TestCase
     config.bingo_start_date = HostUtility.bingo_start_for_round(@group1_user, 6)
     config.save
 
-    @group1_user.shift_status_message.include?("0 of 18 Shifts Selected.  You need to pick 18").must_equal true
-    @group2_user.shift_status_message.include?("0 of 18 Shifts Selected.  You need to pick 18").must_equal true
-    @group3_user.shift_status_message.include?("0 of 18 Shifts Selected.  You need to pick 18").must_equal true
+    @group1_user.shift_status_message.include?("0 of 20 Shifts Selected.  You need to pick 20").must_equal true
+    @group2_user.shift_status_message.include?("0 of 20 Shifts Selected.  You need to pick 20").must_equal true
+    @group3_user.shift_status_message.include?("0 of 20 Shifts Selected.  You need to pick 20").must_equal true
   end
 
   def test_show_selection_counts_for_round_one
@@ -112,11 +112,11 @@ class UserMessageTest < ActiveSupport::TestCase
     [@group1_user, @group2_user, @group3_user].each do |u|
       shifts.each do |s|
         u.shifts << s
-        break if u.shifts.length > 18
-        if u.shifts.length < 18
-          u.shift_status_message.include?("#{u.shifts.length} of 18 Shifts Selected.  You need to pick #{18 - u.shifts.length}").must_equal true
+        break if u.shifts.length > 20
+        if u.shifts.length < 20
+          u.shift_status_message.include?("#{u.shifts.length} of 20 Shifts Selected.  You need to pick #{20 - u.shifts.length}").must_equal true
         else
-          u.shift_status_message.include?("All required shifts selected for round 4. (18 of 18)").must_equal true
+          u.shift_status_message.include?("All required shifts selected for round 4. (20 of 20)").must_equal true
         end
       end
     end
@@ -136,16 +136,17 @@ class UserMessageTest < ActiveSupport::TestCase
 
       shifts.each do |s|
         u.shifts << s
-        break if u.shifts.length >= 18
+        break if u.shifts.length >= 20
 
         msgs = u.shift_status_message
-        u.shift_status_message.include?("#{u.shifts.length} of 18 Shifts Selected.  You need to pick #{18 - u.shifts.length}").must_equal true
-        msgs.count.must_equal 1
+
+        u.shift_status_message.include?("#{u.shifts.length} of 20 Shifts Selected.  You need to pick #{20 - u.shifts.length}").must_equal true
+        msgs.count.must_equal 2
       end
       msgs = u.shift_status_message
       msgs.include?("All required shifts selected.").must_equal true
       msgs.include?("You are currently in <strong>round 5</strong>.").must_equal false
-      msgs.count.must_equal 1
+      msgs.count.must_equal 2
     end
   end
 
@@ -160,18 +161,18 @@ class UserMessageTest < ActiveSupport::TestCase
         next if HOLIDAYS.include? s.shift_date
 
         u.shifts << s
-        break if u.shifts.length >= 18
+        break if u.shifts.length >= 20
         msgs = u.shift_status_message
         u.shift_status_message.include?("NOTE:  You still need a <strong>Holiday Shift</strong>").must_equal true
-        u.shift_status_message.include?("#{u.shifts.length} of 18 Shifts Selected.  You need to pick #{18 - u.shifts.length}").must_equal true
-        msgs.count.must_equal 2
+        u.shift_status_message.include?("#{u.shifts.length} of 20 Shifts Selected.  You need to pick #{20 - u.shifts.length}").must_equal true
+        msgs.count.must_equal 3
       end
 
       msgs = u.shift_status_message
       msgs.include?("All required shifts selected.").must_equal false
       msgs.include?("You are currently in <strong>round 5</strong>.").must_equal false
       msgs.include?("NOTE:  You still need a <strong>Holiday Shift</strong>").must_equal true
-      msgs.count.must_equal 1
+      msgs.count.must_equal 2
     end
   end
 end
