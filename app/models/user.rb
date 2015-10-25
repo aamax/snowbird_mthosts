@@ -353,7 +353,7 @@ class User < ActiveRecord::Base
     shifts_without_meetings = self.non_meeting_shifts
 
     msg << "You are currently in <strong>round #{round}</strong>." if round < 5
-
+    msg << "You have #{num_selected} shifts selected.</strong>."
     if has_holiday
       msg << "A <strong>Holiday Shift</strong> has been selected." if round < 5
     else
