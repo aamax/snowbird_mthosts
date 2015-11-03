@@ -2,7 +2,21 @@ namespace :data do
   task :load_meetings => :environment do
     puts "clearing all meeting shifts..."
 
+    #  short_name  :string(255)      not null
+    #  description :string(255)      not null
+    #  start_time  :string(255)
+    #  end_time    :string(255)
+    #  tasks       :string(255)
+
+
     meetings = ShiftType.where("short_name = 'M1' OR short_name = 'M2' OR short_name = 'M3' OR short_name = 'M4'").map {|st| st.id}.join(',')
+    if meetings.empty?
+      ShiftType.create(short_name: 'M1', description: 'test meeting1')
+      ShiftType.create(short_name: 'M2', description: 'test meeting2')
+      ShiftType.create(short_name: 'M3', description: 'test meeting3')
+      ShiftType.create(short_name: 'M4', description: 'test meeting4')
+      meetings = ShiftType.where("short_name = 'M1' OR short_name = 'M2' OR short_name = 'M3' OR short_name = 'M4'").map {|st| st.id}.join(',')
+    end
 
     Shift.delete_all("shift_type_id in (#{meetings})")
 

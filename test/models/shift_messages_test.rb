@@ -45,9 +45,9 @@ class UserMessageTest < ActiveSupport::TestCase
     config.bingo_start_date = HostUtility.bingo_start_for_round(@group1_user, 6)
     config.save
 
-    @group1_user.shift_status_message.include?("0 of 20 Shifts Selected.  You need to pick 20").must_equal true
-    @group2_user.shift_status_message.include?("0 of 20 Shifts Selected.  You need to pick 20").must_equal true
-    @group3_user.shift_status_message.include?("0 of 20 Shifts Selected.  You need to pick 20").must_equal true
+    @group1_user.shift_status_message.include?("2 of 20 Shifts Selected.  You need to pick 18").must_equal true
+    @group2_user.shift_status_message.include?("2 of 20 Shifts Selected.  You need to pick 18").must_equal true
+    @group3_user.shift_status_message.include?("2 of 20 Shifts Selected.  You need to pick 18").must_equal true
   end
 
   def test_show_selection_counts_for_round_one
@@ -57,11 +57,11 @@ class UserMessageTest < ActiveSupport::TestCase
     shifts = Shift.where("shift_type_id = #{@p1.id}")
     [@group1_user, @group2_user, @group3_user].each do |u|
       shifts.each do |s|
-        break if u.shifts.length > 5
-        if u.shifts.length < 5
-          u.shift_status_message.include?("#{u.shifts.length} of 5 Shifts Selected.  You need to pick #{5 - u.shifts.length}").must_equal true
+        break if u.shifts.length > 7
+        if u.shifts.length < 7
+          u.shift_status_message.include?("#{u.shifts.length} of 7 Shifts Selected.  You need to pick #{7 - u.shifts.length}").must_equal true
         else
-          u.shift_status_message.include?("All required shifts selected for round 1. (5 of 5)").must_equal true
+          u.shift_status_message.include?("All required shifts selected for round 1. (7 of 7)").must_equal true
         end
         u.shifts << s
       end
@@ -76,11 +76,11 @@ class UserMessageTest < ActiveSupport::TestCase
     [@group1_user, @group2_user, @group3_user].each do |u|
       shifts.each do |s|
         u.shifts << s
-        break if u.shifts.length > 10
-        if u.shifts.length < 10
-          u.shift_status_message.include?("#{u.shifts.length} of 10 Shifts Selected.  You need to pick #{10 - u.shifts.length}").must_equal true
+        break if u.shifts.length > 12
+        if u.shifts.length < 12
+          u.shift_status_message.include?("#{u.shifts.length} of 12 Shifts Selected.  You need to pick #{12 - u.shifts.length}").must_equal true
         else
-          u.shift_status_message.include?("All required shifts selected for round 2. (10 of 10)").must_equal true
+          u.shift_status_message.include?("All required shifts selected for round 2. (12 of 12)").must_equal true
         end
       end
     end
@@ -94,13 +94,13 @@ class UserMessageTest < ActiveSupport::TestCase
     [@group1_user, @group2_user, @group3_user].each do |u|
       shifts.each do |s|
         u.shifts << s
-        break if u.shifts.length > 15
-        if u.shifts.length < 15
-          u.shift_status_message.include?("#{u.shifts.length} of 15 Shifts Selected.  You need to pick #{15 - u.shifts.length}").must_equal true
-        else
-          u.shift_status_message.include?("All required shifts selected for round 3. (15 of 15)").must_equal true
+        break if u.shifts.length >= 17
+        if u.shifts.length < 17
+          u.shift_status_message.include?("#{u.shifts.length} of 17 Shifts Selected.  You need to pick #{17 - u.shifts.length}").must_equal true
         end
       end
+
+      u.shift_status_message.include?("All required shifts selected for round 3. (17 of 17)").must_equal true
     end
   end
 
@@ -112,13 +112,14 @@ class UserMessageTest < ActiveSupport::TestCase
     [@group1_user, @group2_user, @group3_user].each do |u|
       shifts.each do |s|
         u.shifts << s
-        break if u.shifts.length > 20
+        break if u.shifts.length >= 20
         if u.shifts.length < 20
           u.shift_status_message.include?("#{u.shifts.length} of 20 Shifts Selected.  You need to pick #{20 - u.shifts.length}").must_equal true
         else
           u.shift_status_message.include?("All required shifts selected for round 4. (20 of 20)").must_equal true
         end
       end
+      u.shift_status_message.include?("All required shifts selected for round 4. (20 of 20)").must_equal true
     end
   end
 

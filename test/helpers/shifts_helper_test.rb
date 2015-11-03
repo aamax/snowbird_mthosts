@@ -167,6 +167,7 @@ class ShiftsHelperTest < ActionView::TestCase
         HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @team_leader).must_equal 1
 
         Shift.all.each do |s|
+          next if s.meeting?
           if (s.short_name != "SH") && (!@team_leader.is_working?(s.shift_date))
             s.can_select(@team_leader).must_equal true
           else
@@ -183,7 +184,7 @@ class ShiftsHelperTest < ActionView::TestCase
         HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @senior_user).must_equal 0
 
         Shift.all.each do |s|
-          next if s.short_name == "TL"
+          next if s.short_name == "TL" || s.meeting?
           s.can_select(@senior_user).must_equal false
         end
       end
@@ -194,10 +195,10 @@ class ShiftsHelperTest < ActionView::TestCase
         HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @senior_user).must_equal 1
 
         Shift.all.each do |s|
-          next if (s.short_name == "TL") || (s.short_name == 'SH') || @senior_user.is_working?(s.shift_date)
+          next if (s.short_name == "TL") || (s.short_name == 'SH') || @senior_user.is_working?(s.shift_date) || s.meeting?
 
           can_select = s.can_select(@senior_user)
-          if @senior_user.shifts.count < 5
+          if @senior_user.shifts.count < 7
             can_select.must_equal true
             @senior_user.shifts << s
           else
@@ -212,10 +213,10 @@ class ShiftsHelperTest < ActionView::TestCase
         HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @senior_user).must_equal 2
 
         Shift.all.each do |s|
-          next if (s.short_name == "TL") || (s.short_name == 'SH') || @senior_user.is_working?(s.shift_date)
+          next if (s.short_name == "TL") || (s.short_name == 'SH') || @senior_user.is_working?(s.shift_date) || s.meeting?
 
           can_select = s.can_select(@senior_user)
-          if @senior_user.shifts.count < 10
+          if @senior_user.shifts.count < 12
             can_select.must_equal true
             @senior_user.shifts << s
           else
@@ -230,10 +231,10 @@ class ShiftsHelperTest < ActionView::TestCase
         HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @senior_user).must_equal 3
 
         Shift.all.each do |s|
-          next if (s.short_name == "TL") || (s.short_name == 'SH') || @senior_user.is_working?(s.shift_date)
+          next if (s.short_name == "TL") || (s.short_name == 'SH') || @senior_user.is_working?(s.shift_date) || s.meeting?
 
           can_select = s.can_select(@senior_user)
-          if @senior_user.shifts.count < 15
+          if @senior_user.shifts.count < 17
             can_select.must_equal true
             @senior_user.shifts << s
           else
@@ -248,7 +249,7 @@ class ShiftsHelperTest < ActionView::TestCase
         HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @senior_user).must_equal 4
 
         Shift.all.each do |s|
-          next if (s.short_name == "TL") || (s.short_name == 'SH') || @senior_user.is_working?(s.shift_date)
+          next if (s.short_name == "TL") || (s.short_name == 'SH') || @senior_user.is_working?(s.shift_date) || s.meeting?
 
           can_select = s.can_select(@senior_user)
           if @senior_user.shifts.count < 20
@@ -266,9 +267,10 @@ class ShiftsHelperTest < ActionView::TestCase
         HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @senior_user).must_equal 5
 
         Shift.all.each do |s|
-          next if (s.short_name == "TL") || (s.short_name == 'SH') || @senior_user.is_working?(s.shift_date)
+          next if (s.short_name == "TL") || (s.short_name == 'SH') || @senior_user.is_working?(s.shift_date) || s.meeting?
 
           can_select = s.can_select(@senior_user)
+
           can_select.must_equal true
           @senior_user.shifts << s
         end
@@ -282,7 +284,7 @@ class ShiftsHelperTest < ActionView::TestCase
         HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @rookie_user).must_equal 2
 
         Shift.all.each do |s|
-          if @rookie_user.shifts.count == 5
+          if @rookie_user.shifts.count == 9
             next if s.shift_date < (@rookie_user.last_shadow + 8.days)
           end
 
@@ -295,6 +297,8 @@ class ShiftsHelperTest < ActionView::TestCase
 
         icnt = 0
         @rookie_user.shifts.each do |s|
+          next if s.meeting?
+
           if icnt < 4
             s.shadow?.must_equal true
           else
@@ -346,6 +350,8 @@ class ShiftsHelperTest < ActionView::TestCase
         tr_cnt = 0
 
         @rookie_user.shifts.each do |s|
+          next if s.meeting?
+
           if s.shadow?
             sh_dt = s.shift_date
           elsif s.rookie_training_type?
@@ -400,6 +406,8 @@ class ShiftsHelperTest < ActionView::TestCase
         @sys_config.save!
         HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @rookie_user).must_equal 4
         Shift.all.each do |s|
+          next if s.meeting?
+
           last_shadow = @rookie_user.last_shadow
           if @rookie_user.shadow_count == 3
             next if s.shift_date < last_shadow + 4.days
@@ -410,7 +418,6 @@ class ShiftsHelperTest < ActionView::TestCase
             @rookie_user.shifts << s if can_select
           end
         end
-
         @rookie_user.shifts.count.must_equal 20
         @rookie_user.shadow_count.must_equal 4
 
@@ -459,10 +466,12 @@ class ShiftsHelperTest < ActionView::TestCase
         shift_count.must_equal(4)
 
         Shift.all.each do |s|
+          next if s.meeting?
+
           can_select = s.can_select(@rookie_user)
           can_select.must_equal(false) if @rookie_user.is_working?(s.shift_date)
           can_select.must_equal(false) if s.shadow?
-          can_select.must_equal(false) if shift_count >= 5
+          can_select.must_equal(false) if shift_count >= 9
           can_select.must_equal(false) if !s.rookie_training_type?
 
           if can_select == true
@@ -522,7 +531,7 @@ class ShiftsHelperTest < ActionView::TestCase
           @rookie_user.shifts << s if can_select
         end
         shift_count = @rookie_user.shifts.to_a.delete_if {|s| s.meeting? }.count
-        shift_count.must_equal(20)
+        shift_count.must_equal(16)
       end
     end
 
@@ -560,7 +569,7 @@ class ShiftsHelperTest < ActionView::TestCase
           ts.save!
         end
 
-        @trainer.shifts.count.must_equal 5
+        @trainer.shifts.count.must_equal 7
 
         Shift.all.each do |s|
           can_select = s.can_select(@trainer)
@@ -569,7 +578,7 @@ class ShiftsHelperTest < ActionView::TestCase
           end
         end
 
-        @trainer.shifts.count.must_equal 15
+        @trainer.shifts.count.must_equal 17
       end
     end
 

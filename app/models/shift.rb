@@ -188,7 +188,7 @@ class Shift < ActiveRecord::Base
   end
 
   def meeting?
-    self.short_name == 'M'
+    self.short_name[0] == 'M'
   end
 
   def users_on_date
@@ -199,7 +199,7 @@ class Shift < ActiveRecord::Base
     retval = false
     if self.user_id.nil?
       all_shifts =  test_user.shifts.to_a
-      working_shifts = all_shifts.delete_if {|s| s.meeting? }
+      working_shifts =  test_user.shifts.to_a.delete_if {|s| s.meeting? }
 
       return false if test_user.is_working?(self.shift_date, working_shifts)
       return true if test_user.admin?
@@ -226,7 +226,7 @@ class Shift < ActiveRecord::Base
         else
           return false if self.shadow?
           return false if (round < 3) && !self.rookie_training_type?
-          return false if (round <= 0) && (shift_count >= 5)
+          return false if (round <= 0) && (all_shifts.count >= 9)
 
           if round < 5
             return false if ((shift_count) >= (round * 5)) && (round > 0)
