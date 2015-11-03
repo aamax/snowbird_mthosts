@@ -26,6 +26,7 @@ Mthost::Application.routes.draw do
   get '/show_contact_info', :to => "pages#show_contact_info"
   get '/select_hosts_for_email', :to => "mail#select_hosts_for_email"
   get '/send_custom_mail', :to => "mail#send_custom_mail"
+  post '/send_custom_mail', :to => "mail#send_custom_mail"
   post '/deliver_mail', :to => "mail#deliver_mail"
   get '/send_mail/:address', :to => "mail#send_mail"
 
