@@ -107,6 +107,7 @@ class UsersHelperTest < ActionView::TestCase
         config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 2)
         config.save
         Shift.all.each do |s|
+
           if s.can_select(@rookie_user) == true
             @rookie_user.shifts << s
           end
@@ -122,7 +123,6 @@ class UsersHelperTest < ActionView::TestCase
         messages = @rookie_user.shift_status_message
 
         messages.include?("3 of 4 selected.  Need 1 Shadow Shifts.").must_equal true
-        messages.include?( "3 of 4 selected.  Need 1 Shadow Shifts.").must_equal true
         messages.include?( "Shifts Only Before: #{@rookie_user.first_non_shadow}").must_equal true
       end
     end

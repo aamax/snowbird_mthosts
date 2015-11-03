@@ -11,6 +11,7 @@
 #  bingo_start_date  :date
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
+#  shift_count       :integer
 #
 
 class SysConfig < ActiveRecord::Base

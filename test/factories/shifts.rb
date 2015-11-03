@@ -10,6 +10,7 @@
 #  day_of_week     :string(255)
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  short_name      :string
 #
 
 # Read about factories at https://github.com/thoughtbot/factory_girl

@@ -141,12 +141,12 @@ class UserMessageTest < ActiveSupport::TestCase
         msgs = u.shift_status_message
 
         u.shift_status_message.include?("#{u.shifts.length} of 20 Shifts Selected.  You need to pick #{20 - u.shifts.length}").must_equal true
-        msgs.count.must_equal 2
+        msgs.count.must_equal 3
       end
       msgs = u.shift_status_message
       msgs.include?("All required shifts selected.").must_equal true
       msgs.include?("You are currently in <strong>round 5</strong>.").must_equal false
-      msgs.count.must_equal 2
+      msgs.count.must_equal 3
     end
   end
 

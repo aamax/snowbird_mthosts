@@ -1,40 +1,3 @@
-# == Schema Information
-#
-
-# Table name: users
-#
-#  id                     :integer          not null, primary key
-#  email                  :string(255)      default(""), not null
-#  encrypted_password     :string(255)      default(""), not null
-#  reset_password_token   :string(255)
-#  reset_password_sent_at :datetime
-#  remember_created_at    :datetime
-#  sign_in_count          :integer          default(0)
-#  current_sign_in_at     :datetime
-#  last_sign_in_at        :datetime
-#  current_sign_in_ip     :string(255)
-#  last_sign_in_ip        :string(255)
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
-#  name                   :string(255)
-#  confirmation_token     :string(255)
-#  confirmed_at           :datetime
-#  confirmation_sent_at   :datetime
-#  unconfirmed_email      :string(255)
-#  street                 :string(255)
-#  city                   :string(255)
-#  state                  :string(255)
-#  zip                    :string(255)
-#  home_phone             :string(255)
-#  cell_phone             :string(255)
-#  alt_email              :string(255)
-#  start_year             :integer
-#  notes                  :text
-#  confirmed              :boolean
-#  active_user            :boolean
-#  nickname               :string(255)
-#  snowbird_start_year    :integer
-#
 
 class User < ActiveRecord::Base
   include HostConfig
@@ -50,7 +13,7 @@ class User < ActiveRecord::Base
                   :working_shifts, :snowbird_start_year, :head_shot
   attr_accessor   :working_shifts
 
-  has_many :shifts
+  has_many :shifts, -> { order "shift_date ASC" }
   has_many :galleries
   has_many :surveys
 
@@ -200,27 +163,45 @@ class User < ActiveRecord::Base
     self.start_year <= HostConfig.group_1_year && !self.team_leader?
   end
 
-  def shadow_count
+  def shadow_count(working_shifts=nil)
     iCnt = 0
-    self.shifts.each do |s|
+    if working_shifts.nil?
+      working_shifts = self.shifts
+    end
+    working_shifts.each do |s|
       iCnt += 1 if s.shadow?
     end
     iCnt
   end
 
-  # TODO remove commented code
-  # def round_one_type_count
-  #   iCnt = 0
-  #   self.shifts.each do |s|
-  #     if s.round_one_rookie_shift?
-  #       iCnt += 1
-  #       break if iCnt >= 5
-  #     else
-  #       break if !s.shadow?
-  #     end
-  #   end
-  #   iCnt
-  # end
+  def training_shift_count(working_shifts=nil)
+    iCnt = 0
+    if working_shifts.nil?
+      working_shifts = self.shifts
+    end
+    working_shifts.each do |s|
+      iCnt += 1 if s.rookie_training_type?
+      break if iCnt >= 6
+    end
+    iCnt
+  end
+
+  def last_training_date(working_shifts=nil)
+    iCnt = 0
+    dt = nil
+    if working_shifts.nil?
+      working_shifts = self.shifts
+    end
+    working_shifts.each do |s|
+      if s.rookie_training_type?
+        iCnt += 1
+        dt = s.shift_date
+      end
+
+      break if iCnt >= 6
+    end
+    dt
+  end
 
   def first_non_shadow
     dt = nil
@@ -233,54 +214,15 @@ class User < ActiveRecord::Base
     dt
   end
 
-
-  # def round_one_end_date
-  #   dt = nil
-  #   iCnt = 0
-  #   self.shifts.each do |s|
-  #     if s.round_one_rookie_shift?
-  #       dt = s.shift_date
-  #       iCnt += 1
-  #     end
-  #     break if iCnt >= 5
-  #   end
-  #   dt
-  # end
-
-  # def first_round_one_end_date
-  #   dt = nil
-  #   iCnt = 0
-  #   self.shifts.each do |s|
-  #     if s.round_one_rookie_shift?
-  #       dt = s.shift_date
-  #       break
-  #     end
-  #   end
-  #   dt
-  # end
-
-  # def first_non_round_one_end_date
-  #   dt = nil
-  #   iCnt = 0
-  #   self.shifts.each do |s|
-  #     if !s.round_one_rookie_shift? && !s.shadow?
-  #       dt = s.shift_date
-  #       break
-  #     end
-  #   end
-  #   dt
-  # end
-
-  # def has_non_round_one?
-  #   !first_non_round_one_end_date.nil?
-  # end
-
-  def last_shadow
+  def last_shadow(working_shifts=nil)
     dt = nil
     iCnt = 0
-    self.shifts.each do |s|
+    if working_shifts.nil?
+      working_shifts = self.shifts
+    end
+    working_shifts.each do |s|
       if s.shadow?
-        dt = s.shift_date
+        dt = s.shift_date if dt.nil? || (dt < s.shift_date)
         iCnt += 1
       end
       break if iCnt >= SHADOW_COUNT
@@ -288,8 +230,11 @@ class User < ActiveRecord::Base
     dt
   end
 
-  def is_working? shift_date
-    self.shifts.each do |s|
+  def is_working?(shift_date, working_shifts=nil)
+    if working_shifts.nil?
+      working_shifts = self.shifts
+    end
+    working_shifts.each do |s|
       next if s.meeting?
       if s.shift_date == shift_date
         return true
@@ -337,13 +282,6 @@ class User < ActiveRecord::Base
     retval
   end
 
-  # def is_trainee_on_date(aDate)
-  #   return false unless self.rookie?
-  #   return true if self.last_shadow.nil? || (self.shadow_count < SHADOW_COUNT)
-  #
-  #   false
-  # end
-
   def shift_status_message
     msg = []
     day_offset = get_day_offset
@@ -354,8 +292,8 @@ class User < ActiveRecord::Base
 
     msg << "You are currently in <strong>round #{round}</strong>." if round < 5
     msg << "You have #{num_selected} shifts selected.</strong>."
-    if has_holiday
-      msg << "A <strong>Holiday Shift</strong> has been selected." if round < 5
+    if has_holiday == true
+      msg << "A <strong>Holiday Shift</strong> has been selected." #if round < 5
     else
       msg << "NOTE:  You still need a <strong>Holiday Shift</strong>"
     end
@@ -415,49 +353,17 @@ class User < ActiveRecord::Base
     HostUtility.date_for_round(self, 1)
   end
 
-  # def round1_msg
-  #   if self.rookie?
-  #     'You may select up to 7 shifts: (2) Shadow and (5) G1-G4 type shifts (excluding G3, G4 shifts on the Friday schedule)'
-  #   else
-  #     'You may select up to 5 shifts.'
-  #   end
-  # end
-
   def round2_date
     HostUtility.date_for_round(self, 2)
   end
-
-  # def round2_msg
-  #   if self.rookie?
-  #     'You may select up to 12 shifts: You may not select non-round one type shifts prior to the 5th one you have already selected'
-  #   else
-  #     'You may select up to 10 shifts.'
-  #   end
-  # end
 
   def round3_date
     HostUtility.date_for_round(self, 3)
   end
 
-  # def round3_msg
-  #   if self.rookie?
-  #     'You may select up to 16 shifts: You may not select non-round one type shifts prior to the 5th one you have already selected'
-  #   else
-  #     'You may select up to 15 shifts.'
-  #   end
-  # end
-
   def round4_date
     HostUtility.date_for_round(self, 4)
   end
-
-  # def round4_msg
-  #   if self.rookie?
-  #     'You may select up to 16 shifts: You may not select non-round one type shifts prior to the 5th one you have already selected'
-  #   else
-  #     'You may select up to 18 shifts.'
-  #   end
-  # end
 
   def first_name
     self.name.split(' ')[0]

@@ -10,6 +10,7 @@
 #  day_of_week     :string(255)
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  short_name      :string
 #
 
 # if shift status = -1   ->  missed shift
@@ -171,44 +172,24 @@ class Shift < ActiveRecord::Base
   end
 
   def shadow?
-    self.short_name[0..1] == "SH"
+    self.short_name == "SH"
   end
 
   def team_leader?
-    (self.short_name[0..1] == "TL") || (self.shift_type.short_name.downcase == 'p2weekday')
+    (self.short_name == "TL") || (self.shift_type.short_name.downcase == 'p2weekday')
   end
 
   def trainer?
-    (self.short_name[0..1] == "TR")
+    (self.short_name == "TR")
   end
 
-  # TODO remove commented routine
-  # def round_one_rookie_shift?
-  #   retval = ['G1','G2', 'G3','G4', 'C3', 'C4'].include?(self.short_name)
-  #   if retval == true
-  #     retval = false if (self.full_short_name.downcase == 'g3friday') || (self.full_short_name.downcase == 'g4friday')
-  #   end
-  #   return retval
-  # end
+  def rookie_training_type?
+    ['G1','G2','G3','G4','C1','C2','C3','C4','H1','H2'].include? self.short_name
+  end
 
   def meeting?
-    self.short_name[0] == 'M'
+    self.short_name == 'M'
   end
-
-  # TODO remove commented routine
-  # def standard_shift?
-  #   ['P1', 'P2', 'P3', 'P4', 'C1', 'C2', 'G5', 'G6', 'G7', 'G8', 'TL'].include? self.short_name
-  # end
-
-  # TODO remove commented routine
-  # def trainee_can_pick?
-  #   suffix = self.type_suffix.downcase
-  #   return false unless ((suffix.include? 'weekend') || (suffix.include? 'friday'))
-  #
-  #   users = self.users_on_date.to_a.delete_if {|u| !u.is_trainee_on_date(self.shift_date)}
-  #   return false if !self.round_one_rookie_shift?
-  #   true
-  # end
 
   def users_on_date
     Shift.where(:shift_date => self.shift_date).to_a.delete_if {|s| s.short_name == 'SH' }.map {|s| s.user }.to_a.delete_if {|u| u.nil? }
@@ -217,8 +198,10 @@ class Shift < ActiveRecord::Base
   def can_select(test_user)
     retval = false
     if self.user_id.nil?
-      # if user is already working this day
-      return false if test_user.is_working?(self.shift_date)
+      all_shifts =  test_user.shifts.to_a
+      working_shifts = all_shifts.delete_if {|s| s.meeting? }
+
+      return false if test_user.is_working?(self.shift_date, working_shifts)
       return true if test_user.admin?
       return false if self.shadow? && !test_user.rookie?
       return false if !test_user.team_leader? && self.team_leader?
@@ -226,35 +209,43 @@ class Shift < ActiveRecord::Base
 
       bingo_start = HostConfig.bingo_start_date
       round = HostUtility.get_current_round(bingo_start, Date.today, test_user)
-      shift_count = test_user.shifts.to_a.count
+      shift_count = working_shifts.count
 
       if test_user.team_leader?
         if round <= 4
-          return false if shift_count >= 20
+          return false if all_shifts.count >= 20
         end
       elsif test_user.rookie?
-        return false if !self.shadow? && (test_user.last_shadow.nil? || (self.shift_date < test_user.last_shadow))
+        last_shadow = test_user.last_shadow(working_shifts)
+        return false if !self.shadow? && (last_shadow.nil? || (self.shift_date < last_shadow))
 
-        shadow_count = test_user.shadow_count
+        shadow_count = test_user.shadow_count(working_shifts)
         if (shadow_count < SHADOW_COUNT)
           return false if !self.shadow?
           return true
         else
+          return false if self.shadow?
+          return false if (round < 3) && !self.rookie_training_type?
+          return false if (round <= 0) && (shift_count >= 5)
+
           if round < 5
-            return false if (round <= 0) && (shift_count >= 5)
-            return false if (shift_count >= (round * 5)) & (round > 0)
-            return false if (round == 4) && (shift_count >= 20)
+            return false if ((shift_count) >= (round * 5)) && (round > 0)
+            return false if (round == 4) && (all_shifts.count >= 20)
+          end
+
+          unless self.rookie_training_type?
+            return false if test_user.training_shift_count(working_shifts) < 6
+            return false if self.shift_date < test_user.last_training_date(working_shifts)
           end
         end
       else
         if round < 5
           # if pre bingo - return false
           return false if round <= 0
-          return false if (round <= 4) && (shift_count >= 20)
+          return false if (round <= 4) && (all_shifts.count >= 20)
 
-          #return false if (shift_count >= (round * 5))
           if test_user.trainer?
-            non_trainer_shift_count = test_user.shifts.to_a.delete_if {|s| s.trainer? }.count
+            non_trainer_shift_count = working_shifts.delete_if {|s| s.trainer? }.count
             return false if (non_trainer_shift_count >= (round * 5))
           else
             return false if (shift_count >= (round * 5))

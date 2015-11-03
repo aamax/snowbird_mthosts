@@ -276,25 +276,200 @@ class ShiftsHelperTest < ActionView::TestCase
     end
 
     describe 'rookie hosts' do
-      it 'must be able to pick 4 shadows and 1 regular shift before bingo starts' do
+      it 'test for round two shifts' do
+        @sys_config.bingo_start_date = Date.today - 5.day
+        @sys_config.save!
+        HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @rookie_user).must_equal 2
+
+        Shift.all.each do |s|
+          if @rookie_user.shifts.count == 5
+            next if s.shift_date < (@rookie_user.last_shadow + 8.days)
+          end
+
+          if s.can_select(@rookie_user)
+            @rookie_user.shifts << s
+          end
+
+          break if @rookie_user.shifts.count == 9
+        end
+
+        icnt = 0
+        @rookie_user.shifts.each do |s|
+          if icnt < 4
+            s.shadow?.must_equal true
+          else
+            s.rookie_training_type?.must_equal true
+          end
+          icnt += 1
+        end
+
+        pshift = FactoryGirl.create(:shift, short_name: "P1", shift_type: @p1, shift_date: @rookie_user.last_shadow + 3.days)
+        pshift.can_select(@rookie_user).must_equal false
+
+        gshift = FactoryGirl.create(:shift, short_name: "G1", shift_type: @g1, shift_date: @rookie_user.last_shadow + 3.days)
+        gshift.can_select(@rookie_user).must_equal true
+      end
+
+      it "should never allow selecting non-training shifts prior to last training shift" do
+        @sys_config.bingo_start_date = Date.today - 20.day
+        @sys_config.save!
+        HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @rookie_user).must_equal 7
+
+        last_tr_dt = nil
+        Shift.all.each do |s|
+          if s.can_select(@rookie_user)
+            @rookie_user.shifts << s
+            last_tr_dt = @rookie_user.last_training_date
+          end
+        end
+
+        arr = @rookie_user.shifts.to_a
+        target_dt = arr[7]
+        arr.delete_at(7)
+
+        pshift = FactoryGirl.create(:shift, short_name: "P1", shift_type: @p1, shift_date: target_dt.shift_date)
+        pshift.can_select(@rookie_user).must_equal false
+      end
+
+
+      it 'test for last_shadow, last_trainnig_date ' do
+        @sys_config.bingo_start_date = Date.today - 20.day
+        @sys_config.save!
+        HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @rookie_user).must_equal 7
+
+        Shift.all.each do |s|
+          @rookie_user.shifts << s if s.can_select(@rookie_user)
+        end
+
+        sh_dt = nil
+        tr_dt = nil
+        tr_cnt = 0
+
+        @rookie_user.shifts.each do |s|
+          if s.shadow?
+            sh_dt = s.shift_date
+          elsif s.rookie_training_type?
+            tr_dt = s.shift_date
+            tr_cnt += 1
+            break if tr_cnt == 6
+          else
+            assert_equal(true, false, "Invalid shift type found in test for last shadow and last training date")
+          end
+        end
+        assert_equal(tr_dt, @rookie_user.last_training_date,
+                     "Error - last training date (#{@rookie_user.last_training_date} doesn't match: #{tr_dt}")
+        assert_equal(sh_dt, @rookie_user.last_shadow,
+                     "Error - last shadow date (#{@rookie_user.last_shadow} doesn't match: #{sh_dt}")
+      end
+
+      it 'test for round 3' do
+        @sys_config.bingo_start_date = Date.today - 8.day
+        @sys_config.save!
+        HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @rookie_user).must_equal 3
+
+        training_gap = nil
+        Shift.all.each do |s|
+          if @rookie_user.shifts.count == 5
+            next if s.shift_date < (@rookie_user.last_shadow + 3.days)
+          end
+
+          if @rookie_user.shifts.count == 9
+            training_gap = @rookie_user.shifts.last.shift_date + 3.days
+            next if s.shift_date < (@rookie_user.shifts.last.shift_date + 3.days)
+          end
+
+          if s.can_select(@rookie_user)
+            @rookie_user.shifts << s
+          end
+
+          break if @rookie_user.shifts.count == 14
+        end
+
+        pshift = FactoryGirl.create(:shift, short_name: "P1", shift_type: @p1, shift_date: @rookie_user.last_shadow + 3.days)
+        pshift.can_select(@rookie_user).must_equal false
+
+        pshift2 = FactoryGirl.create(:shift, short_name: "P1", shift_type: @p1, shift_date: training_gap + 3.days)
+        pshift2.can_select(@rookie_user).must_equal false
+
+        pshift3 = FactoryGirl.create(:shift, short_name: "P1", shift_type: @p1, shift_date: @rookie_user.shifts.last.shift_date + 1.day)
+        pshift3.can_select(@rookie_user).must_equal true
+      end
+
+      it 'must not be able to pick non-shadows before last shadow shift' do
+        @sys_config.bingo_start_date = Date.today - 11.day
+        @sys_config.save!
+        HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @rookie_user).must_equal 4
+        Shift.all.each do |s|
+          last_shadow = @rookie_user.last_shadow
+          if @rookie_user.shadow_count == 3
+            next if s.shift_date < last_shadow + 4.days
+          end
+
+          can_select = s.can_select(@rookie_user)
+          if can_select
+            @rookie_user.shifts << s if can_select
+          end
+        end
+
+        @rookie_user.shifts.count.must_equal 20
+        @rookie_user.shadow_count.must_equal 4
+
+        @sys_config.bingo_start_date = Date.today - 20.day
+        @sys_config.save!
+        HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @rookie_user).must_equal 7
+
+        last_shadow = @rookie_user.last_shadow
+        Shift.all.each do |s|
+          if s.shift_date < last_shadow
+            s.can_select(@rookie_user).must_equal false
+          end
+        end
+      end
+
+      it 'test before round one shift selections' do
         @sys_config.bingo_start_date = Date.today + 1.day
         @sys_config.save!
         HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @rookie_user).must_equal 0
+
+        shift_count = @rookie_user.shifts.to_a.delete_if {|s| s.meeting? }.count
+
+        shift_count.must_equal(0)
+        @rookie_user.shadow_count.must_equal(0)
+
         Shift.all.each do |s|
           can_select = s.can_select(@rookie_user)
-          shift_count = @rookie_user.shifts.count
 
+          if s.shadow? == true
+            if @rookie_user.is_working?(s.shift_date)
+              can_select.must_equal(false)
+              next
+            else
+              can_select.must_equal(true)
+            end
+
+            @rookie_user.shifts << s
+            shift_count += 1
+            break if shift_count == 4
+            next
+          else
+            can_select.must_equal(false)
+          end
+        end
+
+        shift_count.must_equal(4)
+
+        Shift.all.each do |s|
+          can_select = s.can_select(@rookie_user)
           can_select.must_equal(false) if @rookie_user.is_working?(s.shift_date)
-          can_select.must_equal(false) if (!s.shadow? && shift_count < 4)
+          can_select.must_equal(false) if s.shadow?
           can_select.must_equal(false) if shift_count >= 5
+          can_select.must_equal(false) if !s.rookie_training_type?
 
-          next if @rookie_user.is_working?(s.shift_date)
+          if can_select == true
+            shift_count += 1
+            @rookie_user.shifts << s
+          end
 
-          can_select.must_equal(true) if (shift_count < 4) && s.shadow?
-
-          can_select.must_equal(true) if (shift_count == 4) && !s.shadow? && !s.team_leader?
-
-          @rookie_user.shifts << s if can_select
         end
       end
 
@@ -304,20 +479,11 @@ class ShiftsHelperTest < ActionView::TestCase
         HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @rookie_user).must_equal 1
         Shift.all.each do |s|
           can_select = s.can_select(@rookie_user)
-          shift_count = @rookie_user.shifts.count
-
-          can_select.must_equal(false) if @rookie_user.is_working?(s.shift_date)
-          can_select.must_equal(false) if (!s.shadow? && shift_count < 4)
-          can_select.must_equal(false) if shift_count >= 5
-
-          next if @rookie_user.is_working?(s.shift_date)
-
-          can_select.must_equal(true) if (shift_count < 4) && s.shadow?
-
-          can_select.must_equal(true) if (shift_count == 4) && !s.shadow? && !s.team_leader?
 
           @rookie_user.shifts << s if can_select
         end
+        shift_count = @rookie_user.shifts.to_a.delete_if {|s| s.meeting? }.count
+        shift_count.must_equal(5)
       end
 
       it 'must be able to pick 10 shifts in round 2' do
@@ -326,22 +492,11 @@ class ShiftsHelperTest < ActionView::TestCase
         HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @rookie_user).must_equal 2
         Shift.all.each do |s|
           can_select = s.can_select(@rookie_user)
-          if can_select
-            @rookie_user.shifts << s if can_select
-          end
-          break if @rookie_user.shifts.count == 5
-        end
-        @rookie_user.shadow_count.must_equal 4
 
-        Shift.all.each do |s|
-          can_select = s.can_select(@rookie_user)
-          if can_select
-            @rookie_user.shifts << s if can_select
-          end
+          @rookie_user.shifts << s if can_select
         end
-
-        @rookie_user.shifts.count.must_equal 10
-        @rookie_user.shadow_count.must_equal 4
+        shift_count = @rookie_user.shifts.to_a.delete_if {|s| s.meeting? }.count
+        shift_count.must_equal(10)
       end
 
       it 'must be able to pick 15 shifts in round 3' do
@@ -350,22 +505,11 @@ class ShiftsHelperTest < ActionView::TestCase
         HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @rookie_user).must_equal 3
         Shift.all.each do |s|
           can_select = s.can_select(@rookie_user)
-          if can_select
-            @rookie_user.shifts << s if can_select
-          end
-          break if @rookie_user.shifts.count == 5
-        end
-        @rookie_user.shadow_count.must_equal 4
 
-        Shift.all.each do |s|
-          can_select = s.can_select(@rookie_user)
-          if can_select
-            @rookie_user.shifts << s if can_select
-          end
+          @rookie_user.shifts << s if can_select
         end
-
-        @rookie_user.shifts.count.must_equal 15
-        @rookie_user.shadow_count.must_equal 4
+        shift_count = @rookie_user.shifts.to_a.delete_if {|s| s.meeting? }.count
+        shift_count.must_equal(15)
       end
 
       it 'must be able to pick 1 shift in round 4' do
@@ -374,48 +518,11 @@ class ShiftsHelperTest < ActionView::TestCase
         HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @rookie_user).must_equal 4
         Shift.all.each do |s|
           can_select = s.can_select(@rookie_user)
-          if can_select
-            @rookie_user.shifts << s if can_select
-          end
-          break if @rookie_user.shifts.count == 5
+
+          @rookie_user.shifts << s if can_select
         end
-        @rookie_user.shadow_count.must_equal 4
-
-        Shift.all.each do |s|
-          can_select = s.can_select(@rookie_user)
-          if can_select
-            @rookie_user.shifts << s if can_select
-          end
-        end
-
-        @rookie_user.shifts.count.must_equal 20
-        @rookie_user.shadow_count.must_equal 4
-      end
-
-      it 'must not be able to pick non-shadows before last shadow shift' do
-        @sys_config.bingo_start_date = Date.today - 11.day
-        @sys_config.save!
-        HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @rookie_user).must_equal 4
-        Shift.all.each do |s|
-          can_select = s.can_select(@rookie_user)
-          if can_select
-            @rookie_user.shifts << s if can_select
-          end
-        end
-        @rookie_user.shifts.count.must_equal 20
-        @rookie_user.shadow_count.must_equal 4
-
-        @sys_config.bingo_start_date = Date.today - 20.day
-        @sys_config.save!
-        HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @rookie_user).must_equal 7
-
-        shadow_date = @rookie_user.last_shadow
-
-        first_shift = @rookie_user.shifts.first.shift_date
-        ashift = FactoryGirl.create(:shift, :shift_date => first_shift - 1.day,
-                                    :shift_type_id => @p1.id, :user_id => nil)
-
-        ashift.can_select(@rookie_user).must_equal false
+        shift_count = @rookie_user.shifts.to_a.delete_if {|s| s.meeting? }.count
+        shift_count.must_equal(20)
       end
     end
 

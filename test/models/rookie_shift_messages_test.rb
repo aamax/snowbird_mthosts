@@ -25,7 +25,7 @@ class RookieMessageTest < ActiveSupport::TestCase
         shift = FactoryGirl.create(:shift, shift_date: h, shift_type_id: @g1.id)
         u.shifts << shift
         u.has_holiday_shift?.must_equal true
-        assert_operator(HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @rookie_user), :<=, 4)
+        assert_operator(HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @rookie_user), :<=, 6)
         u.shift_status_message.include?("A <strong>Holiday Shift</strong> has been selected.").must_equal true
       end
     end
@@ -36,7 +36,7 @@ class RookieMessageTest < ActiveSupport::TestCase
     @rookie_user.shifts << shift
     @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 5)
     @sys_config.save
-    @rookie_user.shift_status_message.include?("A <strong>Holiday Shift</strong> has been selected.").must_equal false
+    @rookie_user.shift_status_message.include?("A <strong>Holiday Shift</strong> has been selected.").must_equal true
   end
 
   def test_shadows_selected

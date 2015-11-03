@@ -9,8 +9,6 @@ ruby '2.2.3'
   gem 'bootstrap-sass', '~> 2.1.1.0'
   gem 'therubyracer'
 
-gem 'rails_12factor'
-
 # added to make upgrade easier
 gem 'protected_attributes'
 gem 'rails-observers'
@@ -67,6 +65,10 @@ group :test, :development do
   gem "factory_girl_rails", ">= 4.2.0"
 
   gem "capybara-webkit"
+end
+
+group :production do
+  gem 'rails_12factor'
 end
 
 

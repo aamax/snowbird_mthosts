@@ -1,3 +1,41 @@
+# == Schema Information
+#
+# Table name: users
+#
+#  id                     :integer          not null, primary key
+#  email                  :string(255)      default(""), not null
+#  encrypted_password     :string(255)      default(""), not null
+#  reset_password_token   :string(255)
+#  reset_password_sent_at :datetime
+#  remember_created_at    :datetime
+#  sign_in_count          :integer          default(0)
+#  current_sign_in_at     :datetime
+#  last_sign_in_at        :datetime
+#  current_sign_in_ip     :string(255)
+#  last_sign_in_ip        :string(255)
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  name                   :string(255)
+#  confirmation_token     :string(255)
+#  confirmed_at           :datetime
+#  confirmation_sent_at   :datetime
+#  unconfirmed_email      :string(255)
+#  street                 :string(255)
+#  city                   :string(255)
+#  state                  :string(255)
+#  zip                    :string(255)
+#  home_phone             :string(255)
+#  cell_phone             :string(255)
+#  alt_email              :string(255)
+#  start_year             :integer
+#  notes                  :text
+#  confirmed              :boolean
+#  active_user            :boolean
+#  nickname               :string(255)
+#  snowbird_start_year    :integer
+#  head_shot              :string(255)
+#
+
 require "test_helper"
 
 class UserTest < ActiveSupport::TestCase
@@ -104,13 +142,15 @@ class UserTest < ActiveSupport::TestCase
     before  do
       @sys_config.bingo_start_date = (Date.today -  9.days)
       @sys_config.save!
+
       Shift.all.each do |s|
         if (s.can_select(@rookie_user) == true)
           @rookie_user.shifts << s
-          @last_date = s.shift_date if s.shadow?
+          @last_date = s.shift_date if s.shadow? && (@last_date.nil? || @last_date < s.shift_date)
         end
       end
     end
+
     it "should return correct shadow date" do
       @last_date.must_equal @rookie_user.last_shadow
     end
