@@ -291,7 +291,7 @@ class User < ActiveRecord::Base
     all_shifts = self.shifts
 
     msg << "You are currently in <strong>round #{round}</strong>." if round < 5
-    msg << "You have #{num_selected} shifts selected.</strong>."
+    msg << "You have #{num_selected} shifts selected."
     if has_holiday == true
       msg << "A <strong>Holiday Shift</strong> has been selected." #if round < 5
     else
