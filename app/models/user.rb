@@ -203,6 +203,20 @@ class User < ActiveRecord::Base
     dt
   end
 
+  def not_done_training(shift_date, working_shifts)
+    iCnt = 0
+    dt = nil
+    working_shifts.each do |s|
+      if s.rookie_training_type?
+        iCnt += 1
+        dt = s.shift_date
+      end
+      next if dt.nil?
+      return true if  (dt > shift_date)
+    end
+    return (iCnt < 6) || dt.nil?
+  end
+
   def first_non_shadow
     dt = nil
     self.shifts.each do |s|

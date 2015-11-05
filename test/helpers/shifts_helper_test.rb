@@ -157,6 +157,7 @@ class ShiftsHelperTest < ActionView::TestCase
         unselected = shifts.to_a.delete_if {|s| !s.user_id.nil? || @team_leader.is_working?(s.shift_date) || s.shadow? }
 
         unselected.each do |s|
+
           s.can_select(@team_leader).must_equal true
         end
       end
@@ -169,6 +170,7 @@ class ShiftsHelperTest < ActionView::TestCase
         Shift.all.each do |s|
           next if s.meeting?
           if (s.short_name != "SH") && (!@team_leader.is_working?(s.shift_date))
+
             s.can_select(@team_leader).must_equal true
           else
             s.can_select(@team_leader).must_equal false
