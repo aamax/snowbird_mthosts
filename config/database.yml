@@ -16,7 +16,7 @@ development:
   adapter: postgresql
   encoding: unicode
   database: mthost_development
-  pool: 5
+  pool: 25
   username: root
   password: 
   template: template0
@@ -52,7 +52,7 @@ production:
   adapter: postgresql
   encoding: unicode
   database: mthost_development
-  pool: 5
+  pool: 25
   username: root
   password:
   template: template0
