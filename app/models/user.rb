@@ -345,8 +345,13 @@ class User < ActiveRecord::Base
         when 0
           msg << "No Selections Until #{HostConfig.bingo_start_date + day_offset.days}."
         when 1..4
-          limit = round * 5 + 2
+          trshifts = 0
+          if self.trainer?
+            trshifts = self.shifts.to_a.delete_if {|sh| !sh.trainer? }.count
+          end
+          limit = round * 5 + 2 + trshifts
           limit = 20 if limit > 20
+
           if all_shifts.count < limit
             msg << "#{all_shifts.count} of #{limit} Shifts Selected.  You need to pick #{limit - all_shifts.count}"
           else

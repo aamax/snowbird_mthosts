@@ -50,6 +50,113 @@ class UserMessageTest < ActiveSupport::TestCase
     @group3_user.shift_status_message.include?("2 of 20 Shifts Selected.  You need to pick 18").must_equal true
   end
 
+  def test_show_selection_counts_for_round_one_trainers
+    config = SysConfig.first
+    config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 1)
+    config.save
+    shifts = Shift.where("shift_type_id = #{@p1.id}")
+    @group1_user.add_role("trainer")
+
+    trshift = FactoryGirl.create(:shift_type, short_name: 'TR')
+    trshifts = []
+    (1..5).each do |n|
+      trshifts << FactoryGirl.create(:shift, shift_type_id: trshift.id, user_id: @group1_user.id,
+                                     shift_date: Date.today + 4.months + n.days, short_name: 'TR')
+    end
+
+    maxshifts = 12
+    shifts.each do |s|
+        break if @group1_user.shifts.length >= maxshifts
+        if @group1_user.shifts.length < maxshifts
+          @group1_user.shift_status_message.include?("#{@group1_user.shifts.length} of #{maxshifts} Shifts Selected.  You need to pick #{maxshifts - @group1_user.shifts.length}").must_equal true
+        else
+          @group1_user.shift_status_message.include?("All required shifts selected for round 1. (#{maxshifts} of #{maxshifts})").must_equal true
+        end
+        @group1_user.shifts << s
+    end
+  end
+
+  def test_show_selection_counts_for_round_two_trainers
+    config = SysConfig.first
+    config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 2)
+    config.save
+    shifts = Shift.where("shift_type_id = #{@p1.id}")
+    @group1_user.add_role("trainer")
+
+    trshift = FactoryGirl.create(:shift_type, short_name: 'TR')
+    trshifts = []
+    (1..5).each do |n|
+      trshifts << FactoryGirl.create(:shift, shift_type_id: trshift.id, user_id: @group1_user.id,
+                                     shift_date: Date.today + 4.months + n.days, short_name: 'TR')
+    end
+
+    maxshifts = 17
+    shifts.each do |s|
+      break if @group1_user.shifts.length >= maxshifts
+      if @group1_user.shifts.length < maxshifts
+        @group1_user.shift_status_message.include?("#{@group1_user.shifts.length} of #{maxshifts} Shifts Selected.  You need to pick #{maxshifts - @group1_user.shifts.length}").must_equal true
+      else
+        @group1_user.shift_status_message.include?("All required shifts selected for round 1. (#{maxshifts} of #{maxshifts})").must_equal true
+      end
+      @group1_user.shifts << s
+    end
+
+  end
+
+  def test_show_selection_counts_for_round_three_trainers
+    config = SysConfig.first
+    config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 3)
+    config.save
+    shifts = Shift.where("shift_type_id = #{@p1.id}")
+    @group1_user.add_role("trainer")
+
+    trshift = FactoryGirl.create(:shift_type, short_name: 'TR')
+    trshifts = []
+    (1..5).each do |n|
+      trshifts << FactoryGirl.create(:shift, shift_type_id: trshift.id, user_id: @group1_user.id,
+                                     shift_date: Date.today + 4.months + n.days, short_name: 'TR')
+    end
+
+    maxshifts = 20
+    shifts.each do |s|
+      break if @group1_user.shifts.length >= maxshifts
+      if @group1_user.shifts.length < maxshifts
+        @group1_user.shift_status_message.include?("#{@group1_user.shifts.length} of #{maxshifts} Shifts Selected.  You need to pick #{maxshifts - @group1_user.shifts.length}").must_equal true
+      else
+        @group1_user.shift_status_message.include?("All required shifts selected for round 1. (#{maxshifts} of #{maxshifts})").must_equal true
+      end
+      @group1_user.shifts << s
+    end
+
+  end
+
+  def test_show_selection_counts_for_round_four_trainers
+    config = SysConfig.first
+    config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 4)
+    config.save
+    shifts = Shift.where("shift_type_id = #{@p1.id}")
+    @group1_user.add_role("trainer")
+
+    trshift = FactoryGirl.create(:shift_type, short_name: 'TR')
+    trshifts = []
+    (1..5).each do |n|
+      trshifts << FactoryGirl.create(:shift, shift_type_id: trshift.id, user_id: @group1_user.id,
+                                     shift_date: Date.today + 4.months + n.days, short_name: 'TR')
+    end
+
+    maxshifts = 20
+    shifts.each do |s|
+      break if @group1_user.shifts.length >= maxshifts
+      if @group1_user.shifts.length < maxshifts
+        @group1_user.shift_status_message.include?("#{@group1_user.shifts.length} of #{maxshifts} Shifts Selected.  You need to pick #{maxshifts - @group1_user.shifts.length}").must_equal true
+      else
+        @group1_user.shift_status_message.include?("All required shifts selected for round 1. (#{maxshifts} of #{maxshifts})").must_equal true
+      end
+      @group1_user.shifts << s
+    end
+
+  end
+
   def test_show_selection_counts_for_round_one
     config = SysConfig.first
     config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 1)
