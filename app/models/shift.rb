@@ -171,6 +171,10 @@ class Shift < ActiveRecord::Base
     self.shift_type.short_name[2..-1]
   end
 
+  def is_tour?
+    ['P1','P2','P3','P4'].include? self.short_name
+  end
+  
   def shadow?
     self.short_name == "SH"
   end

@@ -59,13 +59,13 @@ class User < ActiveRecord::Base
   end
 
   def tours
-    tourshifts = []
-    ShiftType.all.each do |st|
-      tourshifts << st.id if (!st.tasks.nil? && st.tasks.downcase.include?('tour'))
-    end
+    # tourshifts = []
+    # ShiftType.all.each do |st|
+    #   tourshifts << st.id if st.is_tour? 
+    # end
     retval = []
     self.non_meeting_shifts.each do |s|
-      retval << s if tourshifts.include? s.shift_type_id
+      retval << s if s.is_tour?
     end
     retval
   end

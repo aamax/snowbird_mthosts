@@ -23,13 +23,13 @@ class UsersController < ApplicationController
   end
 
   def hosts_by_seniority
-    @users = User.includes(:shifts).active_users.to_a.delete_if {|u| u.supervisor? }
-    @rookies = User.rookies
-    @freshmen =  User.group3.to_a.delete_if {|u| u.team_leader? }
-    @junior =  User.group2.to_a.delete_if {|u| u.team_leader? }
-    @senior =  User.group1.to_a.delete_if {|u| u.team_leader? }.delete_if {|u| u.supervisor? }
-    @leaders =  User.active_users.to_a.delete_if {|u| !u.team_leader? }
-    @trainers = User.active_users.to_a.delete_if {|u| !u.has_role? :trainer}
+    @users = User.includes(:shifts).active_users.order(:name).to_a.delete_if {|u| u.supervisor? }
+    @rookies = User.rookies.order(:name)
+    @freshmen =  User.group3.order(:name).to_a.delete_if {|u| u.team_leader? }
+    @junior =  User.group2.order(:name).to_a.delete_if {|u| u.team_leader? }
+    @senior =  User.group1.order(:name).to_a.delete_if {|u| u.team_leader? }.delete_if {|u| u.supervisor? }
+    @leaders =  User.active_users.order(:name).to_a.delete_if {|u| !u.team_leader? }
+    @trainers = User.active_users.order(:name).to_a.delete_if {|u| !u.has_role? :trainer}
     @missing =  @users - (@rookies + @freshmen + @junior + @senior + @leaders)
   end
 
