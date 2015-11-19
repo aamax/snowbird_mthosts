@@ -17,6 +17,7 @@ Mthost::Application.routes.draw do
   get '/hosts_by_seniority', :to => 'users#hosts_by_seniority'
   get '/shifts_by_date', :to => 'shifts#shifts_by_date_view'
   get '/skipatrol', :to => "reports#skipatrol"
+  post '/skipatrol', :to => "reports#skipatrol"
   get '/skipatrol_printable', :to => "reports#skipatrol_printable"
   get '/shift_print/:id', :to => 'users#shift_print'
   post '/users/save_new', :to => 'users#save_new'
