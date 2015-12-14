@@ -123,13 +123,13 @@ class ReportsController < ApplicationController
     @date = params[:date].to_date if params[:date]
     @date ||= Date.today
 
-    @day1 = Shift.where("shift_date = ?", @date)
-    @day2 = Shift.where("shift_date = ?", @date + 1.day)
-    @day3 = Shift.where("shift_date = ?", @date + 2.day)
-    @day4 = Shift.where("shift_date = ?", @date + 3.day)
-    @day5 = Shift.where("shift_date = ?", @date + 4.day)
-    @day6 = Shift.where("shift_date = ?", @date + 5.day)
-    @day7 = Shift.where("shift_date = ?", @date + 6.day)
+    @day1 = Shift.where("shift_date = ?", @date).order("short_name")
+    @day2 = Shift.where("shift_date = ?", @date + 1.day).order("short_name")
+    @day3 = Shift.where("shift_date = ?", @date + 2.day).order("short_name")
+    @day4 = Shift.where("shift_date = ?", @date + 3.day).order("short_name")
+    @day5 = Shift.where("shift_date = ?", @date + 4.day).order("short_name")
+    @day6 = Shift.where("shift_date = ?", @date + 5.day).order("short_name")
+    @day7 = Shift.where("shift_date = ?", @date + 6.day).order("short_name")
 
     days = [@day1, @day2, @day3, @day4, @day5, @day6, @day7]
 
