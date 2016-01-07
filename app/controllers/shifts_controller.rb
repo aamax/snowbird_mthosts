@@ -86,7 +86,14 @@ class ShiftsController < ApplicationController
       @shift.user_id.nil? ? @user_name = "UnSet" : @user_name = @shift.user.name
       @userlist = User.active_users
       if (current_user.has_role? :admin)
-          shift_users = Shift.where("shift_date = ?", @shift.shift_date).map { |s| s.user}
+          if @shift.meeting?
+            # trim all users who are in a meeting on this day out of list
+            shift_users = Shift.where("shift_date = ? and shift_type_id = ?", @shift.shift_date, @shift.shift_type_id).map { |s| s.user}
+          else
+            # trim all users who are working already (non meeting) for that day out of list
+            shift_users = Shift.where("shift_date = ? and short_name not like 'M%'", @shift.shift_date).map { |s| s.user}
+          end
+
           @userlist = @userlist - shift_users
           @userlist.sort! { |a,b| a.name <=> b.name }
       else
