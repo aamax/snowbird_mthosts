@@ -11,11 +11,6 @@ namespace :daily do
     @fromaddress = 'no-reply@snowbirdhosts.com'
     @message = "Just a friendly reminder that you are scheduled to work a shift at the Bird tommorrow.  Don't be late!"
 
-
-     # TODO REMOVE THIS LINE
-    emailaddress = "aamax@xmission.com,aamaxworks@gmail.com,allen.maxwell@bhghome.com"
-
-
     exit(0) if emailaddress.blank?
 
     msg = UserMailer.send_daily_email(emailaddress, @fromaddress, @subject, @message)
