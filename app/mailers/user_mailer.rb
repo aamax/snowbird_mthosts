@@ -10,7 +10,7 @@ class UserMailer < ActionMailer::Base
       toaddress = dest.join(',')
     end
 
-    @user = 'aamaxworks@gmail.com' # TODO remove this! set to: toaddress
+    @user = toaddress
     mail( :to => toaddress,
           :from => fromaddress,
           :reply_to => fromaddress,
@@ -19,10 +19,10 @@ class UserMailer < ActionMailer::Base
   end
 
   def send_daily_email(toaddress, fromaddress, subject, message)
-    puts "\nPARAMS:\nto: #{toaddress}\nfrom: #{fromaddress}\nsubj: #{subject}\nmsg: #{message}\n\n"
+    # puts "\nPARAMS:\nto: #{toaddress}\nfrom: #{fromaddress}\nsubj: #{subject}\nmsg: #{message}\n\n"
 
 
-    @user = 'aamaxworks@gmail.com' # TODO remove this! set to: toaddress
+    @user = toaddress
     mail( :to => toaddress,
           :from => fromaddress,
           :reply_to => fromaddress,
