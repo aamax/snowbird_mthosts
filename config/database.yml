@@ -18,7 +18,7 @@ development:
   database: mthost_development
   pool: 25
   username: root
-  password: 
+  password:
   template: template0
 
   # Connect on a TCP socket. Omitted by default since the client uses a
@@ -45,7 +45,7 @@ test:
   database: mthost_test
   pool: 5
   username: root
-  password: 
+  password:
   template: template0
 
 production:

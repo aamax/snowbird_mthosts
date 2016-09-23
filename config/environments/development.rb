@@ -28,8 +28,8 @@ Mthost::Application.configure do
         :address        => 'smtp.gmail.com',
         :port           => '587',
         :authentication => :plain,
-        :user_name => ENV['mail_user'],
-        :password => ENV['mail_pass'],
+        :user_name => ENV["GMAIL_USERNAME"],
+        :password => ENV["GMAIL_PASSWORD"],
         :domain         => 'localhost',
         :enable_starttls_auto => true
     }
