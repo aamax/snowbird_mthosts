@@ -7,20 +7,22 @@
       <%= image_tag @user.head_shot %>
 <% end %>
 <br/>
-
+<br/>
 <% if current_user.has_role? :admin %>
-    <strong>Image Path/file: </strong> <%= f.text_field :head_shot, :placeholder => "Headshot File", class: 'name_edit' %><br/>
+    <strong>Image Path/file: </strong> <%= f.text_field :head_shot,
+                  :placeholder => "Headshot File", class: 'name_edit form-control' %><br/>
 <% end %>
 
-<strong>Name: </strong> <%= f.text_field :name, :placeholder => 'Name', class: 'name_edit' %>
-<strong>Nick Name: </strong> <%= f.text_field :nickname, :placeholder => 'NickName', class: 'name_edit' %><br/>
+<strong>Name: </strong> <%= f.text_field :name, :placeholder => 'Name', class: 'name_edit form-control' %>
+<strong>Nick Name: </strong> <%= f.text_field :nickname, :placeholder => 'NickName', class: 'name_edit form-control' %><br/>
 
+<div class="form-group">
 <strong>Address: </strong><br/>
-<%= f.text_field :street, :placeholder => 'Street Name', class: 'street_edit' %> <br/>
-<%= f.text_field :city, :placeholder => 'City', class: 'city_edit' %>,
-<%= f.text_field :state, :placeholder => 'State', class: 'state_edit' %>
-<%= f.text_field :zip, :placeholder => 'Zip', class: 'zip_edit' %>   <br/>
-
+<%= f.text_field :street, :placeholder => 'Street Name', class: 'street_edit form-control' %> <br/>
+<%= f.text_field :city, :placeholder => 'City', class: 'city_edit form-control' %>,
+<%= f.text_field :state, :placeholder => 'State', class: 'state_edit form-control' %>
+<%= f.text_field :zip, :placeholder => 'Zip', class: 'zip_edit form-control' %>   <br/>
+</div>
 
 <strong>Home Phone: </strong>
 <%= f.telephone_field :home_phone, :placeholder => 'Home Phone', class: 'phone_edit' %> <br/>

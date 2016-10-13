@@ -92,15 +92,13 @@ process_date_selections = ->
   if $("#start_date").val() is ""
     alert "ERROR: Start Date Must Be Set."
     return
-  if $("#type_Single_Date").attr("checked")
-
+  if (document.getElementById('single_date_radio').checked)
     # add date to select box
+    $('#end_date').value = $('#start_date').val();
     key_str = $("#start_date").val()
     label_str = $("#start_date").val()
     $("#selected_dates").append "<option value=\"" + key_str + "\">" + label_str + "</option>"
   else
-
-    # if no date in end, alert error...
     if $("#end_date").val() is ""
       alert "ERROR: End Date Must Be Set."
       return

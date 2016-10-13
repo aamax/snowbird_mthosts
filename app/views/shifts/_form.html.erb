@@ -8,7 +8,7 @@
   <%= f.label "Host: " %>
   <%= collection_select(:shift, :user_id,
                         @userlist, :id, :name,
-                        options = {:selected => @shift.user_id.to_i, :prompt => "UnSet"})
+                        options = {:selected => @shift.user_id.to_i, :prompt => "UnSet", class: "form-control"})
   %>
 </div>
 

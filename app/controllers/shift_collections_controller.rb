@@ -6,7 +6,7 @@ class ShiftCollectionsController < ApplicationController
     @days_of_week = []
     Date::DAYNAMES.each_with_index {|m, i| @days_of_week << [m, i]}
 
-    @shift_types = ShiftType.all
+    @shift_types = ShiftType.all.order(:short_name)
     @selected_shifts = nil # TODO get shifts for selected day if it's set...
   end
 

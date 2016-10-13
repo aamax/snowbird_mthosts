@@ -7,7 +7,7 @@
 
         Junior: <%= User.group2.to_a.delete_if {|u| u.team_leader? }.length %> <br/>
 
-        Senior: <%= User.group1.to_a.delete_if {|u| u.team_leader? }.delete_if {|u| u.supervisor? }.length %> <br/>
+        Senior: <%= User.group1.to_a.delete_if {|u| u.team_leader? }.delete_if {|u| u.supervisor? }.length %> (includes TL and Trainers)<br/>
 
         Team Leaders: <%= User.active_users.to_a.delete_if {|u| !u.team_leader? }.length %> <br/>
 

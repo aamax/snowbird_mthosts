@@ -11,12 +11,14 @@
     $scope.shiftTypeList = shiftTypeResource.getShiftTypes()
 
   $scope.deleteShiftType = (st) ->
-    $scope.shiftType = st
-    $scope.shiftType.$delete()
+    if confirm "Do you want to delete this shift type?"
+      # if answer yes
+      $scope.shiftType = st
+      $scope.shiftType.$delete()
 
-    idx = $scope.shiftTypeList.indexOf(st)
-    $scope.shiftTypeList.splice(idx, 1)
-    $scope.shiftType = $scope.shiftTypeList[0]
+      idx = $scope.shiftTypeList.indexOf(st)
+      $scope.shiftTypeList.splice(idx, 1)
+      $scope.shiftType = $scope.shiftTypeList[0]
 
   $scope.showShiftType = (st) ->
     if typeof st == 'object'

@@ -23,16 +23,15 @@
 
 <div class='container'>
   <% if flash.alert %>
-      <div class="container-fluid">
         <div class="alert alert-error">
           <a class="close" data-dismiss="alert">×</a>
           <%= flash.alert %>
         </div>
-      </div>
+
   <% end %>
 
   <% if flash.notice %>
-      <div class="container-fluid flash_notice">
+      <div class="flash_notice">
         <div class="alert alert-success">
           <a class="close" data-dismiss="alert">×</a>
           <%= flash.notice %>
