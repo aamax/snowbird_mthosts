@@ -244,6 +244,8 @@ class Shift < ActiveRecord::Base
       else
         if round < 5
           if test_user.trainer?
+            return false if all_shifts.count >= 20 
+            return true if self.trainer?
             non_trainer_shift_count = working_shifts.delete_if {|s| s.trainer? }.count
             return false if (non_trainer_shift_count >= (round * 5))
           else
