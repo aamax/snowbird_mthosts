@@ -217,7 +217,7 @@ class Shift < ActiveRecord::Base
 
       return false if (round <= 4) && (all_shifts.count >= 20)
       return true if test_user.team_leader?
-      return false if (round <= 0) && (!test_user.rookie?)
+      return false if (round <= 0) && (!test_user.rookie? && !test_user.trainer?)
 
       if test_user.rookie?
         last_shadow = test_user.last_shadow(working_shifts)
@@ -244,7 +244,7 @@ class Shift < ActiveRecord::Base
       else
         if round < 5
           if test_user.trainer?
-            return false if all_shifts.count >= 20 
+            return false if all_shifts.count >= 20
             return true if self.trainer?
             non_trainer_shift_count = working_shifts.delete_if {|s| s.trainer? }.count
             return false if (non_trainer_shift_count >= (round * 5))
