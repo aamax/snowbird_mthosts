@@ -188,7 +188,7 @@ class Shift < ActiveRecord::Base
   end
 
   def rookie_training_type?
-    ['G1','G2','G3','G4','C1','C2','C3','C4','H1','H2'].include? self.short_name
+    ['G1','G2','G3','G4','C1','C2','C3','C4','H1','H2', 'H3', 'H4'].include? self.short_name
   end
 
   def meeting?
