@@ -3,16 +3,18 @@
   <tr>
     <td>
       <%= f.text_field(:date, :size => 20, :readonly=>'readonly', :class=>'shift_date',
-                       :value => @date) %>
+                       :value => @return_params['date_set_to_show']) %>
     </td>
+
     <td>
 
       <%=  link_to "<i class='icon-calendar'></i>".html_safe, "#", :class=>"btn cal_icon",
                    :id=>"set_date_btn", :title => 'set date',
                    "data-date-format"=>"yyyy-mm-dd",
-                   "data-date"=>@dt %>
+                   "data-date"=>@return_params['date_for_calendar'] %>
       <br/>
     </td>
+
     <td>
       <%= link_to "<i class='icon-eraser'></i>".html_safe, "#", :class=>'btn', :title => "clear date", :id => 'clear_date' %>
     </td>

@@ -7,11 +7,11 @@
     <div class='row'>
       <div class='span4'>
         <% if current_user.has_role? :admin %>
-            <button type="button" class="btn" data-toggle="collapse" data-target="#stats_display" >
+            <button type="button" class="btn" data-toggle="collapse" data-target="#stats_display">
               Open Stats:&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
             </button>
         <% end %>
-        <button type="button" class="btn" data-toggle="collapse" data-target="#shift_filter" >
+        <button type="button" class="btn" data-toggle="collapse" data-target="#shift_filter">
           Open Filter:&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
         </button>
       </div>
@@ -20,26 +20,27 @@
       <%= render "shifts/filter/shift_filter_form" %>
     </div>
 
-    <div id="stats_display" class="collapse <%= current_user.shift_status_message.length > 0 ? "in": "out" %>">
+    <div id="stats_display" class="collapse <%= current_user.shift_status_message.length > 0 ? "in" : "out" %>">
       <% if current_user.has_role? :admin %>
-        <div class='row'>
+          <div class='row'>
             <div class='span5'>
               <h4>Shift Stats:</h4>
               <strong>Total Shifts:</strong>  <%= Shift.all.length %><br/>
               <strong>Assigned Shifts:</strong>   <%= Shift.assigned.length %><br/>
               <strong>Open Shifts:</strong><br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>All Year: </strong><%= Shift.un_assigned.length %>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;All Year: <%= Shift.un_assigned.length %>
               <br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>From Today: </strong> <%= Shift.un_assigned.to_a.delete_if {|s| s.shift_date < Date.today }.length %><br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;From
+              Today: <%= Shift.un_assigned.to_a.delete_if { |s| s.shift_date < Date.today }.length %><br/>
             </div>
-        </div>
+          </div>
       <% end %>
       <div class='row'>
 
-      <% unless current_user.supervisor? %>
-          <%= render "/users/shift_message", :user => current_user, :shift_page => true %>
-          <%= render "/users/selection_list", :user => current_user %>
-      <% end %>
+        <% unless current_user.supervisor? %>
+            <%= render "/users/shift_message", :user => current_user, :shift_page => true %>
+            <%= render "/users/selection_list", :user => current_user %>
+        <% end %>
       </div>
     </div>
 
@@ -48,21 +49,23 @@
 <br/>
 
 <%
-   curr_date = ""
+  curr_date = ""
 %>
+
 <div class="shift_page_body">
-    <% @shifts.each do |s| %>
-      <% if curr_date != s.shift_date  %>
-           <% if curr_date != ''  %>
+  <% @shifts.each do |s| %>
+
+      <% if curr_date != s.shift_date %>
+          <% if curr_date != '' %>
               </table>
               </div>
-           <% end %>
+          <% end %>
 
-            <button type="button" class="btn shift_button" data-toggle="collapse"
-              data-target=<%= "#date_#{curr_date}" %>>
-                <%="#{s.shift_date.strftime("%a")} - #{s.shift_date} &nbsp;&nbsp;-&nbsp;&nbsp;Total:
+          <button type="button" class="btn shift_button" data-toggle="collapse"
+                  data-target=<%= "#date_#{curr_date}" %>>
+            <%= "#{s.shift_date.strftime("%a")} - #{s.shift_date} &nbsp;&nbsp;-&nbsp;&nbsp;Total:
                 #{getShiftTotal(s.shift_date)} / Available: #{getSelectedShifts(s.shift_date)}".html_safe %>
-            </button>
+          </button>
           &nbsp;&nbsp;&nbsp;
           <a href="/send_mail/THIS_DATE/?date=<%= s.shift_date %>" class='btn btn-info btn-small'>
             <i class='icon-envelope'></i> &nbsp;&nbsp;&nbsp; eMail Hosts Working This Day
@@ -70,44 +73,50 @@
 
           <br/>
 
-            <div id='<%= "date_#{curr_date}" %>' class="collapse <%= @show_expanded ? "in" : "out" %>">
-          <table class='table table-striped'>
-            <tr >
-              <th>Host</th>
-              <th>Select/Drop</th>
-              <th>Code</th>
-              <th>Description</th>
-              <th>Start Time</th>
-              <th>End Time</th>
-              <th>Notes</th>
-              <th>Admin</th>
-            </tr>
+          <div id='<%= "date_#{curr_date}" %>' class="collapse <%= @return_params['show_shifts_expanded'] == true ? "in" : "out" %>">
+            <table class='table table-striped'>
+              <tr>
+                <th>Host</th>
+                <th>Select/Drop</th>
+                <th>Code</th>
+                <th>Description</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Notes</th>
+                <th>Admin</th>
+              </tr>
       <% end %>
+
+
+
       <tr>
         <td>
           <% unless s.user_id.nil? %>
-            <a href=<%= user_path(s.user_id) %>><%= s.user.name %></a>
+              <a href=<%= user_path(s.user_id) %>><%= s.user.name %></a>
           <% else %>
-            &nbsp;&nbsp;
+              &nbsp;&nbsp;
           <% end %>
         </td>
+
         <td class="align-left">
-          <% if @can_select && !current_user.supervisor? %>
-              <a href=<%= "select_shift/#{s.id}/?test=hello" %> class='select_btn' ><i class="icon-male btn btn-primary" title="select shift">&nbsp;&nbsp;Select</i></a>
-          <% else %>
-              <% if (s.can_select(current_user) == true) && !current_user.supervisor? %>
-                <a href=<%= "select_shift/#{s.id}/?test=hello" %> class='select_btn' ><i class="icon-male btn btn-primary" title="select shift">&nbsp;&nbsp;Select</i></a>
-              <% end %>
+          <% if !current_user.supervisor? &&
+                 (@return_params['show_only_shifts_i_can_pick'] || @return_params['selectable_shifts'].include?(s.id)) %>
+              <a href=<%= "select_shift/#{s.id}/?test=hello" %> class='select_btn'>
+                <i class="icon-male btn btn-primary" title="select shift">&nbsp;&nbsp;Select</i>
+              </a>
           <% end %>
+
           <% if (s.can_drop(current_user) == true) %>
-            <a href=<%= "drop_shift/#{s.id}" %> class='select_btn' ><i class="icon-trash btn btn-danger" title="drop shift">&nbsp;&nbsp;Drop</i></a>
+              <a href=<%= "drop_shift/#{s.id}" %> class='select_btn'><i class="icon-trash btn btn-danger" title="drop shift">&nbsp;&nbsp;Drop</i></a>
           <% end %>
         </td>
+
         <td class="align-center"><%= s.shift_type.short_name[0..1] %></td>
         <td><%= s.shift_type.description %></td>
         <td class="align-center"><%= s.shift_type.start_time %></td>
         <td class="align-center"><%= s.shift_type.end_time %></td>
         <td><%= s.shift_type.tasks %></td>
+
         <td class="align-center">
           <% if current_user.has_role? :admin %>
               <a href=<%= edit_shift_path(s.id) %>><i class="icon-wrench btn btn-info" title="edit shift"></i></a>
@@ -116,24 +125,30 @@
                           :confirm => "You sure you want to delete this shift?",
                           :title => "Delete #{s.id}" %>
           <% end %>
-
         </td>
       </tr>
-      <% if curr_date != s.shift_date  %>
-            <% curr_date = s.shift_date %>
+
+
+      <% if curr_date != s.shift_date %>
+          <% curr_date = s.shift_date %>
       <% end %>
-    <% end %>
-
-    <% if @shifts.length > 0 %>
-      </table>
-    </div>
   <% end %>
-</div>
-<br/>
+
+  <% if @shifts.length > 0 %>
+      </table>
+      </div>
+  <% end %>
+
+  </div>
+  <br/>
 
 
-<div class="shift_page_footer">
-  <hr/>
-  <%= will_paginate(@shifts, :renderer => 'BootstrapPaginationHelper::LinkRenderer') %>
-</div>
+  <div class="shift_page_footer">
+    <hr/>
+    <%= will_paginate(@shifts, :renderer => 'BootstrapPaginationHelper::LinkRenderer') %>
+  </div>
+
+
+
+
 

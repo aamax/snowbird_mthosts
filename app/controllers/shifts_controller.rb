@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: shifts
+#
+#  id              :integer          not null, primary key
+#  user_id         :integer
+#  shift_type_id   :integer          not null
+#  shift_status_id :integer          default(1), not null
+#  shift_date      :date
+#  day_of_week     :string(255)
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  short_name      :string
+#
+
 class ShiftsController < ApplicationController
   require "json"
   authorize_resource
@@ -13,45 +28,23 @@ class ShiftsController < ApplicationController
     per_page = SysConfig.first.shift_count
     per_page ||= 80
 
-    @sts = @usrs = ''
-    @dow = {}
-    @show_expanded = @holidays = @unselected = false
-    @from_today = @can_select = true
-    @dt = Date.today.strftime('%Y-%m-%d')
-    @date = ''
-    @meeting_flag = false  # false doesn't show meetings
+    @return_params = {"start_from_today" => true, "show_shifts_expanded" => false, "show_only_unselected" => false,
+                      "show_only_holidays" => false, "include_meeting_shifts" => false,
+                      "show_only_shifts_i_can_pick" => !current_user.has_role?(:admin),
+                      "shift_types_to_show" => "", 'days_of_week_to_show' => {},
+                      "hosts_to_show" => {}, "date_set_to_show" => '',
+                      "date_for_calendar" => Date.today.strftime("%Y-%m-%d")
+    }
 
-    if current_user.has_role? :admin
-      @can_select = false
-    end
+    params['filter'] ||= {"start_from_today" => '1',
+                          "shifts_i_can_pick" => current_user.has_role?(:admin) ? '0' : '1',
+                          'shifttype' => "", 'dayofweek' => {}, "hosts" => {},
+                          "date" => '', "" => Date.today.strftime("%Y-%m-%d")
 
-    if params['filter']
-      @show_expanded = params['filter']['show_expanded'] == '1'
+    }
 
-      @sts = params['filter']['shifttype'].reject{ |e| e.empty? } unless params['filter']['shifttype'] == ''
-      @dow = params['filter']['dayofweek'].reject{ |e| e.empty? }
-      @dt = params['filter']['date']
-      @date = @dt
-      @usrs = params['filter']['host'].reject{ |e| e.empty? }
-      @from_today = (params['filter']['start_from_today'] == '1')
-      @can_select = (params['filter']['shifts_i_can_pick'] == '1')
-      @holidays = (params['filter']['holiday_shifts'] == '1')
-      @unselected = (params['filter']['show_unselected'] == '1')
-      @meeting_flag = (params['filter']['show_meetings'] == '1')
-
-      if @can_select == false
-        @shifts = Shift.includes(:user).includes(:shift_type).from_today(@from_today).by_shift_type(@sts).by_date(@dt).by_day_of_week(@dow).by_users(@usrs).by_holidays(@holidays).by_unselected(@unselected).with_meetings(@meeting_flag).order(:shift_date, :short_name).paginate(:page => params[:page], :per_page => per_page)
-      else
-        @shifts = Shift.includes(:user).includes(:shift_type).from_today(@from_today).by_shift_type(@sts).by_date(@dt).by_day_of_week(@dow).by_holidays(@holidays).by_users(@usrs).by_unselected(true).with_meetings(@meeting_flag).order(:shift_date, :short_name).to_a.delete_if {|s| s.can_select(current_user) == false }.paginate(:page => params[:page], :per_page => per_page)
-      end
-    elsif current_user.has_role? :admin
-      @can_select = false
-      @shifts = Shift.includes(:user).includes(:shift_type).from_today(true).with_meetings(@meeting_flag).order(:shift_date, :short_name).paginate(:page => params[:page], :per_page => per_page)
-    else
-      @can_select = true
-      @shifts = Shift.includes(:user).includes(:shift_type).from_today(true).with_meetings(@meeting_flag).order(:shift_date, :short_name).to_a.delete_if {|s| s.can_select(current_user) == false }.paginate(:page => params[:page], :per_page => per_page)
-    end
-
+    @shifts = Shift.get_shifts_for_index(current_user, @return_params, params['filter'],
+                  current_user.has_role?(:admin)).paginate(:page => params[:page], :per_page => per_page)
     @shifts
   end
 

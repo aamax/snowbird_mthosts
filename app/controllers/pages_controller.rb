@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: pages
+#
+#  id         :integer          not null, primary key
+#  name       :string(255)
+#  content    :text
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class PagesController < ApplicationController
   before_filter :authenticate_user!
 

@@ -16,7 +16,8 @@
 # if shift status = -1   ->  missed shift
 
 class Shift < ActiveRecord::Base
-  attr_accessible :user_id, :shift_type_id, :shift_status_id, :shift_date, :day_of_week
+  attr_accessible :user_id, :shift_type_id, :shift_status_id, :shift_date, :day_of_week, :user_can_select
+  attr_accessor :user_can_select
 
   before_save :set_day_of_week, :set_short_name
 
@@ -273,6 +274,47 @@ class Shift < ActiveRecord::Base
   def user_name
     self.user.name
   end
+
+  def self.get_shifts_for_index(current_user, return_params, form_filters, is_admin)
+    return_params['start_from_today'] = (form_filters['start_from_today'] == '1')
+    return_params['show_shifts_expanded'] = (form_filters['show_expanded'] == '1')
+    return_params['show_only_unselected'] = (form_filters['show_unselected'] == '1')
+    return_params['show_only_holidays'] = (form_filters['holiday_shifts'] == '1')
+    return_params['include_meeting_shifts'] = (form_filters['show_meetings'] == '1')
+    return_params['show_only_shifts_i_can_pick'] = (form_filters['shifts_i_can_pick'] == '1')
+    return_params['shift_types_to_show'] = form_filters['shifttype'].reject{ |e| e.empty? } unless form_filters['shifttype'] == ''
+    return_params['days_of_week_to_show'] = form_filters['dayofweek'].reject{ |e| e.empty? }
+    return_params['hosts_to_show'] = form_filters['hosts'].reject{ |e| e.empty? } if form_filters['hosts']
+    return_params['date_set_to_show'] = form_filters['date']
+    return_params['date_for_calendar'] = form_filters['date'].empty? ? Date.today.strftime("%Y-%m-%d") : form_filters['date']
+
+
+    @shifts = Shift.all
+    # TODO add filters to @shifts
+
+    @shifts = @shifts.with_meetings(return_params['include_meeting_shifts'])
+
+
+    return_params['selectable_shifts'] = []
+    @shifts.each do |shift|
+      return_params['selectable_shifts'] << shift.id if shift.can_select(current_user)
+    end
+
+    if return_params['show_only_shifts_i_can_pick'] == true
+      if return_params['selectable_shifts'].count == 0
+        @shifts = @shifts.where('id = 0')
+      else
+        @shifts = @shifts.where("id in (#{return_params['selectable_shifts'].join(',')})")
+      end
+      @shifts = @shifts.includes(:shift_type).order(:shift_date, :short_name)
+    else
+      @shifts = @shifts.includes(:user).includes(:shift_type).order(:shift_date, :short_name)
+    end
+    
+    @shifts
+  end
+
+
 
   private
   def set_day_of_week

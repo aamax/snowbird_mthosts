@@ -1,4 +1,4 @@
 <%= f.label(:host, "Host") %>
 
 
-<%= f.select("host", @users, {:selected => @usrs}, {:class=>"span3", :multiple => true })  %>
+<%= f.select("hosts", @users, {:selected => @return_params['hosts_to_show']}, {:class=>"span3", :multiple => true })  %>

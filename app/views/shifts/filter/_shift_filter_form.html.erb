@@ -6,16 +6,17 @@
         <div class='span3'>
           <strong>Options</strong> <br/> <br/>
           <%= render 'shifts/filter/start_from_today', :f => f %>
+
           <%= render 'shifts/filter/show_expanded', :f => f %><br/>
 
           <%= render 'shifts/filter/can_select', :f => f %><br/>
 
           <%= render 'shifts/filter/show_unselected', :f => f %> <br/>
 
-          <%= render 'shifts/filter/show_holidays', :f => f %>
+          <%= render 'shifts/filter/show_holidays', :f => f %><br/>
 
-          Show Meeting Shifts:
-          <%= f.check_box(:show_meetings, :checked => @meeting_flag) %>
+          Include Meeting Shifts:
+          <%= f.check_box(:show_meetings, :checked => @return_params['include_meeting_shifts']) %>
           <br/>
         </div>
 
