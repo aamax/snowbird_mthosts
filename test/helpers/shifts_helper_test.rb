@@ -35,6 +35,7 @@ class ShiftsHelperTest < ActionView::TestCase
   describe 'can_drop' do
     describe 'all hosts' do
       it 'cannot drop shifts within two week limit' do
+
         # set bingo to start 6 rounds ago
         @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 6)
         @sys_config.save!
