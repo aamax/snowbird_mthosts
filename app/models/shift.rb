@@ -295,16 +295,16 @@ class Shift < ActiveRecord::Base
     @shifts = @shifts.with_meetings(return_params['include_meeting_shifts'])
 
 
-    return_params['selectable_shifts'] = []
+    return_params['selectable_shifts'] = {}
     @shifts.each do |shift|
-      return_params['selectable_shifts'] << shift.id if shift.can_select(current_user)
+      return_params['selectable_shifts'][shift.id] = "1" if shift.can_select(current_user)
     end
 
     if return_params['show_only_shifts_i_can_pick'] == true
       if return_params['selectable_shifts'].count == 0
         @shifts = @shifts.where('id = 0')
       else
-        @shifts = @shifts.where("id in (#{return_params['selectable_shifts'].join(',')})")
+        @shifts = @shifts.where("id in (#{return_params['selectable_shifts'].keys.join(',')})")
       end
       @shifts = @shifts.includes(:shift_type).order(:shift_date, :short_name)
     else

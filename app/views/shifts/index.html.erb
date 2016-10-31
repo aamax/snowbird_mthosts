@@ -100,7 +100,7 @@
 
         <td class="align-left">
           <% if !current_user.supervisor? &&
-                 (@return_params['show_only_shifts_i_can_pick'] || @return_params['selectable_shifts'].include?(s.id)) %>
+                 (@return_params['show_only_shifts_i_can_pick'] || !@return_params['selectable_shifts'][s.id].nil?) %>
               <a href=<%= "select_shift/#{s.id}/?test=hello" %> class='select_btn'>
                 <i class="icon-male btn btn-primary" title="select shift">&nbsp;&nbsp;Select</i>
               </a>

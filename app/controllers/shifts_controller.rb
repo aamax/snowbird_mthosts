@@ -23,8 +23,9 @@ class ShiftsController < ApplicationController
 
   def index
     @days = DAYNAMES.map{|u| ["#{u}", "#{u[0...3]}"]}
-    @shift_types = ShiftType.all.map {|st| st.short_name[0..1] }.uniq.sort {|a,b| a <=> b }
-    @users = User.active_users.map{|u| ["#{u.name}"]}.sort
+    @shift_types = ShiftType.uniq.pluck(:short_name).to_a.sort {|a,b| a <=> b }
+        # ShiftType.all.map {|st| st.short_name[0..1] }.uniq.sort {|a,b| a <=> b }
+    @users = User.active_users.pluck(:name).sort #map{|u| ["#{u.name}"]}.sort
     per_page = SysConfig.first.shift_count
     per_page ||= 80
 

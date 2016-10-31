@@ -4,7 +4,6 @@
   <a href='<%= user_path(object) %>'>
     <%= "#{object.name}" %><br/>
     <% if object.head_shot.nil? || (object.head_shot == '') %>
-
          <%= gravatar_image_tag(object.email, :alt => object.name, class: "user_img") %>
     <% else %>
          <%= image_tag object.head_shot, :class => 'index_head_shot user_img' %>
