@@ -289,10 +289,22 @@ class Shift < ActiveRecord::Base
     return_params['date_for_calendar'] = form_filters['date'].empty? ? Date.today.strftime("%Y-%m-%d") : form_filters['date']
 
 
-    @shifts = Shift.all
+    @shifts = Shift.from_today(return_params['start_from_today']).with_meetings(return_params['include_meeting_shifts'])
+    @shifts = @shifts.by_holidays(return_params['show_only_holidays'])
+    @shifts = @shifts.by_shift_type(return_params['shift_types_to_show']).by_date(return_params['date_set_to_show'])
+    @shifts = @shifts.by_day_of_week(return_params['days_of_week_to_show']).by_users(return_params['hosts_to_show'])
+    @shifts = @shifts.by_unselected(return_params['show_only_unselected'])
+
+
     # TODO add filters to @shifts
 
-    @shifts = @shifts.with_meetings(return_params['include_meeting_shifts'])
+
+
+
+
+
+
+
 
 
     return_params['selectable_shifts'] = {}
