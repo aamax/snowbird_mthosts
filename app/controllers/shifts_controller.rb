@@ -38,13 +38,7 @@ class ShiftsController < ApplicationController
     }
 
     unless params['filter'].nil?
-      form_filters = {"start_from_today" => params['filter']["start_from_today"],
-                      "shifts_i_can_pick" => params['filter']["shifts_i_can_pick"],
-                      'shifttype' => params['filter']["shifttype"],
-                      'dayofweek' => params['filter']["dayofweek"],
-                      "hosts" => params['filter']["hosts"],
-                      "date" => params['filter']["date"],
-                      "date_for_calendar" => params['filter']['date_for_calendar']}
+      form_filters = params['filter']
     end
     form_filters ||= {"start_from_today" => '1',
                           "shifts_i_can_pick" => current_user.has_role?(:admin) ? '0' : '1',
