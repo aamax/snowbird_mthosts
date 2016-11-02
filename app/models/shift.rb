@@ -295,18 +295,6 @@ class Shift < ActiveRecord::Base
     @shifts = @shifts.by_day_of_week(return_params['days_of_week_to_show']).by_users(return_params['hosts_to_show'])
     @shifts = @shifts.by_unselected(return_params['show_only_unselected'])
 
-
-    # TODO add filters to @shifts
-
-
-
-
-
-
-
-
-
-
     return_params['selectable_shifts'] = {}
     @shifts.each do |shift|
       return_params['selectable_shifts'][shift.id] = "1" if shift.can_select(current_user)

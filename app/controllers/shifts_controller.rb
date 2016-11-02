@@ -37,14 +37,23 @@ class ShiftsController < ApplicationController
                       "date_for_calendar" => Date.today.strftime("%Y-%m-%d")
     }
 
-    params['filter'] ||= {"start_from_today" => '1',
+    unless params['filter'].nil?
+      form_filters = {"start_from_today" => params['filter']["start_from_today"],
+                      "shifts_i_can_pick" => params['filter']["shifts_i_can_pick"],
+                      'shifttype' => params['filter']["shifttype"],
+                      'dayofweek' => params['filter']["dayofweek"],
+                      "hosts" => params['filter']["hosts"],
+                      "date" => params['filter']["date"],
+                      "date_for_calendar" => params['filter']['date_for_calendar']}
+    end
+    form_filters ||= {"start_from_today" => '1',
                           "shifts_i_can_pick" => current_user.has_role?(:admin) ? '0' : '1',
                           'shifttype' => "", 'dayofweek' => {}, "hosts" => {},
-                          "date" => '', "" => Date.today.strftime("%Y-%m-%d")
+                          "date" => '', "date_for_calendar" => Date.today.strftime("%Y-%m-%d")
 
     }
 
-    @shifts = Shift.get_shifts_for_index(current_user, @return_params, params['filter'],
+    @shifts = Shift.get_shifts_for_index(current_user, @return_params, form_filters,
                   current_user.has_role?(:admin)).paginate(:page => params[:page], :per_page => per_page)
     @shifts
   end
