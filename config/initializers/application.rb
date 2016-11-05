@@ -10,7 +10,7 @@ HOLIDAYS = [Date.new(2016,12,24),
             Date.new(2016,12,31),
             Date.new(2017,1,1),
             Date.new(2017,1,16),
-            Date.new(2017,2,13)]
+            Date.new(2017,2,20)]
 
 MAX_EMAIL = 'aamaxworks@gmail.com'
 COTTER_EMAIL = 'jecotterii@gmail.com'
