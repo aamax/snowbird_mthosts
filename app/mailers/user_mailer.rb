@@ -11,7 +11,7 @@ class UserMailer < ActionMailer::Base
     end
 
     @user = toaddress
-    mail( :to => toaddress,
+    mail( :bcc => toaddress,
           :from => fromaddress,
           :reply_to => fromaddress,
           :subject => subject,
@@ -23,7 +23,7 @@ class UserMailer < ActionMailer::Base
 
 
     @user = toaddress
-    mail( :to => toaddress,
+    mail( :bcc => toaddress,
           :from => fromaddress,
           :reply_to => fromaddress,
           :subject => subject,
