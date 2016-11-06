@@ -29,7 +29,7 @@ class MailController < ApplicationController
     @subject = params[:mailmessage][:subject]
     @fromaddress = current_user.email if current_user #params[:mailmessage][:fromaddress]
     @fromaddress ||= params[:mailmessage][:fromaddress]
-    @message = "FROM: #{current_user.name}(#{current_user.email})\n\nTO: [#{params[:mailmessage][:toaddress]}]\n\n#{params[:mailmessage][:message]}"
+    @message = "FROM: #{current_user.name}(#{current_user.email})\n\n#{params[:mailmessage][:message]}"
 
     if params[:include_john] == '1'
       jemail = User.find_by_name('John Cotter').email
