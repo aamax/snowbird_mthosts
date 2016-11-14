@@ -351,33 +351,34 @@ class User < ActiveRecord::Base
     end
 
     if self.rookie?
-      if shadow_count < SHADOW_COUNT
-        msg << "#{shadow_count} of #{SHADOW_COUNT} selected.  Need #{SHADOW_COUNT - shadow_count} Shadow Shifts."
+      # if shadow_count < SHADOW_COUNT
+      #   msg << "#{shadow_count} of #{SHADOW_COUNT} selected.  Need #{SHADOW_COUNT - shadow_count} Shadow Shifts."
+      #
+      #   if all_shifts.count > 0
+      #     msg << "Shifts Only Before: #{self.first_non_shadow.strftime("%Y-%m-%d")}" unless self.first_non_shadow.nil?
+      #   end
+      # else
+      #   msg << "All Shadow Shifts Selected."
+      #
+      #   case round
+      #     when 0..4
+      #       limit = round * 5 + 4
+      #       limit = 20 if limit > 20
+      #       limit = 9 if limit == 4
+      #       if all_shifts.count < limit
+      #         msg << "#{all_shifts.count} of #{limit} Shifts Selected.  You need to pick #{limit - all_shifts.count}"
+      #       else
+      #         msg << "All required shifts selected for round #{round}. (#{all_shifts.count} of #{limit})"
+      #       end
+      #     else
+      #       if all_shifts.count < 20
+      #         msg << "#{all_shifts.count} of 20 Shifts Selected.  You need to pick #{20 - all_shifts.count}"
+      #       else
+      #         msg << "All required shifts selected." if has_holiday
+      #       end
+      #   end
+      # end
 
-        if all_shifts.count > 0
-          msg << "Shifts Only Before: #{self.first_non_shadow.strftime("%Y-%m-%d")}" unless self.first_non_shadow.nil?
-        end
-      else
-        msg << "All Shadow Shifts Selected."
-
-        case round
-          when 0..4
-            limit = round * 5 + 4
-            limit = 20 if limit > 20
-            limit = 9 if limit == 4
-            if all_shifts.count < limit
-              msg << "#{all_shifts.count} of #{limit} Shifts Selected.  You need to pick #{limit - all_shifts.count}"
-            else
-              msg << "All required shifts selected for round #{round}. (#{all_shifts.count} of #{limit})"
-            end
-          else
-            if all_shifts.count < 20
-              msg << "#{all_shifts.count} of 20 Shifts Selected.  You need to pick #{20 - all_shifts.count}"
-            else
-              msg << "All required shifts selected." if has_holiday
-            end
-        end
-      end
     else
       case round
         when 0
