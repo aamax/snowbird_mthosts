@@ -98,7 +98,7 @@ class Shift < ActiveRecord::Base
     types = []
 
     ShiftType.all.each do |st|
-      if sts.include? st.abbreviated_name
+      if sts.include? st.short_name
         types << st
       end
     end

@@ -197,10 +197,6 @@ class User < ActiveRecord::Base
     self.start_year <= HostConfig.group_1_year
   end
 
-  def group_1_only?
-    self.start_year <= HostConfig.group_1_year && !self.team_leader?
-  end
-
   def shadow_count(working_shifts=nil)
     iCnt = 0
     if working_shifts.nil?

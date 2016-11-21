@@ -16,6 +16,10 @@
             <%= f.check_box(:need_shifts, :checked => (params['filter']['need_shifts'] == '1')) %>
 
             <br/>
+            <strong>Only Team Leaders </strong>&nbsp;&nbsp;
+            <%= f.check_box(:team_leaders, :checked => (params['filter']['team_leaders'] == '1')) %>
+
+            <br/>
         <% end %>
           <br/>
         <%= f.submit 'Apply', :class=>"btn" %>
