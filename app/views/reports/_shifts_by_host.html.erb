@@ -7,6 +7,9 @@
             <br/>
             <strong>Only Needing Shifts </strong>&nbsp;&nbsp;
             <%= f.check_box(:need_shifts, :checked => false) %>
+            <br/>
+            <strong>Only Team Leaders </strong>&nbsp;&nbsp;
+            <%= f.check_box(:team_leaders, :checked => false) %>
 
         <% else %>
             <%= f.select("Seniority", @seniority, {:selected => params['filter']['Seniority'].reject {|e| e.empty?}},
@@ -25,7 +28,7 @@
         <%= f.submit 'Apply', :class=>"btn" %>
     <% end %>
 
-    <h1><%= @title %></h1>
+    <h1><%= @title %> (<%= @hosts.count %>)</h1>
     Download:
     <%= link_to "CSV", params.merge(:format => :csv) %> |
     <%= link_to "EXCEL", params.merge(:format => :xls) %>
