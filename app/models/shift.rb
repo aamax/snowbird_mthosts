@@ -26,10 +26,10 @@ class Shift < ActiveRecord::Base
 
   date_regex = /\A(19|20)\d\d[. -\/](0[1-9]|1[012])[. -\/](0[1-9]|[12][0-9]|3[01])\z/
 
-  validates   :shift_type_id,  :presence => true
+  validates :shift_type_id, :presence => true
 
   validates :shift_date, :presence => true,
-            :format => { :with => date_regex }
+            :format => {:with => date_regex}
 
   #default_scope :order => "shift_date asc, shift_type_id asc", :conditions => "shift_date >= '#{HostConfig.season_start_date}'"
 
@@ -41,9 +41,9 @@ class Shift < ActiveRecord::Base
   scope :last_year, -> {
     where("shifts.shift_date < '#{HostConfig.season_start_date}'").order("shifts.shift_date")
   }
-  scope :currentuser, lambda{|userid| where :user_id => userid}
-  scope :assigned,-> {
-      where("shifts.user_id is not null").order("shifts.shift_date")
+  scope :currentuser, lambda { |userid| where :user_id => userid }
+  scope :assigned, -> {
+    where("shifts.user_id is not null").order("shifts.shift_date")
   }
   scope :un_assigned, -> {
     where("shifts.user_id is null").order("shifts.shift_date")
@@ -56,9 +56,9 @@ class Shift < ActiveRecord::Base
   #      worked = 1
   #      pending = 1
   #      missed = -1
-  scope :currentuserworked, lambda{ |userid| where("user_id = #{userid} and shift_status = 1 and shift_date <= #{Date.today}")}
-  scope :currentuserpending, lambda{|userid| where("user_id = #{userid} and shift_status = 1 and shift_date > #{Date.today}") }
-  scope :currentusermissed, lambda{|userid| where :user_id => userid, :shift_status => -1}
+  scope :currentuserworked, lambda { |userid| where("user_id = #{userid} and shift_status = 1 and shift_date <= #{Date.today}") }
+  scope :currentuserpending, lambda { |userid| where("user_id = #{userid} and shift_status = 1 and shift_date > #{Date.today}") }
+  scope :currentusermissed, lambda { |userid| where :user_id => userid, :shift_status => -1 }
   scope :distinctDates, -> {
     where('distinct on (shift_date) shift_date, shift_type_id')
   }
@@ -69,7 +69,7 @@ class Shift < ActiveRecord::Base
       next if days[day_str].nil?
       user = User.find_by_name(user_name)
       unless user.nil?
-        shifts = Shift.team_leader_shifts.to_a.delete_if {|shift| !shift.user_id.nil? || shift.shift_date.cwday != days[day_str] }
+        shifts = Shift.team_leader_shifts.to_a.delete_if { |shift| !shift.user_id.nil? || shift.shift_date.cwday != days[day_str] }
         shifts.each do |s|
           s.user_id = user.id
           s.save
@@ -104,7 +104,7 @@ class Shift < ActiveRecord::Base
     end
 
     return scoped if types.nil? || (types.length == 0)
-    where("shift_type_id in (#{types.map {|t| t.id}.join(',')})")
+    where("shift_type_id in (#{types.map { |t| t.id }.join(',')})")
   end
 
   def self.by_date(dt)
@@ -132,7 +132,7 @@ class Shift < ActiveRecord::Base
     return scoped if flag == true
     return where("shift_type_id not in (#{types.join(',')})") if flag.nil?
 
-    types = ShiftType.where("short_name in ('M1', 'M2', 'M3', 'M4')").map {|st| st.id }
+    types = ShiftType.where("short_name in ('M1', 'M2', 'M3', 'M4')").map { |st| st.id }
 
     return scoped if (types.nil? || (types.length == 0))
     where("shift_type_id not in (#{types.join(',')})")
@@ -173,9 +173,9 @@ class Shift < ActiveRecord::Base
   end
 
   def is_tour?
-    ['P1','P2','P3','P4'].include? self.short_name
+    ['P1', 'P2', 'P3', 'P4'].include? self.short_name
   end
-  
+
   def shadow?
     self.short_name == "SH"
   end
@@ -189,7 +189,7 @@ class Shift < ActiveRecord::Base
   end
 
   def rookie_training_type?
-    ['G1','G2','G3','G4','C1','C2','C3','C4','H1','H2', 'H3', 'H4'].include? self.short_name
+    ['G1', 'G2', 'G3', 'G4', 'C1', 'C2', 'C3', 'C4', 'H1', 'H2', 'H3', 'H4'].include? self.short_name
   end
 
   def meeting?
@@ -197,14 +197,15 @@ class Shift < ActiveRecord::Base
   end
 
   def users_on_date
-    Shift.where(:shift_date => self.shift_date).to_a.delete_if {|s| s.short_name == 'SH' }.map {|s| s.user }.to_a.delete_if {|u| u.nil? }
+    Shift.where(:shift_date => self.shift_date).to_a.delete_if { |s| s.short_name == 'SH' }.map { |s| s.user }.to_a.delete_if { |u| u.nil? }
   end
 
   def can_select(test_user)
     retval = false
     if self.user_id.nil?
-      all_shifts =  test_user.shifts.to_a
-      working_shifts =  test_user.shifts.to_a.delete_if {|s| s.meeting? }
+      all_shifts = test_user.shifts.to_a
+      working_shifts = test_user.shifts.to_a.delete_if { |s| s.meeting? } # add scope to filter meetings out already
+
 
       return false if test_user.is_working?(self.shift_date, working_shifts)
       return true if test_user.admin?
@@ -221,6 +222,7 @@ class Shift < ActiveRecord::Base
       return false if (round <= 0) && (!test_user.rookie? && !test_user.trainer?)
 
       if test_user.rookie?
+
         last_shadow = test_user.last_shadow(working_shifts)
         return false if !self.shadow? && (last_shadow.nil? || (self.shift_date < last_shadow))
 
@@ -247,7 +249,7 @@ class Shift < ActiveRecord::Base
           if test_user.trainer?
             return false if all_shifts.count >= 20
             return true if self.trainer?
-            non_trainer_shift_count = working_shifts.delete_if {|s| s.trainer? }.count
+            non_trainer_shift_count = working_shifts.delete_if { |s| s.trainer? }.count
             return false if (non_trainer_shift_count >= (round * 5))
           else
             return false if (shift_count >= (round * 5))
@@ -283,9 +285,9 @@ class Shift < ActiveRecord::Base
     return_params['show_only_holidays'] = (form_filters['holiday_shifts'] == '1')
     return_params['include_meeting_shifts'] = (form_filters['show_meetings'] == '1')
     return_params['show_only_shifts_i_can_pick'] = (form_filters['shifts_i_can_pick'] == '1')
-    return_params['shift_types_to_show'] = form_filters['shifttype'].reject{ |e| e.empty? } unless form_filters['shifttype'] == ''
-    return_params['days_of_week_to_show'] = form_filters['dayofweek'].reject{ |e| e.empty? }
-    return_params['hosts_to_show'] = form_filters['hosts'].reject{ |e| e.empty? } if form_filters['hosts']
+    return_params['shift_types_to_show'] = form_filters['shifttype'].reject { |e| e.empty? } unless form_filters['shifttype'] == ''
+    return_params['days_of_week_to_show'] = form_filters['dayofweek'].reject { |e| e.empty? }
+    return_params['hosts_to_show'] = form_filters['hosts'].reject { |e| e.empty? } if form_filters['hosts']
     return_params['date_set_to_show'] = form_filters['date']
     return_params['date_for_calendar'] = form_filters['date'].empty? ? Date.today.strftime("%Y-%m-%d") : form_filters['date']
 
@@ -311,10 +313,9 @@ class Shift < ActiveRecord::Base
     else
       @shifts = @shifts.includes(:user).includes(:shift_type).order(:shift_date, :short_name)
     end
-    
+
     @shifts
   end
-
 
 
   private

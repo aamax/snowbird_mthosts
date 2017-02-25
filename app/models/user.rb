@@ -245,6 +245,7 @@ class User < ActiveRecord::Base
         iCnt += 1
         dt = s.shift_date
       end
+      return false if iCnt > 6
       next if dt.nil?
       return true if  (dt > shift_date)
     end
