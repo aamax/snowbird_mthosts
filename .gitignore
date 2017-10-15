@@ -81,3 +81,5 @@ pickle-email-*.html
 /config/initializers/config.rb
 
 /work/
+/shared
+/config/database.yml
