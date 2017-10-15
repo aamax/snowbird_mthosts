@@ -181,18 +181,18 @@ class User < ActiveRecord::Base
     self.start_year == HostConfig.season_year
   end
 
-  def group_3?
+  def group_3? # freshman
    # self.start_year <= HostConfig.group_3_year
     (self.start_year < HostConfig.season_year) && (self.start_year >= HostConfig.group_3_year)
 
   end
 
-  def group_2?
+  def group_2? # juniors
     #(self.start_year <= HostConfig.group_2_year) && (self.start_year > HostConfig.group_3_year)
     (self.start_year <= HostConfig.group_2_year) && (self.start_year > HostConfig.group_1_year)
   end
 
-  def group_1?
+  def group_1? #seniors
     #(self.start_year < HostConfig.season_year) && (self.start_year >= HostConfig.group_1_year)
     self.start_year <= HostConfig.group_1_year
   end

@@ -38,8 +38,13 @@
   <% else %>
     <%= object.active_user %>
   <% end %>
+  <br/><br/>
+
+  <strong>Roles:</strong>
+  <%= object.roles.map {|r| r.name }.join(", ") %>
   <br/>
 </td>
+
 <td>
   <strong>Start Date:</strong> <%= object.snowbird_start_year %> <br/>
   <strong>Seniority:</strong> <%= object.seniority %><br/>

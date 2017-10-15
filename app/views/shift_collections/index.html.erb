@@ -287,7 +287,8 @@
 
                 <%= select_tag "confirm[selected_shifts]",
                                @selected_shifts,
-                               {:multiple => true, :class=>"span2", :size=>19, :readonly=>"readonly"} %>
+                               {:multiple => true, :class=>"span2", :size=>19,
+                                :readonly=>"readonly"} %>
               </div>
 
               <div class="span2">
@@ -295,14 +296,18 @@
 
                 <%=  select_tag "confirm[selected_dates]",
                                 @selected_dates,
-                                {:multiple => true, :class=>"span2",:size=>19, :readonly=>"readonly"} %>
+                                {:multiple => true, :class=>"span2",:size=>19,
+                                 :readonly=>"readonly"} %>
 
               </div>
 
               <div class="span4">
                 <strong>Options</strong> <br/><br/>
                 <%= text_area_tag(:confirm_option,
-                                  "You have elected to add shifts to existing shifts. This is a safe way of populating shifts and will not destroy any shifts you've already set up.",
+                                  "IF you have elect to add shifts to existing shifts. It is a
+                                  safe way of populating shifts and will not destroy any shifts
+                                  you've already set up.   IF you selected option 1 you will
+                                  invasively replace shifts.",
                                   :readonly=>"readonly", :rows=>10, :class=>"span4") %>
               </div>
 

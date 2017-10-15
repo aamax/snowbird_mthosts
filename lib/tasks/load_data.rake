@@ -4,6 +4,25 @@ DEFAULT_PASSWORD = "password"
 
 namespace :db do
 
+  desc 'load 2017 rookies'
+  task :load_2017_rookies => :environment do
+    filename = "lib/data/rookies_2017.csv"
+
+    if File.exists?(filename)
+      puts "loading 2017 rookie data..."
+      CSV.foreach(filename, :headers => true) do |row|
+        hash = row.to_hash
+        usr = User.new(name: "#{hash['fname']} #{hash['lname']}", email: hash['email'],
+                       cell_phone: hash['phone'], street: hash['address'], password: '5teep&Deep')
+        if !usr.valid?
+          puts "\nERRROR in data:  #{usr.errors.messages}\n\n"
+          next
+        end
+        usr.save
+      end
+    end
+  end
+
   desc "load all data"
   task :load_all_data => :environment do
     Rake::Task['db:setup_sys_config'].invoke
@@ -82,7 +101,6 @@ namespace :db do
       puts "user loader file not found"
     end
   end
-
 
   desc "populate shift types"
   task :load_shift_types => :environment do
