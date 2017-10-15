@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 gem 'rails', '4.2.4'
-ruby '2.4.1'
+ruby '2.2.3'
 
 gem 'sass-rails',   '~> 4.0.5'
 gem 'coffee-rails', '~> 4.1.0'
@@ -46,7 +46,7 @@ gem 'angularjs-rails'  #, '~>1.2.26'
 gem 'gon'
 
 gem 'rollbar'
-gem 'puma'
+gem 'puma', ">= 3.10.0"
 
 
 group :development do

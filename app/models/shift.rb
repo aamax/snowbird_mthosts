@@ -34,7 +34,6 @@ class Shift < ActiveRecord::Base
   #default_scope :order => "shift_date asc, shift_type_id asc", :conditions => "shift_date >= '#{HostConfig.season_start_date}'"
 
   default_scope {
-    order("shift_date asc, shift_type_id asc")
     where("shift_date >= '#{HostConfig.season_start_date}'")
   }
 

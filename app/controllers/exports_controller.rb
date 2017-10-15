@@ -2,7 +2,7 @@ require 'csv'
 
 class ExportsController < ApplicationController
   def eoy_download
-    shifts = Shift.all
+    shifts = Shift.all.order(shift_date: :asc, shift_type_id: :asc)
     currentdt = ""
 
     csv_string = CSV.generate do |csv|
@@ -17,7 +17,7 @@ class ExportsController < ApplicationController
         currentdt = obj.shift_date
         status_value = (obj.shift_status_id == -1) ? "missed" : "worked"
         name = obj.user.nil? ? "UnSet" : obj.user.name
-        csv << [name, obj.day_of_week, obj.shift_date, obj.shift_type.short_name[0..1], obj.shift_type.description,
+        csv << [name, obj.day_of_week, obj.shift_date.strftime('%Y-%m-%d'), obj.shift_type.short_name[0..1], obj.shift_type.description,
                 obj.shift_type.tasks, status_value]
       end
     end
