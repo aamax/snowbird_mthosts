@@ -40,15 +40,15 @@ class UserMessageTest < ActiveSupport::TestCase
     @group3_user.shift_status_message.include?("No Selections Until #{HostUtility.date_for_round(@group3_user, 1)}.").must_equal true
   end
 
-  def test_report_shift_count_after_selection_rounds
-    config = SysConfig.first
-    config.bingo_start_date = HostUtility.bingo_start_for_round(@group1_user, 6)
-    config.save
-
-    @group1_user.shift_status_message.include?("2 of 20 Shifts Selected.  You need to pick 18").must_equal true
-    @group2_user.shift_status_message.include?("2 of 20 Shifts Selected.  You need to pick 18").must_equal true
-    @group3_user.shift_status_message.include?("2 of 20 Shifts Selected.  You need to pick 18").must_equal true
-  end
+  # def test_report_shift_count_after_selection_rounds
+  #   config = SysConfig.first
+  #   config.bingo_start_date = HostUtility.bingo_start_for_round(@group1_user, 6)
+  #   config.save
+  #
+  #   @group1_user.shift_status_message.include?("2 of 20 Shifts Selected.  You need to pick 18").must_equal true
+  #   @group2_user.shift_status_message.include?("2 of 20 Shifts Selected.  You need to pick 18").must_equal true
+  #   @group3_user.shift_status_message.include?("2 of 20 Shifts Selected.  You need to pick 18").must_equal true
+  # end
 
   def test_show_selection_counts_for_round_one_trainers
     config = SysConfig.first

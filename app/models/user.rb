@@ -197,16 +197,16 @@ class User < ActiveRecord::Base
     self.start_year <= HostConfig.group_1_year
   end
 
-  def shadow_count(working_shifts=nil)
-    iCnt = 0
-    if working_shifts.nil?
-      working_shifts = self.shifts
-    end
-    working_shifts.each do |s|
-      iCnt += 1 if s.shadow?
-    end
-    iCnt
-  end
+  # def shadow_count(working_shifts=nil)
+  #   iCnt = 0
+  #   if working_shifts.nil?
+  #     working_shifts = self.shifts
+  #   end
+  #   working_shifts.each do |s|
+  #     iCnt += 1 if s.shadow?
+  #   end
+  #   iCnt
+  # end
 
   def training_shift_count(working_shifts=nil)
     iCnt = 0
@@ -251,32 +251,32 @@ class User < ActiveRecord::Base
     return (iCnt < 6) || dt.nil?
   end
 
-  def first_non_shadow
-    dt = nil
-    self.shifts.each do |s|
-      if !s.shadow?
-        dt = s.shift_date
-        break
-      end
-    end
-    dt
-  end
+  # def first_non_shadow
+  #   dt = nil
+  #   self.shifts.each do |s|
+  #     if !s.shadow?
+  #       dt = s.shift_date
+  #       break
+  #     end
+  #   end
+  #   dt
+  # end
 
-  def last_shadow(working_shifts=nil)
-    dt = nil
-    iCnt = 0
-    if working_shifts.nil?
-      working_shifts = self.shifts
-    end
-    working_shifts.each do |s|
-      if s.shadow?
-        dt = s.shift_date if dt.nil? || (dt < s.shift_date)
-        iCnt += 1
-      end
-      break if iCnt >= SHADOW_COUNT
-    end
-    dt
-  end
+  # def last_shadow(working_shifts=nil)
+  #   dt = nil
+  #   iCnt = 0
+  #   if working_shifts.nil?
+  #     working_shifts = self.shifts
+  #   end
+  #   working_shifts.each do |s|
+  #     if s.shadow?
+  #       dt = s.shift_date if dt.nil? || (dt < s.shift_date)
+  #       iCnt += 1
+  #     end
+  #     break if iCnt >= SHADOW_COUNT
+  #   end
+  #   dt
+  # end
 
   def is_working?(shift_date, working_shifts=nil)
     if working_shifts.nil?

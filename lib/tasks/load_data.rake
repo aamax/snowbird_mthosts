@@ -12,8 +12,14 @@ namespace :db do
       puts "loading 2017 rookie data..."
       CSV.foreach(filename, :headers => true) do |row|
         hash = row.to_hash
-        usr = User.new(name: "#{hash['fname']} #{hash['lname']}", email: hash['email'],
+
+        usr = User.find_by(email: hash['email'])
+
+        usr ||= User.new(name: "#{hash['fname']} #{hash['lname']}", email: hash['email'],
                        cell_phone: hash['phone'], street: hash['address'], password: '5teep&Deep')
+        usr.active = true
+        usr.start_year = 2017
+        usr.snowbird_start_year = 2017
         if !usr.valid?
           puts "\nERRROR in data:  #{usr.errors.messages}\n\n"
           next
