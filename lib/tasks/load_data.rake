@@ -17,7 +17,7 @@ namespace :db do
 
         usr ||= User.new(name: "#{hash['fname']} #{hash['lname']}", email: hash['email'],
                        cell_phone: hash['phone'], street: hash['address'], password: '5teep&Deep')
-        usr.user_active = true
+        usr.active_user = true
         usr.start_year = 2017
         usr.snowbird_start_year = 2017
         if !usr.valid?
