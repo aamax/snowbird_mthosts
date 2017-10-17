@@ -1,11 +1,14 @@
 <% if current_user.has_role? :admin %>
     Team leaders: <%= @leaders.length %><br/>
-    Trainers: <%= @trainers.length %><br/>
     Seniors: <%= @senior.length %><br/>
     Juniors: <%= @junior.length %><br/>
     Freshmen: <%= @freshmen.length %><br/>
     Rookie: <%= @rookies.length %><br/>
     All: <%= @users.length %><br/>
+    <hr/>
+    Trainers: <%= @trainers.length %><br/>
+    Surveyors: <%= @surveyors.length %><br/>
+    <hr/>
 
     <h1>MISSING  (<%= @missing.count %>)</h1>
     <table class='table table-striped'>
@@ -90,6 +93,19 @@
       <tbody>
 
       <% @trainers.each do |u| %>
+          <tr id=<%= "user_record_#{u.id}" %> class='user_entry' >
+            <%= render 'user_index_entry', object: u %>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <hr/>
+
+    <h1>SURVEYORS(<%= @surveyors.count %>)</h1>
+    <table class='table table-striped'>
+      <tbody>
+
+      <% @surveyors.each do |u| %>
           <tr id=<%= "user_record_#{u.id}" %> class='user_entry' >
             <%= render 'user_index_entry', object: u %>
           </tr>

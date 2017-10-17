@@ -13,6 +13,8 @@
 
         Trainers: <%= User.active_users.to_a.delete_if {|u| !u.trainer? }.length %><br/>
 
+        Surveyors: <%= User.active_users.to_a.delete_if {|u| !u.surveyor? }.length %><br/>
+
         All Hosts: <%= User.includes(:shifts).active_users.to_a.delete_if {|u| u.supervisor? }.length %> <br/>
       </div>
     </div>

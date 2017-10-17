@@ -68,6 +68,7 @@ class UsersController < ApplicationController
     @senior =  User.group1.order(:name).to_a.delete_if {|u| u.team_leader? }.delete_if {|u| u.supervisor? }
     @leaders =  User.active_users.order(:name).to_a.delete_if {|u| !u.team_leader? }
     @trainers = User.active_users.order(:name).to_a.delete_if {|u| !u.has_role? :trainer}
+    @surveyors = User.active_users.order(:name).to_a.delete_if {|u| !u.has_role? :surveyor}
     @missing =  @users - (@rookies + @freshmen + @junior + @senior + @leaders)
   end
 

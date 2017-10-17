@@ -108,6 +108,18 @@ class User < ActiveRecord::Base
     retval
   end
 
+  def surveys
+    self.shifts.where(short_name: "SV")
+  end
+
+  def trainers
+    self.shifts.where(short_name: "TR")
+  end
+
+  def trainings
+    self.shifts.where("short_name in ('T1','T2','T3')")
+  end
+
   def address
     "#{self.street}, #{self.city}, #{self.state} #{self.zip}"
   end
