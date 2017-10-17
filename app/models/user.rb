@@ -120,6 +120,10 @@ class User < ActiveRecord::Base
     self.shifts.where("short_name in ('T1','T2','T3')")
   end
 
+  def team_leaders
+    self.shifts.where(short_name: "TL")
+  end
+
   def address
     "#{self.street}, #{self.city}, #{self.state} #{self.zip}"
   end
