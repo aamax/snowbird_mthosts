@@ -29,7 +29,7 @@ class ShiftType < ActiveRecord::Base
   #scope :distinctShifttypes, :select => ('distinct shortname')
 
   def self.team_lead_type
-    ShiftType.find_by_short_name('TL')
+    ShiftType.where("short_name in ('TL', 'P2weekday')")
   end
 
   def is_tour?

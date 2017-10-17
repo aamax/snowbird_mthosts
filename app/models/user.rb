@@ -121,7 +121,7 @@ class User < ActiveRecord::Base
   end
 
   def team_leaders
-    self.shifts.where(short_name: "TL")
+    self.shifts.where("shift_type_id in (#{ShiftType.team_lead_type.map(&:id).join(",")})")
   end
 
   def address
