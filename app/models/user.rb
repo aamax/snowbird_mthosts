@@ -173,6 +173,10 @@ class User < ActiveRecord::Base
     self.has_role? :team_leader
   end
 
+  def surveyor?
+    self.has_role? :surveyor
+  end
+
   def admin?
     self.has_role? :admin
   end

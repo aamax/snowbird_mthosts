@@ -205,7 +205,7 @@ class Shift < ActiveRecord::Base
   # end
 
   def meeting?
-    !/M[1-4]/.match(self.short_name[0]).nil?
+    !/M[1-4]/.match(self.short_name).nil?
   end
 
   def users_on_date
@@ -222,35 +222,36 @@ class Shift < ActiveRecord::Base
       return true if test_user.admin?
       return false if self.team_leader? && !test_user.team_leader?
       return false if self.trainer? && !test_user.trainer?
+      return false if self.survey? && !test_user.surveyor?
 
       bingo_start = HostConfig.bingo_start_date
       round = HostUtility.get_current_round(bingo_start, Date.today, test_user)
       shift_count = working_shifts.count
 
       return false if (round <= 4) && (all_shifts.count >= 20)
-      return false if (round < 1) && test_user.team_leader? && !self.team_leader?
-      return true if test_user.team_leader? # TODO May need to limit based on round count....
+      return true if test_user.team_leader?
       return false if (round <= 0) && (!test_user.rookie? && !test_user.trainer?)
 
       if test_user.rookie?
-        # shadow_count = test_user.shadow_count(working_shifts)
-        # if (shadow_count < SHADOW_COUNT)
-        #   return false if !self.shadow?
-        #   return true
-        # else
-        #   return false if self.shadow?
-        #   return false if (round < 3) && !self.rookie_training_type?
-        #   return false if (round <= 0) && (all_shifts.count >= 9)
-        #
-        #   if round < 5
-        #     return false if ((shift_count) >= (round * 5)) && (round > 0)
-        #     return false if (round == 4) && (all_shifts.count >= 20)
-        #   end
-        #
-        #   unless self.rookie_training_type?
-        #     return false if test_user.not_done_training(self.shift_date, working_shifts)
-        #   end
-        # end
+        training_shifts = working_shifts.delete_if {|s| !s.training? }.map {|s| s.short_name}
+        if training_shifts.count < 3
+          return false unless self.training?
+          return false if training_shifts.include? self.short_name
+          return false if !training_shifts.include?('T1') && (self.short_name != 'T1')
+        else
+          return false if self.training?
+        end
+
+        if self.is_tour?
+          return false if (self.shift_date < rookie_tour_date(HostConfig.bingo_start_date))
+          return false if self.team_leader?
+        end
+
+        if round <= 0
+          return false if shift_count >= 3
+        elsif round < 5
+          return false if ((shift_count) >= (round * 5) + 3)
+        end
       else
         if round < 5
           if test_user.trainer?
@@ -258,6 +259,11 @@ class Shift < ActiveRecord::Base
             return true if self.trainer?
             non_trainer_shift_count = working_shifts.delete_if {|s| s.trainer? }.count
             return false if (non_trainer_shift_count >= (round * 5))
+          elsif test_user.surveyor?
+              return false if all_shifts.count >= 20
+              return true if self.survey?
+              non_surveyor_shift_count = working_shifts.delete_if {|s| s.survey? }.count
+              return false if (non_surveyor_shift_count >= (round * 5))
           else
             return false if (shift_count >= (round * 5))
           end
@@ -390,5 +396,11 @@ class Shift < ActiveRecord::Base
   def set_short_name
     self.short_name = self.shift_type.short_name[0..1].upcase
   end
+
+  def rookie_tour_date(season_start_date)
+    yr = season_start_date.year + 1
+    Date.parse("#{yr}-02-01")
+  end
+
 
 end

@@ -19,6 +19,12 @@ namespace :db do
       @team_leader = FactoryGirl.create(:user, name: 'teamlead', start_year: 2005 , active_user: true, confirmed: true)
       @team_leader.add_role :team_leader
 
+      @surveyor = FactoryGirl.create(:user, name: 'surveyor', start_year: 2005 , active_user: true, confirmed: true)
+      @surveyor.add_role :surveyor
+
+      @trainer = FactoryGirl.create(:user, name: 'trainer', start_year: 2005 , active_user: true, confirmed: true)
+      @trainer.add_role :trainer
+
       puts User.all.count
 
       User.all.each do |u|
@@ -26,6 +32,8 @@ namespace :db do
       end
 
       @tl = FactoryGirl.create(:shift_type, short_name: 'TL')
+      @sv = FactoryGirl.create(:shift_type, short_name: 'SV')
+      @tr = FactoryGirl.create(:shift_type, short_name: 'TR')
       @sh = FactoryGirl.create(:shift_type, short_name: 'SH')
       @p1 = FactoryGirl.create(:shift_type, short_name: 'P1')
       @p2 = FactoryGirl.create(:shift_type, short_name: 'P2')
@@ -43,6 +51,10 @@ namespace :db do
       @c2 = FactoryGirl.create(:shift_type, short_name: 'C2weekend')
       @c3 = FactoryGirl.create(:shift_type, short_name: 'C3weekend')
       @c4 = FactoryGirl.create(:shift_type, short_name: 'C4weekend')
+      @m1 = FactoryGirl.create(:shift_type, short_name: 'M1')
+      @m2 = FactoryGirl.create(:shift_type, short_name: 'M2')
+      @m3 = FactoryGirl.create(:shift_type, short_name: 'M3')
+      @m4 = FactoryGirl.create(:shift_type, short_name: 'M4')
 
       @start_date = (Date.today()  + 20.days)
       curr_date = @start_date - 1.day
@@ -66,9 +78,9 @@ namespace :db do
         FactoryGirl.create(:shift, shift_date: curr_date, shift_type_id: @c1.id)
         FactoryGirl.create(:shift, shift_date: curr_date, shift_type_id: @c2.id)
         FactoryGirl.create(:shift, shift_date: curr_date, shift_type_id: @tl.id)
-        FactoryGirl.create(:shift, shift_date: curr_date, shift_type_id: @sh.id)
-        FactoryGirl.create(:shift, shift_date: curr_date, shift_type_id: @sh.id)
       end
+
+      User.populate_meetings
     end
   end
 end
