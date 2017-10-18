@@ -373,8 +373,9 @@ class ShiftsHelperTest < ActionView::TestCase
 
       it 'surveyor shifts should not count against host quota' do
         @s_shifts.each do |ts|
-          ts.user_id = @surveyor.id
-          ts.save!
+          # ts.user_id = @surveyor.id
+          # ts.save!
+          @surveyor.shifts << ts
         end
         @surveyor.shifts.count.must_equal 7
 
@@ -386,6 +387,30 @@ class ShiftsHelperTest < ActionView::TestCase
         end
 
         @surveyor.shifts.count.must_equal 17
+      end
+
+      it 'survey hosts can pick a max of 9 survey shifts during bingo' do
+        @sys_config.bingo_start_date = @round4_date
+        @sys_config.save!
+        (1..5).each do |n|
+          @survey_shift = FactoryGirl.create(:shift, :shift_date => Date.today + 6.weeks + n.days,
+                                             :shift_type_id => @sh.id, :user_id => nil)
+          @s_shifts << @survey_shift
+        end
+        @s_shifts.each do |ts|
+          next unless ts.can_select(@surveyor)
+          @surveyor.shifts << ts
+        end
+        @surveyor.shifts.count.must_equal 11
+
+        Shift.all.each do |s|
+          can_select = s.can_select(@surveyor)
+          if can_select
+            @surveyor.shifts << s if can_select
+          end
+        end
+
+        @surveyor.shifts.count.must_equal 20
       end
     end
 

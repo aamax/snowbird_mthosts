@@ -15,11 +15,11 @@
 require "test_helper"
 
 class ShiftLogTest < ActiveSupport::TestCase
-  def shift_log
-    @shift_log ||= ShiftLog.new
-  end
-
-  def test_valid
-    assert shift_log.valid?
-  end
+  # def shift_log
+  #   @shift_log ||= ShiftLog.new
+  # end
+  #
+  # def test_valid
+  #   assert shift_log.valid?
+  # end
 end

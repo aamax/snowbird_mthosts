@@ -184,7 +184,6 @@ class User < ActiveRecord::Base
     missed
   end
 
-
   def team_leader?
     self.has_role? :team_leader
   end
@@ -204,7 +203,6 @@ class User < ActiveRecord::Base
   def group_3? # freshman
    # self.start_year <= HostConfig.group_3_year
     (self.start_year < HostConfig.season_year) && (self.start_year >= HostConfig.group_3_year)
-
   end
 
   def group_2? # juniors
@@ -216,87 +214,6 @@ class User < ActiveRecord::Base
     #(self.start_year < HostConfig.season_year) && (self.start_year >= HostConfig.group_1_year)
     self.start_year <= HostConfig.group_1_year
   end
-
-  # def shadow_count(working_shifts=nil)
-  #   iCnt = 0
-  #   if working_shifts.nil?
-  #     working_shifts = self.shifts
-  #   end
-  #   working_shifts.each do |s|
-  #     iCnt += 1 if s.shadow?
-  #   end
-  #   iCnt
-  # end
-
-  def training_shift_count(working_shifts=nil)
-    iCnt = 0
-    if working_shifts.nil?
-      working_shifts = self.shifts
-    end
-    working_shifts.each do |s|
-      iCnt += 1 if s.rookie_training_type?
-      break if iCnt >= 6
-    end
-    iCnt
-  end
-
-  def last_training_date(working_shifts=nil)
-    iCnt = 0
-    dt = nil
-    if working_shifts.nil?
-      working_shifts = self.shifts
-    end
-    working_shifts.each do |s|
-      if s.rookie_training_type?
-        iCnt += 1
-        dt = s.shift_date
-      end
-
-      break if iCnt >= 6
-    end
-    dt
-  end
-
-  def not_done_training(shift_date, working_shifts)
-    iCnt = 0
-    dt = nil
-    working_shifts.each do |s|
-      if s.rookie_training_type?
-        iCnt += 1
-        dt = s.shift_date
-      end
-      next if dt.nil?
-      return true if  (dt > shift_date)
-    end
-    return (iCnt < 6) || dt.nil?
-  end
-
-  # def first_non_shadow
-  #   dt = nil
-  #   self.shifts.each do |s|
-  #     if !s.shadow?
-  #       dt = s.shift_date
-  #       break
-  #     end
-  #   end
-  #   dt
-  # end
-
-  # def last_shadow(working_shifts=nil)
-  #   dt = nil
-  #   iCnt = 0
-  #   if working_shifts.nil?
-  #     working_shifts = self.shifts
-  #   end
-  #   working_shifts.each do |s|
-  #     if s.shadow?
-  #       dt = s.shift_date if dt.nil? || (dt < s.shift_date)
-  #       iCnt += 1
-  #     end
-  #     break if iCnt >= SHADOW_COUNT
-  #   end
-  #   dt
-  # end
 
   def is_working?(shift_date, working_shifts=nil)
     if working_shifts.nil?
@@ -350,6 +267,14 @@ class User < ActiveRecord::Base
     retval
   end
 
+  def survey_shift_count
+    self.shifts.where(short_name: 'SV').count
+  end
+
+  def trainer_shift_count
+    self.shifts.where(short_name: 'TR').count
+  end
+
   def shift_status_message
     msg = []
     day_offset = get_day_offset
@@ -359,7 +284,6 @@ class User < ActiveRecord::Base
     all_shifts = self.shifts
 
     msg << "You are currently in <strong>round #{round}</strong>." if round < 5
-    msg << "You have #{num_selected} shifts selected."
     if has_holiday == true
       msg << "A <strong>Holiday Shift</strong> has been selected." #if round < 5
     else
@@ -367,58 +291,10 @@ class User < ActiveRecord::Base
     end
 
     if self.rookie?
-      # if shadow_count < SHADOW_COUNT
-      #   msg << "#{shadow_count} of #{SHADOW_COUNT} selected.  Need #{SHADOW_COUNT - shadow_count} Shadow Shifts."
-      #
-      #   if all_shifts.count > 0
-      #     msg << "Shifts Only Before: #{self.first_non_shadow.strftime("%Y-%m-%d")}" unless self.first_non_shadow.nil?
-      #   end
-      # else
-      #   msg << "All Shadow Shifts Selected."
-      #
-      #   case round
-      #     when 0..4
-      #       limit = round * 5 + 4
-      #       limit = 20 if limit > 20
-      #       limit = 9 if limit == 4
-      #       if all_shifts.count < limit
-      #         msg << "#{all_shifts.count} of #{limit} Shifts Selected.  You need to pick #{limit - all_shifts.count}"
-      #       else
-      #         msg << "All required shifts selected for round #{round}. (#{all_shifts.count} of #{limit})"
-      #       end
-      #     else
-      #       if all_shifts.count < 20
-      #         msg << "#{all_shifts.count} of 20 Shifts Selected.  You need to pick #{20 - all_shifts.count}"
-      #       else
-      #         msg << "All required shifts selected." if has_holiday
-      #       end
-      #   end
-      # end
-
+      rookie_training_message(all_shifts, round, msg)
+      rookie_selection_message(all_shifts, round,msg)
     else
-      case round
-        when 0
-          msg << "No Selections Until #{HostConfig.bingo_start_date + day_offset.days}."
-        when 1..4
-          trshifts = 0
-          if self.trainer?
-            trshifts = self.shifts.to_a.delete_if {|sh| !sh.trainer? }.count
-          end
-          limit = round * 5 + 2 + trshifts
-          limit = 20 if limit > 20
-
-          if all_shifts.count < limit
-            msg << "#{all_shifts.count} of #{limit} Shifts Selected.  You need to pick #{limit - all_shifts.count}"
-          else
-            msg << "All required shifts selected for round #{round}. (#{all_shifts.count} of #{limit})"
-          end
-        else
-          if num_selected < 20
-            msg << "#{all_shifts.count} of 20 Shifts Selected.  You need to pick #{20 - all_shifts.count}"
-          else
-            msg << "All required shifts selected." if has_holiday
-          end
-      end
+      host_selection_message(all_shifts, round, day_offset, msg)
     end
     msg
   end
@@ -480,6 +356,77 @@ class User < ActiveRecord::Base
     self.shifts.each do |s|
       s.user_id = nil
       s.save
+    end
+  end
+
+
+  def rookie_training_message(all_shifts, round, msg)
+    tshifts = all_shifts.where("short_name in ('T1', 'T2', 'T3')").map(&:short_name).uniq
+
+    if tshifts.length == 3
+      msg << "You have selected all your training shifts"
+      return
+    end
+
+    if tshifts.count == 0
+      msg << "You have not selected any training shifts"
+      return
+    end
+
+    msg << "You need to select a T1 shift" unless tshifts.include? 'T1'
+    msg << "You need to select a T2 shift" unless tshifts.include? 'T2'
+    msg << "You need to select a T3 shift" unless tshifts.include? 'T3'
+  end
+
+  def rookie_selection_message(all_shifts, round, msg)
+    case round
+      when 0
+        msg << "You have #{all_shifts.count} of 7 shifts selected"
+      when 1..2
+        limit = 7 + (round * 5)
+        msg << "You have #{all_shifts.count} of #{limit} shifts selected"
+      when 3..4
+        if all_shifts.count < 20
+          msg << "You have #{all_shifts.count} of 20 shifts selected"
+        else
+          msg << "You have 20 shifts selected"
+        end
+      else
+        if all_shifts.count < 20
+          msg << "#{all_shifts.count} of 20 Shifts Selected.  You need to pick #{20 - all_shifts.count}"
+        else
+          msg << "You have at least 20 shifts selected"
+        end
+    end
+  end
+
+  def host_selection_message(all_shifts, round, day_offset, msg)
+    if self.surveyor?
+      msg << "#{self.survey_shift_count} of 9 surveyor shifts selected"
+    end
+
+    case round
+      when 0
+        msg << "No Selections Until #{HostConfig.bingo_start_date + day_offset.days}."
+      when 1..4
+        trshifts = 0
+        if self.trainer?
+          trshifts = self.shifts.to_a.delete_if {|sh| !sh.trainer? }.count
+        end
+        limit = round * 5 + 2 + trshifts
+        limit = 20 if limit > 20
+
+        if all_shifts.count < limit
+          msg << "#{all_shifts.count} of #{limit} Shifts Selected.  You need to pick #{limit - all_shifts.count}"
+        else
+          msg << "All required shifts selected for round #{round}. (#{all_shifts.count} of #{limit})"
+        end
+      else
+        if all_shifts.count < 20
+          msg << "#{all_shifts.count} of 20 Shifts Selected.  You need to pick #{20 - all_shifts.count}"
+        else
+          msg << "You have at least 20 shifts selected"
+        end
     end
   end
 

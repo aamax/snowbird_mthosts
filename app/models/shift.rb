@@ -49,7 +49,7 @@ class Shift < ActiveRecord::Base
     where("shifts.user_id is null").order("shifts.shift_date")
   }
   scope :team_leader_shifts, -> {
-    where("shifts.shift_type_id = #{ShiftType.team_lead_type.id}")
+    where("shifts.shift_type_id in (#{ShiftType.team_lead_type.map(&:id).join(',')})")
   }
 
   # shift status values:
@@ -223,15 +223,19 @@ class Shift < ActiveRecord::Base
       return true if test_user.admin?
       return false if self.team_leader? && !test_user.team_leader?
       return false if self.trainer? && !test_user.trainer?
-      return false if self.survey? && !test_user.surveyor?
 
       bingo_start = HostConfig.bingo_start_date
       round = HostUtility.get_current_round(bingo_start, Date.today, test_user)
       shift_count = working_shifts.count
 
+      if self.survey?
+        return false if !test_user.surveyor?
+        return false if (round < 5) && (test_user.survey_shift_count >= MAX_SURVEY_COUNT)
+      end
+
       return false if (round <= 4) && (all_shifts.count >= 20)
       return true if test_user.team_leader?
-      return false if (round <= 0) && (!test_user.rookie? && !test_user.trainer?)
+      return false if (round <= 0) && (!test_user.rookie? && !test_user.trainer? && !test_user.surveyor?)
 
       if test_user.rookie?
         training_shifts = working_shifts.delete_if {|s| !s.training? }.map {|s| s.short_name}
@@ -329,65 +333,65 @@ class Shift < ActiveRecord::Base
     @shifts
   end
 
-  def can_select_2016(test_user)
-    retval = false
-    if self.user_id.nil?
-      all_shifts =  test_user.shifts.to_a
-      working_shifts =  test_user.shifts.to_a.delete_if {|s| s.meeting? }
-
-      return false if test_user.is_working?(self.shift_date, working_shifts)
-      return true if test_user.admin?
-      return false if self.shadow? && !test_user.rookie?
-      return false if self.team_leader? && !test_user.team_leader?
-      return false if self.trainer? && !test_user.trainer?
-
-      bingo_start = HostConfig.bingo_start_date
-      round = HostUtility.get_current_round(bingo_start, Date.today, test_user)
-      shift_count = working_shifts.count
-
-      return false if (round <= 4) && (all_shifts.count >= 20)
-      return true if test_user.team_leader?
-      return false if (round <= 0) && (!test_user.rookie? && !test_user.trainer?)
-
-      if test_user.rookie?
-        last_shadow = test_user.last_shadow(working_shifts)
-        return false if !self.shadow? && (last_shadow.nil? || (self.shift_date < last_shadow))
-
-        shadow_count = test_user.shadow_count(working_shifts)
-        if (shadow_count < SHADOW_COUNT)
-          return false if !self.shadow?
-          return true
-        else
-          return false if self.shadow?
-          return false if (round < 3) && !self.rookie_training_type?
-          return false if (round <= 0) && (all_shifts.count >= 9)
-
-          if round < 5
-            return false if ((shift_count) >= (round * 5)) && (round > 0)
-            return false if (round == 4) && (all_shifts.count >= 20)
-          end
-
-          unless self.rookie_training_type?
-            return false if test_user.not_done_training(self.shift_date, working_shifts)
-          end
-        end
-      else
-        if round < 5
-          if test_user.trainer?
-            return false if all_shifts.count >= 20
-            return true if self.trainer?
-            non_trainer_shift_count = working_shifts.delete_if {|s| s.trainer? }.count
-            return false if (non_trainer_shift_count >= (round * 5))
-          else
-            return false if (shift_count >= (round * 5))
-          end
-        end
-      end
-      retval = true
-
-    end
-    retval
-  end
+  # def can_select_2016(test_user)
+  #   retval = false
+  #   if self.user_id.nil?
+  #     all_shifts =  test_user.shifts.to_a
+  #     working_shifts =  test_user.shifts.to_a.delete_if {|s| s.meeting? }
+  #
+  #     return false if test_user.is_working?(self.shift_date, working_shifts)
+  #     return true if test_user.admin?
+  #     return false if self.shadow? && !test_user.rookie?
+  #     return false if self.team_leader? && !test_user.team_leader?
+  #     return false if self.trainer? && !test_user.trainer?
+  #
+  #     bingo_start = HostConfig.bingo_start_date
+  #     round = HostUtility.get_current_round(bingo_start, Date.today, test_user)
+  #     shift_count = working_shifts.count
+  #
+  #     return false if (round <= 4) && (all_shifts.count >= 20)
+  #     return true if test_user.team_leader?
+  #     return false if (round <= 0) && (!test_user.rookie? && !test_user.trainer?)
+  #
+  #     if test_user.rookie?
+  #       last_shadow = test_user.last_shadow(working_shifts)
+  #       return false if !self.shadow? && (last_shadow.nil? || (self.shift_date < last_shadow))
+  #
+  #       shadow_count = test_user.shadow_count(working_shifts)
+  #       if (shadow_count < SHADOW_COUNT)
+  #         return false if !self.shadow?
+  #         return true
+  #       else
+  #         return false if self.shadow?
+  #         return false if (round < 3) && !self.rookie_training_type?
+  #         return false if (round <= 0) && (all_shifts.count >= 9)
+  #
+  #         if round < 5
+  #           return false if ((shift_count) >= (round * 5)) && (round > 0)
+  #           return false if (round == 4) && (all_shifts.count >= 20)
+  #         end
+  #
+  #         unless self.rookie_training_type?
+  #           return false if test_user.not_done_training(self.shift_date, working_shifts)
+  #         end
+  #       end
+  #     else
+  #       if round < 5
+  #         if test_user.trainer?
+  #           return false if all_shifts.count >= 20
+  #           return true if self.trainer?
+  #           non_trainer_shift_count = working_shifts.delete_if {|s| s.trainer? }.count
+  #           return false if (non_trainer_shift_count >= (round * 5))
+  #         else
+  #           return false if (shift_count >= (round * 5))
+  #         end
+  #       end
+  #     end
+  #     retval = true
+  #
+  #   end
+  #   retval
+  # end
 
   private
   def set_day_of_week

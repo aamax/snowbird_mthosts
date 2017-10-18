@@ -12,6 +12,8 @@ HOLIDAYS = [Date.new(2017,12,24),
             Date.new(2018,1,15),
             Date.new(2018,2,19)]
 
+MAX_SURVEY_COUNT = 9
+
 MAX_EMAIL = 'aamaxworks@gmail.com'
 COTTER_EMAIL = 'jecotterii@gmail.com'
 
