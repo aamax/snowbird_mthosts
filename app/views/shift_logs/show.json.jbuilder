@@ -1,0 +1,1 @@
+json.partial! "shift_logs/shift_log", shift_log: @shift_log

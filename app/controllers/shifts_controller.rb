@@ -18,7 +18,6 @@ class ShiftsController < ApplicationController
   authorize_resource
   load_resource :except => [:index]
 
-
   respond_to :html, :json, :js
 
   def index
@@ -55,14 +54,19 @@ class ShiftsController < ApplicationController
   def destroy
     if !Shift.destroy(params[:id])
       flash[:alert] = "Error destroying shift."
+      log_shift_destroy(params[:id], "failed", current_user)
+    else
+      log_shift_destroy(params[:id], "success", current_user)
     end
     redirect_to :back
   end
 
   def drop_shift
     s = Shift.find(params[:id])
+    log_shift_dropped(s, current_user)
     s.user_id = nil
     s.save
+
     redirect_to :back
   end
 
@@ -71,6 +75,7 @@ class ShiftsController < ApplicationController
     if s.user_id.nil?
       s.user_id = current_user.id
       s.save
+      log_shift_selected(s, current_user)
     else
       redirect_to "/shifts", :alert => "Sorry - this shift has already been taken. Please try a different shift"
       return
@@ -104,18 +109,19 @@ class ShiftsController < ApplicationController
   end
 
   def update
+    previous_user_id = @shift.user_id
     if @shift.update_attributes(params[:shift])
       flash[:success] = "Shift updated."
-
+      log_shift_update(previous_user_id, @shift, current_user)
       redirect_to shifts_path #+ "?" + strParams
       return
     else
       @title = "Edit Shift"
-      flash[:failure] = "ERROR: shift not updated."
+      flash[:failure] = "ERROR: shift not updated. #{@shift.errors.messages}"
+      log_shift_failed_update(@shift, params[:shift], current_user)
       render 'edit'
       return
     end
-
 
     # TODO add code to preserve params for shifts index filter
     #@params = {:filter=>params[:shift][:filter]}.to_param unless params[:shift].nil?
@@ -216,5 +222,40 @@ class ShiftsController < ApplicationController
   def assign_team_leaders
     Shift.assign_team_leaders(params)
     redirect_to shifts_path # TODO just show TL shifts
+  end
+
+  private
+  def log_shift_destroy(shift_id, result_msg, user)
+    ShiftLog.create(change_date: DateTime.now, user_id: user.id,
+                  shift_id: shift_id, action_taken: "Delete Shift", note: result_msg)
+  end
+
+  def log_shift_dropped(shift, user_dropping)
+    shift_str = "#{shift.id}:#{shift.short_name}:#{shift.shift_date}"
+    ShiftLog.create(change_date: DateTime.now, user_id: user_dropping.id,
+                    shift_id: shift.id, action_taken: "Dropped Shift",
+                    note: "#{user_dropping.name} DROPPED shift #{shift_str} for user: #{shift.user.name}")
+  end
+
+  def log_shift_selected(shift, user_selecting)
+    shift_str = "#{shift.id}:#{shift.short_name}:#{shift.shift_date}"
+    ShiftLog.create(change_date: DateTime.now, user_id: user_selecting.id,
+                    shift_id: shift.id, action_taken: "Selected Shift",
+                    note: "#{user_selecting.name} SELECTED shift #{shift_str} for user: #{shift.user.name}")
+  end
+
+  def log_shift_update(previous_user_id, shift, user)
+    prev_user = User.find(previous_user_id)
+    shift_str = "#{shift.id}:#{shift.short_name}:#{shift.shift_date}"
+    ShiftLog.create(change_date: DateTime.now, user_id: user.id,
+                    shift_id: shift.id, action_taken: "Updated Shift",
+                    note: "#{user.name} UPDATED shift #{shift_str} set from: #{prev_user.name} to user: #{shift.user.name}")
+  end
+
+  def log_shift_failed_update(shift, shift_hash, user)
+    shift_str = "#{shift.id}:#{shift.short_name}:#{shift.shift_date}"
+    ShiftLog.create(change_date: DateTime.now, user_id: user.id,
+                shift_id: shift_id, action_taken: "Failed Updating Shift",
+                note: "#{user.name} FAILED TO UPDATE shift #{shift_str} set from: #{prev_user.name} with hash: #{shift_hash.inspect}")
   end
 end

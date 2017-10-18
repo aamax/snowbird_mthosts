@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Change date:</strong>
+  <%= @shift_log.change_date %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @shift_log.user_id %>
+</p>
+
+<p>
+  <strong>Shift:</strong>
+  <%= @shift_log.shift_id %>
+</p>
+
+<p>
+  <strong>Action taken:</strong>
+  <%= @shift_log.action_taken %>
+</p>
+
+<p>
+  <strong>Note:</strong>
+  <%= @shift_log.note %>
+</p>
+
+<%= link_to 'Edit', edit_shift_log_path(@shift_log) %> |
+<%= link_to 'Back', shift_logs_path %>

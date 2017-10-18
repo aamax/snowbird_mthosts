@@ -21,6 +21,7 @@ class Shift < ActiveRecord::Base
 
   before_save :set_day_of_week, :set_short_name
 
+
   belongs_to :user
   belongs_to :shift_type
 

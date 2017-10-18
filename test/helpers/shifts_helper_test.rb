@@ -185,6 +185,7 @@ class ShiftsHelperTest < ActionView::TestCase
 
         Shift.all.each do |s|
           next if s.meeting?
+
           if (!@team_leader.is_working?(s.shift_date) && !s.trainer? && !s.training? && !s.survey? && @team_leader.shifts.count < 20)
             s.can_select(@team_leader).must_equal true
             @team_leader.shifts << s
@@ -193,6 +194,9 @@ class ShiftsHelperTest < ActionView::TestCase
           end
         end
         (@team_leader.shifts.count <= 20).must_equal true
+
+        new_shift = FactoryGirl.create(:shift, shift_type_id: @tl.id, shift_date: @team_leader.shifts.map(&:shift_date).max + 1.day)
+        new_shift.can_select(@team_leader).must_equal false
       end
     end
 

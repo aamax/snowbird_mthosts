@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Shift Logs</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Change date</th>
+      <th>User</th>
+      <th>Shift</th>
+      <th>Action taken</th>
+      <th>Note</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @shift_logs.each do |shift_log| %>
+      <tr>
+        <td><%= shift_log.change_date %></td>
+        <td><%= shift_log.user_id %></td>
+        <td><%= shift_log.shift_id %></td>
+        <td><%= shift_log.action_taken %></td>
+        <td><%= shift_log.note %></td>
+        <td><%= link_to 'Show', shift_log %></td>
+        <td><%= link_to 'Edit', edit_shift_log_path(shift_log) %></td>
+        <td><%= link_to 'Destroy', shift_log, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Shift log', new_shift_log_path %>

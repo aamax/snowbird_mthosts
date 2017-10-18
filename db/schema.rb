@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151008012913) do
+ActiveRecord::Schema.define(version: 20171017233702) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,16 @@ ActiveRecord::Schema.define(version: 20151008012913) do
 
   add_index "roles", ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id", using: :btree
   add_index "roles", ["name"], name: "index_roles_on_name", using: :btree
+
+  create_table "shift_logs", force: :cascade do |t|
+    t.datetime "change_date"
+    t.integer  "user_id"
+    t.integer  "shift_id"
+    t.string   "action_taken"
+    t.text     "note"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
 
   create_table "shift_types", force: :cascade do |t|
     t.string   "short_name",  limit: 255, null: false

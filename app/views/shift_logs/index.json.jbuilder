@@ -1,0 +1,1 @@
+json.array! @shift_logs, partial: 'shift_logs/shift_log', as: :shift_log

@@ -1,4 +1,5 @@
 Mthost::Application.routes.draw do
+  resources :shift_logs
   devise_for :users
 
   resources :users
