@@ -51,7 +51,7 @@ class UserMessageTest < ActiveSupport::TestCase
     end
     (@group1_user.shifts.count >= 20).must_equal true
     msgs = @group1_user.shift_status_message
-    msgs.include?("All required shifts selected")
+    msgs.include?("You have at least 20 shifts selected").must_equal true
   end
 
   def test_round_one_status_messages

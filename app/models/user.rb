@@ -275,6 +275,10 @@ class User < ActiveRecord::Base
     self.shifts.where(short_name: 'TR').count
   end
 
+  def team_leader_shift_count
+    team_leaders.count
+  end
+
   def shift_status_message
     msg = []
     day_offset = get_day_offset
@@ -403,6 +407,10 @@ class User < ActiveRecord::Base
   def host_selection_message(all_shifts, round, day_offset, msg)
     if self.surveyor?
       msg << "#{self.survey_shift_count} of 9 surveyor shifts selected"
+    end
+
+    if self.team_leader?
+      msg << "#{self.team_leader_shift_count} team leader shifts selected"
     end
 
     case round

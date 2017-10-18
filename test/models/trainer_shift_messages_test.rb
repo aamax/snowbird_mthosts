@@ -27,7 +27,7 @@ class TrainerMessageTest < ActiveSupport::TestCase
       (@trainer.shifts.count == 20).must_equal true
       (@trainer.trainer_shift_count == 18).must_equal true
       msgs = @trainer.shift_status_message
-      msgs.include?("No Selections Until #{@sys_config.bingo_start_date}.")
+      msgs.include?("No Selections Until #{@sys_config.bingo_start_date}.").must_equal true
     end
 
     def test_show_surveyor_shift_count_in_round_4
@@ -42,7 +42,7 @@ class TrainerMessageTest < ActiveSupport::TestCase
       (@trainer.shifts.count == 20).must_equal true
       (@trainer.trainer_shift_count == 18).must_equal true
       msgs = @trainer.shift_status_message
-      msgs.include?("All required shifts selected for round 4. (20 of 20)")
+      msgs.include?("All required shifts selected for round 4. (20 of 20)").must_equal true
     end
 
     def test_show_surveyor_shift_count_post_bingo
@@ -57,7 +57,7 @@ class TrainerMessageTest < ActiveSupport::TestCase
       (@trainer.shifts.count == 52).must_equal true
       (@trainer.trainer_shift_count == 50).must_equal true
       msgs = @trainer.shift_status_message
-      msgs.include?("You have at least 20 shifts selected")
+      msgs.include?("You have at least 20 shifts selected").must_equal true
     end
   end
 end
