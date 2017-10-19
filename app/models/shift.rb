@@ -24,6 +24,7 @@ class Shift < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :shift_type
+  has_many :shift_logs
 
   date_regex = /\A(19|20)\d\d[. -\/](0[1-9]|1[012])[. -\/](0[1-9]|[12][0-9]|3[01])\z/
 

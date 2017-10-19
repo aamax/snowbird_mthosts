@@ -13,4 +13,14 @@
 #
 
 class ShiftLog < ActiveRecord::Base
+  belongs_to :user
+  belongs_to :shift
+
+  def shift_info
+    if self.shift.nil?
+      "#{self.shift_id}:DELETED SHIFT - see notes"
+    else
+      "#{self.shift_id}:#{self.shift.shift_date.strftime("%Y-%m-%d")}:#{self.shift.short_name}"
+    end
+  end
 end

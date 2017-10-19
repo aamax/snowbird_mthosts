@@ -52,11 +52,14 @@ class ShiftsController < ApplicationController
   end
 
   def destroy
+    shift = Shift.find(params[:id])
+    shift_details = "ID: #{shift.id} Date:#{shift.shift_date.strftime("%Y-%m-%d")} Shortname:#{shift.short_name}"
+
     if !Shift.destroy(params[:id])
       flash[:alert] = "Error destroying shift."
-      log_shift_destroy(params[:id], "failed", current_user)
+      log_shift_destroy(params[:id], "failed to delete: #{shift_details}", current_user)
     else
-      log_shift_destroy(params[:id], "success", current_user)
+      log_shift_destroy(params[:id], "success: #{shift_details}", current_user)
     end
     redirect_to :back
   end

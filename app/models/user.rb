@@ -54,6 +54,7 @@ class User < ActiveRecord::Base
   has_many :shifts, -> { order "shift_date ASC" }
   has_many :galleries
   has_many :surveys
+  has_many :shift_logs
 
   scope :active_users, -> {where(active_user: true)}
   scope :inactive_users, -> {where(active_user: false)}
@@ -411,6 +412,10 @@ class User < ActiveRecord::Base
 
     if self.team_leader?
       msg << "#{self.team_leader_shift_count} team leader shifts selected"
+    end
+
+    if self.trainer?
+      msg << "#{self.trainer_shift_count} trainer shifts selected"
     end
 
     case round

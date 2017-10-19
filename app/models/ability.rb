@@ -13,6 +13,7 @@ class Ability
       else
         can :manage, :all
         cannot :delete, Shift
+        cannot :manage, :ShiftLog
       end
     end
 
