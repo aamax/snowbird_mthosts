@@ -53,4 +53,6 @@ Mthost::Application.routes.draw do
   # catchall route to get pages
   get "/:id" => "pages#show"
 
+  get "shift_logs/by_shift/:shift_id", :to => 'shift_logs#by_shift'
+  get "shift_logs/by_user/:user_id", :to => 'shift_logs#by_user'
 end

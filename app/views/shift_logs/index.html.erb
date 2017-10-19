@@ -2,48 +2,7 @@
 
 <h1>Listing Shift Logs</h1>
 
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Change date</th>
-      <th>User</th>
-      <th>Shift</th>
-      <th>Action taken</th>
-      <th>Note</th>
-      <th colspan="3">Ations</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @shift_logs.each do |shift_log| %>
-      <tr>
-        <td><%= shift_log.change_date.strftime("%Y-%m-%d %H:%M:%S") %></td>
-        <td><%= shift_log.user.name %></td>
-        <td><%= shift_log.shift_info %></td>
-        <td><%= shift_log.action_taken %></td>
-        <td><%= shift_log.note %></td>
-
-        <td>
-          <a href="<%= "#{shift_logs_path}/#{shift_log.id}" %>" class='btn btn-primary btn-small'>
-            <i class='icon-search icon-large icon-white'></i>
-          </a>
-        </td>
-        <td>
-          <a href="<%= edit_shift_log_path(shift_log) %>" class='btn btn-warning btn-small'>
-            <i class='icon-wrench icon-large icon-white'></i>
-          </a>
-        </td>
-        <td>
-          <%= link_to "<i class='icon-trash icon-large icon-white'".html_safe,
-                      shift_log, method: :delete,
-                      data: { confirm: 'Are you sure?' },
-                      class: 'btn btn-danger btn-small' %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
+<%= render "index_body" %>
 <br>
 
 <%= link_to "NEW", new_shift_log_path, class: 'btn btn-success btn-small' %>

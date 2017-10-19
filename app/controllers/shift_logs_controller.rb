@@ -20,7 +20,7 @@ class ShiftLogsController < ApplicationController
   # GET /shift_logs.json
   def index
     if current_user.has_role? :admin
-      @shift_logs = ShiftLog.all
+      @shift_logs = ShiftLog.all.order(updated_at: :asc)
     else
       @shift_logs = []
       flash[:alert] = "Access To Logs Denied"
@@ -106,6 +106,26 @@ class ShiftLogsController < ApplicationController
         format.json {head :no_content}
       end
     else
+      flash[:alert] = "Access To Logs Denied"
+      redirect_to root_path
+    end
+  end
+
+  def by_shift
+    if current_user.has_role? :admin
+      @shift_logs = ShiftLog.where(shift_id: params[:shift_id]).order(updated_at: :asc)
+    else
+      @shift_logs = []
+      flash[:alert] = "Access To Logs Denied"
+      redirect_to root_path
+    end
+  end
+
+  def by_user
+    if current_user.has_role? :admin
+      @shift_logs = ShiftLog.where(user_id: params[:user_id]).order(updated_at: :asc)
+    else
+      @shift_logs = []
       flash[:alert] = "Access To Logs Denied"
       redirect_to root_path
     end
