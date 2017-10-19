@@ -133,6 +133,10 @@ GEM
     jquery-ui-rails (5.0.5)
       railties (>= 3.2.16)
     json (1.8.3)
+    launchy (2.4.3)
+      addressable (~> 2.3)
+    letter_opener (1.4.1)
+      launchy (~> 2.2)
     libv8 (3.16.14.15)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
@@ -216,8 +220,6 @@ GEM
     responders (2.3.0)
       railties (>= 4.2.0, < 5.1)
     rolify (5.1.0)
-    rollbar (2.13.3)
-      multi_json
     ruby-progressbar (1.8.1)
     sass (3.2.19)
     sass-rails (4.0.5)
@@ -284,6 +286,7 @@ DEPENDENCIES
   jbuilder
   jquery-rails
   jquery-ui-rails
+  letter_opener
   minitest-rails
   minitest-rails-capybara
   minitest-reporters (~> 1.1.0)
@@ -298,7 +301,6 @@ DEPENDENCIES
   rails-observers
   rails_12factor
   rolify (>= 3.2.0)
-  rollbar
   sass-rails (~> 4.0.5)
   therubyracer
   tinymce-rails

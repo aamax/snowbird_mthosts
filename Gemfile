@@ -45,13 +45,13 @@ gem 'angularjs-rails'  #, '~>1.2.26'
 
 gem 'gon'
 
-gem 'rollbar'
 gem 'puma', ">= 3.10.0"
 
 
 group :development do
   gem 'annotate', :git => 'git://github.com/ctran/annotate_models.git'
   gem "bullet"
+  gem 'letter_opener'
 end
 
 group :test, :development do
