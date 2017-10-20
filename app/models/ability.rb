@@ -9,8 +9,7 @@ class Ability
       can :manage, :all
     else
       if bPublic
-        #cannot :manage, :all
-        can :view, Page
+        cannot :manage, :all
       else
         can :manage, :all
         cannot :delete, Shift
