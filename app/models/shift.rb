@@ -232,6 +232,7 @@ class Shift < ActiveRecord::Base
       if self.survey?
         return false if !test_user.surveyor?
         return false if (round < 5) && (test_user.survey_shift_count >= MAX_SURVEY_COUNT)
+        return true if self.survey?
       end
 
       return false if (round <= 4) && (all_shifts.count >= 20)
@@ -239,18 +240,9 @@ class Shift < ActiveRecord::Base
       return false if (round <= 0) && (!test_user.rookie? && !test_user.trainer? && !test_user.surveyor?)
 
       if test_user.rookie?
-        training_shifts = working_shifts.delete_if {|s| !s.training? }.map {|s| s.short_name}
-        if training_shifts.count < 3
-          return false unless self.training?
-          return false if training_shifts.include? self.short_name
-          return false if !training_shifts.include?('T1') && (self.short_name != 'T1')
-        else
-          return false if self.training?
-        end
-
+        return false if test_user.check_training_shifts(self) == false
         if self.is_tour?
           return false if (self.shift_date < rookie_tour_date(HostConfig.bingo_start_date))
-          return false if self.team_leader?
         end
 
         if round <= 0
@@ -261,22 +253,18 @@ class Shift < ActiveRecord::Base
       else
         if round < 5
           if test_user.trainer?
-            return false if all_shifts.count >= 20
             return true if self.trainer?
-            non_trainer_shift_count = working_shifts.delete_if {|s| s.trainer? }.count
-            return false if (non_trainer_shift_count >= (round * 5))
+            working_list_count = working_shifts.delete_if {|s| s.trainer? }.count
+            return false if (working_list_count >= (round * 5))
           elsif test_user.surveyor?
-              return false if all_shifts.count >= 20
-              return true if self.survey?
-              non_surveyor_shift_count = working_shifts.delete_if {|s| s.survey? }.count
-              return false if (non_surveyor_shift_count >= (round * 5))
+              working_list_count = working_shifts.delete_if {|s| s.survey? }.count
+              return false if (working_list_count >= (round * 5))
           else
             return false if (shift_count >= (round * 5))
           end
         end
       end
       retval = true
-
     end
     retval
   end

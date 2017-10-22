@@ -280,6 +280,27 @@ class User < ActiveRecord::Base
     team_leaders.count
   end
 
+  def check_training_shifts(shift)
+    training_shifts = []
+    shifts.order(:shift_date).each do |s|
+      training_shifts << s if s.training?
+    end
+
+    if training_shifts.count < 3
+      return false if training_shifts.include? shift.short_name
+      if shift.short_name == 'T1'
+        return true if training_shifts.count == 0
+        return false if shift.shift_date >= training_shifts[0].shift_date
+      else
+        t1 = training_shifts.delete_if {|s| s.short_name != 'T1'}.first
+        return false if t1.nil? || (t1.shift_date > shift.shift_date)
+      end
+    else
+      return false if shift.training?
+    end
+    true
+  end
+
   def shift_status_message
     msg = []
     day_offset = get_day_offset

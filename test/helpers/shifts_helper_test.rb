@@ -480,6 +480,60 @@ class ShiftsHelperTest < ActionView::TestCase
         end
       end
 
+      it "should not allow any other shifts selectable if T1 shift dropped" do
+        create_t1_shifts
+        create_t2andt3_shifts
+        t1shift, t2shift, t3shift = nil
+        Shift.where(short_name: "T1").order(:shift_date).each do |shift|
+          shift.can_select(@rookie_user).must_equal true
+          t1shift ||= shift
+        end
+        Shift.where("short_name in ('T2', 'T3')").order(:shift_date).each do |shift|
+          shift.can_select(@rookie_user).must_equal false
+          t2shift = shift if shift.short_name == 'T2'
+          t3shift = shift if shift.short_name == 'T3'
+        end
+        @rookie_user.shifts << t1shift
+        @rookie_user.shifts << t2shift
+        @rookie_user.shifts << t3shift
+        t1shift.user_id = nil
+        t1shift.save
+        @rookie_user.shifts.reload
+        FactoryGirl.create(:shift, shift_date: Date.today + 100.days, shift_type_id: t1shift.shift_type_id)
+        lowest_date = t3shift.shift_date < t2shift.shift_date ? t3shift.shift_date : t2shift.shift_date
+        Shift.all.each do |shift|
+          if shift.short_name == 'T1'
+            if shift.shift_date < lowest_date
+              shift.can_select(@rookie_user).must_equal true
+            else
+              shift.can_select(@rookie_user).must_equal false
+            end
+          else
+            shift.can_select(@rookie_user).must_equal false
+          end
+        end
+      end
+
+      it "should not allow T2 shift to be picked before T1 shift" do
+        select_rookie_training_shifts
+        working_shifts = @rookie_user.trainings
+        t1shift, t2shift, t3shift = nil
+        working_shifts.each do |s|
+          t1shift = s if s.short_name == "T1"
+          t2shift = s if s.short_name == "T2"
+          t3shift = s if s.short_name == "T3"
+        end
+
+        t2shift.user_id = nil
+        t2shift.save
+
+        @rookie_user.shifts.reload
+        new_t2 = FactoryGirl.create(:shift, shift_date: t1shift.shift_date - 10.days,
+                                    shift_type_id: t2shift.shift_type_id)
+        new_t2.can_select(@rookie_user).must_equal false
+        t2shift.can_select(@rookie_user).must_equal true
+      end
+
       it "should not allow rookies to pick tour shifts before Feb 1" do
         select_rookie_training_shifts
         create_early_season_tours
@@ -520,7 +574,7 @@ class ShiftsHelperTest < ActionView::TestCase
       it "should require second and third shifts selected be T2 and T3 (in any order)" do
         create_t1_shifts
         create_t2andt3_shifts
-        @rookie_user.shifts << Shift.where(short_name: "T1").first
+        @rookie_user.shifts << Shift.where(short_name: "T1").order(:shift_date).first
         Shift.where("short_name in ('T1', 'T2', 'T3') and user_id is null").each do |shift|
           shift.can_select(@rookie_user).must_equal false if shift.short_name == 'T1'
           shift.can_select(@rookie_user).must_equal true if shift.short_name != 'T1'
