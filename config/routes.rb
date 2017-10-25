@@ -16,6 +16,7 @@ Mthost::Application.routes.draw do
 
   get '/download_end_of_year', :to =>  "exports#eoy_download"
   get '/hosts_by_seniority', :to => 'users#hosts_by_seniority'
+  get '/hosts_by_roles', :to => 'users#hosts_by_roles'
   get '/shifts_by_date', :to => 'shifts#shifts_by_date_view'
   get '/skipatrol', :to => "reports#skipatrol"
   post '/skipatrol', :to => "reports#skipatrol"

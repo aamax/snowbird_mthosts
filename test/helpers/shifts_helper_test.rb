@@ -198,6 +198,34 @@ class ShiftsHelperTest < ActionView::TestCase
         new_shift = FactoryGirl.create(:shift, shift_type_id: @tl.id, shift_date: @team_leader.shifts.map(&:shift_date).max + 1.day)
         new_shift.can_select(@team_leader).must_equal false
       end
+
+      it "cannot select training or trainer shifts" do
+        @sys_config.bingo_start_date = @round4_date
+        @sys_config.save!
+        round = HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @team_leader).must_equal 4
+
+        # create trainer and training shifts
+        @tr = ShiftType.find_by(short_name: 'TR')
+        t1type = FactoryGirl.create(:shift_type, short_name: 'T1')
+        t2type = FactoryGirl.create(:shift_type, short_name: 'T2')
+        t3type = FactoryGirl.create(:shift_type, short_name: 'T3')
+        training_shifts = []
+        (1..5).each do |n|
+          trainer_shift = FactoryGirl.create(:shift, :shift_date => Date.today + 2.weeks + n.days,
+                                             :shift_type_id => @tr.id, :user_id => nil)
+          t1_shift = FactoryGirl.create(:shift, shift_date: Date.today + n.days, shift_type_id: t1type.id)
+          t2_shift = FactoryGirl.create(:shift, shift_date: Date.today + n.days, shift_type_id: t2type.id)
+          t3_shift = FactoryGirl.create(:shift, shift_date: Date.today + n.days, shift_type_id: t3type.id)
+          training_shifts << trainer_shift
+          training_shifts << t1_shift
+          training_shifts << t2_shift
+          training_shifts << t3_shift
+        end
+
+        training_shifts.each do |s|
+          s.can_select(@team_leader).must_equal false
+        end
+      end
     end
 
     describe "regular hosts" do
@@ -478,6 +506,18 @@ class ShiftsHelperTest < ActionView::TestCase
             user.shifts << shift
           end
         end
+      end
+
+      it "should not allow T2 or T3 to be picked prior to selected T1 shift" do
+        t1type = FactoryGirl.create(:shift_type, short_name: 'T1')
+        t1a = FactoryGirl.create(:shift, shift_date: Date.today + 6.days, shift_type_id: t1type.id)
+        t1b = FactoryGirl.create(:shift, shift_date: Date.today + 7.days, shift_type_id: t1type.id)
+
+        t1a.can_select(@rookie_user).must_equal true
+        t1b.can_select(@rookie_user).must_equal true
+        @rookie_user.shifts << t1b
+
+        t1a.can_select(@rookie_user).must_equal false
       end
 
       it "should not allow any other shifts selectable if T1 shift dropped" do

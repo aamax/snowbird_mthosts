@@ -1,0 +1,68 @@
+<h1>List All Active Hosts Grouped By Role</h1>
+
+<% if current_user.has_role? :admin %>
+    <div class="well">
+      All: <%= @users.length %><br/>
+      Admins: <%= @admins.length %><br/>
+      Team leaders: <%= @leaders.length %><br/>
+      Trainers: <%= @trainers.length %><br/>
+      Surveyors: <%= @surveyors.length %><br/>
+      Regular: <%= @regular.length %><br/>
+    </div>
+    <hr/>
+
+    <h1>Admins (<%= @admins.count %>)</h1>
+    <table class='table table-striped'>
+      <tbody>
+
+      <%= render partial: 'user_group_display', locals: {collection: @admins} %>
+
+      </tbody>
+    </table>
+    <hr/>
+
+    <h1>TEAM LEADERS(<%= @leaders.count %>)</h1>
+    <table class='table table-striped'>
+      <tbody>
+
+      <%= render partial: 'user_group_display', locals: {collection: @leaders} %>
+
+      </tbody>
+    </table>
+    <hr/>
+
+    <h1>TRAINERS(<%= @trainers.count %>)</h1>
+    <table class='table table-striped'>
+      <tbody>
+
+      <%= render partial: 'user_group_display', locals: {collection: @trainers} %>
+
+      </tbody>
+    </table>
+    <hr/>
+
+    <h1>SURVEYORS(<%= @surveyors.count %>)</h1>
+    <table class='table table-striped'>
+      <tbody>
+
+      <%= render partial: 'user_group_display', locals: {collection: @surveyors} %>
+
+      </tbody>
+    </table>
+    <hr/>
+
+    <h1>REGULAR HOSTS(<%= @regular.count %>)</h1>
+    <table class='table table-striped'>
+      <tbody>
+
+      <%= render partial: 'user_group_display', locals: {collection: @regular} %>
+
+      </tbody>
+    </table>
+    <hr/>
+
+
+
+<% else %>
+    You don't have permission to view this report.  Sorry!
+<% end %>

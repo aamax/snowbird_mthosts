@@ -72,6 +72,17 @@ class UsersController < ApplicationController
     @missing =  @users - (@rookies + @freshmen + @junior + @senior + @leaders)
   end
 
+  def hosts_by_roles
+    @users = User.includes(:shifts, :roles).active_users.order(:name).to_a
+
+    @leaders =  User.includes(:shifts).active_users.order(:name).to_a.delete_if {|u| !u.team_leader? }
+    @trainers = User.includes(:shifts).active_users.order(:name).to_a.delete_if {|u| !u.has_role? :trainer}
+    @surveyors = User.includes(:shifts).active_users.order(:name).to_a.delete_if {|u| !u.has_role? :surveyor}
+    @admins = User.includes(:shifts).active_users.order(:name).to_a.delete_if {|u| !u.has_role? :admin}
+
+    @regular = @users - (@leaders + @trainers + @surveyors + @admins)
+  end
+
   def show
 
   end

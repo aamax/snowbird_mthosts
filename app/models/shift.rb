@@ -224,6 +224,7 @@ class Shift < ActiveRecord::Base
       return true if test_user.admin?
       return false if self.team_leader? && !test_user.team_leader?
       return false if self.trainer? && !test_user.trainer?
+      return false if self.training? && !test_user.rookie?
 
       bingo_start = HostConfig.bingo_start_date
       round = HostUtility.get_current_round(bingo_start, Date.today, test_user)
@@ -234,6 +235,8 @@ class Shift < ActiveRecord::Base
         return false if (round < 5) && (test_user.survey_shift_count >= MAX_SURVEY_COUNT)
         return true if self.survey?
       end
+
+
 
       return false if (round <= 4) && (all_shifts.count >= 20)
       return true if test_user.team_leader?
@@ -297,7 +300,7 @@ class Shift < ActiveRecord::Base
     return_params['date_for_calendar'] = form_filters['date'].empty? ? Date.today.strftime("%Y-%m-%d") : form_filters['date']
 
 
-    @shifts = Shift.from_today(return_params['start_from_today']).with_meetings(return_params['include_meeting_shifts'])
+    @shifts = Shift.includes(:shift_type).from_today(return_params['start_from_today']).with_meetings(return_params['include_meeting_shifts'])
     @shifts = @shifts.by_holidays(return_params['show_only_holidays'])
     @shifts = @shifts.by_shift_type(return_params['shift_types_to_show']).by_date(return_params['date_set_to_show'])
     @shifts = @shifts.by_day_of_week(return_params['days_of_week_to_show']).by_users(return_params['hosts_to_show'])

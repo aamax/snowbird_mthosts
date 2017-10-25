@@ -287,7 +287,7 @@ class User < ActiveRecord::Base
     end
 
     if training_shifts.count < 3
-      return false unless shift.training?
+      # return false unless shift.training?
       return false if training_shifts.map(&:short_name).include? shift.short_name
       if shift.short_name == 'T1'
         return true if training_shifts.count == 0

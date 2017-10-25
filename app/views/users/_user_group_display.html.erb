@@ -1,0 +1,5 @@
+<% collection.each do |u| %>
+    <tr id=<%= "user_record_#{u.id}" %> class='user_entry' >
+      <%= render 'user_index_entry', object: u %>
+    </tr>
+<% end %>
