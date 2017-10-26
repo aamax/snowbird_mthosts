@@ -280,12 +280,16 @@ class User < ActiveRecord::Base
     team_leaders.count
   end
 
-  def check_training_shifts(shift)
+  def training_shifts_list
     training_shifts = []
     shifts.order(:shift_date).each do |s|
       training_shifts << s if s.training?
     end
+    training_shifts
+  end
 
+  def check_training_shifts(shift)
+    training_shifts = training_shifts_list
     if training_shifts.count < 3
       # return false unless shift.training?
       return false if training_shifts.map(&:short_name).include? shift.short_name

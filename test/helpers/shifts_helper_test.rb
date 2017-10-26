@@ -152,7 +152,7 @@ class ShiftsHelperTest < ActionView::TestCase
         @sys_config.bingo_start_date = @pre_bingo_date
         @sys_config.save!
         Shift.all.each do |s|
-          if s.can_select(@team_leader)
+          if s.can_select(@team_leader, HostUtility.can_select_params_for(@team_leader))
             @team_leader.shifts << s if s.short_name == "TL"
             break if @team_leader.shifts.count >= 12
           else
@@ -171,9 +171,9 @@ class ShiftsHelperTest < ActionView::TestCase
 
         unselected.each do |s|
           if s.trainer? || s.training? || s.meeting? || s.survey?
-            s.can_select(@team_leader).must_equal false
+            s.can_select(@team_leader, HostUtility.can_select_params_for(@team_leader)).must_equal false
           else
-            s.can_select(@team_leader).must_equal true
+            s.can_select(@team_leader, HostUtility.can_select_params_for(@team_leader)).must_equal true
           end
         end
       end
@@ -187,16 +187,16 @@ class ShiftsHelperTest < ActionView::TestCase
           next if s.meeting?
 
           if (!@team_leader.is_working?(s.shift_date) && !s.trainer? && !s.training? && !s.survey? && @team_leader.shifts.count < 20)
-            s.can_select(@team_leader).must_equal true
+            s.can_select(@team_leader, HostUtility.can_select_params_for(@team_leader)).must_equal true
             @team_leader.shifts << s
           else
-            s.can_select(@team_leader).must_equal false
+            s.can_select(@team_leader, HostUtility.can_select_params_for(@team_leader)).must_equal false
           end
         end
         (@team_leader.shifts.count <= 20).must_equal true
 
         new_shift = FactoryGirl.create(:shift, shift_type_id: @tl.id, shift_date: @team_leader.shifts.map(&:shift_date).max + 1.day)
-        new_shift.can_select(@team_leader).must_equal false
+        new_shift.can_select(@team_leader, HostUtility.can_select_params_for(@team_leader)).must_equal false
       end
 
       it "cannot select training or trainer shifts" do
@@ -223,7 +223,7 @@ class ShiftsHelperTest < ActionView::TestCase
         end
 
         training_shifts.each do |s|
-          s.can_select(@team_leader).must_equal false
+          s.can_select(@team_leader, HostUtility.can_select_params_for(@team_leader)).must_equal false
         end
       end
     end
@@ -235,7 +235,7 @@ class ShiftsHelperTest < ActionView::TestCase
         HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @senior_user).must_equal 0
 
         Shift.all.each do |s|
-          s.can_select(@senior_user).must_equal false
+          s.can_select(@senior_user, HostUtility.can_select_params_for(@senior_user)).must_equal false
         end
       end
 
@@ -247,7 +247,7 @@ class ShiftsHelperTest < ActionView::TestCase
         Shift.all.each do |s|
           next if (s.team_leader?) || @senior_user.is_working?(s.shift_date) || s.meeting? || s.training? || s.trainer?
 
-          can_select = s.can_select(@senior_user)
+          can_select = s.can_select(@senior_user, HostUtility.can_select_params_for(@senior_user))
           if @senior_user.shifts.count < 7
             can_select.must_equal true
             @senior_user.shifts << s
@@ -265,7 +265,7 @@ class ShiftsHelperTest < ActionView::TestCase
         Shift.all.each do |s|
           next if (s.short_name == "TL") || @senior_user.is_working?(s.shift_date) || s.meeting?
 
-          can_select = s.can_select(@senior_user)
+          can_select = s.can_select(@senior_user, HostUtility.can_select_params_for(@senior_user))
           if @senior_user.shifts.count < 12
             can_select.must_equal true
             @senior_user.shifts << s
@@ -283,7 +283,7 @@ class ShiftsHelperTest < ActionView::TestCase
         Shift.all.each do |s|
           next if (s.short_name == "TL") || @senior_user.is_working?(s.shift_date) || s.meeting?
 
-          can_select = s.can_select(@senior_user)
+          can_select = s.can_select(@senior_user, HostUtility.can_select_params_for(@senior_user))
           if @senior_user.shifts.count < 17
             can_select.must_equal true
             @senior_user.shifts << s
@@ -301,7 +301,7 @@ class ShiftsHelperTest < ActionView::TestCase
         Shift.all.each do |s|
           next if (s.short_name == "TL") || @senior_user.is_working?(s.shift_date) || s.meeting?
 
-          can_select = s.can_select(@senior_user)
+          can_select = s.can_select(@senior_user, HostUtility.can_select_params_for(@senior_user))
           if @senior_user.shifts.count < 20
             can_select.must_equal true
             @senior_user.shifts << s
@@ -319,7 +319,7 @@ class ShiftsHelperTest < ActionView::TestCase
         Shift.all.each do |s|
           next if (s.short_name == "TL") || @senior_user.is_working?(s.shift_date) || s.meeting?
 
-          can_select = s.can_select(@senior_user)
+          can_select = s.can_select(@senior_user, HostUtility.can_select_params_for(@senior_user))
 
           can_select.must_equal true
           @senior_user.shifts << s
@@ -347,15 +347,32 @@ class ShiftsHelperTest < ActionView::TestCase
 
       it 'no one can select trainer shifts' do
         @t_shifts.each do |ts|
-          ts.can_select(@trainer).must_equal true
-          ts.can_select(@rookie_user).must_equal false
-          ts.can_select(@newer_user).must_equal false
-          ts.can_select(@middle_user).must_equal false
-          ts.can_select(@surveyor).must_equal false
+          ts.can_select(@trainer, HostUtility.can_select_params_for(@trainer)).must_equal true
+          ts.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+          ts.can_select(@newer_user, HostUtility.can_select_params_for(@newer_user)).must_equal false
+          ts.can_select(@middle_user, HostUtility.can_select_params_for(@middle_user)).must_equal false
+          ts.can_select(@surveyor, HostUtility.can_select_params_for(@surveyor)).must_equal false
         end
       end
 
-      it 'trainer shifts should not count against host quota' do
+      it "trainers cannot select more than 20 shifts during bingo" do
+        (1..20).each do |n|
+          @trainer_shift = FactoryGirl.create(:shift, :shift_date => Date.today + 4.weeks + n.days,
+                                              :shift_type_id => @tr.id, :user_id => nil)
+          @t_shifts << @trainer_shift
+        end
+        @t_shifts.each do |ts|
+          if ts.can_select(@trainer, HostUtility.can_select_params_for(@trainer)) == true
+            @trainer.shifts << ts
+          end
+        end
+        @trainer.shifts.count.must_equal 20
+        Shift.all.each do |s|
+          s.can_select(@trainer, HostUtility.can_select_params_for(@trainer)).must_equal false
+        end
+      end
+
+      it 'trainer shifts should not count against bingo quota' do
         @t_shifts.each do |ts|
           ts.user_id = @trainer.id
           ts.save!
@@ -363,7 +380,7 @@ class ShiftsHelperTest < ActionView::TestCase
         @trainer.shifts.count.must_equal 7
 
         Shift.all.each do |s|
-          can_select = s.can_select(@trainer)
+          can_select = s.can_select(@trainer, HostUtility.can_select_params_for(@trainer))
           if can_select
             @trainer.shifts << s if can_select
           end
@@ -391,11 +408,11 @@ class ShiftsHelperTest < ActionView::TestCase
 
       it 'no one can select survey shifts' do
         @s_shifts.each do |ss|
-          ss.can_select(@surveyor).must_equal true
-          ss.can_select(@newer_user).must_equal false
-          ss.can_select(@middle_user).must_equal false
-          ss.can_select(@trainer).must_equal false
-          ss.can_select(@rookie_user).must_equal false
+          ss.can_select(@surveyor, HostUtility.can_select_params_for(@surveyor)).must_equal true
+          ss.can_select(@newer_user, HostUtility.can_select_params_for(@newer_user)).must_equal false
+          ss.can_select(@middle_user, HostUtility.can_select_params_for(@middle_user)).must_equal false
+          ss.can_select(@trainer, HostUtility.can_select_params_for(@trainer)).must_equal false
+          ss.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
         end
       end
 
@@ -408,7 +425,7 @@ class ShiftsHelperTest < ActionView::TestCase
         @surveyor.shifts.count.must_equal 7
 
         Shift.all.each do |s|
-          can_select = s.can_select(@surveyor)
+          can_select = s.can_select(@surveyor, HostUtility.can_select_params_for(@surveyor))
           if can_select
             @surveyor.shifts << s if can_select
           end
@@ -426,13 +443,13 @@ class ShiftsHelperTest < ActionView::TestCase
           @s_shifts << @survey_shift
         end
         @s_shifts.each do |ts|
-          next unless ts.can_select(@surveyor)
+          next unless ts.can_select(@surveyor, HostUtility.can_select_params_for(@surveyor))
           @surveyor.shifts << ts
         end
         @surveyor.shifts.count.must_equal 11
 
         Shift.all.each do |s|
-          can_select = s.can_select(@surveyor)
+          can_select = s.can_select(@surveyor, HostUtility.can_select_params_for(@surveyor))
           if can_select
             @surveyor.shifts << s if can_select
           end
@@ -502,7 +519,7 @@ class ShiftsHelperTest < ActionView::TestCase
 
       def select_all_shifts_user_can(user)
         Shift.all.each do |shift|
-          if shift.can_select(user)
+          if shift.can_select(user, HostUtility.can_select_params_for(user))
             user.shifts << shift
           end
         end
@@ -513,11 +530,11 @@ class ShiftsHelperTest < ActionView::TestCase
         t1a = FactoryGirl.create(:shift, shift_date: Date.today + 6.days, shift_type_id: t1type.id)
         t1b = FactoryGirl.create(:shift, shift_date: Date.today + 7.days, shift_type_id: t1type.id)
 
-        t1a.can_select(@rookie_user).must_equal true
-        t1b.can_select(@rookie_user).must_equal true
+        t1a.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+        t1b.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
         @rookie_user.shifts << t1b
 
-        t1a.can_select(@rookie_user).must_equal false
+        t1a.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
       end
 
       it "should not allow any other shifts selectable if T1 shift dropped" do
@@ -525,11 +542,11 @@ class ShiftsHelperTest < ActionView::TestCase
         create_t2andt3_shifts
         t1shift, t2shift, t3shift = nil
         Shift.where(short_name: "T1").order(:shift_date).each do |shift|
-          shift.can_select(@rookie_user).must_equal true
+          shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
           t1shift ||= shift
         end
         Shift.where("short_name in ('T2', 'T3')").order(:shift_date).each do |shift|
-          shift.can_select(@rookie_user).must_equal false
+          shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
           t2shift = shift if shift.short_name == 'T2'
           t3shift = shift if shift.short_name == 'T3'
         end
@@ -544,12 +561,12 @@ class ShiftsHelperTest < ActionView::TestCase
         Shift.all.each do |shift|
           if shift.short_name == 'T1'
             if shift.shift_date < lowest_date
-              shift.can_select(@rookie_user).must_equal true
+              shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
             else
-              shift.can_select(@rookie_user).must_equal false
+              shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
             end
           else
-            shift.can_select(@rookie_user).must_equal false
+            shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
           end
         end
       end
@@ -570,8 +587,8 @@ class ShiftsHelperTest < ActionView::TestCase
         @rookie_user.shifts.reload
         new_t2 = FactoryGirl.create(:shift, shift_date: t1shift.shift_date - 10.days,
                                     shift_type_id: t2shift.shift_type_id)
-        new_t2.can_select(@rookie_user).must_equal false
-        t2shift.can_select(@rookie_user).must_equal true
+        new_t2.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+        t2shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
       end
 
       it "should not allow rookies to pick tour shifts before Feb 1" do
@@ -581,9 +598,9 @@ class ShiftsHelperTest < ActionView::TestCase
 
         @tour_shifts.each do |shift|
           if shift.shift_date < rookie_tour_date
-            shift.can_select(@rookie_user).must_equal false
+            shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
           else
-            shift.can_select(@rookie_user).must_equal true
+            shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
           end
         end
       end
@@ -593,21 +610,21 @@ class ShiftsHelperTest < ActionView::TestCase
         start_date = rookie_tour_date
         (1..5).each do |n|
           s = FactoryGirl.create(:shift, shift_date: start_date + n.days, shift_type_id: p2weekday.id)
-          s.can_select(@rookie_user).must_equal false
+          s.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
         end
       end
 
       it "should require first shift selected be T1" do
         Shift.all.each do |shift|
-          shift.can_select(@rookie_user).must_equal false
+          shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
         end
         create_t1_shifts
         Shift.where(short_name: "T1").each do |shift|
-          shift.can_select(@rookie_user).must_equal true
+          shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
         end
         create_t2andt3_shifts
         Shift.where("short_name in ('T2', 'T3')").each do |shift|
-          shift.can_select(@rookie_user).must_equal false
+          shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
         end
       end
 
@@ -616,8 +633,8 @@ class ShiftsHelperTest < ActionView::TestCase
         create_t2andt3_shifts
         @rookie_user.shifts << Shift.where(short_name: "T1").order(:shift_date).first
         Shift.where("short_name in ('T1', 'T2', 'T3') and user_id is null").each do |shift|
-          shift.can_select(@rookie_user).must_equal false if shift.short_name == 'T1'
-          shift.can_select(@rookie_user).must_equal true if shift.short_name != 'T1'
+          shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false if shift.short_name == 'T1'
+          shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true if shift.short_name != 'T1'
         end
       end
 
@@ -628,7 +645,7 @@ class ShiftsHelperTest < ActionView::TestCase
         @rookie_user.shifts << Shift.where(short_name: "T2").first
         @rookie_user.shifts << Shift.where(short_name: "T3").first
         Shift.where("short_name in ('T1', 'T2', 'T3') and user_id is null").each do |shift|
-          shift.can_select(@rookie_user).must_equal false
+          shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
         end
       end
 
@@ -637,9 +654,9 @@ class ShiftsHelperTest < ActionView::TestCase
         allowed_shifts_after_date = last_training_date
         Shift.all.each do |shift|
           if shift.shift_date <= allowed_shifts_after_date
-            shift.can_select(@rookie_user).must_equal false
+            shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
           else
-            shift.can_select(@rookie_user).must_equal true if shift.user_id.nil? && !shift.training? && !shift.is_tour? && !shift.team_leader?
+            shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true if shift.user_id.nil? && !shift.training? && !shift.is_tour? && !shift.team_leader?
           end
         end
       end
@@ -687,6 +704,4 @@ class ShiftsHelperTest < ActionView::TestCase
       end
     end
   end
-
-
 end

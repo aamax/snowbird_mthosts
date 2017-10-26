@@ -161,10 +161,6 @@ class Shift < ActiveRecord::Base
     value
   end
 
-  # def short_name
-  #   self.shift_type.short_name[0..1]
-  # end
-
   def full_short_name
     self.shift_type.short_name
   end
@@ -177,10 +173,6 @@ class Shift < ActiveRecord::Base
     !/P[1-4]/.match(self.short_name).nil?
     #['P1','P2','P3','P4'].include? self.short_name
   end
-  
-  # def shadow?
-  #   self.short_name == "SH"
-  # end
 
   def team_leader?
     (self.short_name == "TL") || (self.shift_type.short_name.downcase == 'p2weekday')
@@ -198,14 +190,6 @@ class Shift < ActiveRecord::Base
     !/T[1-3]/.match(self.short_name).nil?
   end
 
-  def training_digit
-    self.short_name[1]
-  end
-
-  # def rookie_training_type?
-  #   ['G1','G2','G3','G4','C1','C2','C3','C4','H1','H2', 'H3', 'H4'].include? self.short_name
-  # end
-
   def meeting?
     !/M[1-4]/.match(self.short_name).nil?
   end
@@ -214,29 +198,27 @@ class Shift < ActiveRecord::Base
     Shift.where(:shift_date => self.shift_date).to_a.delete_if {|s| s.short_name == 'SH' }.map {|s| s.user }.to_a.delete_if {|u| u.nil? }
   end
 
-  def can_select(test_user)
+  def can_select(test_user, select_params)
     retval = false
     if self.user_id.nil?
-      all_shifts =  test_user.shifts.to_a
-      working_shifts =  test_user.shifts.to_a.delete_if {|s| s.meeting? }
+      all_shifts =  select_params[:all_shifts] #test_user.shifts.to_a
+      working_shifts =  select_params[:working_shifts] #test_user.shifts.to_a.delete_if {|s| s.meeting? }
 
-      return false if test_user.is_working?(self.shift_date, working_shifts)
+      return false if test_user.is_working?(self.shift_date)
       return true if test_user.admin?
       return false if self.team_leader? && !test_user.team_leader?
       return false if self.trainer? && !test_user.trainer?
       return false if self.training? && !test_user.rookie?
 
-      bingo_start = HostConfig.bingo_start_date
-      round = HostUtility.get_current_round(bingo_start, Date.today, test_user)
-      shift_count = working_shifts.count
+      bingo_start = select_params[:bingo_start] #HostConfig.bingo_start_date
+      round = select_params[:round] #HostUtility.get_current_round(bingo_start, Date.today, test_user)
+      shift_count = select_params[:shift_count] #working_shifts.count
 
       if self.survey?
         return false if !test_user.surveyor?
         return false if (round < 5) && (test_user.survey_shift_count >= MAX_SURVEY_COUNT)
         return true if self.survey?
       end
-
-
 
       return false if (round <= 4) && (all_shifts.count >= 20)
       return true if test_user.team_leader?
@@ -245,7 +227,7 @@ class Shift < ActiveRecord::Base
       if test_user.rookie?
         return false if test_user.check_training_shifts(self) == false
         if self.is_tour?
-          return false if (self.shift_date < rookie_tour_date(HostConfig.bingo_start_date))
+          return false if (self.shift_date < rookie_tour_date(bingo_start))
         end
 
         if round <= 0
@@ -286,30 +268,10 @@ class Shift < ActiveRecord::Base
     self.user.name
   end
 
-  def self.get_shifts_for_index(current_user, return_params, form_filters, is_admin)
-    return_params['start_from_today'] = (form_filters['start_from_today'] == '1')
-    return_params['show_shifts_expanded'] = (form_filters['show_expanded'] == '1')
-    return_params['show_only_unselected'] = (form_filters['show_unselected'] == '1')
-    return_params['show_only_holidays'] = (form_filters['holiday_shifts'] == '1')
-    return_params['include_meeting_shifts'] = (form_filters['show_meetings'] == '1')
-    return_params['show_only_shifts_i_can_pick'] = (form_filters['shifts_i_can_pick'] == '1')
-    return_params['shift_types_to_show'] = form_filters['shifttype'].reject{ |e| e.empty? } unless form_filters['shifttype'] == ''
-    return_params['days_of_week_to_show'] = form_filters['dayofweek'].reject{ |e| e.empty? }
-    return_params['hosts_to_show'] = form_filters['hosts'].reject{ |e| e.empty? } if form_filters['hosts']
-    return_params['date_set_to_show'] = form_filters['date']
-    return_params['date_for_calendar'] = form_filters['date'].empty? ? Date.today.strftime("%Y-%m-%d") : form_filters['date']
+  def self.get_shifts_for_index(current_user, return_params, form_filters)
+    apply_filters_for_shift_request(form_filters, return_params)
 
-
-    @shifts = Shift.includes(:shift_type).from_today(return_params['start_from_today']).with_meetings(return_params['include_meeting_shifts'])
-    @shifts = @shifts.by_holidays(return_params['show_only_holidays'])
-    @shifts = @shifts.by_shift_type(return_params['shift_types_to_show']).by_date(return_params['date_set_to_show'])
-    @shifts = @shifts.by_day_of_week(return_params['days_of_week_to_show']).by_users(return_params['hosts_to_show'])
-    @shifts = @shifts.by_unselected(return_params['show_only_unselected'])
-
-    return_params['selectable_shifts'] = {}
-    @shifts.each do |shift|
-      return_params['selectable_shifts'][shift.id] = "1" if shift.can_select(current_user)
-    end
+    populate_selectable_flag_for_shifts(current_user, return_params)
 
     if return_params['show_only_shifts_i_can_pick'] == true
       if return_params['selectable_shifts'].count == 0
@@ -323,6 +285,42 @@ class Shift < ActiveRecord::Base
     end
     
     @shifts
+  end
+
+  def self.populate_selectable_flag_for_shifts(current_user, return_params)
+    all_shifts = current_user.shifts.to_a
+    working_shifts = current_user.shifts.to_a.delete_if {|s| s.meeting? || s.trainer? || s.survey?}
+    bingo_start = HostConfig.bingo_start_date
+    round = HostUtility.get_current_round(bingo_start, Date.today, current_user)
+    shift_count = working_shifts.count
+    select_params = {all_shifts: all_shifts, working_shifts: working_shifts, bingo_start: bingo_start,
+                     round: round, shift_count: shift_count}
+
+    return_params['selectable_shifts'] = {}
+    @shifts.each do |shift|
+      return_params['selectable_shifts'][shift.id] = "1" if shift.can_select(current_user, select_params)
+    end
+  end
+
+  def self.apply_filters_for_shift_request(form_filters, return_params)
+    return_params['start_from_today'] = (form_filters['start_from_today'] == '1')
+    return_params['show_shifts_expanded'] = (form_filters['show_expanded'] == '1')
+    return_params['show_only_unselected'] = (form_filters['show_unselected'] == '1')
+    return_params['show_only_holidays'] = (form_filters['holiday_shifts'] == '1')
+    return_params['include_meeting_shifts'] = (form_filters['show_meetings'] == '1')
+    return_params['show_only_shifts_i_can_pick'] = (form_filters['shifts_i_can_pick'] == '1')
+    return_params['shift_types_to_show'] = form_filters['shifttype'].reject {|e| e.empty?} unless form_filters['shifttype'] == ''
+    return_params['days_of_week_to_show'] = form_filters['dayofweek'].reject {|e| e.empty?}
+    return_params['hosts_to_show'] = form_filters['hosts'].reject {|e| e.empty?} if form_filters['hosts']
+    return_params['date_set_to_show'] = form_filters['date']
+    return_params['date_for_calendar'] = form_filters['date'].empty? ? Date.today.strftime("%Y-%m-%d") : form_filters['date']
+
+
+    @shifts = Shift.includes(:shift_type).from_today(return_params['start_from_today']).with_meetings(return_params['include_meeting_shifts'])
+    @shifts = @shifts.by_holidays(return_params['show_only_holidays'])
+    @shifts = @shifts.by_shift_type(return_params['shift_types_to_show']).by_date(return_params['date_set_to_show'])
+    @shifts = @shifts.by_day_of_week(return_params['days_of_week_to_show']).by_users(return_params['hosts_to_show'])
+    @shifts = @shifts.by_unselected(return_params['show_only_unselected'])
   end
 
   # def can_select_2016(test_user)

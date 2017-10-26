@@ -20,13 +20,13 @@ class SurveyorMessageTest < ActiveSupport::TestCase
       @sys_config.save
 
       Shift.where(short_name: 'SV').each do |s|
-        if s.can_select(@surveyor)
+        if s.can_select(@surveyor, HostUtility.can_select_params_for(@surveyor))
           @surveyor.shifts << s
         end
       end
 
       Shift.all.each do |s|
-        if s.can_select(@surveyor)
+        if s.can_select(@surveyor, HostUtility.can_select_params_for(@surveyor))
           @surveyor.shifts << s
         end
       end
@@ -41,13 +41,13 @@ class SurveyorMessageTest < ActiveSupport::TestCase
       @sys_config.save
 
       Shift.where(short_name: 'SV').each do |s|
-        if s.can_select(@surveyor)
+        if s.can_select(@surveyor, HostUtility.can_select_params_for(@surveyor))
           @surveyor.shifts << s
         end
       end
 
       Shift.all.each do |s|
-        if s.can_select(@surveyor)
+        if s.can_select(@surveyor, HostUtility.can_select_params_for(@surveyor))
           @surveyor.shifts << s
         end
       end
@@ -61,13 +61,13 @@ class SurveyorMessageTest < ActiveSupport::TestCase
       @sys_config.save
 
       Shift.where(short_name: 'SV').each do |s|
-        if s.can_select(@surveyor)
+        if s.can_select(@surveyor, HostUtility.can_select_params_for(@surveyor))
           @surveyor.shifts << s
         end
       end
 
       Shift.all.each do |s|
-        if s.can_select(@surveyor)
+        if s.can_select(@surveyor, HostUtility.can_select_params_for(@surveyor))
           @surveyor.shifts << s
         end
       end

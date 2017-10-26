@@ -150,7 +150,7 @@ class RookieMessageTest < ActiveSupport::TestCase
     select_rookie_training_shifts
 
     Shift.all.each do |s|
-      if s.can_select(@rookie_user)
+      if s.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user))
         @rookie_user.shifts << s
       end
     end
@@ -168,7 +168,7 @@ class RookieMessageTest < ActiveSupport::TestCase
     @sys_config.save
     select_rookie_training_shifts
     Shift.all.each do |s|
-      if s.can_select(@rookie_user)
+      if s.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user))
         @rookie_user.shifts << s
       end
     end
@@ -184,7 +184,7 @@ class RookieMessageTest < ActiveSupport::TestCase
     @sys_config.save
     select_rookie_training_shifts
     Shift.all.each do |s|
-      if s.can_select(@rookie_user)
+      if s.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user))
         @rookie_user.shifts << s
       end
     end
@@ -200,7 +200,7 @@ class RookieMessageTest < ActiveSupport::TestCase
     @sys_config.save
     select_rookie_training_shifts
     Shift.all.each do |s|
-      if s.can_select(@rookie_user)
+      if s.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user))
         @rookie_user.shifts << s
       end
     end
@@ -216,7 +216,7 @@ class RookieMessageTest < ActiveSupport::TestCase
     @sys_config.save
     select_rookie_training_shifts
     Shift.all.each do |s|
-      if s.can_select(@rookie_user)
+      if s.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user))
         @rookie_user.shifts << s
       end
     end

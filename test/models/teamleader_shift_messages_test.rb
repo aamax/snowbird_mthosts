@@ -20,7 +20,7 @@ class TeamleaderMessageTest < ActiveSupport::TestCase
     @sys_config.save
 
     Shift.all.each do |s|
-      if s.team_leader? && s.can_select(@teamleader)
+      if s.team_leader? && s.can_select(@teamleader, HostUtility.can_select_params_for(@teamleader))
         @teamleader.shifts << s
       end
     end
@@ -36,7 +36,7 @@ class TeamleaderMessageTest < ActiveSupport::TestCase
     @sys_config.save
 
     Shift.all.each do |s|
-      if s.team_leader? && s.can_select(@teamleader)
+      if s.team_leader? && s.can_select(@teamleader, HostUtility.can_select_params_for(@teamleader))
         @teamleader.shifts << s
       end
     end
@@ -52,7 +52,7 @@ class TeamleaderMessageTest < ActiveSupport::TestCase
     @sys_config.save
 
     Shift.all.each do |s|
-      if s.team_leader? && s.can_select(@teamleader)
+      if s.team_leader? && s.can_select(@teamleader, HostUtility.can_select_params_for(@teamleader))
         @teamleader.shifts << s
       end
     end

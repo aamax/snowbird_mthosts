@@ -20,7 +20,7 @@ class TrainerMessageTest < ActiveSupport::TestCase
       @sys_config.save
 
       Shift.all.each do |s|
-        if s.trainer? && s.can_select(@trainer)
+        if s.trainer? && s.can_select(@trainer, HostUtility.can_select_params_for(@trainer))
           @trainer.shifts << s
         end
       end
@@ -36,7 +36,7 @@ class TrainerMessageTest < ActiveSupport::TestCase
       @sys_config.save
 
       Shift.all.each do |s|
-        if s.trainer? && s.can_select(@trainer)
+        if s.trainer? && s.can_select(@trainer, HostUtility.can_select_params_for(@trainer))
           @trainer.shifts << s
         end
       end
@@ -52,7 +52,7 @@ class TrainerMessageTest < ActiveSupport::TestCase
       @sys_config.save
 
       Shift.all.each do |s|
-        if s.trainer? && s.can_select(@trainer)
+        if s.trainer? && s.can_select(@trainer, HostUtility.can_select_params_for(@trainer))
           @trainer.shifts << s
         end
       end

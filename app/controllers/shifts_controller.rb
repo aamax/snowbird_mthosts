@@ -46,8 +46,8 @@ class ShiftsController < ApplicationController
 
     }
 
-    @shifts = Shift.get_shifts_for_index(current_user, @return_params, form_filters,
-                  current_user.has_role?(:admin)).paginate(:page => params[:page], :per_page => per_page)
+    @shifts = Shift.get_shifts_for_index(current_user, @return_params,
+                                         form_filters).paginate(:page => params[:page], :per_page => per_page)
     @shifts
   end
 

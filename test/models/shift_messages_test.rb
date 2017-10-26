@@ -45,7 +45,7 @@ class UserMessageTest < ActiveSupport::TestCase
     @sys_config.save
 
     Shift.all.each do |s|
-      if s.can_select(@group1_user)
+      if s.can_select(@group1_user, HostUtility.can_select_params_for(@group1_user))
         @group1_user.shifts << s
       end
     end
@@ -58,7 +58,7 @@ class UserMessageTest < ActiveSupport::TestCase
     @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@group2_user, 1)
     @sys_config.save
     Shift.all.each do |s|
-      if s.can_select(@group2_user)
+      if s.can_select(@group2_user, HostUtility.can_select_params_for(@group2_user))
         @group2_user.shifts << s
       end
     end
@@ -72,7 +72,7 @@ class UserMessageTest < ActiveSupport::TestCase
     @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 2)
     @sys_config.save
     Shift.all.each do |s|
-      if s.can_select(@group3_user)
+      if s.can_select(@group3_user, HostUtility.can_select_params_for(@group3_user))
         @group3_user.shifts << s
       end
     end
@@ -86,7 +86,7 @@ class UserMessageTest < ActiveSupport::TestCase
     @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 3)
     @sys_config.save
     Shift.all.each do |s|
-      if s.can_select(@group3_user)
+      if s.can_select(@group3_user, HostUtility.can_select_params_for(@group3_user))
         @group3_user.shifts << s
       end
     end
@@ -100,7 +100,7 @@ class UserMessageTest < ActiveSupport::TestCase
     @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 4)
     @sys_config.save
     Shift.all.each do |s|
-      if s.can_select(@group3_user)
+      if s.can_select(@group3_user, HostUtility.can_select_params_for(@group3_user))
         @group3_user.shifts << s
       end
     end
