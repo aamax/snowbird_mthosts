@@ -126,7 +126,7 @@ class UsersController < ApplicationController
           sign_in(@user, bypass: true)
           redirect_to root_path
         else
-          redirect_to users_path
+          redirect_to user_path(@user.id)
         end
       end
     end
