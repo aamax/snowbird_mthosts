@@ -121,7 +121,7 @@ class ShiftsController < ApplicationController
     else
       @title = "Edit Shift"
       flash[:failure] = "ERROR: shift not updated. #{@shift.errors.messages}"
-      log_shift_failed_update(@shift, params[:shift], current_user)
+      log_shift_failed_update(previous_user_id, @shift, params[:shift], current_user)
       render 'edit'
       return
     end
@@ -248,17 +248,21 @@ class ShiftsController < ApplicationController
   end
 
   def log_shift_update(previous_user_id, shift, user)
-    prev_user = User.find(previous_user_id)
+    prev_user = User.find_by(id: previous_user_id)
+    prev_user_name = prev_user.nil? ? "UNSET" : prev_user.name
     shift_str = "#{shift.id}:#{shift.short_name}:#{shift.shift_date}"
     ShiftLog.create(change_date: DateTime.now, user_id: user.id,
                     shift_id: shift.id, action_taken: "Updated Shift",
-                    note: "#{user.name} UPDATED shift #{shift_str} set from: #{prev_user.name} to user: #{shift.user.name}")
+                    note: "#{user.name} UPDATED shift #{shift_str} set from: #{prev_user_name} to user: #{shift.user.name}")
   end
 
-  def log_shift_failed_update(shift, shift_hash, user)
+  def log_shift_failed_update(previous_user_id, shift, shift_hash, user)
+    prev_user = User.find_by(id: previous_user_id)
+    prev_user_name = prev_user.nil? ? "UNSET" : prev_user.name
+
     shift_str = "#{shift.id}:#{shift.short_name}:#{shift.shift_date}"
     ShiftLog.create(change_date: DateTime.now, user_id: user.id,
                 shift_id: shift_id, action_taken: "Failed Updating Shift",
-                note: "#{user.name} FAILED TO UPDATE shift #{shift_str} set from: #{prev_user.name} with hash: #{shift_hash.inspect}")
+                note: "#{user.name} FAILED TO UPDATE shift #{shift_str} set from: #{prev_user_name} with hash: #{shift_hash.inspect}")
   end
 end
