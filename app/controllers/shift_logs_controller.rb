@@ -20,7 +20,8 @@ class ShiftLogsController < ApplicationController
   # GET /shift_logs.json
   def index
     if current_user.has_role? :admin
-      @shift_logs = ShiftLog.all.order(updated_at: :desc)
+      @shift_logs = ShiftLog.all.order(change_date: :desc)
+      @date_value = nil
     else
       @shift_logs = []
       flash[:alert] = "Access To Logs Denied"

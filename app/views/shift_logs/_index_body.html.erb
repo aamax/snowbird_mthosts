@@ -6,12 +6,19 @@
     <th>Shift</th>
     <th>Action taken</th>
     <th>Note</th>
-    <th colspan="3">Ations</th>
+    <th colspan="3">Actions</th>
   </tr>
   </thead>
 
   <tbody>
   <% @shift_logs.each do |shift_log| %>
+  <% if @date_value != shift_log.change_date.strftime("%Y-%m-%d") %>
+    <tr>
+      <td colspan="8">>>>>>>>  DATE: <%= shift_log.change_date.strftime("%Y-%m-%d") %></td>
+    </tr>
+    <% @date_value = shift_log.change_date.strftime("%Y-%m-%d") %>
+  <% end %>
+
       <tr>
         <td><%= shift_log.change_date.strftime("%Y-%m-%d %H:%M:%S") %></td>
         <td><%= shift_log.user.name %></td>
