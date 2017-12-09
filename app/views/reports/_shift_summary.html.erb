@@ -1,0 +1,70 @@
+
+
+<h3>Mountain Host Shift Summary Report</h3>
+<hr/>
+<h4>Report Year: </h4>
+<%= select_tag "report_year", options_for_select(@years, @report_year), id: "select_year_tag", onchange: "change_year();" %>
+<%= link_to "Export #{@report_year}", "/export/shift_summary/#{@report_year}",
+                                      class: 'btn btn-smallbtn-default' %>
+<br/>
+<hr/>
+
+<table class="table table-striped">
+  <tr>
+    <th>Day/Date</th>
+    <th>Host</th>
+    <th>Shift Type</th>
+    <th>Description</th>
+    <th>Tasks</th>
+    <th>Status/Notes</th>
+  </tr>
+
+  <% @shifts.each do |shift| %>
+  <tr>
+    <td>
+      <%= shift.day_and_date %>
+    </td>
+    <td>
+      <%= shift.user.nil? ? "UnSet" : shift.user.name %>
+    </td>
+    <% if shift.shift_type.nil? %>
+        <td>
+          Unknown
+        </td>
+        <td>
+          Unknown
+        </td>
+        <td>
+          Unknown
+        </td>
+    <% else %>
+      <td>
+        <%= shift.shift_type.short_name %>
+      </td>
+      <td>
+        <%= shift.shift_type.description %>
+      </td>
+      <td>
+        <%= shift.shift_type.tasks %>
+      </td>
+    <% end %>
+    <td>
+      <%= if shift.user_id.nil?
+            "UNSET"
+          else
+            (shift.shift_date < Date.today) ? (shift.shift_status_id == -1) ? "missed" : "worked" : "FUTURE"
+          end
+      %>
+    </td>
+  </tr>
+  <% end %>
+
+</table>
+
+<script>
+    function change_year() {
+        var report_year = $("#select_year_tag").val();
+        var url = '/reports/shift_summary?report_year='+report_year;
+        window.open(url, '_self');
+    };
+</script>

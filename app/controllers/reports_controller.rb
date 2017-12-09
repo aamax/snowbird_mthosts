@@ -103,6 +103,25 @@ class ReportsController < ApplicationController
         end
         format.xls
       end
+    elsif params[:id] == 'shift_summary'
+      @report = 'shift_summary'
+      allshifts = Shift.unscoped.order(:shift_date)
+      first_year = allshifts.first.shift_date.year
+      last_year = allshifts.last.shift_date.year
+      @years = []
+      (first_year..last_year - 1).each do |yr|
+        @years << yr
+      end
+      report_year = @years.last
+      if params[:report_year].nil?
+        @shifts = Shift.includes(:user, :shift_type).order(:shift_date)
+      else
+        report_year = params[:report_year].to_i
+        start_year = "#{report_year}-09-01"
+        end_year = "#{report_year + 1}-09-01"
+        @shifts = Shift.unscoped.includes(:user, :shift_type).where("shift_date between '#{start_year}' and '#{end_year}'").order(:shift_date)
+      end
+      @report_year = report_year
     end
   end
 

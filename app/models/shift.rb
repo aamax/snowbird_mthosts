@@ -156,6 +156,10 @@ class Shift < ActiveRecord::Base
     shift_date
   end
 
+  def day_and_date
+    "#{self.day_of_week} #{self.date}"
+  end
+
   def status_operation
     self.shift_status_id == -1 ? value = "Missed" : value = "Worked"
     value
@@ -201,6 +205,8 @@ class Shift < ActiveRecord::Base
   def can_select(test_user, select_params)
     retval = false
     if self.user_id.nil?
+      return true if test_user.has_role? :admin
+
       all_shifts =  select_params[:all_shifts] #test_user.shifts.to_a
       working_shifts =  select_params[:working_shifts] #test_user.shifts.to_a.delete_if {|s| s.meeting? }
 
