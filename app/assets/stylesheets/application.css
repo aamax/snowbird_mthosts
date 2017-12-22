@@ -1,4 +1,5 @@
 /*
+*= require simple_calendar
 *= require_self
 *= require bootstrap-datepicker
 *= require_tree .
@@ -15,3 +16,5 @@
 .bad_ratio {
     color: red;
 }
+
+

@@ -73,3 +73,4 @@ end
 
 gem 'activerecord-session_store'
 
+gem "simple_calendar", "~> 2.0"

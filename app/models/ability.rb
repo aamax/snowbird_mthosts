@@ -13,7 +13,9 @@ class Ability
       else
         can :manage, :all
         cannot :delete, Shift
-        cannot :manage, :ShiftLog
+        cannot :manage, ShiftLog
+        cannot :create, HostHauler
+        cannot :destroy, HostHauler
       end
     end
 

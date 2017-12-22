@@ -56,6 +56,10 @@ class User < ActiveRecord::Base
   has_many :surveys
   has_many :shift_logs
 
+  has_many :riders
+  has_many :host_haulers, through: :riders
+
+
   scope :active_users, -> {where(active_user: true)}
   scope :inactive_users, -> {where(active_user: false)}
   scope :non_confirmed_users, -> {where(confirmed: false)}

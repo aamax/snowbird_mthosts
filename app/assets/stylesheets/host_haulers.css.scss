@@ -1,0 +1,49 @@
+// Place all the styles related to the HostHaulers controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+.simple-calendar {
+  background-color: #eeeeee;
+  border-width: thick;
+  border-color: black;
+  color: black;
+}
+
+td .simple-calendar {
+  border-color: black !important;
+  border-width: 2px !important;
+}
+
+.hauler_link {
+  color: blue;
+  padding-left: 15px;
+}
+
+.calendar-heading {
+  background-color: #e1940a;
+  text-align: center;
+  height: 40px;
+  padding-top: 15px;
+  font-size: 1.3em;
+  a {
+    color: blue;
+    font-weight: bold;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  a:visited {
+    color: blue;
+  }
+}
+
+.calendar-title {
+  color: white;
+  font-weight: bold;
+}
+
+.selected_hauler_date {
+  background-color: #00b300;
+}
+
+.hauler_edit_btn {
+  color: white !important;
+}
