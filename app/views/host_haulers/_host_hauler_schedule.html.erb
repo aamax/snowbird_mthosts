@@ -1,0 +1,13 @@
+<h4>
+  Hauler Date: <%= @selected_hauler.haul_date.to_s %>
+  &nbsp;&nbsp;
+  <% if current_user.admin? %>
+      <a href="/export_hauler/<%= @selected_hauler.id %>"
+         class="btn btn-small btn-default">Export
+      </a>
+  <% end %>
+</h4>
+
+<%= render 'host_hauler_driver' %>
+
+<%= render 'host_hauler_riders' %>

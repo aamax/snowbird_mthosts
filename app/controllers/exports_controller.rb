@@ -54,4 +54,25 @@ class ExportsController < ApplicationController
               :type => "text/csv; charset:iso-8859-1;header=present",
               :disposition => "attachment; filename=EOY_shift_report#{Date.today.strftime('%Y%m%d')}.csv"
   end
+
+  def host_hauler_download
+    host_hauler = HostHauler.find_by(id: params[:hauler_id])
+
+    csv_string = CSV.generate do |csv|
+      # header row
+      csv << ["Date: #{host_hauler.haul_date.strftime('%Y-%m=%d')}", "Driver: #{host_hauler.driver.name}"]
+      csv << [""]
+
+      csv << ["Rider Names"]
+      csv << ["--------------------------------"]
+      # data rows
+      host_hauler.riders.order(:id).each do |rider|
+        csv << [rider.user_id.nil? ? "EMPTY" : rider.user.name]
+      end
+    end
+
+    send_data csv_string,
+              :type => "text/csv; charset:iso-8859-1;header=present",
+              :disposition => "attachment; filename=host_hauler_export#{host_hauler.haul_date.strftime('%Y%m%d')}.csv"
+  end
 end

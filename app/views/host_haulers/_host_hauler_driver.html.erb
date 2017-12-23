@@ -1,0 +1,11 @@
+<div class="well">
+  <strong>DRIVER: </strong>
+  &nbsp;&nbsp;
+  <% if @driver.nil? %>
+    ** UNSET **
+  <% else %>
+    <%= @driver.name %>
+  <% end %>
+  &nbsp;&nbsp;
+  <%= @selected_hauler.driver_admin_button(current_user) %>
+</div>

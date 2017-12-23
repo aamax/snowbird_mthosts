@@ -1,0 +1,33 @@
+
+<div class="well">
+  <h5>RIDERS:</h5>
+  <table class="table table-striped">
+    <% @selected_hauler.riders.order(:id).each do |rider| %>
+        <tr>
+          <td>
+            <% if rider.user_id.nil? && current_user.can_ride_hauler(rider.id, current_user.id) %>
+                <a href="/select_rider/<%= rider.id %>" class='btn btn-success'>Select</a>
+            <% elsif current_user.id == rider.user_id %>
+                <a href="/drop_rider/<%= rider.id %>" class='btn btn-warning'>Drop</a>
+            <% end %>
+          </td>
+          <td>
+
+          </td>
+          <td>
+            <% if false # current_user.admin?   %>
+                <% unless rider.nil? %>
+                    <a href="remove_rider/<%= rider.id %>" class='icon-trash btn btn-danger'></a>
+                <% end %>
+                <a href="#" class="icon-wrench btn btn-info hauler_edit_btn" title="edit rider"></a>
+            <% end %>
+          </td>
+        </tr>
+    <% end %>
+  </table>
+</div>
+<br/><br/>
+
+
+
+

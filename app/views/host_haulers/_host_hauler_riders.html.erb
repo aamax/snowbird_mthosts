@@ -1,0 +1,21 @@
+<div class="well">
+  <h5>RIDERS:</h5>
+  <table class="table table-striped">
+    <% @selected_hauler.riders.order(:id).each do |rider| %>
+        <tr>
+          <td>
+            <% if rider.can_select_rider(current_user) %>
+                <a href="/select_rider/<%= rider.id %>" class='hauler_edit_btn btn btn-success'>Select</a>
+            <% end %>
+            <% if rider.can_drop_rider(current_user) %>
+                <a href="/drop_rider/<%= rider.id %>" class='hauler_edit_btn btn btn-danger'>Drop</a>
+            <% end %>
+          </td>
+          <td>
+            <%= rider.user_id.nil? ? "emtpy" : rider.user.name %>
+          </td>
+        </tr>
+    <% end %>
+  </table>
+</div>
+<br/><br/>

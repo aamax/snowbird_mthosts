@@ -14,23 +14,20 @@ class HostHaulersController < ApplicationController
   load_and_authorize_resource
 
   def index
-    @working_date = Date.today.strftime("%Y-%m-%d")
-    @working_date_value = Date.today
-
-    @riders = []
-    @driver = nil
-    @selected_hauler = nil
+    @my_shifts = current_user.shifts.map { |shift| shift.shift_date.strftime("%Y-%m-%d") }
+    @start_day = params[:start_date]
+    haul_array = HostHauler.all.map { |hauler| [hauler.haul_date, hauler.id] }
     @haulers = {}
-
-    start_day = @working_date_value.beginning_of_month - 10.days
-    end_day = @working_date_value.end_of_month + 10.days
-    HostHauler.includes(:riders).where(haul_date: start_day..end_day).each do |hh|
-      @haulers[hh.haul_date.to_s] = hh
-      if hh.haul_date.strftime("%Y-%m-%d") == @working_date
-        @driver = hh.driver
-        @selected_hauler = hh
-      end
+    haul_array.each do |haul|
+      @haulers[haul[0].to_s] = haul[1]
     end
+
+    if params[:hauler_id]
+      @selected_hauler = HostHauler.includes(:riders).find_by(id: params[:hauler_id])
+    else
+      @selected_hauler = HostHauler.includes(:riders).find_by(haul_date: Date.today)
+    end
+    @driver = @selected_hauler.driver
   end
 
   def drop_driver
@@ -49,27 +46,19 @@ class HostHaulersController < ApplicationController
     redirect_to :back
   end
 
-  # def edit
-  # end
+  def drop_rider
+    rider = Rider.find_by(id: params[:rider_id])
+    rider.user_id = nil
+    rider.save
 
-  def show
-    @dt = params[:id]
+    redirect_to :back
   end
 
-  # def update
-  # end
-  #
-  # def new
-  # end
-  #
-  # def create
-  # end
-  #
-  # def destroy
-  # end
+  def select_rider
+    rider = Rider.find_by(id: params[:rider_id])
+    rider.user_id = current_user.id
+    rider.save
 
-  def get_host_hauler_schedule
-    # pass in param for date, return json for driver and all riders
-
+    redirect_to :back
   end
 end

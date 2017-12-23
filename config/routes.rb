@@ -12,6 +12,7 @@ Mthost::Application.routes.draw do
   resources :sys_configs
   resources :reports
   resources :pages
+  resources :host_haulers, only: [:index]
 
   get '/download_end_of_year', :to =>  "exports#eoy_download"
   get '/export/shift_summary/:year', :to =>  "exports#shift_summary_download"
@@ -57,11 +58,13 @@ Mthost::Application.routes.draw do
   get "shift_logs/by_shift/:shift_id", :to => 'shift_logs#by_shift'
   get "shift_logs/by_user/:user_id", :to => 'shift_logs#by_user'
 
-  get '/host_haulers', :to => 'host_haulers#index'
-  get '/host_haulers/:hauler_id', :to 'host_haulers#index'
+
+  get '/host_haulers/:hauler_id', :to => 'host_haulers#index'
 
   get '/drop_driver/:id', :to => 'host_haulers#drop_driver'
   get '/select_driver/:id', :to => 'host_haulers#select_driver'
 
-
+  get '/drop_rider/:rider_id', :to => 'host_haulers#drop_rider'
+  get '/select_rider/:rider_id', :to => 'host_haulers#select_rider'
+  get '/export_hauler/:hauler_id', :to =>  "exports#host_hauler_download"
 end

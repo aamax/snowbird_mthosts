@@ -1,118 +1,15 @@
 <h1>The Host Hauler Schedule</h1>
 
-<p>
 <div class="row">
-  <div class="span7">
-    <%= month_calendar do |date| %>
-        <% if date == @working_date_value %>
-            <div class="selected_hauler_date">
-        <% end %>
-
-        <%= date %>
-        <br/>
-        <% if !@haulers[date.to_s].nil? %>
-            <%= link_to "Schedule", "/host_haulers/#{@haulers[date.to_s].id}", class: "hauler_link" %>
-        <% else %>
-            &nbsp;<br/>
-        <% end %>
-
-        <% if date == @working_date_value %>
-            </div>
-        <% end %>
-    <% end %>
-
+  <div class="span8">
+    <%= render 'host_hauler_calendar' %>
     <hr/>
-
-    <ul>
-      <li>implement select driver</li>
-      <li>implement drop driver</li>
-      <li>implement wrench: set driver to host</li>
-      <li>implement wrench: set rider to host</li>
-      <li>implement trash: remove seat/rider from hauler</li>
-      <li>add new hauler on date, set # riders: build hauler and set of riders</li>
-      <li>show selected date in calendar with specific color</li>
-      <li>show hauler/riders for selected date</li>
-    </ul>
-
+    <% if true # current_user.has_role? :admin %>
+        <%= render 'host_hauler_todo_list' %>
+    <% end %>
   </div>
 
-
-
-  <div class="span5">
-    Hauler Schedule Date: <input type="text" class='datepicker' value="<%= @working_date %>" id="hauler_date">
-    <br/><br/>
-
-    <div class="well">
-      <strong>DRIVER: </strong>
-      <% if @driver.nil? %>
-          ** UNSET **
-          &nbsp;&nbsp;&nbsp;
-          <a href=<%= "select_driver/#{@selected_hauler.id}" %> class='select_btn'>
-            <i class="icon-male btn btn-primary" title="set driver">&nbsp;&nbsp;Select</i>
-          </a>
-      <% else %>
-          <%= @driver.name %>
-          &nbsp;&nbsp;&nbsp;
-          <a href=<%= "drop_driver/#{@selected_hauler.id}" %> class='select_btn'>
-            <i class="icon-trash btn btn-danger" title="drop driver">&nbsp;&nbsp;Drop</i>
-          </a>
-      <% end %>
-      &nbsp;&nbsp;&nbsp;
-      <a href="#" class="icon-wrench btn btn-info hauler_edit_btn" title="edit rider"></a>
-    </div>
-
-    <div class="well">
-      <h5>RIDERS:</h5>
-      <table class="table table-striped">
-        <% @selected_hauler.riders.each do |rider| %>
-            <tr>
-              <td>
-                <% if rider.user_id.nil? %>
-                    <a href="/select_rider/<%= rider.id %>" class='btn btn-success'>Select</a>
-                <% else %>
-                    <a href="/drop_rider/<%= rider.id %>" class='btn btn-warning'>Drop</a>
-                <% end %>
-              </td>
-              <td>
-                <%= rider.user_id.nil? ? "* UNSET *" : rider.user.name %>
-              </td>
-              <td>
-                <% if current_user.admin? %>
-                    <% unless rider.nil? %>
-                        <a href="/remove_rider/<%= rider.id %>" class='icon-trash btn btn-danger'></a>
-                    <% end %>
-                    <a href="#" class="icon-wrench btn btn-info hauler_edit_btn" title="edit rider"></a>
-                <% end %>
-              </td>
-            </tr>
-        <% end %>
-      </table>
-    </div>
-    <br/><br/>
-
-
+  <div class="span4">
+    <%= render 'host_hauler_schedule' %>
   </div>
 </div>
-
-</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('.datepicker').datepicker();
-    });
-</script>
-
-
-

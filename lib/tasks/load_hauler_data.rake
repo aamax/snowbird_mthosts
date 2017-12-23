@@ -1,5 +1,15 @@
-namespace :db do
+def create_haul(cotter, dt)
+  hauler = HostHauler.create(driver_id: cotter.id, haul_date: dt)
+  (1..14).each do |host|
+    Rider.create(host_hauler_id: hauler.id)
+  end
+end
 
+def date_is_van_day(dt)
+  (dt < Date.parse('2018-01-02')) || dt.friday? || dt.saturday? || dt.sunday?
+end
+
+namespace :db do
   desc 'set 2017 host hauler data'
   task :set_hauler_data => :environment do
     cotter = User.find_by(email: 'jecotterii@gmail.com')
@@ -8,20 +18,17 @@ namespace :db do
       return
     end
 
-# HostHauler
-#  driver_id  :integer
-#  haul_date  :date
+    HostHauler.delete_all
+    Rider.delete_all
 
-# Rider
-#  host_hauler_id :integer
-#  user_id        :integer
+    end_date = Date.parse('2018-05-28')
 
-    (Date.today..Date.today + 5.days).each do |dt|
-      puts "populating #{dt.to_s}"
+    (Date.today..end_date).each do |dt|
 
-      hauler = HostHauler.create(driver_id: cotter.id, haul_date: dt)
-      (1..14).each do |host|
-        Rider.create(host_hauler_id: hauler.id)
+      if date_is_van_day(dt)
+        puts "populating #{dt.to_s}"
+
+        create_haul(cotter, dt)
       end
     end
 
