@@ -1,0 +1,29 @@
+<h3>Set Host For Hauler Driver</h3>
+
+<%= form_tag("/update_driver_in_hauler") do %>
+    <%= hidden_field_tag('hauler_id', @hauler.id) %>
+
+    <div class="row">
+      <div class= "span2">
+        <strong>Haul Date: </strong>
+      </div>
+      <div class="span3">
+        <%= @hauler.haul_date %>
+      </div>
+    </div>
+
+    <br/><br/>
+
+    <div class="field">
+      <strong>Eligible Hosts:</strong>
+
+      <%= select_tag("host", options_from_collection_for_select(@hauler.eligible_drivers, "id", "name")) %>
+    </div>
+
+    <br/><br/>
+
+    <div class="actions">
+      <%= submit_tag "Submit" %>
+    </div>
+<% end %>
+

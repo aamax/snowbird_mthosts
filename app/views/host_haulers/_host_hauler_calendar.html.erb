@@ -1,23 +1,30 @@
 <%= month_calendar do |date| %>
-    <% if date == @selected_hauler.haul_date %>
+    <% if @selected_hauler && (date == @selected_hauler.haul_date) %>
         <div class="selected_hauler_date">
+    <% end %>
+    <%= date %>
+
+    <% if @haulers[date.to_s].nil? && current_user.admin? %>
+      <a href="/add_hauler/<%= date.to_s %>" class="btn btn-small btn-success">
+        <i class='icon-plus'></i>
+      </a>
     <% end %>
 
     <% if @my_shifts.include? date.strftime("%Y-%m-%d") %>
-        <%= "#{date}<br/><strong>WORKING</strong>".html_safe %>
-    <% else %>
-        <%= date %>
+        <%= "<br/><strong>WORKING</strong>".html_safe %>
     <% end %>
 
     <% unless @haulers[date.to_s].nil? %>
-        <%= link_to "Schedule",
-                    "/host_haulers/#{@haulers[date.to_s]}?start_date=#{date.to_s}",
-                    class: "hauler_link" %>
+        <a href="
+          <%= "\host_haulers/#{@haulers[date.to_s]}?start_date=#{date.to_s}".html_safe %>
+          " class="btn btn-primary btn-small">
+          <i class='icon-search'></i>
+        </a>
     <% else %>
         &nbsp;<br/>
     <% end %>
 
-    <% if date == @selected_hauler.haul_date %>
+    <% if @selected_hauler && (date == @selected_hauler.haul_date) %>
         </div>
     <% end %>
 <% end %>

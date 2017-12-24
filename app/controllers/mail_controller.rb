@@ -52,7 +52,7 @@ class MailController < ApplicationController
       @emailaddress = params[:format].nil? ? params[:address] : "#{params[:address]}.#{params[:format]}"
 
       @title = "Create Email Message"
-      current_user ? @fromaddress = current_user.email :  @fromaddress = ""
+      current_user ? @fromaddress = current_user.email : @fromaddress = ""
 
       if !@emailaddress.include?("@")
         # handle special email lists etc.
@@ -71,6 +71,10 @@ class MailController < ApplicationController
         @fromaddress = ""
       end
     end
+  end
+
+  def send_hauler_mail
+    render :send_mail
   end
 
   private
@@ -131,6 +135,10 @@ class MailController < ApplicationController
       when 'THIS_DATE'
         users = Shift.where(shift_date: params[:date]).map {|s| s.user }
         users << User.find_by_name('John Cotter')
+      when 'hauler'
+        hauler = HostHauler.find_by(id: params[:id])
+        users = hauler.riders.map {|r| r.user.nil? ? nil : r.user }.compact
+        users << hauler.driver
       else
         @emailaddress = nil
     end

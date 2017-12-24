@@ -14,6 +14,13 @@
           <td>
             <%= rider.user_id.nil? ? "emtpy" : rider.user.name %>
           </td>
+          <% if current_user.admin? %>
+            <td>
+              <a href="/set_rider_to_host/<%= rider.id %>" class="hauler_edit_btn btn btn-info">
+                <i class="icon-wrench"></i>
+              </a>
+            </td>
+          <% end %>
         </tr>
     <% end %>
   </table>

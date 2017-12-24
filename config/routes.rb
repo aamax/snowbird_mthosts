@@ -33,6 +33,7 @@ Mthost::Application.routes.draw do
   post '/send_custom_mail', :to => "mail#send_custom_mail"
   post '/deliver_mail', :to => "mail#deliver_mail"
   get '/send_mail/:address', :to => "mail#send_mail"
+  get '/send_mail/hauler/:hauler_id', :to => 'mail#send_hauler_mail'
 
   get '/set_start_year/:year', :to => "users#set_start_year"
   get '/clear_assignments', :to => "users#clear_assignments"
@@ -67,4 +68,9 @@ Mthost::Application.routes.draw do
   get '/drop_rider/:rider_id', :to => 'host_haulers#drop_rider'
   get '/select_rider/:rider_id', :to => 'host_haulers#select_rider'
   get '/export_hauler/:hauler_id', :to =>  "exports#host_hauler_download"
+  get '/set_rider_to_host/:rider_id', :to => 'host_haulers#set_rider_to_host'
+  post '/update_rider_in_hauler', :to => 'host_haulers#update_rider_in_hauler'
+  get '/set_driver_to_host/:hauler_id', :to => 'host_haulers#set_driver_to_host'
+  post '/update_driver_in_hauler', :to => 'host_haulers#update_driver_in_hauler'
+  get '/add_hauler/:date_value', :to => 'host_haulers#add_hauler'
 end

@@ -1,13 +1,22 @@
 <h4>
-  Hauler Date: <%= @selected_hauler.haul_date.to_s %>
+  Hauler Date: <%= @selected_hauler.nil? ? "NONE" : @selected_hauler.haul_date.to_s %>
   &nbsp;&nbsp;
-  <% if current_user.admin? %>
+  <% if current_user.admin? && @selected_hauler %>
       <a href="/export_hauler/<%= @selected_hauler.id %>"
          class="btn btn-small btn-default">Export
       </a>
   <% end %>
+  <br/>
+  <% if @selected_hauler && @selected_hauler.has_riders? %>
+    <a href="/send_mail/hauler/?id=<%= @selected_hauler.id %>" class='btn btn-info btn-small'>
+      <i class='icon-envelope'></i>eMail
+    </a>
+  <% end %>
+  <br/>
 </h4>
 
-<%= render 'host_hauler_driver' %>
+<% if @selected_hauler %>
+  <%= render 'host_hauler_driver' %>
 
-<%= render 'host_hauler_riders' %>
+  <%= render 'host_hauler_riders' %>
+<% end %>

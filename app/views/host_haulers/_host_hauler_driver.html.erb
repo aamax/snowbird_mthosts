@@ -8,4 +8,10 @@
   <% end %>
   &nbsp;&nbsp;
   <%= @selected_hauler.driver_admin_button(current_user) %>
+
+  <% if current_user.admin? %>
+    <a href="/set_driver_to_host/<%= @selected_hauler.id %>" class="hauler_edit_btn btn btn-info">
+      <i class="icon-wrench"></i>
+    </a>
+  <% end %>
 </div>
