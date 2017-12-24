@@ -14,6 +14,10 @@ class HostHaulersController < ApplicationController
   load_and_authorize_resource
 
   def index
+    @haulers = HostHauler.includes(:riders).all
+  end
+
+  def scheduler
     @my_shifts = current_user.shifts.map { |shift| shift.shift_date.strftime("%Y-%m-%d") }
     @start_day = params[:start_date]
     haul_array = HostHauler.all.map { |hauler| [hauler.haul_date, hauler.id] }
@@ -104,6 +108,6 @@ class HostHaulersController < ApplicationController
       Rider.create(host_hauler_id: @seleted_hauler.id)
     end
 
-    redirect_to "#{host_haulers_path}/#{@seleted_hauler.id}"
+    redirect_to "/hauler_scheduler/#{@seleted_hauler.id}"
   end
 end

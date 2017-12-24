@@ -1,15 +1,31 @@
-<h1>The Host Hauler Schedule</h1>
+<h1>Host Hauler Entries</h1>
 
-<div class="row">
-  <div class="span8">
-    <%= render 'host_hauler_calendar' %>
-    <hr/>
-    <% if true # current_user.has_role? :admin %>
-        <%= render 'host_hauler_todo_list' %>
-    <% end %>
-  </div>
-
-  <div class="span4">
-    <%= render 'host_hauler_schedule' %>
-  </div>
-</div>
+<table class="table table-striped">
+  <% @haulers.each do |hauler| %>
+    <tr>
+      <td>
+        <%= link_to "",
+                    "/hauler_scheduler/#{hauler.id}",
+                    class: "icon-search btn btn-small btn-info"
+        %>
+        <%= "#{hauler.haul_date} : #{hauler.haul_date.strftime('%A')}" %>
+      </td>
+      <td>
+        Driver: <%= hauler.driver_id.nil? ? "UnSet" : hauler.driver.name %>
+      </td>
+    </tr>
+      <tr>
+        <td colspan="2">
+          <% if hauler.has_riders? %>
+            <ul>
+              <% hauler.riders.each do |rider| %>
+                <% if !rider.user_id.nil? %>
+                  <li><%= rider.user.name %></li>
+                <% end %>
+              <% end %>
+            </ul>
+          <% end %>
+        </td>
+      </tr>
+  <% end %>
+</table>

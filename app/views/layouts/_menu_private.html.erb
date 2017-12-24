@@ -6,7 +6,7 @@
 
     <li><%= link_to "Shifts", shifts_path %></li>
 
-    <li><%= link_to "HostHauler", host_haulers_path %></li>
+    <li><%= link_to "HostHauler", '/hauler_scheduler' %></li>
 
     <li><a href=<%= "/users/#{current_user.id}" %>>Profile</a></li>
 
@@ -102,6 +102,7 @@
             <li><a href="/hosts_by_roles">Hosts By Role</a></li>
             <li><a href="/shift_logs">Shift Logs</a></li>
             <li><a href="/reports/shift_summary">Shift Summary Reports</a></li>
+            <li><a href="/host_haulers">Host Hauler Summary</a></li>
           </ul>
         </li>
     <% end %>

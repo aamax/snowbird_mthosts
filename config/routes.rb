@@ -51,16 +51,11 @@ Mthost::Application.routes.draw do
   get '/ghost_user/:id', :to => 'users#ghost_user'
   get '/un_ghost_user', :to => 'users#un_ghost_user'
 
-  root :to => "pages#show"
-
-  # catchall route to get pages
-  get "/:id" => "pages#show"
-
   get "shift_logs/by_shift/:shift_id", :to => 'shift_logs#by_shift'
   get "shift_logs/by_user/:user_id", :to => 'shift_logs#by_user'
 
 
-  get '/host_haulers/:hauler_id', :to => 'host_haulers#index'
+  get '/hauler_scheduler/:hauler_id', :to => 'host_haulers#scheduler'
 
   get '/drop_driver/:id', :to => 'host_haulers#drop_driver'
   get '/select_driver/:id', :to => 'host_haulers#select_driver'
@@ -73,4 +68,10 @@ Mthost::Application.routes.draw do
   get '/set_driver_to_host/:hauler_id', :to => 'host_haulers#set_driver_to_host'
   post '/update_driver_in_hauler', :to => 'host_haulers#update_driver_in_hauler'
   get '/add_hauler/:date_value', :to => 'host_haulers#add_hauler'
+  get '/hauler_scheduler', :to => 'host_haulers#scheduler'
+
+
+  # catchall route to get pages
+  get "/:id" => "pages#show"
+  root :to => "pages#show"
 end

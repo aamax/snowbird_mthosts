@@ -16,7 +16,7 @@
 
     <% unless @haulers[date.to_s].nil? %>
         <a href="
-          <%= "/host_haulers/#{@haulers[date.to_s]}?start_date=#{date.to_s}".html_safe %>
+          <%= "/hauler_scheduler/#{@haulers[date.to_s]}?start_date=#{date.to_s}".html_safe %>
           " class="btn btn-primary btn-small">
           <i class='icon-search'></i>
         </a>

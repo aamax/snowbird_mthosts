@@ -1,0 +1,15 @@
+<h1>The Host Hauler Schedule</h1>
+
+<div class="row">
+  <div class="span8">
+    <%= render 'host_hauler_calendar' %>
+    <hr/>
+    <% if true # current_user.has_role? :admin %>
+        <%= render 'host_hauler_todo_list' %>
+    <% end %>
+  </div>
+
+  <div class="span4">
+    <%= render 'host_hauler_schedule' %>
+  </div>
+</div>
