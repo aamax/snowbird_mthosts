@@ -85,7 +85,7 @@ class HostHaulersController < ApplicationController
     rider.user_id = host.id
     rider.save
 
-    redirect_to "#{host_haulers_path}/#{hauler.id}"  # set hauler_id
+    redirect_to "/hauler_scheduler/#{hauler.id}"  # set hauler_id
   end
 
   def set_driver_to_host
