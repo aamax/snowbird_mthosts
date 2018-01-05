@@ -12,7 +12,7 @@
             <% end %>
           </td>
           <td>
-            <%= rider.user_id.nil? ? "emtpy" : rider.user.name %>
+            <%= rider.user_id.nil? ? "empty" : rider.user.name %>
           </td>
           <% if current_user.admin? %>
             <td>
