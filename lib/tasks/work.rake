@@ -32,4 +32,20 @@ namespace :work do
 
     puts "done... #{icnt}"
   end
+
+  task :fix_haulers => :environment do
+    puts "starting..."
+
+    haulers = HostHauler.where("haul_date > ?", Date.today)
+    haulers.find_each do |hauler|
+      if (hauler.riders.count >= 14) && hauler.riders.last.user_id.nil?
+        hauler.riders.last.destroy
+      end
+    end
+
+
+
+    puts "done... "
+  end
+
 end
