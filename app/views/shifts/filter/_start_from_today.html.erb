@@ -1,6 +1,8 @@
-Start From Today:
+<% if current_user.admin? %>
+    Start From Today:
 
-<%= f.check_box(:start_from_today, :checked => @return_params['start_from_today']) %>
+    <%= f.check_box(:start_from_today, :checked => @return_params['start_from_today']) %>
 
-<br/><br/>
+    <br/><br/>
+<% end %>
 

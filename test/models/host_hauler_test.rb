@@ -70,10 +70,6 @@ class HostHaulerTest < ActiveSupport::TestCase
     def test_eligible_drivers
       drivers = @hauler.eligible_drivers
       assert_equal(3, drivers.count)
-
-      puts drivers.inspect
-
-
       (1..3).each do |number|
         email = "driver#{number}@example.com"
         d = User.find_by(email: email)

@@ -180,5 +180,4 @@ class ReportsController < ApplicationController
               :disposition => "attachment; filename=ski_patrol_report#{@date.strftime('%a.%Y%m%d')}.csv"
   end
 
-
 end

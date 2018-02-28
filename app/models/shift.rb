@@ -207,6 +207,8 @@ class Shift < ActiveRecord::Base
     if self.user_id.nil?
       return true if test_user.has_role? :admin
 
+      return false if shift_date < Date.today
+
       all_shifts =  select_params[:all_shifts] #test_user.shifts.to_a
       working_shifts =  select_params[:working_shifts] #test_user.shifts.to_a.delete_if {|s| s.meeting? }
 

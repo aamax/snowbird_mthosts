@@ -65,6 +65,7 @@ group :test, :development do
   gem "factory_girl_rails", ">= 4.2.0"
 
   gem "capybara-webkit"
+  gem 'timecop'
 end
 
 group :production do

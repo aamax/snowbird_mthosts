@@ -42,6 +42,12 @@ class ShiftsHelperTest < ActionView::TestCase
     @round3_date = Date.today() - 6.days
     @round4_date = Date.today() - 9.days
     @after_bingo_date = Date.today - 12.day
+
+    Timecop.freeze(Shift.where("short_name not like 'M%'").order(:shift_date).first.shift_date - 2.months)
+  end
+
+  after do
+    Timecop.return
   end
 
   describe 'can_drop' do
@@ -237,6 +243,24 @@ class ShiftsHelperTest < ActionView::TestCase
         Shift.all.each do |s|
           s.can_select(@senior_user, HostUtility.can_select_params_for(@senior_user)).must_equal false
         end
+      end
+
+      it 'cannot pick shifts prior to todays date' do
+        @sys_config.bingo_start_date = @after_bingo_date
+        @sys_config.save!
+
+        s1 = FactoryGirl.create(:shift, shift_date: Date.today - 5.days, shift_type_id: @p1.id)
+        s2 = FactoryGirl.create(:shift, shift_date: Date.today - 4.days, shift_type_id: @p1.id)
+        s3 = FactoryGirl.create(:shift, shift_date: Date.today - 3.days, shift_type_id: @p1.id)
+        s4 = FactoryGirl.create(:shift, shift_date: Date.today - 2.days, shift_type_id: @p1.id)
+        s5 = FactoryGirl.create(:shift, shift_date: Date.today - 1.days, shift_type_id: @p1.id)
+        s6 = FactoryGirl.create(:shift, shift_date: Date.today, shift_type_id: @p1.id)
+        s1.can_select(@senior_user, HostUtility.can_select_params_for(@senior_user)).must_equal false
+        s2.can_select(@senior_user, HostUtility.can_select_params_for(@senior_user)).must_equal false
+        s3.can_select(@senior_user, HostUtility.can_select_params_for(@senior_user)).must_equal false
+        s4.can_select(@senior_user, HostUtility.can_select_params_for(@senior_user)).must_equal false
+        s5.can_select(@senior_user, HostUtility.can_select_params_for(@senior_user)).must_equal false
+        s6.can_select(@senior_user, HostUtility.can_select_params_for(@senior_user)).must_equal true
       end
 
       it "can pick up to 5 shifts in round 1" do
@@ -469,7 +493,7 @@ class ShiftsHelperTest < ActionView::TestCase
       end
 
       def create_t1_shifts
-        first_date = Shift.all.order(:shift_date).first.shift_date
+        first_date = Shift.where("short_name not like 'M%'").order(:shift_date).first.shift_date
         t1type = FactoryGirl.create(:shift_type, short_name: 'T1')
         (1..5).each do |n|
           FactoryGirl.create(:shift, shift_date: first_date + n.days - 2.months, shift_type_id: t1type.id)
@@ -546,9 +570,16 @@ class ShiftsHelperTest < ActionView::TestCase
         t1a.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
       end
 
-      it "should not allow any other shifts selectable if T1 shift dropped" do
+      # it "should not allow any other shifts selectable if T1 shift dropped" do
+      def test_work
         create_t1_shifts
         create_t2andt3_shifts
+        #
+        # puts Shift.all.map {|s| [s.shift_date, s.short_name]}
+        # puts "-------------"
+        #
+        # puts "today: #{Date.today}  Time: #{Time.now}  bingo: #{HostConfig.bingo_start_date}"
+        #
         t1shift, t2shift, t3shift = nil
         Shift.where(short_name: "T1").order(:shift_date).each do |shift|
           shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
@@ -598,10 +629,10 @@ class ShiftsHelperTest < ActionView::TestCase
         new_t2.can_select(@rookie_user,
                           HostUtility.can_select_params_for(@rookie_user)).must_equal false
 
-        if t2shift.can_select(@rookie_user,
-                              HostUtility.can_select_params_for(@rookie_user)) == false
-          puts t2shift.inspect
-        end
+        # if t2shift.can_select(@rookie_user,
+        #                       HostUtility.can_select_params_for(@rookie_user)) == false
+        #   puts t2shift.inspect
+        # end
 
         t2shift.can_select(@rookie_user,
                            HostUtility.can_select_params_for(@rookie_user)).must_equal true
