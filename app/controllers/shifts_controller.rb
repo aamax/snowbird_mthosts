@@ -59,7 +59,7 @@ class ShiftsController < ApplicationController
       flash[:alert] = "Error destroying shift."
       log_shift_destroy(params[:id], "failed to delete: #{shift_details}", current_user)
     else
-      log_shift_destroy(params[:id], "success: #{shift_details}", current_user)
+      log_shift_destroy(params[:id], "success deleting shift: #{shift_details}", current_user)
     end
     redirect_to :back
   end

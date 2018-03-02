@@ -13,7 +13,10 @@
     <strong>Found Questionable shift</strong><br/>
     note: <%= note = log.note %><br/>
     math: <%= dt1 %> is less than <%= dt2 %> : <%= is_before %><br/>
-    change date: <%= dt2_str = log.change_date.strftime('%Y-%m-%d') %><br/>
+    change date: <%= dt2_str = log.change_date.strftime('%Y-%m-%d') %>
+    action taken: <%= log.action_taken %>
+    by: <%= log.user.name %>
+    <br/>
   <br/>
 <hr/>
 <% end %>
