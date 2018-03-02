@@ -1,0 +1,19 @@
+<h1>Shift Log Review</h1>
+
+<% @logs.each do |log| %>
+    <%
+      note = log.note
+      dt2_str = log.change_date.strftime('%Y-%m-%d')
+      shift_date = /\d\d\d\d-\d\d-\d\d/.match(note).to_s
+      dt1 = Date.parse(shift_date)
+      dt2 = Date.parse(dt2_str)
+      is_before = (dt1 < dt2)
+      next if is_before == false
+    %>
+    <strong>Found Questionable shift</strong><br/>
+    note: <%= note = log.note %><br/>
+    math: <%= dt1 %> is less than <%= dt2 %> : <%= is_before %><br/>
+    change date: <%= dt2_str = log.change_date.strftime('%Y-%m-%d') %><br/>
+  <br/>
+<hr/>
+<% end %>

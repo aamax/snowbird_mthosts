@@ -122,6 +122,12 @@ class ReportsController < ApplicationController
         @shifts = Shift.unscoped.includes(:user, :shift_type).where("shift_date between '#{start_year}' and '#{end_year}'").order(:shift_date)
       end
       @report_year = report_year
+    elsif params[:id] == 'shift_log_review'
+      @logs = ShiftLog.all.order(created_at: :desc)
+      @report = 'shift_log_review'
+
+
+
     end
   end
 

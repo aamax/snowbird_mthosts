@@ -54,7 +54,6 @@ Mthost::Application.routes.draw do
   get "shift_logs/by_shift/:shift_id", :to => 'shift_logs#by_shift'
   get "shift_logs/by_user/:user_id", :to => 'shift_logs#by_user'
 
-
   get '/hauler_scheduler/:hauler_id', :to => 'host_haulers#scheduler'
 
   get '/drop_driver/:id', :to => 'host_haulers#drop_driver'
