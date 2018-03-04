@@ -24,13 +24,15 @@ class HostHaulerTest < ActiveSupport::TestCase
     def setup
       User.delete_all
       (1..3).each do |number|
-        u = User.create(email: "driver#{number}@example.com", password: "password", name: "name#{number}")
+        u = User.create(email: "driver#{number}@example.com", password: "password",
+                        name: "name#{number}", active_user: true)
 
         u.add_role :driver
       end
 
       (1..10).each do |number|
-        u = User.create(email: "rider#{number}@example.com", password: "password", name: "rider#{number}")
+        u = User.create(email: "rider#{number}@example.com", password: "password",
+                        name: "rider#{number}", active_user: true)
       end
       assert_equal(13, User.all.count)
 

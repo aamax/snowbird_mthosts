@@ -33,6 +33,7 @@ class ShiftsHelperTest < ActionView::TestCase
     @sv = ShiftType.find_by(short_name: "SV")
     @tr = ShiftType.find_by(short_name: "TR")
 
+    Timecop.freeze(Date.parse("2017-10-01"))
     @start_date = (Date.today() + 20.days)
 
     @pre_bingo_date = Date.today() + 1.day
@@ -42,8 +43,6 @@ class ShiftsHelperTest < ActionView::TestCase
     @round3_date = Date.today() - 6.days
     @round4_date = Date.today() - 9.days
     @after_bingo_date = Date.today - 12.day
-
-    Timecop.freeze(Shift.where("short_name not like 'M%'").order(:shift_date).first.shift_date - 2.months)
   end
 
   after do
