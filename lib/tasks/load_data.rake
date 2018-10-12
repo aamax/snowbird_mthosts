@@ -20,12 +20,6 @@ namespace :db do
       u.active_user = false
       u.save
 
-      puts 'set seniority for Karen Weiss'
-      u = User.find_by(email: 'kkweiss22@gmail.com')
-      u.start_year = 2016
-      u.snowbird_start_year = 2018
-      u.save
-
       puts 'de-activate Gabrielle Gale'
       u = User.find_by(email: 'gabrielle.bomgren.gale@gmail.com')
       u.active_user = false
@@ -57,6 +51,12 @@ namespace :db do
 
       puts 'Loading Rookies for 2018'
       Rake::Task['db:load_2018_rookies'].invoke
+
+      puts 'set seniority for Karen Weiss'
+      u = User.find_by(email: 'kkweiss22@gmail.com')
+      u.start_year = 2016
+      u.snowbird_start_year = 2018
+      u.save
 
       puts 'Loading shift types'
       Rake::Task['db:load_shift_types'].invoke
