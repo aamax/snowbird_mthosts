@@ -15,6 +15,9 @@ namespace :daily do
 
     msg = UserMailer.send_daily_email(emailaddress, @fromaddress, @subject, @message)
     msg.deliver unless msg.nil?
+
+    # TODO: send text message?
+
   end
 end
 

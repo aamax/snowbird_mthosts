@@ -1,7 +1,4 @@
 namespace :data do
-
-
-
   task :load_meetings => :environment do
     puts "clearing all meeting shifts..."
 

@@ -77,7 +77,7 @@ class User < ActiveRecord::Base
 
   # don't allow non active users to log into the system
   def active_for_authentication?
-    super and self.has_role?(:admin) ? true : (self.active_user? || (self.email == 'jcollins@snowbird.com'))
+    super and self.has_role?(:admin) ? true : (self.active_user? || (self.email == 'kmcguinness@snowbird.com'))
   end
 
   def non_meeting_shifts
@@ -382,6 +382,14 @@ class User < ActiveRecord::Base
                                  :shift_status_id => 1,
                                  :day_of_week=>s_date.strftime("%a"))
       end
+    end
+  end
+
+  def self.reset_all_accounts
+    User.active_users.each do |u|
+      u.confirmed = false
+      u.password = '5teep&Deep'
+      u.save
     end
   end
 

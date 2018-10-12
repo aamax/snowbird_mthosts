@@ -201,11 +201,7 @@ class UsersController < ApplicationController
   end
 
   def reset_confirms_and_passwords
-    User.active_users.each do |u|
-      u.confirmed = false
-      u.password = '5teep&Deep'
-      u.save
-    end
+    User.reset_all_accounts
     redirect_to :back, :notice => "All Users Have Been Reset..."
   end
 

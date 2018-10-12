@@ -1,0 +1,50 @@
+short_name,description,start_time,end_time,tasks
+G1weekend,CreekSide Late,0830,1650,Big Emma 11:30 and 1:45. Mt Presence: Gad
+G2weekend,Portico,0800,1600,Big Emma 12:15 and 2:30. Mt Presence: Gad
+G3weekend,Plaza Deck,0800,1600,Big Emma 1:00 and 3:15. Mt Presence: Gad
+H1weekend,Hidden Peak,0800,1600,Hidden Peak AM. Mt Presence: 1st Mineral - 2nd Peruvian
+H2weekend,Hidden Peak,0800,1600,Hidden Peak AM. Mt Presence: 1st Mineral - 2nd Peruvian
+H3weekend,SB Ctr 1st Floor,0800,1600,Hidden Peak PM. Mt Presence: 1st Mineral - 2nd Peruvian
+H4weekend,SB Ctr 2nd Floor,0800,1600,Hidden Peak PM. Mt Presence: 1st Mineral - 2nd Peruvian
+P1weekend,Portico,0800,1600,10:30 Tour. Mt Presence: PM - P/MB
+P2weekend,Chickadee,0800,1600,10:30 Tour. Mt Presence: PM - P/MB
+P3weekend,Portico Late,0830,1650,9:30 Tour. Mt Presence: PM - P/MB
+P4weekend,Portico Late,0830,1650,9:30 Tour. Mt Presence: PM - P/MB
+C1weekend,Creekside,0800,1600,Chickadee AM (~9:15). Mt Presence: PM - Gad. EOB 3-4pm
+C2weekend,Plaza Deck,0800,1600,Chickadee AM (~9:15). Mt Presence: PM - Gad. EOB 3-4pm
+C3weekend,Peruvian Expr,0800,1600,Chickadee PM (~1:00). Mt Presence: AM - Gad
+C4weekend,Creekside,0800,1600,Chickadee PM (~1:00). Mt Presence: AM - Gad
+F1weekend,Creekside,0800,1600,as assigned EOB 3-4pm
+F2weekend,Plaza Deck,0800,1600,as assigned EOB 3-4pm
+F3weekend,Peruvian Expr,0800,1600,as assigned
+F4weekend,Creekside,0800,1600,as assigned
+G1friday,CreekSide,0800,1600,Big Emma 1:30 2:30 3:30. Mt Presence: AM
+G2friday,Plaza Deck,0800,1600,Big Emma 1:00 2:00 3:00. Mt Presence: AM
+G3friday,Chickadee,0800,1600,Big Emma 10:30 11:30 12:30. Mt Presence: PM
+G4friday,Creekside Late,0830,1650,Big Emma 10:00 11:00 12:00. Mt Presence: PM
+H1friday,Hidden Peak,0800,1600,2 hosts share all day HP coverage. Mt Presence as available
+P1friday,Portico,0800,1600,10:30 Tour. Mt Presence: PM. EOB 3-4pm
+P2friday,Peruvian Expr,0800,1600,10:30 Tour. Mt Presence: PM. EOB 3-4pm
+P3friday,Plaza Deck,0800,1600,9:30 Tour. Mt Presence: PM
+P4friday,Portico Late,0830,1650,9:30 Tour. Mt Presence: PM
+P1weekday,Portico,0800,1600,10:30 Tour. Mt Presence: PM
+P2weekday,Creekside,0800,1600,10:30 Tour. Mt Presence: PM
+P3weekday,Portico Late,0800,1600,9:30 Tour. Mt Presence: PM
+P4weekday,Creekside Late,0830,1650,9:30 Tour. Mt Presence: PM
+H1weekday,Hidden Peak,0800,1600,Mt Presence as available
+SV,Cliff Back Door,0800,1600,Surveys 11:00 - 2:00. off at 2p
+TL,Team Lead,0800,1600,Roam
+A1,All Mountain,0800,1600,General Duties as needed. Flexible
+M1,Rookie Training Meeting,0800,1700,
+M2,All Host Training Meeting,0800,1700,
+M3,On Mountain Rookie Training,0800,1700,
+M4,Mid-Year Training Meeting,1600,2100,
+Race,Race,0800,1600,duties as assigned
+SE,Special Event,0800,1600,duties as assigned
+SH,Rookie On Mountain Training,0800,1600
+ST,Special Tour,0800,1600
+T1,Rookie Training Shift 1,0800,1600,Rookie Training Type 1
+T2,Rookie Training Shift 2,0800,1600,Rookie Training Type 2
+T3,Rookie Training Shift 3,0800,1600,Rookie Training Type 3
+T4,Rookie Training Shift 4,0800,1600,Rookie Training Type 4
+TR,Trainer Shift,0800,1600,Group Leader Rookie Training

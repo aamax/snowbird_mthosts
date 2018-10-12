@@ -4,180 +4,367 @@ DEFAULT_PASSWORD = "password"
 
 namespace :db do
 
-  desc 'load 2017 rookies'
-  task :load_2017_rookies => :environment do
-    filename = "lib/data/rookies_2017.csv"
+  desc "load all data"
+  task :load_all_data => :environment do
+    ActiveRecord::Base.transaction do
+      # clear all data
+      puts "Clearing all data: riders, host_haulers, shfits, shift_logs, shift_types"
+      ActiveRecord::Base.connection.execute("TRUNCATE TABLE riders RESTART IDENTITY;")
+      ActiveRecord::Base.connection.execute("TRUNCATE TABLE host_haulers RESTART IDENTITY;")
+      ActiveRecord::Base.connection.execute("TRUNCATE TABLE shifts RESTART IDENTITY;")
+      ActiveRecord::Base.connection.execute("TRUNCATE TABLE shift_logs RESTART IDENTITY;")
+      ActiveRecord::Base.connection.execute("TRUNCATE TABLE shift_types RESTART IDENTITY;")
 
+      puts "disabling Kate's Acount"
+      u = User.find_by(name: 'Kate')
+      u.active_user = false
+      u.save
+
+      puts 'set seniority for Karen Weiss'
+      u = User.find_by(email: 'kkweiss22@gmail.com')
+      u.start_year = 2016
+      u.snowbird_start_year = 2018
+      u.save
+
+      puts 'de-activate Gabrielle Gale'
+      u = User.find_by(email: 'gabrielle.bomgren.gale@gmail.com')
+      u.active_user = false
+      u.save
+
+      puts 'de-activate Craig Whetman'
+      u = User.find_by(email: 'craig_whetman@hotmail.com')
+      u.active_user = false
+      u.save
+
+      puts "set Alan Marker seniority"
+      u = User.find_by(email: 'akmarler@hotmail.com')
+      u.start_year = 2013
+      u.save
+
+      puts "set Sarah R seniority"
+      u = User.find_by(email: 'sarah3884@yahoo.com')
+      u.start_year = 2013
+      u.save
+
+      puts 'set my password'
+      # set my password
+      u = User.find_by(email: 'aamaxworks@gmail.com')
+      u.password = ENV['ADMIN_PASSWORD']
+      u.save
+
+      puts 'Setting up config for season'
+      Rake::Task['db:setup_config_for_2018'].invoke
+
+      puts 'Loading Rookies for 2018'
+      Rake::Task['db:load_2018_rookies'].invoke
+
+      puts 'Loading shift types'
+      Rake::Task['db:load_shift_types'].invoke
+
+      puts 'Load all shifts'
+      Rake::Task['db:load_shifts'].invoke
+
+      puts "Shift Count Before Meetings: #{Shift.count}"
+
+      puts 'Load all Meeting Shifts For Users'
+      Rake::Task['db:load_meetings'].invoke
+
+      puts 'initialize all user accounts for start of year'
+      User.reset_all_accounts
+
+    end
+    puts "Active User Count #{User.active_users.count}"
+    puts "Shift Count: #{Shift.count}"
+
+    puts "Seniors: #{User.group1.count}"
+    puts "Juniors: #{User.group2.count}"
+    puts "Freshmen: #{User.group3.count}"
+    puts "Rookies: #{User.rookies.count}"
+
+    puts "DONE WITH SEASON PREP... 2018"
+  end
+
+  desc 'load 2018 rookies'
+  task :load_2018_rookies => :environment do
+    filename = "lib/data/rookies_2018.csv"
+    ADDRESS_FORMAT = /([a-zA-Z0-9 ]+), ([a-zA-Z0-9]+), ([a-zA-Z0-9]+) ([0-9]+)/
+
+    rookie_count = 0
     if File.exists?(filename)
-      puts "loading 2017 rookie data..."
+      puts "loading 2018 rookie data..."
       CSV.foreach(filename, :headers => true) do |row|
         hash = row.to_hash
-
         usr = User.find_by(email: hash['email'])
+        rookie_count += 1
+        if usr.nil?
+          arr = hash['address'].match(ADDRESS_FORMAT)
+          street_value = arr[1]
+          city_value = arr[2]
+          state_value = arr[3]
+          zip_value = arr[4]
+          usr = User.new(name: "#{hash['fname']} #{hash['lname']}", email: hash['email'],
+                         cell_phone: hash['cellphone'], home_phone: hash['homephone'],
+                         street: street_value, city: city_value,
+                         state: state_value, zip: zip_value, password: '5teep&Deep')
+        end
 
-        usr ||= User.new(name: "#{hash['fname']} #{hash['lname']}", email: hash['email'],
-                       cell_phone: hash['phone'], street: hash['address'], password: '5teep&Deep')
         usr.active_user = true
-        usr.start_year = 2017
-        usr.snowbird_start_year = 2017
+        usr.start_year = 2018
+        usr.snowbird_start_year = 2018
         if !usr.valid?
           puts "\nERRROR in data:  #{usr.errors.messages}\n\n"
           next
         end
-
-        puts "saving user: #{usr.inspect}\n-------------"
         usr.save
       end
     end
-  end
 
-  desc "load all data"
-  task :load_all_data => :environment do
-    Rake::Task['db:setup_sys_config'].invoke
-    Rake::Task['db:load_users'].invoke
-
-    Rake::Task['db:load_shift_types'].invoke
-
-    Rake::Task['db:load_shifts'].invoke
-  end
-
-  desc "populate snowbird_start_year from start_year"
-  task :set_snowbird_start_year => :environment do
-    User.all.each do |u|
-      u.snowbird_start_year = u.start_year
-      u.save
-    end
-  end
-
-  desc "populate sys config settings"
-  task :setup_sys_config => :environment do
-    puts "setting up sys config values"
-    puts "purging existing sys config record from system..."
-    ActiveRecord::Base.connection.execute("TRUNCATE TABLE sys_configs RESTART IDENTITY;")
-    c = SysConfig.new
-    #c.season_year = 2013
-    #c.group_1_year = 2012
-    #c.group_2_year = 2011
-    #c.group_3_year = 2007
-    #c.season_start_date = Date.new(2013,12,15)
-    #c.bingo_start_date = Date.new(2013,11,10)
-    c.season_year = 2012
-    c.group_1_year = 2011
-    c.group_2_year = 2010
-    c.group_3_year = 2005
-    c.season_start_date = Date.new(2012,12,15)
-    c.bingo_start_date = Date.new(2012,11,10)
-
-    if !c.save
-      puts "error saving config record #{c.errors.messages}"
-    end
-  end
-
-    desc "populate users"
-  task :load_users => :environment do
-    # clear out users
-    puts "purging existing users from system..."
-    ActiveRecord::Base.connection.execute("TRUNCATE TABLE users RESTART IDENTITY;")
-
-    # load up file
-    filename = "lib/data/hostdata.csv"
-
-    if File.exists?(filename)
-      puts "loading user data..."
-      CSV.foreach(filename, :headers => true) do |row|
-        hash = row.to_hash
-        u = {
-            name: hash["name"], email: hash["email"], password: DEFAULT_PASSWORD, active_user: true,
-            start_year: hash["startdate"].to_i, street: hash['street'], city: hash['city'], state: hash['state'],
-            zip: hash['zip'], home_phone: hash['homephone'], cell_phone: hash['cellphone'], alt_email: '',
-            notes: hash['notes'], confirmed: false, nickname: ''
-            }
-        usr = User.create(u)
-        if (usr == false) || usr.nil?
-          puts "failed: #{u}"
-        else
-          if hash['admin'] && (hash['admin'].upcase == 'TRUE')
-            usr.add_role :admin
-          end
-          if hash['teamleader'] && (hash['teamleader'].upcase == 'TRUE')
-            usr.add_role :team_leader
-          end
-        end
-      end
-      puts "done loading user data"
-    else
-      puts "user loader file not found"
-    end
+    puts "DONE WITH ROOKIE LOAD... Loaded #{rookie_count} Rookies."
   end
 
   desc "populate shift types"
   task :load_shift_types => :environment do
-    # clear out shift types
-    puts "purging existing shift types from system..."
-    ActiveRecord::Base.connection.execute("TRUNCATE TABLE shift_types RESTART IDENTITY;")
-
     # load up file
-    filename = "lib/data/shift_type_data.csv"
+    filename = "lib/data/shift_type_2018.csv"
 
     if File.exists?(filename)
       puts "loading shift type data..."
       CSV.foreach(filename, :headers => true) do |row|
         hash = row.to_hash
 
-        sdarr = hash['starttime'].split(' ')
-        edarr = hash['endtime'].split(' ')
-        st = {
-            short_name: hash["shortname"], description: hash["description"], start_time: sdarr[1],
-            end_time: edarr[1], tasks: hash['speedcontrol']
-        }
-
-        if !ShiftType.create(st)
-          puts "failed: #{st}"
+        next if hash['short_name'].nil?
+        st = ShiftType.new(hash)
+        if !st.save
+          puts "failed: #{hash} - #{st.errors.messages}"
         end
       end
-
-      puts "done loading shift type data"
+      puts "done loading shift type data.  Type Count: #{ShiftType.all.count}"
     else
       puts "shift type loader file not found"
     end
   end
 
+  desc 'load all meetings and add to users'
+  task :load_meetings => :environment do
+    # get all meetings
+    meetings = ShiftType.where("short_name like 'M%'")
+
+    puts "iterate all users..."
+    User.all.each do |u|
+      next if u.supervisor? || (u.active_user == false)
+
+      meetings.each do |m|
+        next if (m.short_name == 'M1' || m.short_name == 'M3') && !u.rookie?
+
+        s_date = Date.parse(MEETINGS[m.short_name])
+        new_shift = Shift.create(:user_id=>u.id,
+                                 :shift_type_id=>m.id,
+                                 :shift_date=>s_date,
+                                 :shift_status_id => 1,
+                                 :day_of_week=>s_date.strftime("%a"))
+      end
+    end
+    puts "Done adding meetings.  Shift Count: #{Shift.all.count}"
+  end
+
+  desc "populate sys config settings for 2018"
+  task :setup_config_for_2018 => :environment do
+    puts "purging existing sys config record from system..."
+    ActiveRecord::Base.connection.execute("TRUNCATE TABLE sys_configs RESTART IDENTITY;")
+    c = SysConfig.new
+    c.season_year = 2018
+    c.group_1_year = 2013
+    c.group_2_year = 2016
+    c.group_3_year = 2017
+    c.season_start_date = Date.new(2018, 10, 01)
+    c.bingo_start_date = Date.new(2018, 11, 05)
+
+    if !c.save
+      puts "error saving config record #{c.errors.messages}"
+    end
+    puts "Done with setting up System Config."
+  end
+
   desc "populate shifts"
   task :load_shifts => :environment do
-    # clear out shifts
-    puts "purging existing shifts from system..."
-    ActiveRecord::Base.connection.execute("TRUNCATE TABLE shifts RESTART IDENTITY;")
-
     # load up file
     filename = "lib/data/shift_data.csv"
-    userfile = 'lib/data/hostdata.csv'
-    typefile = 'lib/data/shift_type_data.csv'
 
     if File.exists?(filename)
-       puts "loading shift data..."
-       CSV.foreach(filename, :headers => true) do |row|
-         hash = row.to_hash
+      puts "loading shift data..."
+      CSV.foreach(filename, :headers => true) do |row|
+        hash = row.to_hash
 
-         iUser = getIDFromFile(userfile, hash["user_id"], 'user')
-         iType = getIDFromFile(typefile, hash["shifttype_id"], 'type')
-         if ((iType == -1) || (iUser == -1))
-          next
-         end
-         dt = hash['shift_date'].to_date() + 1.year
+        next if hash['start_date'].nil? || (hash['start_date'][0] == '#')
+        start_date = hash['start_date'].to_date
+        end_date = hash['end_date'].to_date
 
-         st = {
-             user_id: iUser, shift_type_id: iType,
-             shift_status_id: hash["shift_status"],
-             shift_date: hash['shift_date']
-         }
+        shift_type_id = nil
+        tag = hash['short_name']
 
-         if !Shift.create(st)
-           puts "failed: #{st}"
-         end
-       end
-       puts "done loading shift data"
+        case tag
+        when 'A1','TL','C1weekend','C2weekend','C3weekend','C4weekend', 'SV'
+          shift_type_id = ShiftType.find_by(short_name: tag).id
+          if tag == 'SV'
+            end_date = start_date
+          end
+        end
+        (start_date..end_date).each do |dt|
+          case shift_type_id
+          when nil
+            case tag
+            when 'hidden_weekday'
+              if (dt.monday? || dt.tuesday? || dt.wednesday? || dt.thursday?) && (not_holiday(dt))
+                create_shift('H1weekday', dt)
+              end
+            when 'holiday'
+              create_shift('P1weekend', dt)
+              create_shift('P2weekend', dt)
+              create_shift('P3weekend', dt)
+              create_shift('P4weekend', dt)
+              create_shift('H1weekend', dt)
+              create_shift('H2weekend', dt)
+              create_shift('H3weekend', dt)
+              create_shift('H4weekend', dt)
+              create_shift('G1weekend', dt)
+              create_shift('G2weekend', dt)
+              create_shift('G3weekend', dt)
+              create_shift('C1weekend', dt)
+              create_shift('C2weekend', dt)
+              create_shift('C3weekend', dt)
+              create_shift('C4weekend', dt)
+              create_shift('SV', dt)
+            when 'regular'
+              if dt.friday?
+                create_shift('P1friday', dt)
+                create_shift('P2friday', dt)
+                create_shift('P3friday', dt)
+                create_shift('P4friday', dt)
+                create_shift('H1friday', dt)
+                create_shift('H1friday', dt)
+                create_shift('G1friday', dt)
+                create_shift('G2friday', dt)
+                create_shift('G3friday', dt)
+                create_shift('G4friday', dt)
+                # create_shift('SV', dt)
+              elsif dt.saturday? || dt.sunday?
+                create_shift('P1weekend', dt)
+                create_shift('P2weekend', dt)
+                create_shift('P3weekend', dt)
+                create_shift('P4weekend', dt)
+                create_shift('H1weekend', dt)
+                create_shift('H2weekend', dt)
+                create_shift('H3weekend', dt)
+                create_shift('H4weekend', dt)
+                create_shift('G1weekend', dt)
+                create_shift('G2weekend', dt)
+                create_shift('G3weekend', dt)
+                create_shift('C1weekend', dt)
+                create_shift('C2weekend', dt)
+                create_shift('C3weekend', dt)
+                create_shift('C4weekend', dt)
+                create_shift('SV', dt)
+              else
+                create_shift('P1weekday', dt)
+                create_shift('P2weekday', dt)
+                create_shift('P3weekday', dt)
+                create_shift('P4weekday', dt)
+                # create_shift('H1weekday', dt)
+              end
+            when 'regular_no_survey'
+              if dt.friday?
+                create_shift('P1friday', dt)
+                create_shift('P2friday', dt)
+                create_shift('P3friday', dt)
+                create_shift('P4friday', dt)
+                create_shift('H1friday', dt)
+                create_shift('H1friday', dt)
+                create_shift('G1friday', dt)
+                create_shift('G2friday', dt)
+                create_shift('G3friday', dt)
+                create_shift('G4friday', dt)
+              elsif dt.saturday? || dt.sunday?
+                create_shift('P1weekend', dt)
+                create_shift('P2weekend', dt)
+                create_shift('P3weekend', dt)
+                create_shift('P4weekend', dt)
+                create_shift('H1weekend', dt)
+                create_shift('H2weekend', dt)
+                create_shift('H3weekend', dt)
+                create_shift('H4weekend', dt)
+                create_shift('G1weekend', dt)
+                create_shift('G2weekend', dt)
+                create_shift('G3weekend', dt)
+                create_shift('C1weekend', dt)
+                create_shift('C2weekend', dt)
+                create_shift('C3weekend', dt)
+                create_shift('C4weekend', dt)
+              else
+                create_shift('P1weekday', dt)
+                create_shift('P2weekday', dt)
+                create_shift('P3weekday', dt)
+                create_shift('P4weekday', dt)
+                # create_shift('H1weekday', dt)
+              end
+            when 'holiday_floats'
+              create_shift('P1weekend', dt)
+              create_shift('P2weekend', dt)
+              create_shift('P3weekend', dt)
+              create_shift('P4weekend', dt)
+              create_shift('H1weekend', dt)
+              create_shift('H2weekend', dt)
+              create_shift('H3weekend', dt)
+              create_shift('H4weekend', dt)
+              create_shift('G1weekend', dt)
+              create_shift('G2weekend', dt)
+              create_shift('G3weekend', dt)
+              create_shift('F1weekend', dt)
+              create_shift('F2weekend', dt)
+              create_shift('F3weekend', dt)
+              create_shift('F4weekend', dt)
+              create_shift('SV', dt)
+            when 'end_of_season'
+               if dt.friday? || dt.saturday? || dt.sunday? || dt.strftime('%Y%m%d') == '20190527'
+                create_shift('A1', dt)
+                create_shift('A1', dt)
+                create_shift('TL', dt)
+              end
+            end
+          else
+            st = {
+                shift_type_id: shift_type_id,
+                shift_status_id: 1,
+                shift_date: dt
+            }
+
+            if !Shift.create(st)
+              puts "ERROR\n    hash: #{hash.inspect}\n------------\n\n"
+              raise 'error loading shifts'
+            end
+          end
+        end
+      end
+      puts "done loading shift data: #{Shift.count}"
     else
-       puts "shift loader file not found"
+      puts "ERROR: shift loader file not found"
+    end
+  end
+
+  def not_holiday(dt)
+    date = dt.strftime('%Y%m%d')
+    (date != '20190121') && (date != '20190218')
+  end
+
+  def create_shift(shift_short_name, dt)
+    shift_type_id = ShiftType.find_by(short_name: shift_short_name).id
+    st = {
+        shift_type_id: shift_type_id,
+        shift_status_id: 1,
+        shift_date: dt
+    }
+    if !Shift.create(st)
+      puts "ERROR\n    short_name: #{shift_short_name}\n------------\n\n"
+      raise 'error loading shifts'
     end
   end
 
@@ -199,6 +386,179 @@ namespace :db do
   end
 
 
+  desc "evaluate shifts"
+  task :eval_shifts => :environment do
+    dates = {}
+    Shift.where("short_name not like 'M%'").order(:shift_date).each do |s|
+      if dates[s.shift_date].nil?
+        dates[s.shift_date] = 0
+      end
+      dates[s.shift_date] += 1
+    end
+    # puts "Date,Day,Count"
+    # dates.each do |key, value|
+    #   puts "#{key},#{key.to_date.strftime('%a')},#{value}"
+    # end
+    #
 
+    CSV.open("lib/data/shift_stats_output.csv", "w") do |csv|
+      csv << %w[Date Day Count]
+      num_days = 0
+      shift_count = 0
+      dates.each do |key, value|
+        num_days += 1
+        shift_count += value
+        csv << [key,key.to_date.strftime('%a'),value]
+      end
+
+      csv << ["Number of Days", num_days]
+      csv << ["Shift Count From Totals", shift_count]
+      csv << ["Shifts Count From DB", Shift.where("short_name not like 'M%'").count]
+    end
+  end
+
+  desc 'seniority eval'
+  task :eval_seniority => :environment do
+    puts "User Count: #{User.active_users.count}\n\n"
+
+    CSV.open("lib/data/seniority_output.csv", "w") do |csv|
+      csv << ['roles', 'name', 'seniority', 'start_year']
+      User.rookies.order(:start_year).each do |u|
+        csv << [u.roles.map(&:name).join(','), u.name, u.seniority, u.start_year]
+      end
+    end
+
+    puts "DONE"
+  end
+
+
+  desc "evaluate users"
+  task :eval_users => :environment do
+    filename = 'lib/data/seniority_list.csv'
+
+    names = []
+
+    seniorities = { teamlead: 0, senior: 0, junior: 0, freshman: 0, rookie: 0 }
+    if File.exists?(filename)
+      puts 'reading csv file...'
+      CSV.foreach(filename, :headers => true) do |row|
+        hash = row.to_hash
+
+        name_value = "#{row[0].strip} #{row[1].strip}"
+        name_value2 = "#{row[0].strip}  #{row[1].strip}"
+        # puts "SEARCH: #{name_value}"
+        u = User.where("name = '#{name_value}' or name = '#{name_value2}'").first
+        puts "========>    Can't find #{name_value}" if u.nil?
+
+        seniorities[:teamlead] += 1 if u.has_role? :team_leader
+        seniorities[:senior] += 1 if u.group_1?
+        seniorities[:rookie] += 1 if u.rookie?
+        seniorities[:junior] += 1 if u.group_2?
+        seniorities[:freshman] += 1 if u.group_3? && !u.rookie?
+
+        names << u.name if u.group_3?
+      end
+
+      puts 'freshmen'
+      names.sort.each do |n|
+        puts n
+      end
+    end
+
+    # names = names.sort
+
+    # cnt2 = 0
+    # User.active_users.order(:name).all.each do |u|
+    #   if name_list[u.name].nil?
+    #     puts "Can't find: #{u.name}"
+    #     cnt2 += 1
+    #   else
+    #     name_list[u.name] = nil
+    #   end
+    #
+    # end
+    # puts "CNT: #{cnt}"
+    # puts "CNT2: #{cnt2}"
+    # puts "name list: #{name_list.count}"
+
+    puts seniorities.inspect
+    puts "Users: #{User.active_users.count}"
+  end
+
+
+
+    # desc 'load 2017 rookies'
+  # task :load_2017_rookies => :environment do
+  #   filename = "lib/data/rookies_2017.csv"
+  #
+  #   if File.exists?(filename)
+  #     puts "loading 2017 rookie data..."
+  #     CSV.foreach(filename, :headers => true) do |row|
+  #       hash = row.to_hash
+  #
+  #       usr = User.find_by(email: hash['email'])
+  #
+  #       usr ||= User.new(name: "#{hash['fname']} #{hash['lname']}", email: hash['email'],
+  #                        cell_phone: hash['phone'], street: hash['address'], password: '5teep&Deep')
+  #       usr.active_user = true
+  #       usr.start_year = 2017
+  #       usr.snowbird_start_year = 2017
+  #       if !usr.valid?
+  #         puts "\nERRROR in data:  #{usr.errors.messages}\n\n"
+  #         next
+  #       end
+  #
+  #       puts "saving user: #{usr.inspect}\n-------------"
+  #       usr.save
+  #     end
+  #   end
+  # end
+  #
+  #
+  # desc "populate snowbird_start_year from start_year"
+  # task :set_snowbird_start_year => :environment do
+  #   User.all.each do |u|
+  #     u.snowbird_start_year = u.start_year
+  #     u.save
+  #   end
+  # end
+  #
+  #
+  # desc "populate users"
+  # task :load_users => :environment do
+  #   # clear out users
+  #   puts "purging existing users from system..."
+  #   ActiveRecord::Base.connection.execute("TRUNCATE TABLE users RESTART IDENTITY;")
+  #
+  #   # load up file
+  #   filename = "lib/data/hostdata.csv"
+  #
+  #   if File.exists?(filename)
+  #     puts "loading user data..."
+  #     CSV.foreach(filename, :headers => true) do |row|
+  #       hash = row.to_hash
+  #       u = {
+  #           name: hash["name"], email: hash["email"], password: DEFAULT_PASSWORD, active_user: true,
+  #           start_year: hash["startdate"].to_i, street: hash['street'], city: hash['city'], state: hash['state'],
+  #           zip: hash['zip'], home_phone: hash['homephone'], cell_phone: hash['cellphone'], alt_email: '',
+  #           notes: hash['notes'], confirmed: false, nickname: ''
+  #       }
+  #       usr = User.create(u)
+  #       if (usr == false) || usr.nil?
+  #         puts "failed: #{u}"
+  #       else
+  #         if hash['admin'] && (hash['admin'].upcase == 'TRUE')
+  #           usr.add_role :admin
+  #         end
+  #         if hash['teamleader'] && (hash['teamleader'].upcase == 'TRUE')
+  #           usr.add_role :team_leader
+  #         end
+  #       end
+  #     end
+  #     puts "done loading user data"
+  #   else
+  #     puts "user loader file not found"
+  #   end
+  # end
 end
 

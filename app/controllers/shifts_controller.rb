@@ -26,7 +26,7 @@ class ShiftsController < ApplicationController
         # ShiftType.all.map {|st| st.short_name[0..1] }.uniq.sort {|a,b| a <=> b }
     @users = User.active_users.pluck(:name).sort #map{|u| ["#{u.name}"]}.sort
     per_page = SysConfig.first.shift_count
-    per_page ||= 80
+    per_page ||= 500
 
     @return_params = {"start_from_today" => true, "show_shifts_expanded" => false, "show_only_unselected" => false,
                       "show_only_holidays" => false, "include_meeting_shifts" => false,
