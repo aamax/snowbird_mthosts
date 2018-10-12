@@ -49,7 +49,7 @@ namespace :db do
       puts 'set my password'
       # set my password
       u = User.find_by(email: 'aamaxworks@gmail.com')
-      u.password = ENV['ADMIN_PASSWORD']
+      u.password = ENV['AAMAX_PGPASS']
       u.save
 
       puts 'Setting up config for season'
