@@ -13,6 +13,14 @@ class HostHauler < ActiveRecord::Base
   has_many :riders
   has_many :users, through: :riders
 
+  def self.add_hauler(date_value, driver_id = nil)
+    hauler = HostHauler.create(haul_date: date_value, driver_id: driver_id)
+    (1..14).each do |number|
+      Rider.create(host_hauler_id: hauler.id)
+    end
+    hauler
+  end
+
   def driver
     User.find_by(id: driver_id)
   end
@@ -50,7 +58,7 @@ class HostHauler < ActiveRecord::Base
 
     return retval if self.open_seat_count == 0
 
-    rider_list = self.riders.map { |r| r.user } << self.driver
+    rider_list = self.riders.includes(:user).map { |r| r.user } << self.driver
 
     # binding.pry
 

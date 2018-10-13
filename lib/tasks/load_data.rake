@@ -72,6 +72,8 @@ namespace :db do
       puts 'initialize all user accounts for start of year'
       User.reset_all_accounts
 
+      puts 'initialize host hauler data for 2019'
+      Rake::Task['db:initialize_hauler'].invoke
     end
     puts "Active User Count #{User.active_users.count}"
     puts "Shift Count: #{Shift.count}"
@@ -350,6 +352,18 @@ namespace :db do
     end
   end
 
+  desc 'initialize host hauler'
+  task :initialize_host_hauler => :environment do
+    jc = User.find_by(email: 'jecotterii@gmail.com')
+    (Date.parse('2018-12-01')..Date.parse('2019-05-27')).each do |dt|
+      if dt.thursday? || dt.friday? || dt.saturday? || dt.sunday?
+        HostHauler.add_hauler(dt, jc.id)
+      end
+    end
+    puts 'Done adding initial host hauler dates and seats...'
+  end
+
+
   def not_holiday(dt)
     date = dt.strftime('%Y%m%d')
     (date != '20190121') && (date != '20190218')
@@ -368,102 +382,86 @@ namespace :db do
     end
   end
 
-  def getIDFromFile(fname, id, t)
-    CSV.foreach(fname, :headers => true) do |row|
-      hash = row.to_hash
-
-      #puts "id: #{id} type: #{t} fname: #{fname} hash: #{hash}"
-      if hash["id"].to_s == id.to_s
-
-        obj = User.find_by_email(hash["email"]) if t == 'user'
-        obj = ShiftType.find_by_short_name(hash["shortname"]) if t == 'type'
-        idx = obj.id unless obj.nil?
-        idx ||= -1
-        return idx
-      end
-    end
-    return -1
-  end
 
 
-  desc "evaluate shifts"
-  task :eval_shifts => :environment do
-    dates = {}
-    Shift.where("short_name not like 'M%'").order(:shift_date).each do |s|
-      if dates[s.shift_date].nil?
-        dates[s.shift_date] = 0
-      end
-      dates[s.shift_date] += 1
-    end
-    # puts "Date,Day,Count"
-    # dates.each do |key, value|
-    #   puts "#{key},#{key.to_date.strftime('%a')},#{value}"
-    # end
-    #
-
-    CSV.open("lib/data/shift_stats_output.csv", "w") do |csv|
-      csv << %w[Date Day Count]
-      num_days = 0
-      shift_count = 0
-      dates.each do |key, value|
-        num_days += 1
-        shift_count += value
-        csv << [key,key.to_date.strftime('%a'),value]
-      end
-
-      csv << ["Number of Days", num_days]
-      csv << ["Shift Count From Totals", shift_count]
-      csv << ["Shifts Count From DB", Shift.where("short_name not like 'M%'").count]
-    end
-  end
-
-  desc 'seniority eval'
-  task :eval_seniority => :environment do
-    puts "User Count: #{User.active_users.count}\n\n"
-
-    CSV.open("lib/data/seniority_output.csv", "w") do |csv|
-      csv << ['roles', 'name', 'seniority', 'start_year']
-      User.rookies.order(:start_year).each do |u|
-        csv << [u.roles.map(&:name).join(','), u.name, u.seniority, u.start_year]
-      end
-    end
-
-    puts "DONE"
-  end
-
-
-  desc "evaluate users"
-  task :eval_users => :environment do
-    filename = 'lib/data/seniority_list.csv'
-
-    names = []
-
-    seniorities = { teamlead: 0, senior: 0, junior: 0, freshman: 0, rookie: 0 }
-    if File.exists?(filename)
-      puts 'reading csv file...'
-      CSV.foreach(filename, :headers => true) do |row|
-        hash = row.to_hash
-
-        name_value = "#{row[0].strip} #{row[1].strip}"
-        name_value2 = "#{row[0].strip}  #{row[1].strip}"
-        # puts "SEARCH: #{name_value}"
-        u = User.where("name = '#{name_value}' or name = '#{name_value2}'").first
-        puts "========>    Can't find #{name_value}" if u.nil?
-
-        seniorities[:teamlead] += 1 if u.has_role? :team_leader
-        seniorities[:senior] += 1 if u.group_1?
-        seniorities[:rookie] += 1 if u.rookie?
-        seniorities[:junior] += 1 if u.group_2?
-        seniorities[:freshman] += 1 if u.group_3? && !u.rookie?
-
-        names << u.name if u.group_3?
-      end
-
-      puts 'freshmen'
-      names.sort.each do |n|
-        puts n
-      end
-    end
+  # desc "evaluate shifts"
+  # task :eval_shifts => :environment do
+  #   dates = {}
+  #   Shift.where("short_name not like 'M%'").order(:shift_date).each do |s|
+  #     if dates[s.shift_date].nil?
+  #       dates[s.shift_date] = 0
+  #     end
+  #     dates[s.shift_date] += 1
+  #   end
+  #   # puts "Date,Day,Count"
+  #   # dates.each do |key, value|
+  #   #   puts "#{key},#{key.to_date.strftime('%a')},#{value}"
+  #   # end
+  #   #
+  #
+  #   CSV.open("lib/data/shift_stats_output.csv", "w") do |csv|
+  #     csv << %w[Date Day Count]
+  #     num_days = 0
+  #     shift_count = 0
+  #     dates.each do |key, value|
+  #       num_days += 1
+  #       shift_count += value
+  #       csv << [key,key.to_date.strftime('%a'),value]
+  #     end
+  #
+  #     csv << ["Number of Days", num_days]
+  #     csv << ["Shift Count From Totals", shift_count]
+  #     csv << ["Shifts Count From DB", Shift.where("short_name not like 'M%'").count]
+  #   end
+  # end
+  #
+  # desc 'seniority eval'
+  # task :eval_seniority => :environment do
+  #   puts "User Count: #{User.active_users.count}\n\n"
+  #
+  #   CSV.open("lib/data/seniority_output.csv", "w") do |csv|
+  #     csv << ['roles', 'name', 'seniority', 'start_year']
+  #     User.rookies.order(:start_year).each do |u|
+  #       csv << [u.roles.map(&:name).join(','), u.name, u.seniority, u.start_year]
+  #     end
+  #   end
+  #
+  #   puts "DONE"
+  # end
+  #
+  #
+  # desc "evaluate users"
+  # task :eval_users => :environment do
+  #   filename = 'lib/data/seniority_list.csv'
+  #
+  #   names = []
+  #
+  #   seniorities = { teamlead: 0, senior: 0, junior: 0, freshman: 0, rookie: 0 }
+  #   if File.exists?(filename)
+  #     puts 'reading csv file...'
+  #     CSV.foreach(filename, :headers => true) do |row|
+  #       hash = row.to_hash
+  #
+  #       name_value = "#{row[0].strip} #{row[1].strip}"
+  #       name_value2 = "#{row[0].strip}  #{row[1].strip}"
+  #       # puts "SEARCH: #{name_value}"
+  #       u = User.where("name = '#{name_value}' or name = '#{name_value2}'").first
+  #       puts "========>    Can't find #{name_value}" if u.nil?
+  #
+  #       seniorities[:teamlead] += 1 if u.has_role? :team_leader
+  #       seniorities[:senior] += 1 if u.group_1?
+  #       seniorities[:rookie] += 1 if u.rookie?
+  #       seniorities[:junior] += 1 if u.group_2?
+  #       seniorities[:freshman] += 1 if u.group_3? && !u.rookie?
+  #
+  #       names << u.name if u.group_3?
+  #     end
+  #
+  #     puts 'freshmen'
+  #     names.sort.each do |n|
+  #       puts n
+  #     end
+  #   end
 
     # names = names.sort
 
@@ -481,9 +479,9 @@ namespace :db do
     # puts "CNT2: #{cnt2}"
     # puts "name list: #{name_list.count}"
 
-    puts seniorities.inspect
-    puts "Users: #{User.active_users.count}"
-  end
+    # puts seniorities.inspect
+    # puts "Users: #{User.active_users.count}"
+  # end
 
 
 

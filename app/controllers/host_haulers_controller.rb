@@ -103,11 +103,8 @@ class HostHaulersController < ApplicationController
   end
 
   def add_hauler
-    @seleted_hauler = HostHauler.create(haul_date: Date.parse(params[:date_value]))
-    (1..14).each do |number|
-      Rider.create(host_hauler_id: @seleted_hauler.id)
-    end
-
-    redirect_to "/hauler_scheduler/#{@seleted_hauler.id}"
+    date_value = Date.parse(params[:date_value])
+    @hauler = HostHauler.add_hauler(date_value)
+    redirect_to "/hauler_scheduler/#{@hauler.id}?start_date=#{date_value.beginning_of_month}"
   end
 end
