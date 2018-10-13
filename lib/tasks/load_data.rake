@@ -40,12 +40,6 @@ namespace :db do
       u.start_year = 2013
       u.save
 
-      puts 'set my password'
-      # set my password
-      u = User.find_by(email: 'aamaxworks@gmail.com')
-      u.password = ENV['AAMAX_PGPASS']
-      u.save
-
       puts 'Setting up config for season'
       Rake::Task['db:setup_config_for_2018'].invoke
 
@@ -72,8 +66,14 @@ namespace :db do
       puts 'initialize all user accounts for start of year'
       User.reset_all_accounts
 
+      puts 'set my password'
+      # set my password
+      u = User.find_by(email: 'aamaxworks@gmail.com')
+      u.password = ENV['AAMAX_PGPASS']
+      u.save
+
       puts 'initialize host hauler data for 2019'
-      Rake::Task['db:initialize_hauler'].invoke
+      Rake::Task['db:initialize_host_hauler'].invoke
     end
     puts "Active User Count #{User.active_users.count}"
     puts "Shift Count: #{Shift.count}"
