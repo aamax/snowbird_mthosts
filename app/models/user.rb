@@ -359,30 +359,32 @@ class User < ActiveRecord::Base
   end
 
   def self.populate_meetings
-    meetings = ShiftType.where("short_name = 'M1' OR short_name = 'M2' OR short_name = 'M3' OR short_name = 'M4'").map {|st| st.id}.join(',')
+    puts "Populating Meetings"
+    meetings = ShiftType.where("short_name like 'M%'")
+    Shift.delete_all("shift_type_id in (#{meetings.map(&:id).join(',')})")
+    Rake::Task['db:load_meetings'].invoke
 
-    Shift.delete_all("shift_type_id in (#{meetings})")
-
-    first_date = SysConfig.first.season_start_date
-    shift_types = {}
-    ShiftType.all.each {|st| shift_types[st.short_name] = st.id }
-
-    User.all.each do |u|
-      next if u.supervisor? || (u.active_user == false)
-
-      MEETINGS.each do |m|
-        next if ((m[:type] == "M1") || (m[:type] == "M3")) && !u.rookie?
-
-        s_date = Date.parse(m[:when])
-        st = shift_types[m[:type]]
-
-        new_shift = Shift.create(:user_id=>u.id,
-                                 :shift_type_id=>st,
-                                 :shift_date=>s_date,
-                                 :shift_status_id => 1,
-                                 :day_of_week=>s_date.strftime("%a"))
-      end
-    end
+    #
+    # first_date = SysConfig.first.season_start_date
+    # shift_types = {}
+    # ShiftType.all.each {|st| shift_types[st.short_name] = st.id }
+    #
+    # User.all.each do |u|
+    #   next if u.supervisor? || (u.active_user == false)
+    #
+    #   MEETINGS.each do |m|
+    #     next if ((m[:type] == "M1") || (m[:type] == "M3")) && !u.rookie?
+    #
+    #     s_date = Date.parse(m[:when])
+    #     st = shift_types[m[:type]]
+    #
+    #     new_shift = Shift.create(:user_id=>u.id,
+    #                              :shift_type_id=>st,
+    #                              :shift_date=>s_date,
+    #                              :shift_status_id => 1,
+    #                              :day_of_week=>s_date.strftime("%a"))
+    #   end
+    # end
   end
 
   def self.reset_all_accounts

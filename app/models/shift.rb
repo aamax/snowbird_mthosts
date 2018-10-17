@@ -204,10 +204,9 @@ class Shift < ActiveRecord::Base
 
   def can_select(test_user, select_params)
     retval = false
+    return false if (self.shift_date < Date.today) && !test_user.has_role?(:admin)
     if self.user_id.nil?
       return true if test_user.has_role? :admin
-
-      return false if shift_date < Date.today
 
       all_shifts =  select_params[:all_shifts] #test_user.shifts.to_a
       working_shifts =  select_params[:working_shifts] #test_user.shifts.to_a.delete_if {|s| s.meeting? }
@@ -283,13 +282,15 @@ class Shift < ActiveRecord::Base
 
     if return_params['show_only_shifts_i_can_pick'] == true
       if return_params['selectable_shifts'].count == 0
-        @shifts = @shifts.where('id = 0')
+        @shifts = @shifts.includes(:shift_type).where('id = 0')
       else
-        @shifts = @shifts.where("id in (#{return_params['selectable_shifts'].keys.join(',')})")
+        @shifts = @shifts.includes(:shift_type).where("id in (#{return_params['selectable_shifts'].keys.join(',')})")
       end
+      # @shifts = @shifts.includes(:shift_type).order(:shift_date, :short_name)
       @shifts = @shifts.includes(:shift_type).order(:shift_date, :short_name)
     else
-      @shifts = @shifts.includes(:user).includes(:shift_type).order(:shift_date, :short_name)
+      # @shifts = @shifts.includes(:user).includes(:shift_type).order(:shift_date, :short_name)
+      @shifts = @shifts.includes(:shift_type).order(:shift_date, :short_name)
     end
     
     @shifts
@@ -324,11 +325,12 @@ class Shift < ActiveRecord::Base
     return_params['date_for_calendar'] = form_filters['date'].empty? ? Date.today.strftime("%Y-%m-%d") : form_filters['date']
 
 
+    # @shifts = Shift.includes(:shift_type).from_today(return_params['start_from_today']).with_meetings(return_params['include_meeting_shifts'])
     @shifts = Shift.includes(:shift_type).from_today(return_params['start_from_today']).with_meetings(return_params['include_meeting_shifts'])
-    @shifts = @shifts.by_holidays(return_params['show_only_holidays'])
-    @shifts = @shifts.by_shift_type(return_params['shift_types_to_show']).by_date(return_params['date_set_to_show'])
-    @shifts = @shifts.by_day_of_week(return_params['days_of_week_to_show']).by_users(return_params['hosts_to_show'])
-    @shifts = @shifts.by_unselected(return_params['show_only_unselected'])
+    @shifts = @shifts.includes(:shift_type).by_holidays(return_params['show_only_holidays'])
+    @shifts = @shifts.includes(:shift_type).by_shift_type(return_params['shift_types_to_show']).by_date(return_params['date_set_to_show'])
+    @shifts = @shifts.includes(:shift_type).by_day_of_week(return_params['days_of_week_to_show']).by_users(return_params['hosts_to_show'])
+    @shifts = @shifts.includes(:shift_type).by_unselected(return_params['show_only_unselected'])
   end
 
   # def can_select_2016(test_user)

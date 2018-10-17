@@ -54,18 +54,18 @@ class UsersController < ApplicationController
 
   def index
     if current_user.has_role? :admin
-      @inactive_users = User.includes(:shifts).inactive_users
+      @inactive_users = User.includes(:shifts).includes(:roles).inactive_users
     end
-    @users = User.includes(:shifts).active_users
+    @users = User.includes(:shifts).includes(:roles).active_users
     @users = @users.sort {|a,b| a.name <=> b.name }
   end
 
   def hosts_by_seniority
     @users = User.includes(:shifts).active_users.order(:name).to_a.delete_if {|u| u.supervisor? }
-    @rookies = User.rookies.order(:name)
-    @freshmen =  User.group3.order(:name).to_a.delete_if {|u| u.team_leader? }
-    @junior =  User.group2.order(:name).to_a.delete_if {|u| u.team_leader? }
-    @senior =  User.group1.order(:name).to_a.delete_if {|u| u.team_leader? }.delete_if {|u| u.supervisor? }
+    @rookies = User.rookies.includes(:roles).order(:name)
+    @freshmen =  User.group3.includes(:roles).order(:name).to_a.delete_if {|u| u.team_leader? }
+    @junior =  User.group2.includes(:roles).order(:name).to_a.delete_if {|u| u.team_leader? }
+    @senior =  User.group1.includes(:roles).order(:name).to_a.delete_if {|u| u.team_leader? }.delete_if {|u| u.supervisor? }
     @leaders =  User.active_users.order(:name).to_a.delete_if {|u| !u.team_leader? }
     @trainers = User.active_users.order(:name).to_a.delete_if {|u| !u.has_role? :trainer}
     @surveyors = User.active_users.order(:name).to_a.delete_if {|u| !u.has_role? :surveyor}

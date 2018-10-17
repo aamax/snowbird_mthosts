@@ -6,6 +6,7 @@ class TeamleaderMessageTest < ActiveSupport::TestCase
 
     @sys_config = SysConfig.first
     @teamleader = User.find_by_name('g1')
+
     @teamleader.add_role :team_leader
     @tltype = ShiftType.find_by(short_name: 'TL')
 
