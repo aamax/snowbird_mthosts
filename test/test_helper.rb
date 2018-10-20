@@ -56,6 +56,7 @@ require "rails/test_help"
 require "minitest/rails"
 #require "active_support/testing/setup_and_teardown"
 require 'minitest/mock'
+require "minitest/focus"
 
 # Add `gem "minitest/rails/capybara"` to the test group of your Gemfile
 # and uncomment the following if you want Capybara feature tests

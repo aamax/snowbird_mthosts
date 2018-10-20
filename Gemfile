@@ -59,6 +59,7 @@ group :test, :development do
   gem 'minitest-rails'
   gem "minitest-rails-capybara"
   gem "minitest-stub-const"
+  gem 'minitest-focus'
   gem 'minitest-reporters', '~> 1.1.0'
   #gem 'mini_backtrace'
   gem 'pry'

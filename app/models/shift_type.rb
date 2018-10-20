@@ -27,6 +27,7 @@ class ShiftType < ActiveRecord::Base
   #
   #default_scope :order => "shortname"
   #scope :distinctShifttypes, :select => ('distinct shortname')
+  scope :meetings, -> {where("short_name ilike 'M%'").order(:short_name)}
 
   def self.team_lead_type
     ShiftType.where("short_name in ('TL', 'P2weekday')")

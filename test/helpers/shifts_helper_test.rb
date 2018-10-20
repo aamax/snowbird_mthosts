@@ -166,6 +166,20 @@ class ShiftsHelperTest < ActionView::TestCase
         end
       end
 
+      it 'must not be able to select disabled shifts' do
+        shifts = Shift.all
+        unselected = shifts.to_a.delete_if {|s| !s.user_id.nil? || @team_leader.is_working?(s.shift_date)}
+
+        unselected.each do |s|
+          if s.can_select(@team_leader, HostUtility.can_select_params_for(@team_leader)) == true
+            s.disabled = true
+            s.save
+            s.can_select(@team_leader, HostUtility.can_select_params_for(@team_leader)).must_equal false
+          end
+
+        end
+      end
+
       it 'must have 12 shifts after setup' do
         @team_leader.shifts.count.must_equal 12
       end

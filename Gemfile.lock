@@ -158,6 +158,8 @@ GEM
       capybara (~> 2.2)
       minitest (~> 5.0)
       rake
+    minitest-focus (1.1.2)
+      minitest (>= 4, < 6)
     minitest-metadata (0.6.0)
       minitest (>= 4.7, < 6.0)
     minitest-rails (2.2.1)
@@ -297,6 +299,7 @@ DEPENDENCIES
   jquery-rails
   jquery-ui-rails
   letter_opener
+  minitest-focus
   minitest-rails
   minitest-rails-capybara
   minitest-reporters (~> 1.1.0)

@@ -203,8 +203,12 @@ class Shift < ActiveRecord::Base
   end
 
   def can_select(test_user, select_params)
+    return true
+
+
     retval = false
     return false if (self.shift_date < Date.today) && !test_user.has_role?(:admin)
+    return false if is_disabled?
     if self.user_id.nil?
       return true if test_user.has_role? :admin
 
@@ -331,6 +335,10 @@ class Shift < ActiveRecord::Base
     @shifts = @shifts.includes(:shift_type).by_shift_type(return_params['shift_types_to_show']).by_date(return_params['date_set_to_show'])
     @shifts = @shifts.includes(:shift_type).by_day_of_week(return_params['days_of_week_to_show']).by_users(return_params['hosts_to_show'])
     @shifts = @shifts.includes(:shift_type).by_unselected(return_params['show_only_unselected'])
+  end
+
+  def is_disabled?
+    (disabled == true)
   end
 
   # def can_select_2016(test_user)

@@ -47,6 +47,8 @@ Mthost::Application.routes.draw do
 
   get '/drop_shift/:id', :to => 'shifts#drop_shift'
   get '/select_shift/:id', :to => 'shifts#select_shift'
+  get '/disable_shift/:id', :to => 'shifts#disable_shift'
+  get '/enable_shift/:id', :to => 'shifts#enable_shift'
 
   get '/ghost_user/:id', :to => 'users#ghost_user'
   get '/un_ghost_user', :to => 'users#un_ghost_user'
