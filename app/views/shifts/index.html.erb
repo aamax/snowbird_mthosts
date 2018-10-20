@@ -127,7 +127,17 @@
                           "shift_logs/by_shift/#{s.id}",
                           :title => "Show Logs For This Shift" %>
 
-          <% end %>
+            <% if s.disabled? %>
+              <%= link_to "<i class='icon-lock btn btn-default'></i>".html_safe,
+                          "/enable_shift/#{s.id}",
+                          :title => "Enable Shift" %>
+            <% else %>
+              <%= link_to "<i class='icon-ban-circle btn btn-warning'></i>".html_safe,
+                          "/disable_shift/#{s.id}",
+                          :title => "Disable Shift" %>
+            <% end %>
+
+        <% end %>
         </td>
       </tr>
 
