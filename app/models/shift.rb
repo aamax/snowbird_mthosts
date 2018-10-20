@@ -205,7 +205,7 @@ class Shift < ActiveRecord::Base
   def can_select(test_user, select_params)
     retval = false
     return false if (self.shift_date < Date.today) && !test_user.has_role?(:admin)
-    return false if is_disabled?
+    return false if disabled?
     if self.user_id.nil?
       return true if test_user.has_role? :admin
 
