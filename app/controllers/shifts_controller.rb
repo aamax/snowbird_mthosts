@@ -64,6 +64,20 @@ class ShiftsController < ApplicationController
     redirect_to :back
   end
 
+  def disable_shift
+    s = Shift.find(params[:id])
+    s.disabled = true
+    s.save
+    redirect_to :back
+  end
+
+  def enable_shift
+    s = Shift.find(params[:id])
+    s.disabled = false
+    s.save
+    redirect_to :back
+  end
+
   def drop_shift
     s = Shift.find(params[:id])
     log_shift_dropped(s, current_user)

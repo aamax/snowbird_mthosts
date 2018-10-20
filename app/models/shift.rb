@@ -337,10 +337,6 @@ class Shift < ActiveRecord::Base
     @shifts = @shifts.includes(:shift_type).by_unselected(return_params['show_only_unselected'])
   end
 
-  def is_disabled?
-    (disabled == true)
-  end
-
   # def can_select_2016(test_user)
   #   retval = false
   #   if self.user_id.nil?
