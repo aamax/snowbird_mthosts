@@ -127,7 +127,7 @@
                           "shift_logs/by_shift/#{s.id}",
                           :title => "Show Logs For This Shift" %>
 
-            <% if s.disabled? %>
+            <% if s.is_disabled? %>
               <%= link_to "<i class='icon-lock btn btn-default'></i>".html_safe,
                           "/enable_shift/#{s.id}",
                           :title => "Enable Shift" %>
