@@ -1,8 +1,8 @@
 class UserMailer < ActionMailer::Base
-  default from: "snowbirdhosts@gmail.com"
+  default from: "snowbirdmthosts@gmail.com"
 
   def send_email(current_user, toaddress, fromaddress, subject, message)
-    fromaddress = 'snowbirdhosts@gmail.com'
+    fromaddress = 'snowbirdmthosts@gmail.com'
     if !current_user.nil? && !current_user.has_role?(:admin)
       dest = toaddress.split(',').delete_if do |u|
         usr = User.find_by_email(u)
@@ -20,7 +20,7 @@ class UserMailer < ActionMailer::Base
   end
 
   def send_daily_email(toaddress, fromaddress, subject, message)
-    fromaddress = 'snowbirdhosts@gmail.com'
+    fromaddress = 'snowbirdmthosts@gmail.com'
     # puts "\nPARAMS:\nto: #{toaddress}\nfrom: #{fromaddress}\nsubj: #{subject}\nmsg: #{message}\n\n"
     @user = toaddress
     mail( :bcc => toaddress,

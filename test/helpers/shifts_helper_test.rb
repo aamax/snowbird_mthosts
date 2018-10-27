@@ -500,8 +500,10 @@ class ShiftsHelperTest < ActionView::TestCase
       before do
         @sys_config.bingo_start_date = @round2_date
         @sys_config.save!
-        HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @surveyor).must_equal 2
 
+        binding.pry
+
+        HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @surveyor).must_equal 2
         @tour_shifts = Shift.where("short_name like 'P%'")
       end
 
@@ -525,19 +527,33 @@ class ShiftsHelperTest < ActionView::TestCase
         end
       end
 
+      def create_t4_shifts
+        first_date = Shift.where(short_name: 'T3').order(:shift_date).first.shift_date
+
+        t4type = FactoryGirl.create(:shift_type, short_name: 'T4')
+        (1..5).each do |n|
+          FactoryGirl.create(:shift, shift_date: first_date + n.days + 1.month + 6.days, shift_type_id: t4type.id)
+        end
+      end
+
       def select_rookie_training_shifts
         create_t1_shifts
         create_t2andt3_shifts
+        create_t4_shifts
         t1 = Shift.where("short_name = 'T1'").first
         t2 = Shift.where("short_name = 'T2' and shift_date > '#{t1.shift_date}'").first
-        t3 = Shift.where("short_name = 'T3' and shift_date > '#{t1.shift_date}'").first
+        t3 = Shift.where("short_name = 'T3' and shift_date > '#{t2.shift_date}'").first
+        t4 = Shift.where("short_name = 'T4' and shift_date > '#{t3.shift_date}'").first
 
         t1.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
         @rookie_user.shifts << t1
         t2.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
         t3.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+        t4.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+
         @rookie_user.shifts << t2
         @rookie_user.shifts << t3
+        @rookie_user.shifts << t4
       end
 
       def create_late_season_tours
@@ -569,6 +585,11 @@ class ShiftsHelperTest < ActionView::TestCase
             user.shifts << shift
           end
         end
+      end
+
+      focus
+      it 'test test' do
+        true.must_equal true
       end
 
       it "should not allow T2 or T3 to be picked prior to selected T1 shift" do

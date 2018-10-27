@@ -191,7 +191,7 @@ class Shift < ActiveRecord::Base
   end
 
   def training?
-    !/T[1-3]/.match(self.short_name).nil?
+    !/T[1-4]/.match(self.short_name).nil?
   end
 
   def meeting?
@@ -239,7 +239,7 @@ class Shift < ActiveRecord::Base
         end
 
         if round <= 0
-          return false if shift_count >= 3
+          return false if shift_count >= 4
         elsif round < 5
           return false if ((shift_count) >= (round * 5) + 3)
         end
