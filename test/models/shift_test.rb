@@ -40,7 +40,6 @@ class ShiftTest < ActiveSupport::TestCase
     @p1_weekend = FactoryGirl.create(:shift_type, :short_name => 'P1weekend')
   end
 
-
   describe 'assign team leaders' do
     before do
       @tl = ShiftType.find_by_short_name('TL')
@@ -55,6 +54,26 @@ class ShiftTest < ActiveSupport::TestCase
       shift_list.each do |shift|
         next if shift.shift_date.cwday != 1
         shift.user_id.must_equal u.id
+      end
+    end
+  end
+
+  describe 'is_tour?' do
+    it 'should recognize tour shifts' do
+      shift = FactoryGirl.create(:shift, shift_date: Date.parse('20191225'), shift_type_id: @p1.id)
+      TOUR_TYPES.each do |shift_type|
+        shift.shift_type = FactoryGirl.create(:shift_type, short_name: shift_type)
+        shift.save
+        shift.is_tour?.must_equal true
+      end
+    end
+
+    it 'should recognize non-tour shifts' do
+      shift = FactoryGirl.create(:shift, shift_date: Date.parse('20191225'), shift_type_id: @p1.id)
+      NON_TOUR_TYPES.each do |shift_type|
+        shift.shift_type = FactoryGirl.create(:shift_type, short_name: shift_type)
+        shift.save
+        shift.is_tour?.must_equal false
       end
     end
   end

@@ -241,7 +241,7 @@ class Shift < ActiveRecord::Base
         if round <= 0
           return false if shift_count >= 4
         elsif round < 5
-          return false if ((shift_count) >= (round * 5) + 3)
+          return false if ((shift_count) >= (round * 5) + 4)
         end
       else
         if round < 5
@@ -404,8 +404,7 @@ class Shift < ActiveRecord::Base
   end
 
   def rookie_tour_date(season_start_date)
-    yr = season_start_date.year + 1
-    Date.parse("#{yr}-02-01")
+    ROOKIE_TOUR_DATE
   end
 
 

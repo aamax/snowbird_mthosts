@@ -33,6 +33,11 @@ class ShiftsHelperTest < ActionView::TestCase
     @sv = ShiftType.find_by(short_name: "SV")
     @tr = ShiftType.find_by(short_name: "TR")
 
+    @t1 = FactoryGirl.create(:shift_type, short_name: 'T1')
+    @t2 = FactoryGirl.create(:shift_type, short_name: 'T2')
+    @t3 = FactoryGirl.create(:shift_type, short_name: 'T3')
+    @t4 = FactoryGirl.create(:shift_type, short_name: 'T4')
+
     Timecop.freeze(Date.parse("2017-10-01"))
     @start_date = (Date.today() + 20.days)
 
@@ -500,39 +505,31 @@ class ShiftsHelperTest < ActionView::TestCase
       before do
         @sys_config.bingo_start_date = @round2_date
         @sys_config.save!
-
-        binding.pry
-
         HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @surveyor).must_equal 2
         @tour_shifts = Shift.where("short_name like 'P%'")
       end
 
       def create_t1_shifts
         first_date = Shift.where("short_name not like 'M%'").order(:shift_date).first.shift_date
-        t1type = FactoryGirl.create(:shift_type, short_name: 'T1')
         (1..5).each do |n|
-          FactoryGirl.create(:shift, shift_date: first_date + n.days - 2.months, shift_type_id: t1type.id)
+          FactoryGirl.create(:shift, shift_date: first_date + n.days - 2.months, shift_type_id: @t1.id)
         end
       end
 
       def create_t2andt3_shifts
         first_date = Shift.where(short_name: 'T1').order(:shift_date).first.shift_date
-        t2type = FactoryGirl.create(:shift_type, short_name: 'T2')
-        t3type = FactoryGirl.create(:shift_type, short_name: 'T3')
         (1..5).each do |n|
-          FactoryGirl.create(:shift, shift_date: first_date + n.days + 1.month + 6.days, shift_type_id: t2type.id)
+          FactoryGirl.create(:shift, shift_date: first_date + n.days + 1.month + 6.days, shift_type_id: @t2.id)
         end
         (6..10).each do |n|
-          FactoryGirl.create(:shift, shift_date: first_date + n.days + 1.month + 6.days, shift_type_id: t3type.id)
+          FactoryGirl.create(:shift, shift_date: first_date + n.days + 1.month + 6.days, shift_type_id: @t3.id)
         end
       end
 
       def create_t4_shifts
         first_date = Shift.where(short_name: 'T3').order(:shift_date).first.shift_date
-
-        t4type = FactoryGirl.create(:shift_type, short_name: 'T4')
         (1..5).each do |n|
-          FactoryGirl.create(:shift, shift_date: first_date + n.days + 1.month + 6.days, shift_type_id: t4type.id)
+          FactoryGirl.create(:shift, shift_date: first_date + n.days + 1.month + 6.days, shift_type_id: @t4.id)
         end
       end
 
@@ -563,6 +560,13 @@ class ShiftsHelperTest < ActionView::TestCase
         end
       end
 
+      def create_late_season_non_tours
+        start_date = rookie_tour_date + 10.days
+        (1..10).each do |n|
+          FactoryGirl.create(:shift, shift_date: start_date + n.days, shift_type_id: @g1.id)
+        end
+      end
+
       def create_early_season_tours
         start_date = rookie_tour_date - 3.months
         (1..5).each do |n|
@@ -571,8 +575,7 @@ class ShiftsHelperTest < ActionView::TestCase
       end
 
       def rookie_tour_date
-        yr = Date.today.year + 1
-        Date.parse("#{yr}-02-01")
+        ROOKIE_TOUR_DATE
       end
 
       def last_training_date
@@ -587,15 +590,9 @@ class ShiftsHelperTest < ActionView::TestCase
         end
       end
 
-      focus
-      it 'test test' do
-        true.must_equal true
-      end
-
-      it "should not allow T2 or T3 to be picked prior to selected T1 shift" do
-        t1type = FactoryGirl.create(:shift_type, short_name: 'T1')
-        t1a = FactoryGirl.create(:shift, shift_date: Date.today + 6.days, shift_type_id: t1type.id)
-        t1b = FactoryGirl.create(:shift, shift_date: Date.today + 7.days, shift_type_id: t1type.id)
+      it "should not allow more than one T1 shift" do
+        t1a = FactoryGirl.create(:shift, shift_date: Date.today + 6.days, shift_type_id: @t1.id)
+        t1b = FactoryGirl.create(:shift, shift_date: Date.today + 7.days, shift_type_id: @t1.id)
 
         t1a.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
         t1b.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
@@ -604,34 +601,32 @@ class ShiftsHelperTest < ActionView::TestCase
         t1a.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
       end
 
-      # it "should not allow any other shifts selectable if T1 shift dropped" do
-      def test_work
+      it "should not allow any other shifts selectable if T1 shift dropped" do
         create_t1_shifts
         create_t2andt3_shifts
-        #
-        # puts Shift.all.map {|s| [s.shift_date, s.short_name]}
-        # puts "-------------"
-        #
-        # puts "today: #{Date.today}  Time: #{Time.now}  bingo: #{HostConfig.bingo_start_date}"
-        #
-        t1shift, t2shift, t3shift = nil
+        create_t4_shifts
+
+        t1shift, t2shift, t3shift, t4shift = nil
         Shift.where(short_name: "T1").order(:shift_date).each do |shift|
           shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
           t1shift ||= shift
         end
-        Shift.where("short_name in ('T2', 'T3')").order(:shift_date).each do |shift|
+        Shift.where("short_name in ('T2', 'T3', 'T4')").order(:shift_date).each do |shift|
           shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
           t2shift = shift if shift.short_name == 'T2'
           t3shift = shift if shift.short_name == 'T3'
+          t4shift = shift if shift.short_name == 'T4'
         end
         @rookie_user.shifts << t1shift
         @rookie_user.shifts << t2shift
         @rookie_user.shifts << t3shift
+        @rookie_user.shifts << t4shift
         t1shift.user_id = nil
         t1shift.save
         @rookie_user.shifts.reload
         FactoryGirl.create(:shift, shift_date: Date.today + 100.days, shift_type_id: t1shift.shift_type_id)
         lowest_date = t3shift.shift_date < t2shift.shift_date ? t3shift.shift_date : t2shift.shift_date
+        lowest_date = t4shift.shift_date < lowest_date ? t4shift.shift_date : lowest_date
         Shift.all.each do |shift|
           if shift.short_name == 'T1'
             if shift.shift_date < lowest_date
@@ -648,7 +643,7 @@ class ShiftsHelperTest < ActionView::TestCase
       it "should not allow T2 shift to be picked before T1 shift" do
         select_rookie_training_shifts
         working_shifts = @rookie_user.trainings
-        t1shift, t2shift, t3shift = nil
+        t1shift, t2shift, t3shift, t4shift = nil
         working_shifts.each do |s|
           t1shift = s if s.short_name == "T1"
           t2shift = s if s.short_name == "T2"
@@ -662,12 +657,6 @@ class ShiftsHelperTest < ActionView::TestCase
                                     shift_type_id: t2shift.shift_type_id)
         new_t2.can_select(@rookie_user,
                           HostUtility.can_select_params_for(@rookie_user)).must_equal false
-
-        # if t2shift.can_select(@rookie_user,
-        #                       HostUtility.can_select_params_for(@rookie_user)) == false
-        #   puts t2shift.inspect
-        # end
-
         t2shift.can_select(@rookie_user,
                            HostUtility.can_select_params_for(@rookie_user)).must_equal true
       end
@@ -704,17 +693,19 @@ class ShiftsHelperTest < ActionView::TestCase
           shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
         end
         create_t2andt3_shifts
-        Shift.where("short_name in ('T2', 'T3')").each do |shift|
+        create_t4_shifts
+        Shift.where("short_name in ('T2', 'T3', 'T4')").each do |shift|
           shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
         end
       end
 
-      it "should require second and third shifts selected be T2 and T3 (in any order)" do
+      it "should require second, third and fourth shifts selected be T2 and T3 and T4 (in any order)" do
         create_t1_shifts
         create_t2andt3_shifts
+        create_t4_shifts
         t1shift = Shift.where(short_name: "T1").order(:shift_date).first
         @rookie_user.shifts << t1shift
-        Shift.where("short_name in ('T1', 'T2', 'T3') and user_id is null").each do |shift|
+        Shift.where("short_name in ('T1', 'T2', 'T3', 'T4') and user_id is null").each do |shift|
           if shift.short_name == 'T1'
             shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
           else
@@ -727,13 +718,14 @@ class ShiftsHelperTest < ActionView::TestCase
         end
       end
 
-      it "should not allow selecting anything but T2 or T3 before training shifts are selected" do
+      it "should not allow selecting anything but T2 or T3 or T4 before training shifts are selected" do
         create_t1_shifts
         create_t2andt3_shifts
+        create_t4_shifts
         t1shift = Shift.where("short_name = 'T1'").first
         @rookie_user.shifts << t1shift
         Shift.all.each do |shift|
-          if (shift.short_name == 'T2') || (shift.short_name == 'T3')
+          if (shift.short_name == 'T2') || (shift.short_name == 'T3') || (shift.short_name == 'T4')
             if t1shift.shift_date < shift.shift_date
               shift.can_select(@rookie_user,
                            HostUtility.can_select_params_for(@rookie_user)).must_equal true
@@ -751,10 +743,12 @@ class ShiftsHelperTest < ActionView::TestCase
       it "should not allow multiple T2 or T3 shifts to be selected" do
         create_t1_shifts
         create_t2andt3_shifts
+        create_t4_shifts
         @rookie_user.shifts << Shift.where(short_name: "T1").first
         @rookie_user.shifts << Shift.where(short_name: "T2").first
         @rookie_user.shifts << Shift.where(short_name: "T3").first
-        Shift.where("short_name in ('T1', 'T2', 'T3') and user_id is null").each do |shift|
+        @rookie_user.shifts << Shift.where(short_name: "T4").first
+        Shift.where("short_name in ('T1', 'T2', 'T3', 'T4') and user_id is null").each do |shift|
           shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
         end
       end
@@ -763,43 +757,51 @@ class ShiftsHelperTest < ActionView::TestCase
         select_rookie_training_shifts
         allowed_shifts_after_date = last_training_date
         Shift.all.each do |shift|
-          if shift.shift_date <= allowed_shifts_after_date
+          if (shift.shift_date <= allowed_shifts_after_date)
             shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
           else
-            shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true if shift.user_id.nil? && !shift.training? && !shift.is_tour? && !shift.team_leader?
+            if shift.user_id.nil? && !shift.training? && !shift.is_tour? && !shift.team_leader?
+              shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+            else
+              shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+            end
           end
         end
       end
 
       describe "round tests" do
-        it "should only allow 3 shifts to be selected prior to bingo starting" do
+        it "should only allow 4 shifts to be selected prior to bingo starting" do
           @sys_config.bingo_start_date = @pre_bingo_date
           @sys_config.save!
           select_rookie_training_shifts
           select_all_shifts_user_can(@rookie_user)
-          @rookie_user.shifts.count.must_equal 7
+          @rookie_user.shifts.count.must_equal 8
         end
 
-        it "should only allow 8 shifts in round 1" do
+        it "should only allow 9 shifts in round 1" do
           @sys_config.bingo_start_date = @round1_date - 2.days
           @sys_config.save!
           select_rookie_training_shifts
+          create_late_season_tours
+          create_late_season_non_tours
           select_all_shifts_user_can(@rookie_user)
-          @rookie_user.shifts.count.must_equal 12
+          @rookie_user.shifts.count.must_equal 13
         end
 
-        it "should only allow 13 shifts in round 2" do
+        it "should only allow 14 shifts in round 2" do
           @sys_config.bingo_start_date = @round2_date - 2.days
           @sys_config.save!
           select_rookie_training_shifts
+          create_late_season_non_tours
           select_all_shifts_user_can(@rookie_user)
-          @rookie_user.shifts.count.must_equal 17
+          @rookie_user.shifts.count.must_equal 18
         end
 
         it "should only allow 16 shifts in round 3" do
           @sys_config.bingo_start_date = @round3_date - 2.days
           @sys_config.save!
           select_rookie_training_shifts
+          create_late_season_non_tours
           select_all_shifts_user_can(@rookie_user)
           @rookie_user.shifts.count.must_equal 20
         end
@@ -808,6 +810,8 @@ class ShiftsHelperTest < ActionView::TestCase
           @sys_config.bingo_start_date = @round4_date - 15.days
           @sys_config.save!
           select_rookie_training_shifts
+          create_late_season_non_tours
+          create_late_season_tours
           select_all_shifts_user_can(@rookie_user)
           (@rookie_user.shifts.count > 20).must_equal true
         end

@@ -19,12 +19,22 @@ class RookieMessageTest < ActiveSupport::TestCase
     end
   end
 
+  def create_t4_shifts
+    t4type = FactoryGirl.create(:shift_type, short_name: 'T4')
+    (1..5).each do |n|
+      FactoryGirl.create(:shift, shift_date: Date.today + 6.days + n.days, shift_type_id: t4type.id)
+    end
+  end
+
+
   def select_rookie_training_shifts
     create_t1_shifts
     create_t2andt3_shifts
+    create_t4_shifts
     @rookie_user.shifts << Shift.where("short_name = 'T1'").first
     @rookie_user.shifts << Shift.where("short_name = 'T2'").first
     @rookie_user.shifts << Shift.where("short_name = 'T3'").first
+    @rookie_user.shifts << Shift.where("short_name = 'T4'").first
   end
 
   def create_late_season_tours
@@ -88,7 +98,7 @@ class RookieMessageTest < ActiveSupport::TestCase
 
     msgs = @rookie_user.shift_status_message
     msgs.include?("You are currently in <strong>round 0</strong>.").must_equal true
-    msgs.include?("You have 4 of 7 shifts selected").must_equal true
+    msgs.include?("You have 4 of 8 shifts selected").must_equal true
     msgs.include?("You have not selected any training shifts").must_equal true
   end
 
@@ -101,7 +111,7 @@ class RookieMessageTest < ActiveSupport::TestCase
 
     msgs = @rookie_user.shift_status_message
     msgs.include?("You are currently in <strong>round 0</strong>.").must_equal true
-    msgs.include?("You have 5 of 7 shifts selected").must_equal true
+    msgs.include?("You have 5 of 8 shifts selected").must_equal true
     msgs.include?("You need to select a T2 shift").must_equal true
   end
 
@@ -115,7 +125,7 @@ class RookieMessageTest < ActiveSupport::TestCase
 
     msgs = @rookie_user.shift_status_message
     msgs.include?("You are currently in <strong>round 0</strong>.").must_equal true
-    msgs.include?("You have 6 of 7 shifts selected").must_equal true
+    msgs.include?("You have 6 of 8 shifts selected").must_equal true
     msgs.include?("You need to select a T2 shift").must_equal true
   end
 
@@ -129,7 +139,7 @@ class RookieMessageTest < ActiveSupport::TestCase
 
     msgs = @rookie_user.shift_status_message
     msgs.include?("You are currently in <strong>round 0</strong>.").must_equal true
-    msgs.include?("You have 6 of 7 shifts selected").must_equal true
+    msgs.include?("You have 6 of 8 shifts selected").must_equal true
     msgs.include?("You need to select a T3 shift").must_equal true
   end
 
@@ -140,7 +150,7 @@ class RookieMessageTest < ActiveSupport::TestCase
 
     msgs = @rookie_user.shift_status_message
     msgs.include?("You are currently in <strong>round 0</strong>.").must_equal true
-    msgs.include?("You have 7 of 7 shifts selected").must_equal true
+    msgs.include?("You have 8 of 8 shifts selected").must_equal true
     msgs.include?("You have selected all your training shifts").must_equal true
   end
 
@@ -154,6 +164,7 @@ class RookieMessageTest < ActiveSupport::TestCase
         @rookie_user.shifts << s
       end
     end
+
     (@rookie_user.shifts.count > 20).must_equal true
 
     @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 5)
@@ -172,11 +183,11 @@ class RookieMessageTest < ActiveSupport::TestCase
         @rookie_user.shifts << s
       end
     end
-    @rookie_user.shifts.count.must_equal 12
+    @rookie_user.shifts.count.must_equal 13
     msgs = @rookie_user.shift_status_message
     msgs.include?("You have selected all your training shifts").must_equal true
     msgs.include?("You are currently in <strong>round 1</strong>.").must_equal true
-    msgs.include?("You have 12 of 12 shifts selected").must_equal true
+    msgs.include?("You have 13 of 13 shifts selected").must_equal true
   end
 
   def test_round_two_status_messages
@@ -188,11 +199,11 @@ class RookieMessageTest < ActiveSupport::TestCase
         @rookie_user.shifts << s
       end
     end
-    @rookie_user.shifts.count.must_equal 17
+    @rookie_user.shifts.count.must_equal 18
     msgs = @rookie_user.shift_status_message
     msgs.include?("You have selected all your training shifts").must_equal true
     msgs.include?("You are currently in <strong>round 2</strong>.").must_equal true
-    msgs.include?("You have 17 of 17 shifts selected").must_equal true
+    msgs.include?("You have 18 of 18 shifts selected").must_equal true
   end
 
   def test_round_three_status_messages

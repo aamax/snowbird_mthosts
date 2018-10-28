@@ -305,7 +305,7 @@ class User < ActiveRecord::Base
         return false if t1.nil? || (t1.shift_date > shift.shift_date)
       end
     else
-      return false if shift.training?
+      return false if shift.training? || (shift.shift_date < training_shifts.last.shift_date)
     end
     true
   end
@@ -406,9 +406,9 @@ class User < ActiveRecord::Base
 
 
   def rookie_training_message(all_shifts, round, msg)
-    tshifts = all_shifts.where("short_name in ('T1', 'T2', 'T3')").map(&:short_name).uniq
+    tshifts = all_shifts.where("short_name in ('T1', 'T2', 'T3', 'T4')").map(&:short_name).uniq
 
-    if tshifts.length == 3
+    if tshifts.length == 4
       msg << "You have selected all your training shifts"
       return
     end
@@ -421,14 +421,15 @@ class User < ActiveRecord::Base
     msg << "You need to select a T1 shift" unless tshifts.include? 'T1'
     msg << "You need to select a T2 shift" unless tshifts.include? 'T2'
     msg << "You need to select a T3 shift" unless tshifts.include? 'T3'
+    msg << "You need to select a T4 shift" unless tshifts.include? 'T4'
   end
 
   def rookie_selection_message(all_shifts, round, msg)
     case round
       when 0
-        msg << "You have #{all_shifts.count} of 7 shifts selected"
+        msg << "You have #{all_shifts.count} of 8 shifts selected"
       when 1..2
-        limit = 7 + (round * 5)
+        limit = 8 + (round * 5)
         msg << "You have #{all_shifts.count} of #{limit} shifts selected"
       when 3..4
         if all_shifts.count < 20
