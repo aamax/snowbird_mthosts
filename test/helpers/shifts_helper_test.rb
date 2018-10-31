@@ -476,7 +476,7 @@ class ShiftsHelperTest < ActionView::TestCase
         @surveyor.shifts.count.must_equal 17
       end
 
-      it 'survey hosts can pick a max of 9 survey shifts during bingo' do
+      it 'survey hosts can pick a max of 5 survey shifts during bingo' do
         @sys_config.bingo_start_date = @round4_date
         @sys_config.save!
         (1..5).each do |n|
@@ -488,8 +488,8 @@ class ShiftsHelperTest < ActionView::TestCase
           next unless ts.can_select(@surveyor, HostUtility.can_select_params_for(@surveyor))
           @surveyor.shifts << ts
         end
-        @surveyor.shifts.count.must_equal 11
-
+        @surveyor.shifts.count.must_equal 7
+        @surveyor.survey_shift_count.must_equal 5
         Shift.all.each do |s|
           can_select = s.can_select(@surveyor, HostUtility.can_select_params_for(@surveyor))
           if can_select

@@ -30,10 +30,11 @@ class SurveyorMessageTest < ActiveSupport::TestCase
           @surveyor.shifts << s
         end
       end
-      (@surveyor.shifts.count == 11).must_equal true
-      (@surveyor.survey_shift_count == 9).must_equal true
+
+      @surveyor.shifts.count.must_equal 7
+      @surveyor.survey_shift_count.must_equal 5
       msgs = @surveyor.shift_status_message
-      msgs.include?("9 of 9 surveyor shifts selected").must_equal true
+      msgs.include?("5 of 5 surveyor shifts selected").must_equal true
     end
 
     def test_show_surveyor_shift_count_in_round_4
@@ -53,7 +54,7 @@ class SurveyorMessageTest < ActiveSupport::TestCase
       end
       (@surveyor.shifts.count == 20).must_equal true
       msgs = @surveyor.shift_status_message
-      msgs.include?("9 of 9 surveyor shifts selected").must_equal true
+      msgs.include?("5 of 5 surveyor shifts selected").must_equal true
     end
 
     def test_show_surveyor_shift_count_post_bingo
@@ -71,10 +72,10 @@ class SurveyorMessageTest < ActiveSupport::TestCase
           @surveyor.shifts << s
         end
       end
-      (@surveyor.shifts.count >= 20).must_equal true
-      (@surveyor.survey_shift_count >= 9).must_equal true
+      @surveyor.shifts.count.must_equal 52
+      @surveyor.survey_shift_count.must_equal 50
       msgs = @surveyor.shift_status_message
-      msgs.include?("50 of 9 surveyor shifts selected").must_equal true
+      msgs.include?("50 of 5 surveyor shifts selected").must_equal true
     end
   end
 end

@@ -6,12 +6,12 @@ HOLIDAYS = [Date.new(2018,12,24),
             Date.new(2018,12,25),
             Date.new(2018,12,31),
             Date.new(2019,1,1),
-            Date.new(2019,1,20),
-            Date.new(2019,2,17)]
+            Date.new(2019,1,21),
+            Date.new(2019,2,18)]
 
 ROOKIE_TOUR_DATE = Date.parse("2019-02-01")
 
-MAX_SURVEY_COUNT = 9
+MAX_SURVEY_COUNT = 5
 
 MAX_EMAIL = 'aamaxworks@gmail.com'
 COTTER_EMAIL = 'jecotterii@gmail.com'

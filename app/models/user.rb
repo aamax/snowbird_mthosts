@@ -448,7 +448,7 @@ class User < ActiveRecord::Base
 
   def host_selection_message(all_shifts, round, day_offset, msg)
     if self.surveyor?
-      msg << "#{self.survey_shift_count} of 9 surveyor shifts selected"
+      msg << "#{self.survey_shift_count} of 5 surveyor shifts selected"
     end
 
     if self.team_leader?
