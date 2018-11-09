@@ -30,7 +30,7 @@ class ShiftType < ActiveRecord::Base
   scope :meetings, -> {where("short_name ilike 'M%'").order(:short_name)}
 
   def self.team_lead_type
-    ShiftType.where("short_name in ('TL', 'P2weekday')")
+    ShiftType.where("short_name in ('TL')")
   end
 
   def is_tour?

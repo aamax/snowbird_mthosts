@@ -78,7 +78,8 @@ class RookieMessageTest < ActiveSupport::TestCase
         shift = FactoryGirl.create(:shift, shift_date: h, shift_type_id: @g1.id)
         u.shifts << shift
         u.has_holiday_shift?.must_equal true
-        assert_operator(HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @rookie_user), :<=, 6)
+
+        HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @rookie_user).must_be :>, 6
         u.shift_status_message.include?("A <strong>Holiday Shift</strong> has been selected.").must_equal true
       end
     end
@@ -159,13 +160,16 @@ class RookieMessageTest < ActiveSupport::TestCase
     @sys_config.save
     select_rookie_training_shifts
 
+    last_date = Shift.maximum(:shift_date) + 1.day
+    FactoryGirl.create(:shift, shift_date: last_date, shift_type_id: ShiftType.find_by(short_name: 'P2').id)
+
     Shift.all.each do |s|
       if s.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user))
         @rookie_user.shifts << s
       end
     end
 
-    (@rookie_user.shifts.count > 20).must_equal true
+    @rookie_user.shifts.count.must_be :>, 20
 
     @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 5)
     @sys_config.save

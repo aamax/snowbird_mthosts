@@ -179,7 +179,7 @@ class Shift < ActiveRecord::Base
   end
 
   def team_leader?
-    (self.short_name == "TL") || (self.shift_type.short_name.downcase == 'p2weekday')
+    (self.short_name == "TL")
   end
 
   def trainer?

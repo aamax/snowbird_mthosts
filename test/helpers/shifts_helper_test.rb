@@ -253,6 +253,14 @@ class ShiftsHelperTest < ActionView::TestCase
     end
 
     describe "regular hosts" do
+      it "can pick P2weekday shifts if not team leader" do
+        @sys_config.bingo_start_date = @after_bingo_date - 7.days
+        @sys_config.save!
+        p2weekday = FactoryGirl.create(:shift_type, short_name: 'P2weekday')
+        s1 = FactoryGirl.create(:shift, shift_date: Date.today + 5.days, shift_type_id: p2weekday.id)
+        s1.can_select(@senior_user, HostUtility.can_select_params_for(@senior_user)).must_equal true
+      end
+
       it "cannot pick shifts prior to bingo start" do
         @sys_config.bingo_start_date = @pre_bingo_date
         @sys_config.save!
