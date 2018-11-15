@@ -3,7 +3,30 @@
 <div class="row">
   <div class="span8">
     <%= render 'host_hauler_calendar' %>
+    <br/><br/>
+
+    <h3>KEYS</h3>
+    <a href="#" class="btn btn-primary btn-small">
+      <i class='icon-search'></i>
+    </a>  You are scheduled on this van<br/>
+
+    <a href="#" class="btn btn-light btn-small">
+      <i class='icon-plus'></i>
+    </a> No van scheduled <br/>
+
+    <a href="#" class="btn btn-success btn-small">
+      <i class='icon-search'></i>
+    </a> Van scheduled and seats available<br/>
+
+    <a href="#" class="btn btn-danger btn-small">
+      <i class='icon-search'></i>
+    </a> Van is full - No Seats Available <br/>
+
+    <a href="#" class="btn btn-warning btn-small">
+      <i class='icon-search'></i>
+    </a> No Driver Set Yet <br/>
     <hr/>
+
     <% if true # current_user.has_role? :admin %>
         <%= render 'host_hauler_todo_list' %>
     <% end %>

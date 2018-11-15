@@ -45,7 +45,7 @@ class HostHauler < ActiveRecord::Base
   end
 
   def rider_not_riding(user)
-    self.riders.each do |rider|
+    self.riders.includes(:user).each do |rider|
       if rider.user == user
         return false
       end
@@ -55,9 +55,6 @@ class HostHauler < ActiveRecord::Base
 
   def eligible_riders
     retval = []
-
-    # binding.pry
-
     return retval if self.open_seat_count == 0
 
     rider_list = self.riders.includes(:user).map { |r| r.user } << self.driver
@@ -80,13 +77,16 @@ class HostHauler < ActiveRecord::Base
     self.riders.count != open_seat_count
   end
 
-  def self.btn_color(hauler_id)
+  def self.btn_color(hauler_id, user)
     hauler = HostHauler.includes(:riders).find_by(id: hauler_id)
     btn_color = 'btn-danger'
     if (hauler.open_seat_count != 0) && !hauler.driver_id.nil?
       btn_color = 'btn-success'
     elsif hauler.driver_id.nil?
         btn_color = 'btn-warning'
+    end
+    if !hauler.rider_not_riding(user)
+      btn_color = 'btn-primary'
     end
     btn_color
   end
