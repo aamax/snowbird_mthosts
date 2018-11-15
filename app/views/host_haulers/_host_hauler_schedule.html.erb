@@ -15,6 +15,15 @@
   <br/>
 </h4>
 
+<% if @selected_hauler && !@selected_hauler.has_riders? %>
+  <p>
+    <a onclick="return confirm('Are you sure?')"
+       href="/delete_hauler/<%= @selected_hauler.id %>" class='btn btn-danger btn-small'>
+      <i class='icon-trash'></i> Remove Hauler On This Date
+    </a>
+  </p>
+<% end %>
+
 <% if @selected_hauler %>
   <%= render 'host_hauler_driver' %>
 

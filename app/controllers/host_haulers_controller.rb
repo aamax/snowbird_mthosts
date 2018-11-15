@@ -73,7 +73,7 @@ class HostHaulersController < ApplicationController
   end
 
   def set_rider_to_host
-    @rider = Rider.find_by(id: params[:rider_id])
+    @rider = Rider.includes(:host_hauler).find_by(id: params[:rider_id])
     @hauler = @rider.host_hauler
   end
 
@@ -106,5 +106,17 @@ class HostHaulersController < ApplicationController
     date_value = Date.parse(params[:date_value])
     @hauler = HostHauler.add_hauler(date_value)
     redirect_to "/hauler_scheduler/#{@hauler.id}?start_date=#{date_value.beginning_of_month}"
+  end
+
+  def delete_hauler
+    @hauler = HostHauler.find_by(id: params[:hauler_id])
+    if @hauler.has_riders?
+      flash[:alert] = "Cannot delete hauler that has riders in it"
+      redirect_to "/hauler_scheduler/#{@hauler.id}"
+    else
+      @hauler.destroy
+      flash[:notice] = "Hauler Deleted"
+      redirect_to "/hauler_scheduler"
+    end
   end
 end

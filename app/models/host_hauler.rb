@@ -33,13 +33,15 @@ class HostHauler < ActiveRecord::Base
       title = "title=\"set driver\">"
       lable = "Select"
       btn_class = "class='hauler_edit_btn btn btn-primary"
+      confirmstr = ''
     else
       url = "/drop_driver/#{self.id}"
       title = "title=\"drop driver\">"
       lable = "Drop"
       btn_class = "class='hauler_edit_btn btn btn-danger"
+      confirmstr = 'onclick="return confirm(\'Are you sure?\')"'
     end
-    "<a href=\"#{url}\" #{btn_class}' #{title}#{lable}</a>".html_safe
+    "<a #{confirmstr} href=\"#{url}\" #{btn_class}' #{title}#{lable}</a>".html_safe
   end
 
   def rider_not_riding(user)
@@ -76,5 +78,16 @@ class HostHauler < ActiveRecord::Base
 
   def has_riders?
     self.riders.count != open_seat_count
+  end
+
+  def self.btn_color(hauler_id)
+    hauler = HostHauler.includes(:riders).find_by(id: hauler_id)
+    btn_color = 'btn-danger'
+    if (hauler.open_seat_count != 0) && !hauler.driver_id.nil?
+      btn_color = 'btn-success'
+    elsif hauler.driver_id.nil?
+        btn_color = 'btn-warning'
+    end
+    btn_color
   end
 end

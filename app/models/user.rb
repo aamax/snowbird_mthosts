@@ -201,6 +201,10 @@ class User < ActiveRecord::Base
     self.has_role? :admin
   end
 
+  def driver?
+    self.has_role? :driver
+  end
+
   def rookie?
     self.start_year == HostConfig.season_year
   end

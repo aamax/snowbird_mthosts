@@ -70,6 +70,7 @@ Mthost::Application.routes.draw do
   post '/update_driver_in_hauler', :to => 'host_haulers#update_driver_in_hauler'
   get '/add_hauler/:date_value', :to => 'host_haulers#add_hauler'
   get '/hauler_scheduler', :to => 'host_haulers#scheduler'
+  get '/delete_hauler/:hauler_id', :to => 'host_haulers#delete_hauler'
 
 
   # catchall route to get pages

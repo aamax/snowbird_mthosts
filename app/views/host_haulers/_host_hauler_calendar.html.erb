@@ -4,8 +4,8 @@
     <% end %>
     <%= date %>
 
-    <% if @haulers[date.to_s].nil? && current_user.admin? %>
-      <a href="/add_hauler/<%= date.to_s %>" class="btn btn-small btn-success">
+    <% if @haulers[date.to_s].nil? && (current_user.admin? || current_user.driver?) %>
+      <a href="/add_hauler/<%= date.to_s %>" class="btn btn-small btn-light">
         <i class='icon-plus'></i>
       </a>
     <% end %>
@@ -17,7 +17,7 @@
     <% unless @haulers[date.to_s].nil? %>
         <a href="
           <%= "/hauler_scheduler/#{@haulers[date.to_s]}?start_date=#{date.to_s}".html_safe %>
-          " class="btn btn-primary btn-small">
+          " class="btn  btn-small <%= HostHauler.btn_color(@haulers[date.to_s]) %>">
           <i class='icon-search'></i>
         </a>
     <% else %>
