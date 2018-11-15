@@ -78,6 +78,7 @@ class HostHauler < ActiveRecord::Base
   end
 
   def self.btn_color(hauler_id, user)
+
     hauler = HostHauler.includes(:riders).find_by(id: hauler_id)
     btn_color = 'btn-danger'
     if (hauler.open_seat_count != 0) && !hauler.driver_id.nil?
@@ -85,7 +86,7 @@ class HostHauler < ActiveRecord::Base
     elsif hauler.driver_id.nil?
         btn_color = 'btn-warning'
     end
-    if !hauler.rider_not_riding(user)
+    if !hauler.rider_not_riding(user) || (hauler.driver_id == user.id)
       btn_color = 'btn-primary'
     end
     btn_color
