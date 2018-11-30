@@ -1,7 +1,5 @@
 <%= image_tag('header1.jpg', :alt => 'The View From The Peak', :class => 'host_banner_pic')   %>
 
-
-
 <br/>
 
 <div class='myhome_page'>
@@ -26,6 +24,10 @@
           <%= render '/shared/next_three_shifts', :user => current_user %>
           <br/>
           <%= render '/shared/shift_summary_box', :user => current_user %>
+
+          <h3>The 2018 Team</h3>
+          <%= image_tag('hosts_2018.jpg', :alt => '2018 Host Team', :class => 'host_banner_pic')   %>
+
         </div>
   <% else %>
       <h3>Safety - Ride Another Day</h3>
