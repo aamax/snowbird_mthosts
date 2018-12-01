@@ -9,7 +9,7 @@ def date_is_van_day(dt)
   (dt < Date.parse('2018-01-02')) || dt.friday? || dt.saturday? || dt.sunday?
 end
 
-namespace :db do
+namespace :hauler do
   desc 'set 2017 host hauler data'
   task :set_hauler_data => :environment do
     cotter = User.find_by(email: 'jecotterii@gmail.com')
@@ -39,6 +39,19 @@ namespace :db do
       puts "          #{hauler.riders.map {|r| r.user_id }.join(",")}"
     end
   end
+
+  desc 'remove 14th seat if empty in haulers'
+  task :shorten_vans => :environment do
+    HostHauler.where('haul_date >= ?', Date.today).each do |hauler|
+      if hauler.riders.count > 13
+        if hauler.open_seat_count > 0
+          hauler.remove_empty_seat
+          puts "strip this one: #{hauler.haul_date}.  has #{hauler.riders.count} total seats and #{hauler.open_seat_count} open."
+        end
+      end
+    end
+  end
+
 end
 
 

@@ -15,7 +15,7 @@ class HostHauler < ActiveRecord::Base
 
   def self.add_hauler(date_value, driver_id = nil)
     hauler = HostHauler.create(haul_date: date_value, driver_id: driver_id)
-    (1..14).each do |number|
+    (1..13).each do |number|
       Rider.create(host_hauler_id: hauler.id)
     end
     hauler
@@ -78,7 +78,6 @@ class HostHauler < ActiveRecord::Base
   end
 
   def self.btn_color(hauler_id, user)
-
     hauler = HostHauler.includes(:riders).find_by(id: hauler_id)
     btn_color = 'btn-danger'
     if (hauler.open_seat_count != 0) && !hauler.driver_id.nil?
@@ -90,5 +89,18 @@ class HostHauler < ActiveRecord::Base
       btn_color = 'btn-primary'
     end
     btn_color
+  end
+
+  def remove_empty_seat
+    return if self.open_seat_count == 0
+    self.riders.each do |seat|
+      if seat.user_id.nil?
+        puts "hauler on #{self.haul_date} has: #{self.riders.count} seats and #{self.open_seat_count} open seats."
+        seat.delete
+        self.reload
+        puts "hauler on #{self.haul_date} has: #{self.riders.count} seats and #{self.open_seat_count} open seats."
+        return true
+      end
+    end
   end
 end
