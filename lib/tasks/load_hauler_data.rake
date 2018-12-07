@@ -42,16 +42,32 @@ namespace :hauler do
 
   desc 'remove 14th seat if empty in haulers'
   task :shorten_vans => :environment do
+    lost_seats = 0
+    lost_hosts = []
     HostHauler.where('haul_date >= ?', Date.today).each do |hauler|
-      if hauler.riders.count > 13
+      while hauler.riders.count > 10
         if hauler.open_seat_count > 0
           hauler.remove_empty_seat
           puts "strip this one: #{hauler.haul_date}.  has #{hauler.riders.count} total seats and #{hauler.open_seat_count} open."
+        else
+          puts "no open seats: #{hauler.haul_date} has #{hauler.riders.count}"
+          r = hauler.riders.order(created_at: :desc).last
+          lost_seats += 1
+          lost_hosts <<{user: r.user.name, email: r.user.email, date: hauler.haul_date}
+          r.delete
         end
+        hauler.reload
       end
-    end
-  end
 
+      puts "Hauler done.  Total Seats: #{hauler.riders.count}  Open Seats: #{hauler.open_seat_count}"
+      puts "------------------------------------------\n"
+    end
+
+    email_list = lost_hosts.map {|r| r[:email]}.uniq
+    puts "seats lost: #{lost_seats}"
+    puts "hosts lost: #{email_list.count}"
+    puts email_list.uniq.join(',')
+  end
 end
 
 

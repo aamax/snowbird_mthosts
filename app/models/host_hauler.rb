@@ -95,10 +95,7 @@ class HostHauler < ActiveRecord::Base
     return if self.open_seat_count == 0
     self.riders.each do |seat|
       if seat.user_id.nil?
-        puts "hauler on #{self.haul_date} has: #{self.riders.count} seats and #{self.open_seat_count} open seats."
         seat.delete
-        self.reload
-        puts "hauler on #{self.haul_date} has: #{self.riders.count} seats and #{self.open_seat_count} open seats."
         return true
       end
     end
