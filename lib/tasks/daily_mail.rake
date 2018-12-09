@@ -5,6 +5,9 @@ namespace :daily do
     dt = Date.tomorrow
     users = Shift.where(shift_date: dt).map {|s| s.user }
     emailaddress = users.compact.map {|u| u.email}.join(',')
+    if !emailaddress.blank?
+      emailaddress += ",aamaxworks@gmail.com"
+    end
 
 
     @subject = "REMINDER: you are scheduled to work at Snowbird tomorrow!"
@@ -15,6 +18,7 @@ namespace :daily do
 
     msg = UserMailer.send_daily_email(emailaddress, @fromaddress, @subject, @message)
     msg.deliver unless msg.nil?
+
 
     # TODO: send text message?
 
