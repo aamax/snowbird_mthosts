@@ -73,7 +73,7 @@ Mthost::Application.configure do
   config.active_support.deprecation = :notify
 
   # ActionMailer Config
-  config.action_mailer.default_url_options = { :host => 'www.snowbirdhosts.com' }
+  config.action_mailer.default_url_options = { :host => 'snowbirdhosts.com' }
   config.action_mailer.delivery_method = :smtp
   # change to true to allow email to be sent during development
   config.action_mailer.perform_deliveries = true

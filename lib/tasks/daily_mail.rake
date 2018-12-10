@@ -14,6 +14,11 @@ namespace :daily do
     @fromaddress = 'no-reply@snowbirdhosts.com'
     @message = "Just a friendly reminder that you are scheduled to work a shift at the Bird tommorrow.  Don't be late!"
 
+    if emailaddress.blank?
+      @subject = "NO EMAILS TO SEND WORK NOTICE TO"
+      emailaddress = 'aamaxworks@gmail.com'
+      @message = "test email - sent only to aaMax.  kill the cron job if you keep getting these!"
+    end
     exit(0) if emailaddress.blank?
 
     msg = UserMailer.send_daily_email(emailaddress, @fromaddress, @subject, @message)
@@ -21,7 +26,7 @@ namespace :daily do
 
 
     # TODO: send text message?
-
+    # Rails.application.config.action_mailer
   end
 end
 
