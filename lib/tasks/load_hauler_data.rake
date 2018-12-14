@@ -68,6 +68,25 @@ namespace :hauler do
     puts "hosts lost: #{email_list.count}"
     puts email_list.uniq.join(',')
   end
+
+
+  desc 'add to 13 passengers in all vans from current date on...'
+  task :lengthen_vans => :environment do
+    HostHauler.where('haul_date >= ?', Date.today).each do |hauler|
+      added_cnt = 0
+      while hauler.riders.count < 13
+        Rider.create(host_hauler_id: hauler.id)
+        added_cnt += 1
+        hauler.reload
+      end
+
+      puts "Hauler done.  Total Seats: #{hauler.riders.count}  Open Seats: #{hauler.open_seat_count} added seats: #{added_cnt}"
+      puts "------------------------------------------\n"
+    end
+    puts "done adjust seats up..."
+  end
+
+
 end
 
 
