@@ -249,16 +249,31 @@ class ShiftsController < ApplicationController
 
   def log_shift_dropped(shift, user_dropping)
     shift_str = "#{shift.id}:#{shift.short_name}:#{shift.shift_date}"
-    ShiftLog.create(change_date: DateTime.now, user_id: user_dropping.id,
+    log_user = user_dropping
+    if user_dropping != shift.user
+      log_user = shift.user unless shift.user.nil?
+      ShiftLog.create(change_date: DateTime.now, user_id: user_dropping.id,
+                      shift_id: shift.id, action_taken: "Dropped Shift",
+                      note: "#{user_dropping.name} DROPPED shift #{shift_str} for user: #{shift.user.name} dropped by: #{user_dropping.name}")
+    end
+    ShiftLog.create(change_date: DateTime.now, user_id: log_user.id,
                     shift_id: shift.id, action_taken: "Dropped Shift",
-                    note: "#{user_dropping.name} DROPPED shift #{shift_str} for user: #{shift.user.name}")
+                    note: "#{user_dropping.name} DROPPED shift #{shift_str} for user: #{shift.user.name} dropped by: #{user_dropping.name}")
+
   end
 
   def log_shift_selected(shift, user_selecting)
     shift_str = "#{shift.id}:#{shift.short_name}:#{shift.shift_date}"
-    ShiftLog.create(change_date: DateTime.now, user_id: user_selecting.id,
+    log_user = user_selecting
+    if user_selecting != shift.user
+      log_user = shift.user unless shift.user.nil?
+      ShiftLog.create(change_date: DateTime.now, user_id: user_selecting.id,
+                      shift_id: shift.id, action_taken: "Selected Shift",
+                      note: "#{user_selecting.name} SELECTED shift #{shift_str} for user: #{shift.user.name} selected by: #{user_selecting.name}")
+    end
+    ShiftLog.create(change_date: DateTime.now, user_id: log_user.id,
                     shift_id: shift.id, action_taken: "Selected Shift",
-                    note: "#{user_selecting.name} SELECTED shift #{shift_str} for user: #{shift.user.name}")
+                    note: "#{user_selecting.name} SELECTED shift #{shift_str} for user: #{shift.user.name} selected by: #{user_selecting.name}")
   end
 
   def log_shift_update(previous_user_id, shift, user)
@@ -268,6 +283,16 @@ class ShiftsController < ApplicationController
     ShiftLog.create(change_date: DateTime.now, user_id: user.id,
                     shift_id: shift.id, action_taken: "Updated Shift",
                     note: "#{user.name} UPDATED shift #{shift_str} set from: #{prev_user_name} to user: #{shift.user.name}")
+    unless prev_user.nil?
+      ShiftLog.create(change_date: DateTime.now, user_id:  prev_user.id,
+                    shift_id: shift.id, action_taken: "Dropped Shift",
+                    note: "#{user.name} DROPPED shift #{shift_str} and SELECTED to user: #{shift.user.name}")
+    end
+    unless shift.user.nil?
+      ShiftLog.create(change_date: DateTime.now, user_id:  shift.user_id,
+                      shift_id: shift.id, action_taken: "Selected Shift",
+                      note: "#{user.name} DROPPED shift #{shift_str} and SELECTED to user: #{shift.user.name}")
+    end
   end
 
   def log_shift_failed_update(previous_user_id, shift, shift_hash, user)
