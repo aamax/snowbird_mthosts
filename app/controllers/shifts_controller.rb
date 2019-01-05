@@ -53,7 +53,10 @@ class ShiftsController < ApplicationController
 
   def destroy
     shift = Shift.find(params[:id])
-    shift_details = "ID: #{shift.id} Date:#{shift.shift_date.strftime("%Y-%m-%d")} Shortname:#{shift.short_name}"
+    shift_user_name = shift.user.name unless shift.user.nil?
+    log_shift_dropped(shift, current_user) unless shift.user.nil?
+    
+    shift_details = "ID: #{shift.id} Date:#{shift.shift_date.strftime("%Y-%m-%d")} Shortname:#{shift.short_name} HOST: #{shift_user_name}"
 
     if !Shift.destroy(params[:id])
       flash[:alert] = "Error destroying shift."
