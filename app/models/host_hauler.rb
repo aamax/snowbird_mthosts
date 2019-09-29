@@ -15,7 +15,7 @@ class HostHauler < ActiveRecord::Base
 
   def self.add_hauler(date_value, driver_id = nil)
     hauler = HostHauler.create(haul_date: date_value, driver_id: driver_id)
-    (1..13).each do |number|
+    (1..14).each do |number|
       Rider.create(host_hauler_id: hauler.id)
     end
     hauler

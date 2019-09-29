@@ -12,56 +12,62 @@ namespace :db do
       ActiveRecord::Base.connection.execute("TRUNCATE TABLE riders RESTART IDENTITY;")
       ActiveRecord::Base.connection.execute("TRUNCATE TABLE host_haulers RESTART IDENTITY;")
       ActiveRecord::Base.connection.execute("TRUNCATE TABLE shifts RESTART IDENTITY;")
-      ActiveRecord::Base.connection.execute("TRUNCATE TABLE shift_logs RESTART IDENTITY;")
-      ActiveRecord::Base.connection.execute("TRUNCATE TABLE shift_types RESTART IDENTITY;")
+      # ActiveRecord::Base.connection.execute("TRUNCATE TABLE shift_logs RESTART IDENTITY;")
+      # ActiveRecord::Base.connection.execute("TRUNCATE TABLE shift_types RESTART IDENTITY;")
+      #
+      # puts "disabling Kate's Acount"
+      # u = User.find_by(name: 'Kate')
+      # u.active_user = false
+      # u.save
+      #
+      # puts 'de-activate Gabrielle Gale'
+      # u = User.find_by(email: 'gabrielle.bomgren.gale@gmail.com')
+      # u.active_user = false
+      # u.save
+      #
+      # puts 'de-activate Craig Whetman'
+      # u = User.find_by(email: 'craig_whetman@hotmail.com')
+      # u.active_user = false
+      # u.save
+      #
+      # puts "set Alan Marker seniority"
+      # u = User.find_by(email: 'akmarler@hotmail.com')
+      # u.start_year = 2013
+      # u.save
+      #
+      # puts "set Sarah R seniority"
+      # u = User.find_by(email: 'sarah3884@yahoo.com')
+      # u.start_year = 2013
+      # u.save
+      #
+      # puts 'Setting up config for season'
+      # Rake::Task['db:setup_config_for_2018'].invoke
+      #
+      # puts 'Loading Rookies for 2018'
+      # Rake::Task['db:load_2018_rookies'].invoke
+      #
+      # puts 'set seniority for Karen Weiss'
+      # u = User.find_by(email: 'kkweiss22@gmail.com')
+      # u.start_year = 2016
+      # u.snowbird_start_year = 2018
+      # u.save
 
-      puts "disabling Kate's Acount"
-      u = User.find_by(name: 'Kate')
-      u.active_user = false
-      u.save
+      # puts 'Loading shift types'
+      # Rake::Task['db:load_shift_types'].invoke
 
-      puts 'de-activate Gabrielle Gale'
-      u = User.find_by(email: 'gabrielle.bomgren.gale@gmail.com')
-      u.active_user = false
-      u.save
+      puts 'load 2019 rookies into system'
+      Rake::Task['db:load_2019_rookies'].invoke
 
-      puts 'de-activate Craig Whetman'
-      u = User.find_by(email: 'craig_whetman@hotmail.com')
-      u.active_user = false
-      u.save
-
-      puts "set Alan Marker seniority"
-      u = User.find_by(email: 'akmarler@hotmail.com')
-      u.start_year = 2013
-      u.save
-
-      puts "set Sarah R seniority"
-      u = User.find_by(email: 'sarah3884@yahoo.com')
-      u.start_year = 2013
-      u.save
-
-      puts 'Setting up config for season'
-      Rake::Task['db:setup_config_for_2018'].invoke
-
-      puts 'Loading Rookies for 2018'
-      Rake::Task['db:load_2018_rookies'].invoke
-
-      puts 'set seniority for Karen Weiss'
-      u = User.find_by(email: 'kkweiss22@gmail.com')
-      u.start_year = 2016
-      u.snowbird_start_year = 2018
-      u.save
-
-      puts 'Loading shift types'
-      Rake::Task['db:load_shift_types'].invoke
+      puts 'set up configs for season'
+      Rake::Task['db:setup_config_for_2019'].invoke
 
       puts 'Load all shifts'
       Rake::Task['db:load_shifts'].invoke
 
       puts "Shift Count Before Meetings: #{Shift.count}"
 
-      puts 'Load all Meeting Shifts For Users'
-      Rake::Task['db:load_meetings'].invoke
+      # puts 'Load all Meeting Shifts For Users'
+      # Rake::Task['db:load_meetings'].invoke
 
       puts 'initialize all user accounts for start of year'
       User.reset_all_accounts
@@ -72,7 +78,7 @@ namespace :db do
       u.password = ENV['AAMAX_PGPASS']
       u.save
 
-      puts 'initialize host hauler data for 2019'
+      puts 'initialize host hauler data for 2020'
       Rake::Task['db:initialize_host_hauler'].invoke
     end
     puts "Active User Count #{User.active_users.count}"
@@ -83,42 +89,59 @@ namespace :db do
     puts "Freshmen: #{User.group3.count}"
     puts "Rookies: #{User.rookies.count}"
 
-    puts "DONE WITH SEASON PREP... 2018"
+    puts "DONE WITH SEASON PREP... 2019"
   end
 
-  desc 'load 2018 rookies'
-  task :load_2018_rookies => :environment do
-    filename = "lib/data/rookies_2018.csv"
+  desc 'load 2019 rookies'
+  task :load_2019_rookies => :environment do
+    filename = "lib/data/rookies_2019.csv"
     ADDRESS_FORMAT = /([a-zA-Z0-9 ]+), ([a-zA-Z0-9]+), ([a-zA-Z0-9]+) ([0-9]+)/
 
     rookie_count = 0
     if File.exists?(filename)
-      puts "loading 2018 rookie data..."
+      puts "loading 2019 rookie data..."
       CSV.foreach(filename, :headers => true) do |row|
         hash = row.to_hash
         usr = User.find_by(email: hash['email'])
         rookie_count += 1
+
         if usr.nil?
+          puts "\n\nrookie not found...#{hash['email']}\n"
           arr = hash['address'].match(ADDRESS_FORMAT)
           street_value = arr[1]
           city_value = arr[2]
           state_value = arr[3]
           zip_value = arr[4]
-          usr = User.new(name: "#{hash['fname']} #{hash['lname']}", email: hash['email'],
-                         cell_phone: hash['cellphone'], home_phone: hash['homephone'],
+          usr = User.new(name: "#{row[0].strip} #{hash['last']}", email: hash['email'],
+                         cell_phone: hash['mobile'], home_phone: hash['home'],
+                         street: street_value, city: city_value,
+                         state: state_value, zip: zip_value, password: '5teep&Deep')
+          usr.active_user = true
+          usr.start_year = 2019
+          usr.snowbird_start_year = 2019
+        else
+          puts "\n\nfound rookie before add: #{hash['email']}\n    #{usr.inspect}\n\n"
+
+          arr = hash['address'].match(ADDRESS_FORMAT)
+          street_value = arr[1]
+          city_value = arr[2]
+          state_value = arr[3]
+          zip_value = arr[4]
+          usr.update_attributes(name: "#{row[0].strip} #{hash['last']}", email: hash['email'],
+                         cell_phone: hash['mobile'], home_phone: hash['home'],
                          street: street_value, city: city_value,
                          state: state_value, zip: zip_value, password: '5teep&Deep')
         end
 
-        usr.active_user = true
-        usr.start_year = 2018
-        usr.snowbird_start_year = 2018
+        puts "USER: #{usr.inspect}"
         if !usr.valid?
-          puts "\nERRROR in data:  #{usr.errors.messages}\n\n"
+          puts "\nERRROR in data:  #{usr.errors.messages}\n#{usr.inspect}\n-----\n#{hash}\n\n"
           next
         end
         usr.save
       end
+    else
+      puts "\n\n****************\nWARNING:  NO ROOKIE FILE FOUND!\n***************\n\n"
     end
 
     puts "DONE WITH ROOKIE LOAD... Loaded #{rookie_count} Rookies."
@@ -170,16 +193,16 @@ namespace :db do
   end
 
   desc "populate sys config settings for 2018"
-  task :setup_config_for_2018 => :environment do
+  task :setup_config_for_2019 => :environment do
     puts "purging existing sys config record from system..."
     ActiveRecord::Base.connection.execute("TRUNCATE TABLE sys_configs RESTART IDENTITY;")
     c = SysConfig.new
-    c.season_year = 2018
-    c.group_1_year = 2013
-    c.group_2_year = 2016
-    c.group_3_year = 2017
-    c.season_start_date = Date.new(2018, 10, 01)
-    c.bingo_start_date = Date.new(2018, 11, 05)
+    c.season_year = 2019
+    c.group_1_year = 2014
+    c.group_2_year = 2017
+    c.group_3_year = 2018
+    c.season_start_date = Date.new(2019, 10, 01)
+    c.bingo_start_date = Date.new(2019, 11, 04)
 
     if !c.save
       puts "error saving config record #{c.errors.messages}"
@@ -198,6 +221,7 @@ namespace :db do
         hash = row.to_hash
 
         next if hash['start_date'].nil? || (hash['start_date'][0] == '#')
+
         start_date = hash['start_date'].to_date
         end_date = hash['end_date'].to_date
 
@@ -236,6 +260,7 @@ namespace :db do
               create_shift('C3weekend', dt)
               create_shift('C4weekend', dt)
               create_shift('SV', dt)
+
             when 'regular'
               if dt.friday?
                 create_shift('P1friday', dt)
@@ -248,6 +273,7 @@ namespace :db do
                 create_shift('G2friday', dt)
                 create_shift('G3friday', dt)
                 create_shift('G4friday', dt)
+tl
                 # create_shift('SV', dt)
               elsif dt.saturday? || dt.sunday?
                 create_shift('P1weekend', dt)
@@ -265,13 +291,15 @@ namespace :db do
                 create_shift('C2weekend', dt)
                 create_shift('C3weekend', dt)
                 create_shift('C4weekend', dt)
-                create_shift('SV', dt)
+tl
+                # create_shift('SV', dt)
               else
                 create_shift('P1weekday', dt)
                 create_shift('P2weekday', dt)
                 create_shift('P3weekday', dt)
                 create_shift('P4weekday', dt)
-                # create_shift('H1weekday', dt)
+                create_shift('H1weekday', dt)
+                tl
               end
             when 'regular_no_survey'
               if dt.friday?
@@ -285,6 +313,7 @@ namespace :db do
                 create_shift('G2friday', dt)
                 create_shift('G3friday', dt)
                 create_shift('G4friday', dt)
+
               elsif dt.saturday? || dt.sunday?
                 create_shift('P1weekend', dt)
                 create_shift('P2weekend', dt)
@@ -301,11 +330,14 @@ namespace :db do
                 create_shift('C2weekend', dt)
                 create_shift('C3weekend', dt)
                 create_shift('C4weekend', dt)
+
               else
                 create_shift('P1weekday', dt)
                 create_shift('P2weekday', dt)
                 create_shift('P3weekday', dt)
                 create_shift('P4weekday', dt)
+
+
                 # create_shift('H1weekday', dt)
               end
             when 'holiday_floats'
@@ -355,7 +387,7 @@ namespace :db do
   desc 'initialize host hauler'
   task :initialize_host_hauler => :environment do
     jc = User.find_by(email: 'jecotterii@gmail.com')
-    (Date.parse('2018-12-01')..Date.parse('2019-05-27')).each do |dt|
+    (Date.parse('2019-11-23')..Date.parse('2020-05-27')).each do |dt|
       if dt.thursday? || dt.friday? || dt.saturday? || dt.sunday?
         HostHauler.add_hauler(dt, jc.id)
       end
@@ -363,10 +395,9 @@ namespace :db do
     puts 'Done adding initial host hauler dates and seats...'
   end
 
-
   def not_holiday(dt)
     date = dt.strftime('%Y%m%d')
-    (date != '20190121') && (date != '20190218')
+    (date != '20190120') && (date != '20190217')
   end
 
   def create_shift(shift_short_name, dt)
