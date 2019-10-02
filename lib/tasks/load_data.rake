@@ -66,8 +66,8 @@ namespace :db do
 
       puts "Shift Count Before Meetings: #{Shift.count}"
 
-      # puts 'Load all Meeting Shifts For Users'
-      # Rake::Task['db:load_meetings'].invoke
+      puts 'Load all Meeting Shifts For Users'
+      Rake::Task['db:load_meetings'].invoke
 
       puts 'initialize all user accounts for start of year'
       User.reset_all_accounts
@@ -147,27 +147,27 @@ namespace :db do
     puts "DONE WITH ROOKIE LOAD... Loaded #{rookie_count} Rookies."
   end
 
-  desc "populate shift types"
-  task :load_shift_types => :environment do
-    # load up file
-    filename = "lib/data/shift_type_2018.csv"
-
-    if File.exists?(filename)
-      puts "loading shift type data..."
-      CSV.foreach(filename, :headers => true) do |row|
-        hash = row.to_hash
-
-        next if hash['short_name'].nil?
-        st = ShiftType.new(hash)
-        if !st.save
-          puts "failed: #{hash} - #{st.errors.messages}"
-        end
-      end
-      puts "done loading shift type data.  Type Count: #{ShiftType.all.count}"
-    else
-      puts "shift type loader file not found"
-    end
-  end
+  # desc "populate shift types"
+  # task :load_shift_types => :environment do
+  #   # load up file
+  #   filename = "lib/data/shift_type_2018.csv"
+  #
+  #   if File.exists?(filename)
+  #     puts "loading shift type data..."
+  #     CSV.foreach(filename, :headers => true) do |row|
+  #       hash = row.to_hash
+  #
+  #       next if hash['short_name'].nil?
+  #       st = ShiftType.new(hash)
+  #       if !st.save
+  #         puts "failed: #{hash} - #{st.errors.messages}"
+  #       end
+  #     end
+  #     puts "done loading shift type data.  Type Count: #{ShiftType.all.count}"
+  #   else
+  #     puts "shift type loader file not found"
+  #   end
+  # end
 
   desc 'load all meetings and add to users'
   task :load_meetings => :environment do
@@ -273,7 +273,7 @@ namespace :db do
                 create_shift('G2friday', dt)
                 create_shift('G3friday', dt)
                 create_shift('G4friday', dt)
-tl
+
                 # create_shift('SV', dt)
               elsif dt.saturday? || dt.sunday?
                 create_shift('P1weekend', dt)
@@ -291,7 +291,7 @@ tl
                 create_shift('C2weekend', dt)
                 create_shift('C3weekend', dt)
                 create_shift('C4weekend', dt)
-tl
+
                 # create_shift('SV', dt)
               else
                 create_shift('P1weekday', dt)
@@ -299,7 +299,7 @@ tl
                 create_shift('P3weekday', dt)
                 create_shift('P4weekday', dt)
                 create_shift('H1weekday', dt)
-                tl
+
               end
             when 'regular_no_survey'
               if dt.friday?
@@ -358,7 +358,7 @@ tl
               create_shift('F4weekend', dt)
               create_shift('SV', dt)
             when 'end_of_season'
-               if dt.friday? || dt.saturday? || dt.sunday? || dt.strftime('%Y%m%d') == '20190527'
+               if dt.friday? || dt.saturday? || dt.sunday? || dt.strftime('%Y%m%d') == '20190525'
                 create_shift('A1', dt)
                 create_shift('A1', dt)
                 create_shift('TL', dt)
@@ -397,7 +397,7 @@ tl
 
   def not_holiday(dt)
     date = dt.strftime('%Y%m%d')
-    (date != '20190120') && (date != '20190217')
+    (date != '20200120') && (date != '20200217')
   end
 
   def create_shift(shift_short_name, dt)
