@@ -223,13 +223,17 @@ namespace :db do
         next if hash['start_date'].nil? || (hash['start_date'][0] == '#')
 
         start_date = hash['start_date'].to_date
-        end_date = hash['end_date'].to_date
+        if hash['end_date']
+          end_date = hash['end_date'].to_date
+        else
+          end_date = start_date
+        end
 
         shift_type_id = nil
         tag = hash['short_name']
 
         case tag
-        when 'A1','TL','C1weekend','C2weekend','C3weekend','C4weekend', 'SV'
+        when 'A1','TL','C1weekend','C2weekend','C3weekend','C4weekend', 'SV', 'H1_weekday'
           shift_type_id = ShiftType.find_by(short_name: tag).id
           if tag == 'SV'
             end_date = start_date
@@ -239,6 +243,8 @@ namespace :db do
           case shift_type_id
           when nil
             case tag
+            when 'SV_range'
+              create_shift('SV', dt)
             when 'hidden_weekday'
               if (dt.monday? || dt.tuesday? || dt.wednesday? || dt.thursday?) && (not_holiday(dt))
                 create_shift('H1weekday', dt)
