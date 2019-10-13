@@ -21,7 +21,7 @@ class UserMessageTest < ActiveSupport::TestCase
   def test_show_need_a_holiday_if_picked
     [@group1_user, @group2_user, @group3_user].each do |u|
       HOLIDAYS.each do |h|
-        shift = FactoryGirl.create(:shift, shift_date: h, shift_type_id: @p1.id)
+        shift = FactoryBot.create(:shift, shift_date: h, shift_type_id: @p1.id)
 
         u.shifts << shift
         u.has_holiday_shift?.must_equal true

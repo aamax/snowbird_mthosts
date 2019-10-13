@@ -12,9 +12,9 @@ namespace :db do
       ActiveRecord::Base.connection.execute("TRUNCATE TABLE riders RESTART IDENTITY;")
       ActiveRecord::Base.connection.execute("TRUNCATE TABLE host_haulers RESTART IDENTITY;")
       ActiveRecord::Base.connection.execute("TRUNCATE TABLE shifts RESTART IDENTITY;")
-      # ActiveRecord::Base.connection.execute("TRUNCATE TABLE shift_logs RESTART IDENTITY;")
+      ActiveRecord::Base.connection.execute("TRUNCATE TABLE shift_logs RESTART IDENTITY;")
       # ActiveRecord::Base.connection.execute("TRUNCATE TABLE shift_types RESTART IDENTITY;")
-      #
+
       # puts "disabling Kate's Acount"
       # u = User.find_by(name: 'Kate')
       # u.active_user = false
@@ -147,27 +147,27 @@ namespace :db do
     puts "DONE WITH ROOKIE LOAD... Loaded #{rookie_count} Rookies."
   end
 
-  # desc "populate shift types"
-  # task :load_shift_types => :environment do
-  #   # load up file
-  #   filename = "lib/data/shift_type_2018.csv"
-  #
-  #   if File.exists?(filename)
-  #     puts "loading shift type data..."
-  #     CSV.foreach(filename, :headers => true) do |row|
-  #       hash = row.to_hash
-  #
-  #       next if hash['short_name'].nil?
-  #       st = ShiftType.new(hash)
-  #       if !st.save
-  #         puts "failed: #{hash} - #{st.errors.messages}"
-  #       end
-  #     end
-  #     puts "done loading shift type data.  Type Count: #{ShiftType.all.count}"
-  #   else
-  #     puts "shift type loader file not found"
-  #   end
-  # end
+  desc "populate shift types"
+  task :load_shift_types => :environment do
+    # load up file
+    filename = "lib/data/shift_type_2018.csv"
+
+    if File.exists?(filename)
+      puts "loading shift type data..."
+      CSV.foreach(filename, :headers => true) do |row|
+        hash = row.to_hash
+
+        next if hash['short_name'].nil?
+        st = ShiftType.new(hash)
+        if !st.save
+          puts "failed: #{hash} - #{st.errors.messages}"
+        end
+      end
+      puts "done loading shift type data.  Type Count: #{ShiftType.all.count}"
+    else
+      puts "shift type loader file not found"
+    end
+  end
 
   desc 'load all meetings and add to users'
   task :load_meetings => :environment do
@@ -234,6 +234,11 @@ namespace :db do
 
         case tag
         when 'A1','TL','C1weekend','C2weekend','C3weekend','C4weekend', 'SV', 'H1_weekday'
+
+          if ShiftType.find_by(short_name: tag).nil?
+            binding.pry
+          end
+
           shift_type_id = ShiftType.find_by(short_name: tag).id
           if tag == 'SV'
             end_date = start_date

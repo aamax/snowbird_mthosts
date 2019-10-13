@@ -59,6 +59,8 @@ class User < ActiveRecord::Base
   has_many :riders
   has_many :host_haulers, through: :riders
 
+  has_many :ongoing_trainings
+  has_many :training_dates, through: :ongoing_trainings
 
   scope :active_users, -> {where(active_user: true)}
   scope :inactive_users, -> {where(active_user: false)}
@@ -159,6 +161,10 @@ class User < ActiveRecord::Base
     retval
   end
 
+  def ongoing_trainer?
+    self.has_role? :ongoing_trainer
+  end
+
   def supervisor?
     self.email == 'jecotterii@gmail.com'
   end
@@ -225,6 +231,7 @@ class User < ActiveRecord::Base
   end
 
   def is_working?(shift_date, working_shifts=nil)
+    return true if is_ongoing_training?(shift_date)
     if working_shifts.nil?
       working_shifts = self.shifts
     end
@@ -237,6 +244,10 @@ class User < ActiveRecord::Base
     false
   end
 
+  def is_ongoing_training?(shift_date)
+    self.training_dates.map(&:shift_date).include? shift_date
+  end
+
   def get_shift_list
     self.shifts.includes(:shift_type).sort {|a,b| a.shift_date <=> b.shift_date }
   end
@@ -245,6 +256,8 @@ class User < ActiveRecord::Base
     user = User.includes(:shifts).find_by_id(id)
     shifts = user.shifts.includes(:shift_type)
     shifts ||= []
+    shifts + user.ongoing_trainings
+
     working_shifts = shifts.flatten.sort {|a,b| a.shift_date <=> b.shift_date }
   end
 
@@ -264,6 +277,10 @@ class User < ActiveRecord::Base
       end
     end
     !need_holiday
+  end
+
+  def has_ongoign_training_shift?
+    self.ongoing_trainings.count > 0
   end
 
   def get_day_offset

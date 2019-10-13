@@ -11,6 +11,7 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  short_name      :string
+#  disabled        :boolean
 #
 
 require "test_helper"
@@ -35,9 +36,9 @@ class ShiftTest < ActiveSupport::TestCase
     @bg = ShiftType.find_by_short_name('BG')
     @sh = ShiftType.find_by_short_name('SH')
 
-    @g1_friday = FactoryGirl.create(:shift_type, :short_name => 'G1friday')
-    @g1_weekend = FactoryGirl.create(:shift_type, :short_name => 'G1weekend')
-    @p1_weekend = FactoryGirl.create(:shift_type, :short_name => 'P1weekend')
+    @g1_friday = FactoryBot.create(:shift_type, :short_name => 'G1friday')
+    @g1_weekend = FactoryBot.create(:shift_type, :short_name => 'G1weekend')
+    @p1_weekend = FactoryBot.create(:shift_type, :short_name => 'P1weekend')
   end
 
   describe 'assign team leaders' do
@@ -60,18 +61,18 @@ class ShiftTest < ActiveSupport::TestCase
 
   describe 'is_tour?' do
     it 'should recognize tour shifts' do
-      shift = FactoryGirl.create(:shift, shift_date: Date.parse('20191225'), shift_type_id: @p1.id)
+      shift = FactoryBot.create(:shift, shift_date: Date.parse('20191225'), shift_type_id: @p1.id)
       TOUR_TYPES.each do |shift_type|
-        shift.shift_type = FactoryGirl.create(:shift_type, short_name: shift_type)
+        shift.shift_type = FactoryBot.create(:shift_type, short_name: shift_type)
         shift.save
         shift.is_tour?.must_equal true
       end
     end
 
     it 'should recognize non-tour shifts' do
-      shift = FactoryGirl.create(:shift, shift_date: Date.parse('20191225'), shift_type_id: @p1.id)
+      shift = FactoryBot.create(:shift, shift_date: Date.parse('20191225'), shift_type_id: @p1.id)
       NON_TOUR_TYPES.each do |shift_type|
-        shift.shift_type = FactoryGirl.create(:shift_type, short_name: shift_type)
+        shift.shift_type = FactoryBot.create(:shift_type, short_name: shift_type)
         shift.save
         shift.is_tour?.must_equal false
       end

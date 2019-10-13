@@ -11,6 +11,7 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  short_name      :string
+#  disabled        :boolean
 #
 
 require "test_helper"

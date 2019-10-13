@@ -11,6 +11,7 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  short_name      :string
+#  disabled        :boolean
 #
 
 # if shift status = -1   ->  missed shift

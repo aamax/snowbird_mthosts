@@ -11,7 +11,7 @@ class TeamleaderMessageTest < ActiveSupport::TestCase
     @tltype = ShiftType.find_by(short_name: 'TL')
 
     (1..50).each do |n|
-      FactoryGirl.create(:shift, shift_type_id: @tltype.id, shift_date: Date.today + n.days)
+      FactoryBot.create(:shift, shift_type_id: @tltype.id, shift_date: Date.today + n.days)
     end
   end
 

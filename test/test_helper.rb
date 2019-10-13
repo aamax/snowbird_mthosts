@@ -45,22 +45,23 @@ require 'rubygems'
 # These instructions should self-destruct in 10 seconds.  If they don't, feel
 # free to delete them.
 
-
-
+# this disables deprecation warnings that will have to be re-enabled eventually...
+# $VERBOSE = nil
 
 ENV["RAILS_ENV"] = "test"
+Rails.env = 'test'
 require File.expand_path('../../config/environment', __FILE__)
 
 require "minitest/autorun"
 require "rails/test_help"
 require "minitest/rails"
-#require "active_support/testing/setup_and_teardown"
+require "active_support/testing/setup_and_teardown"
 require 'minitest/mock'
 require "minitest/focus"
 
 # Add `gem "minitest/rails/capybara"` to the test group of your Gemfile
 # and uncomment the following if you want Capybara feature tests
-require "minitest/rails/capybara"
+# require "minitest/rails/capybara"
 
 require "minitest/reporters"
 Minitest::Reporters.use!(
@@ -69,9 +70,9 @@ Minitest::Reporters.use!(
     Minitest.backtrace_filter
 )
 
-#require 'database_cleaner'
-#
-#DatabaseCleaner.strategy = :truncation
+# require 'database_cleaner'
+# #
+# DatabaseCleaner.strategy = :truncation
 
 class ActiveSupport::TestCase
   self.use_transactional_fixtures = true
@@ -83,17 +84,17 @@ class ActiveSupport::TestCase
 end
 
 
-#class HelperTest < MiniTest::Spec
-#  include ActiveSupport::Testing::SetupAndTeardown
-#  include ActionView::TestCase::Behavior
-#  register_spec_type(/Helper$/, self)
-#end
+class HelperTest < MiniTest::Spec
+ include ActiveSupport::Testing::SetupAndTeardown
+ include ActionView::TestCase::Behavior
+ register_spec_type(/Helper$/, self)
+end
 
-#class ActionDispatch::IntegrationTest
-#  include Rails.application.routes.url_helpers
-#  include Capybara::RSpecMatchers
-#  include Capybara::DSL
-#end
+# class ActionDispatch::IntegrationTest
+# #  include Rails.application.routes.url_helpers
+# #  include Capybara::RSpecMatchers
+# #  include Capybara::DSL
+# # end
 
 class ActiveRecord::Base
   mattr_accessor :shared_connection

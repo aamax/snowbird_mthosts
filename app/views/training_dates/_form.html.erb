@@ -1,0 +1,17 @@
+<%= render 'shared/error_messages', :object => f.object %>
+<br />
+
+<div class="row">
+  <div class= "span2">
+    <strong>Shift Date: </strong>
+  </div>
+  <div class="span3">
+    <%= text_field_tag "training_shift_date", @shift_date,
+                           :class=>"span2 shift_date", :readonly=>'readonly' %>
+    <%=  link_to "&nbsp;<i class='icon-calendar'></i>&nbsp;".html_safe, "#",
+                   :class=>"btn cal_icon_start cal_icon_training_date",
+                   :id=>"set_training_date_btn",
+                   "data-date-format"=>"yyyy-mm-dd",
+                   "data-date"=>@shift_date.strftime('%Y-%m-%d') %>
+  </div>
+</div>

@@ -9,9 +9,9 @@
 #  updated_at :datetime         not null
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :host_hauler do
-    driver_id 1
-    haul_date "2017-12-17"
+    driver_id { 1 }
+    haul_date { "2017-12-17" }
   end
 end

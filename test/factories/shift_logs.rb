@@ -12,12 +12,12 @@
 #  updated_at   :datetime         not null
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :shift_log do
-    change_date ""
-    user_id ""
-    shift_id ""
-    action_taken ""
-    note "MyText"
+    change_date { "" }
+    user_id { "" }
+    shift_id { "" }
+    action_taken  { "" }
+    note { "MyText" }
   end
 end

@@ -1,8 +1,10 @@
+# bundler 1.17.3
+
 source 'http://rubygems.org'
-gem 'rails', '4.2.4'
+gem 'rails', '4.2.8'
 # gem 'rails', '5.2.3'
-ruby '2.2.3'
-# ruby '2.6.4'
+# ruby '2.2.3'
+ruby '2.4.5'
 
 gem 'sass-rails',   '~> 4.0.5'
 gem 'coffee-rails', '~> 4.1.0'
@@ -21,10 +23,10 @@ gem 'activerecord-deprecated_finders'
 
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-gem "pg", ">= 0.14.1"
+gem "pg", "~> 0.18"   # gem "pg", ">= 0.14.1"
 gem "capybara", ">= 2.0.2", :group => :test
 gem "devise", ">= 2.2.3"
-gem "cancan", ">= 1.6.8"
+gem "cancancan"
 gem "rolify", ">= 3.2.0"
 gem "figaro", ">= 0.5.3"
 gem "better_errors", ">= 0.6.0", :group => :development
@@ -65,9 +67,9 @@ group :test, :development do
   gem 'minitest-reporters', '~> 1.1.0'
   #gem 'mini_backtrace'
   gem 'pry'
-  gem "factory_girl_rails", ">= 4.2.0"
+  gem "factory_bot_rails"
 
-  gem "capybara-webkit"
+  # gem "capybara-webkit"
   gem 'timecop'
 end
 

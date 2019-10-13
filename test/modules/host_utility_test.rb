@@ -6,7 +6,7 @@
 #   #   @sys_config = SysConfig.first
 #   #   puts "start year: #{@sys_config.season_year}"
 #   #
-#   #   user = FactoryGirl.create(:user, :email => 'f1.user@example.com', :start_year => @sys_config.season_year, :active_user => true)
+#   #   user = FactoryBot.create(:user, :email => 'f1.user@example.com', :start_year => @sys_config.season_year, :active_user => true)
 #   #   bingo_start = Date.today
 #   #   curr_date = Date.today
 #   #   val = HostUtility.get_current_round(bingo_start, curr_date, user)

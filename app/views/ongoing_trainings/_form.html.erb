@@ -1,0 +1,36 @@
+<%= render 'shared/error_messages', :object => f.object %>
+<br />
+
+<div class="row">
+  <div class= "span2">
+    <strong>Shift Date: </strong>
+  </div>
+  <div class="span3">
+    <%= select_tag "training_date",
+                   options_from_collection_for_select(@training_dates, :id, :shift_date),
+                   {:multiple => false, :class=>"span2"} %>
+  </div>
+</div>
+<br/>
+
+<div class="row">
+  <div class= "span2">
+    <strong>Is Trainer: </strong>
+  </div>
+  <div class="span3">
+    <%= f.check_box :is_trainer %>
+  </div>
+</div>
+<br/>
+
+<div class="row">
+  <div class= "span2">
+    <strong>Host: </strong>
+  </div>
+  <div class="span3">
+    <%= collection_select(:ongoing_training, :user_id, @hosts,
+                          :id, :name,
+                          {:prompt => 'Please select the host for this training shift'}) %>
+  </div>
+</div>
+

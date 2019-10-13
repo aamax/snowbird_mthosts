@@ -9,9 +9,9 @@
 #  updated_at     :datetime         not null
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :rider do
-    host_hauler_id 1
-    user_id 1
+    host_hauler_id { 1 }
+    user_id { 1 }
   end
 end

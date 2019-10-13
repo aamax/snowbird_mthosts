@@ -46,7 +46,7 @@ class UserTest < ActiveSupport::TestCase
     @group2_user = User.find_by_name('g2')
     @group3_user = User.find_by_name('g3')
     @team_leader = User.find_by_name('teamlead')
-    @user = User.create(name: 'test user', email: 'user@example.com')
+    @user = User.create(name: 'test user', email: 'user@example.com', password: 'password')
 
     @tl = ShiftType.find_by_short_name('TL')
     @sh = ShiftType.find_by_short_name('SH')
@@ -80,8 +80,8 @@ class UserTest < ActiveSupport::TestCase
     end
 
     it 'should not count meetings in calc' do
-      mtg = FactoryGirl.create(:shift_type, 'short_name' => 'M1')
-      shift = FactoryGirl.create(:shift, :shift_type_id => mtg.id, :shift_date => Date.today)
+      mtg = FactoryBot.create(:shift_type, 'short_name' => 'M1')
+      shift = FactoryBot.create(:shift, :shift_type_id => mtg.id, :shift_date => Date.today)
       @user.shifts << shift
       @user.tour_ratio.must_equal 0
     end
@@ -93,7 +93,7 @@ class UserTest < ActiveSupport::TestCase
 
     it 'should have a ratio of 100 if all shifts are tours' do
       (1..10).each do |s|
-        ashift = FactoryGirl.create(:shift, :shift_type_id => @p2.id, :shift_date => Date.today - s.days)
+        ashift = FactoryBot.create(:shift, :shift_type_id => @p2.id, :shift_date => Date.today - s.days)
         @user.shifts << ashift
       end
 
@@ -102,9 +102,9 @@ class UserTest < ActiveSupport::TestCase
 
     it 'should have a ratio of 50 if half of the shifts are tours' do
       (1..10).each do |s|
-        ashift = FactoryGirl.create(:shift, :shift_type_id => @p2.id, :shift_date => Date.today - s.days)
+        ashift = FactoryBot.create(:shift, :shift_type_id => @p2.id, :shift_date => Date.today - s.days)
         @user.shifts << ashift
-        ashift = FactoryGirl.create(:shift, :shift_type_id => @c4.id, :shift_date => Date.today - 1.month - s.days)
+        ashift = FactoryBot.create(:shift, :shift_type_id => @c4.id, :shift_date => Date.today - 1.month - s.days)
         @user.shifts << ashift
       end
 
@@ -113,11 +113,11 @@ class UserTest < ActiveSupport::TestCase
 
     it 'should have a ratio of 25 if a quarter of the shifts are tours' do
       (1..5).each do |s|
-        ashift = FactoryGirl.create(:shift, :shift_type_id => @p2.id, :shift_date => Date.today - s.days)
+        ashift = FactoryBot.create(:shift, :shift_type_id => @p2.id, :shift_date => Date.today - s.days)
         @user.shifts << ashift
       end
       (1..15).each do |s|
-        ashift = FactoryGirl.create(:shift, :shift_type_id => @c4.id, :shift_date => Date.today - 1.month - s.days)
+        ashift = FactoryBot.create(:shift, :shift_type_id => @c4.id, :shift_date => Date.today - 1.month - s.days)
         @user.shifts << ashift
       end
 
@@ -126,11 +126,11 @@ class UserTest < ActiveSupport::TestCase
 
     it 'should have a ratio of 75 is 3 quarters of the shifts are tours' do
       (1..15).each do |s|
-        ashift = FactoryGirl.create(:shift, :shift_type_id => @p2.id, :shift_date => Date.today - s.days)
+        ashift = FactoryBot.create(:shift, :shift_type_id => @p2.id, :shift_date => Date.today - s.days)
         @user.shifts << ashift
       end
       (1..5).each do |s|
-        ashift = FactoryGirl.create(:shift, :shift_type_id => @c4.id, :shift_date => Date.today - 1.month - s.days)
+        ashift = FactoryBot.create(:shift, :shift_type_id => @c4.id, :shift_date => Date.today - 1.month - s.days)
         @user.shifts << ashift
       end
 
@@ -174,6 +174,37 @@ class UserTest < ActiveSupport::TestCase
       @group2_user.seniority_group.must_equal 2
       @group3_user.seniority_group.must_equal 3
       @rookie_user.seniority_group.must_equal 4
+    end
+  end
+
+  describe 'trainer/trainee validation' do
+    it 'should list all trainer shifts for user' do
+      trainer_user = User.create(email: 'test1@test.com', password: 'password')
+      trainee_user1 = User.create(email: 'trainee1@example.com', password: 'password')
+      trainee_user2 = User.create(email: 'trainee2@example.com', password: 'password')
+      trainee_user3 = User.create(email: 'trainee3@example.com', password: 'password')
+
+
+      (1..9).each do |day|
+        obj = TrainingDate.create(shift_date: "2020-01-0#{day}")
+        obj.save
+
+        obj.trainings << OngoingTraining.create(user: trainee_user1, is_trainer: false)
+        obj.trainings << OngoingTraining.create(user: trainee_user2, is_trainer: false)
+        obj.trainings << OngoingTraining.create(user: trainee_user3, is_trainer: false)
+        obj.trainings << OngoingTraining.create(user: trainer_user, is_trainer: true)
+      end
+
+      assert_equal 9, trainee_user1.training_dates.count
+      assert_equal 9, trainee_user2.training_dates.count
+      assert_equal 9, trainee_user3.training_dates.count
+
+      assert_equal 9, trainer_user.training_dates.count
+
+      TrainingDate.all.each do |obj|
+        assert_equal 1, obj.trainers.count
+        assert_equal 3, obj.trainees.count
+      end
     end
   end
 end

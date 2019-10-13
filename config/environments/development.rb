@@ -73,6 +73,8 @@ Mthost::Application.configure do
     Bullet.console = true
     Bullet.rails_logger = true
   end
+
+  config.logger = ActiveSupport::Logger.new(config.paths['log'].first, 1, 50.megabytes)
 end
 
 HOST_SENDER = "snowbirdhosts@gmail.com"

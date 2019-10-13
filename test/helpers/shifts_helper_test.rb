@@ -33,10 +33,10 @@ class ShiftsHelperTest < ActionView::TestCase
     @sv = ShiftType.find_by(short_name: "SV")
     @tr = ShiftType.find_by(short_name: "TR")
 
-    @t1 = FactoryGirl.create(:shift_type, short_name: 'T1')
-    @t2 = FactoryGirl.create(:shift_type, short_name: 'T2')
-    @t3 = FactoryGirl.create(:shift_type, short_name: 'T3')
-    @t4 = FactoryGirl.create(:shift_type, short_name: 'T4')
+    @t1 = FactoryBot.create(:shift_type, short_name: 'T1')
+    @t2 = FactoryBot.create(:shift_type, short_name: 'T2')
+    @t3 = FactoryBot.create(:shift_type, short_name: 'T3')
+    @t4 = FactoryBot.create(:shift_type, short_name: 'T4')
 
     Timecop.freeze(Date.parse("2017-10-01"))
     @start_date = (Date.today() + 20.days)
@@ -63,12 +63,12 @@ class ShiftsHelperTest < ActionView::TestCase
         @sys_config.save!
 
         # create shadow and select by rookie (shift date 1 week out)
-        @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 1.week, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
+        @rookieshift = FactoryBot.create(:shift, :shift_date => Date.today + 1.week, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
 
         # create 3 other shifts and select by other hosts (shift date 1 week out)
-        @g1shift = FactoryGirl.create(:shift, :shift_date => Date.today + 1.week, :shift_type_id => @p1.id, :user_id => @newer_user.id)
-        @g2shift = FactoryGirl.create(:shift, :shift_date => Date.today + 1.week, :shift_type_id => @p2.id, :user_id => @middle_user.id)
-        @g3shift = FactoryGirl.create(:shift, :shift_date => Date.today + 1.week, :shift_type_id => @p3.id, :user_id => @senior_user.id)
+        @g1shift = FactoryBot.create(:shift, :shift_date => Date.today + 1.week, :shift_type_id => @p1.id, :user_id => @newer_user.id)
+        @g2shift = FactoryBot.create(:shift, :shift_date => Date.today + 1.week, :shift_type_id => @p2.id, :user_id => @middle_user.id)
+        @g3shift = FactoryBot.create(:shift, :shift_date => Date.today + 1.week, :shift_type_id => @p3.id, :user_id => @senior_user.id)
 
         # can not drop any shifts
         @rookieshift.can_drop(@rookie_user).must_equal false
@@ -84,9 +84,9 @@ class ShiftsHelperTest < ActionView::TestCase
         @sys_config.save!
 
         # create 3 other shifts and select by other hosts (shift date 1 week out)
-        @g1shift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.week, :shift_type_id => @p1.id, :user_id => @newer_user.id)
-        @g2shift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.week, :shift_type_id => @p2.id, :user_id => @middle_user.id)
-        @g3shift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.week, :shift_type_id => @p3.id, :user_id => @senior_user.id)
+        @g1shift = FactoryBot.create(:shift, :shift_date => Date.today + 3.week, :shift_type_id => @p1.id, :user_id => @newer_user.id)
+        @g2shift = FactoryBot.create(:shift, :shift_date => Date.today + 3.week, :shift_type_id => @p2.id, :user_id => @middle_user.id)
+        @g3shift = FactoryBot.create(:shift, :shift_date => Date.today + 3.week, :shift_type_id => @p3.id, :user_id => @senior_user.id)
 
         # can not drop any shifts
         @g1shift.can_drop(@newer_user).must_equal true
@@ -102,10 +102,10 @@ class ShiftsHelperTest < ActionView::TestCase
       # @sys_config.save!
       #
       # # create shadow and select by rookie (shift date 1 week out)
-      # @sha1 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
-      # @sha2 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 1.day, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
+      # @sha1 = FactoryBot.create(:shift, :shift_date => Date.today + 3.weeks, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
+      # @sha2 = FactoryBot.create(:shift, :shift_date => Date.today + 3.weeks + 1.day, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
       #
-      # @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 2.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+      # @rookieshift = FactoryBot.create(:shift, :shift_date => Date.today + 3.weeks + 2.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
       # @sha1.can_drop(@rookie_user).must_equal false
       # @sha2.can_drop(@rookie_user).must_equal false
       # end
@@ -115,16 +115,16 @@ class ShiftsHelperTest < ActionView::TestCase
       # @sys_config.save!
       #
       # # create shadow and select by rookie (shift date 1 week out)
-      # @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
-      # @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 1.day, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
+      # @rookieshift = FactoryBot.create(:shift, :shift_date => Date.today + 3.weeks, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
+      # @rookieshift = FactoryBot.create(:shift, :shift_date => Date.today + 3.weeks + 1.day, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
       #
-      # sh1 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 2.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
-      # sh2 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 3.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
-      # sh3 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 4.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
-      # sh4 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 5.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
-      # sh5 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 6.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+      # sh1 = FactoryBot.create(:shift, :shift_date => Date.today + 3.weeks + 2.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+      # sh2 = FactoryBot.create(:shift, :shift_date => Date.today + 3.weeks + 3.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+      # sh3 = FactoryBot.create(:shift, :shift_date => Date.today + 3.weeks + 4.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+      # sh4 = FactoryBot.create(:shift, :shift_date => Date.today + 3.weeks + 5.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+      # sh5 = FactoryBot.create(:shift, :shift_date => Date.today + 3.weeks + 6.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
       #
-      # sh6 = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 7.days, :shift_type_id => @p1.id, :user_id => @rookie_user.id)
+      # sh6 = FactoryBot.create(:shift, :shift_date => Date.today + 3.weeks + 7.days, :shift_type_id => @p1.id, :user_id => @rookie_user.id)
       # sh1.can_drop(@rookie_user).must_equal false
       # sh2.can_drop(@rookie_user).must_equal false
       # sh3.can_drop(@rookie_user).must_equal false
@@ -138,16 +138,16 @@ class ShiftsHelperTest < ActionView::TestCase
         @sys_config.save!
 
         # create shadow and select by rookie (shift date 1 week out)
-        @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
-        @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 1.day, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
+        @rookieshift = FactoryBot.create(:shift, :shift_date => Date.today + 3.weeks, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
+        @rookieshift = FactoryBot.create(:shift, :shift_date => Date.today + 3.weeks + 1.day, :shift_type_id => @sh.id, :user_id => @rookie_user.id)
 
-        @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 2.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
-        @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 3.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
-        @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 4.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
-        @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 5.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
-        @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 6.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+        @rookieshift = FactoryBot.create(:shift, :shift_date => Date.today + 3.weeks + 2.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+        @rookieshift = FactoryBot.create(:shift, :shift_date => Date.today + 3.weeks + 3.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+        @rookieshift = FactoryBot.create(:shift, :shift_date => Date.today + 3.weeks + 4.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+        @rookieshift = FactoryBot.create(:shift, :shift_date => Date.today + 3.weeks + 5.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
+        @rookieshift = FactoryBot.create(:shift, :shift_date => Date.today + 3.weeks + 6.days, :shift_type_id => @g1.id, :user_id => @rookie_user.id)
 
-        @rookieshift = FactoryGirl.create(:shift, :shift_date => Date.today + 3.weeks + 7.days, :shift_type_id => @p1.id, :user_id => @rookie_user.id)
+        @rookieshift = FactoryBot.create(:shift, :shift_date => Date.today + 3.weeks + 7.days, :shift_type_id => @p1.id, :user_id => @rookie_user.id)
 
         @rookieshift.can_drop(@rookie_user).must_equal true
       end
@@ -219,7 +219,7 @@ class ShiftsHelperTest < ActionView::TestCase
         end
         (@team_leader.shifts.count <= 20).must_equal true
 
-        new_shift = FactoryGirl.create(:shift, shift_type_id: @tl.id, shift_date: @team_leader.shifts.map(&:shift_date).max + 1.day)
+        new_shift = FactoryBot.create(:shift, shift_type_id: @tl.id, shift_date: @team_leader.shifts.map(&:shift_date).max + 1.day)
         new_shift.can_select(@team_leader, HostUtility.can_select_params_for(@team_leader)).must_equal false
       end
 
@@ -230,16 +230,16 @@ class ShiftsHelperTest < ActionView::TestCase
 
         # create trainer and training shifts
         @tr = ShiftType.find_by(short_name: 'TR')
-        t1type = FactoryGirl.create(:shift_type, short_name: 'T1')
-        t2type = FactoryGirl.create(:shift_type, short_name: 'T2')
-        t3type = FactoryGirl.create(:shift_type, short_name: 'T3')
+        t1type = FactoryBot.create(:shift_type, short_name: 'T1')
+        t2type = FactoryBot.create(:shift_type, short_name: 'T2')
+        t3type = FactoryBot.create(:shift_type, short_name: 'T3')
         training_shifts = []
         (1..5).each do |n|
-          trainer_shift = FactoryGirl.create(:shift, :shift_date => Date.today + 2.weeks + n.days,
+          trainer_shift = FactoryBot.create(:shift, :shift_date => Date.today + 2.weeks + n.days,
                                              :shift_type_id => @tr.id, :user_id => nil)
-          t1_shift = FactoryGirl.create(:shift, shift_date: Date.today + n.days, shift_type_id: t1type.id)
-          t2_shift = FactoryGirl.create(:shift, shift_date: Date.today + n.days, shift_type_id: t2type.id)
-          t3_shift = FactoryGirl.create(:shift, shift_date: Date.today + n.days, shift_type_id: t3type.id)
+          t1_shift = FactoryBot.create(:shift, shift_date: Date.today + n.days, shift_type_id: t1type.id)
+          t2_shift = FactoryBot.create(:shift, shift_date: Date.today + n.days, shift_type_id: t2type.id)
+          t3_shift = FactoryBot.create(:shift, shift_date: Date.today + n.days, shift_type_id: t3type.id)
           training_shifts << trainer_shift
           training_shifts << t1_shift
           training_shifts << t2_shift
@@ -256,8 +256,8 @@ class ShiftsHelperTest < ActionView::TestCase
       it "can pick P2weekday shifts if not team leader" do
         @sys_config.bingo_start_date = @after_bingo_date - 7.days
         @sys_config.save!
-        p2weekday = FactoryGirl.create(:shift_type, short_name: 'P2weekday')
-        s1 = FactoryGirl.create(:shift, shift_date: Date.today + 5.days, shift_type_id: p2weekday.id)
+        p2weekday = FactoryBot.create(:shift_type, short_name: 'P2weekday')
+        s1 = FactoryBot.create(:shift, shift_date: Date.today + 5.days, shift_type_id: p2weekday.id)
         s1.can_select(@senior_user, HostUtility.can_select_params_for(@senior_user)).must_equal true
       end
 
@@ -275,12 +275,12 @@ class ShiftsHelperTest < ActionView::TestCase
         @sys_config.bingo_start_date = @after_bingo_date
         @sys_config.save!
 
-        s1 = FactoryGirl.create(:shift, shift_date: Date.today - 5.days, shift_type_id: @p1.id)
-        s2 = FactoryGirl.create(:shift, shift_date: Date.today - 4.days, shift_type_id: @p1.id)
-        s3 = FactoryGirl.create(:shift, shift_date: Date.today - 3.days, shift_type_id: @p1.id)
-        s4 = FactoryGirl.create(:shift, shift_date: Date.today - 2.days, shift_type_id: @p1.id)
-        s5 = FactoryGirl.create(:shift, shift_date: Date.today - 1.days, shift_type_id: @p1.id)
-        s6 = FactoryGirl.create(:shift, shift_date: Date.today, shift_type_id: @p1.id)
+        s1 = FactoryBot.create(:shift, shift_date: Date.today - 5.days, shift_type_id: @p1.id)
+        s2 = FactoryBot.create(:shift, shift_date: Date.today - 4.days, shift_type_id: @p1.id)
+        s3 = FactoryBot.create(:shift, shift_date: Date.today - 3.days, shift_type_id: @p1.id)
+        s4 = FactoryBot.create(:shift, shift_date: Date.today - 2.days, shift_type_id: @p1.id)
+        s5 = FactoryBot.create(:shift, shift_date: Date.today - 1.days, shift_type_id: @p1.id)
+        s6 = FactoryBot.create(:shift, shift_date: Date.today, shift_type_id: @p1.id)
         s1.can_select(@senior_user, HostUtility.can_select_params_for(@senior_user)).must_equal false
         s2.can_select(@senior_user, HostUtility.can_select_params_for(@senior_user)).must_equal false
         s3.can_select(@senior_user, HostUtility.can_select_params_for(@senior_user)).must_equal false
@@ -389,7 +389,7 @@ class ShiftsHelperTest < ActionView::TestCase
 
         @t_shifts = []
         (1..5).each do |n|
-          @trainer_shift = FactoryGirl.create(:shift, :shift_date => Date.today + 2.weeks + n.days,
+          @trainer_shift = FactoryBot.create(:shift, :shift_date => Date.today + 2.weeks + n.days,
                                               :shift_type_id => @tr.id, :user_id => nil)
           @t_shifts << @trainer_shift
         end
@@ -407,7 +407,7 @@ class ShiftsHelperTest < ActionView::TestCase
 
       it "trainers cannot select more than 20 shifts during bingo" do
         (1..20).each do |n|
-          @trainer_shift = FactoryGirl.create(:shift, :shift_date => Date.today + 4.weeks + n.days,
+          @trainer_shift = FactoryBot.create(:shift, :shift_date => Date.today + 4.weeks + n.days,
                                               :shift_type_id => @tr.id, :user_id => nil)
           @t_shifts << @trainer_shift
         end
@@ -450,7 +450,7 @@ class ShiftsHelperTest < ActionView::TestCase
 
         @s_shifts = []
         (1..5).each do |n|
-          @survey_shift = FactoryGirl.create(:shift, :shift_date => Date.today + 2.weeks + n.days,
+          @survey_shift = FactoryBot.create(:shift, :shift_date => Date.today + 2.weeks + n.days,
                                              :shift_type_id => @sh.id, :user_id => nil)
           @s_shifts << @survey_shift
         end
@@ -488,7 +488,7 @@ class ShiftsHelperTest < ActionView::TestCase
         @sys_config.bingo_start_date = @round4_date
         @sys_config.save!
         (1..5).each do |n|
-          @survey_shift = FactoryGirl.create(:shift, :shift_date => Date.today + 6.weeks + n.days,
+          @survey_shift = FactoryBot.create(:shift, :shift_date => Date.today + 6.weeks + n.days,
                                              :shift_type_id => @sh.id, :user_id => nil)
           @s_shifts << @survey_shift
         end
@@ -520,24 +520,24 @@ class ShiftsHelperTest < ActionView::TestCase
       def create_t1_shifts
         first_date = Shift.where("short_name not like 'M%'").order(:shift_date).first.shift_date
         (1..5).each do |n|
-          FactoryGirl.create(:shift, shift_date: first_date + n.days - 2.months, shift_type_id: @t1.id)
+          FactoryBot.create(:shift, shift_date: first_date + n.days - 2.months, shift_type_id: @t1.id)
         end
       end
 
       def create_t2andt3_shifts
         first_date = Shift.where(short_name: 'T1').order(:shift_date).first.shift_date
         (1..5).each do |n|
-          FactoryGirl.create(:shift, shift_date: first_date + n.days + 1.month + 6.days, shift_type_id: @t2.id)
+          FactoryBot.create(:shift, shift_date: first_date + n.days + 1.month + 6.days, shift_type_id: @t2.id)
         end
         (6..10).each do |n|
-          FactoryGirl.create(:shift, shift_date: first_date + n.days + 1.month + 6.days, shift_type_id: @t3.id)
+          FactoryBot.create(:shift, shift_date: first_date + n.days + 1.month + 6.days, shift_type_id: @t3.id)
         end
       end
 
       def create_t4_shifts
         first_date = Shift.where(short_name: 'T3').order(:shift_date).first.shift_date
         (1..5).each do |n|
-          FactoryGirl.create(:shift, shift_date: first_date + n.days + 1.month + 6.days, shift_type_id: @t4.id)
+          FactoryBot.create(:shift, shift_date: first_date + n.days + 1.month + 6.days, shift_type_id: @t4.id)
         end
       end
 
@@ -564,21 +564,21 @@ class ShiftsHelperTest < ActionView::TestCase
       def create_late_season_tours
         start_date = rookie_tour_date
         (1..5).each do |n|
-          FactoryGirl.create(:shift, shift_date: start_date + n.days, shift_type_id: @p1.id)
+          FactoryBot.create(:shift, shift_date: start_date + n.days, shift_type_id: @p1.id)
         end
       end
 
       def create_late_season_non_tours
         start_date = rookie_tour_date + 10.days
         (1..10).each do |n|
-          FactoryGirl.create(:shift, shift_date: start_date + n.days, shift_type_id: @g1.id)
+          FactoryBot.create(:shift, shift_date: start_date + n.days, shift_type_id: @g1.id)
         end
       end
 
       def create_early_season_tours
         start_date = rookie_tour_date - 3.months
         (1..5).each do |n|
-          FactoryGirl.create(:shift, shift_date: start_date + n.days, shift_type_id: @p1.id)
+          FactoryBot.create(:shift, shift_date: start_date + n.days, shift_type_id: @p1.id)
         end
       end
 
@@ -599,8 +599,8 @@ class ShiftsHelperTest < ActionView::TestCase
       end
 
       it "should not allow more than one T1 shift" do
-        t1a = FactoryGirl.create(:shift, shift_date: Date.today + 6.days, shift_type_id: @t1.id)
-        t1b = FactoryGirl.create(:shift, shift_date: Date.today + 7.days, shift_type_id: @t1.id)
+        t1a = FactoryBot.create(:shift, shift_date: Date.today + 6.days, shift_type_id: @t1.id)
+        t1b = FactoryBot.create(:shift, shift_date: Date.today + 7.days, shift_type_id: @t1.id)
 
         t1a.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
         t1b.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
@@ -632,7 +632,7 @@ class ShiftsHelperTest < ActionView::TestCase
         t1shift.user_id = nil
         t1shift.save
         @rookie_user.shifts.reload
-        FactoryGirl.create(:shift, shift_date: Date.today + 100.days, shift_type_id: t1shift.shift_type_id)
+        FactoryBot.create(:shift, shift_date: Date.today + 100.days, shift_type_id: t1shift.shift_type_id)
         lowest_date = t3shift.shift_date < t2shift.shift_date ? t3shift.shift_date : t2shift.shift_date
         lowest_date = t4shift.shift_date < lowest_date ? t4shift.shift_date : lowest_date
         Shift.all.each do |shift|
@@ -643,7 +643,7 @@ class ShiftsHelperTest < ActionView::TestCase
               shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
             end
           else
-            shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+            _(shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user))).must_equal false
           end
         end
       end
@@ -661,7 +661,7 @@ class ShiftsHelperTest < ActionView::TestCase
         t2shift.save
 
         @rookie_user.shifts.reload
-        new_t2 = FactoryGirl.create(:shift, shift_date: t1shift.shift_date - 10.days,
+        new_t2 = FactoryBot.create(:shift, shift_date: t1shift.shift_date - 10.days,
                                     shift_type_id: t2shift.shift_type_id)
         new_t2.can_select(@rookie_user,
                           HostUtility.can_select_params_for(@rookie_user)).must_equal false
@@ -684,10 +684,10 @@ class ShiftsHelperTest < ActionView::TestCase
       end
 
       it "should not allow rookies to pick p2 team leader shifts ever..." do
-        p2weekday = FactoryGirl.create(:shift_type, short_name: 'P2weekday')
+        p2weekday = FactoryBot.create(:shift_type, short_name: 'P2weekday')
         start_date = rookie_tour_date
         (1..5).each do |n|
-          s = FactoryGirl.create(:shift, shift_date: start_date + n.days, shift_type_id: p2weekday.id)
+          s = FactoryBot.create(:shift, shift_date: start_date + n.days, shift_type_id: p2weekday.id)
           s.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
         end
       end

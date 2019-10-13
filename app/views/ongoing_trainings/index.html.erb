@@ -1,0 +1,55 @@
+<% if current_user.has_role? :admin %>
+  <h1>Training Administration</h1>
+  <ul>
+    <li>edit</li>
+    <li>delete</li>
+    <li>assign</li>
+    <li> FOR TRAINERS & TRAINEES</li>
+  </ul><br/><br/>
+
+  <h2>Training Dates</h2>
+  <table class='table table-striped'>
+    <thead>
+    <tr>
+      <td>
+        <h3>Training Dates (<%= @training_dates.count %>) <%= link_to "<i class='icon-plus btn btn-success btn-large'></i>".html_safe,
+                                                            new_training_date_path,
+                                                            :title => "Create Training Date" %></h3>
+      </td>
+    </tr>
+    </thead>
+    <tbody>
+    <% @training_dates.each do |training_date| %>
+      <tr>
+        <td>
+          <%= training_date.inspect %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+  <br/><br/>
+
+<h2>Trainings</h2>
+  <table class='table table-striped'>
+    <thead>
+      <tr>
+        <td>
+          <h3>Trainings (<%= @ongoing_trainings.count %>) <%= link_to "<i class='icon-plus btn btn-success btn-large'></i>".html_safe,
+                                                              new_training_path,
+                                                              :title => "Create Training" %></h3>
+        </td>
+      </tr>
+    </thead>
+    <tbody>
+      <% @ongoing_trainings.each do |ongoing_training| %>
+        <tr>
+          <td>
+            <%= ongoing_training.inspect %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+<% end %>

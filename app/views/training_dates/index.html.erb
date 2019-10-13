@@ -1,0 +1,25 @@
+<% if current_user.has_role? :admin %>
+  <h1>Training Administration</h1>
+
+  <h2>Training Dates</h2>
+  <table class='table table-striped'>
+    <thead>
+    <tr>
+      <td>
+        <h3>Training Dates (<%= @training_dates.count %>) <%= link_to "<i class='icon-plus btn btn-success btn-large'></i>".html_safe,
+                                                                      new_training_date_path,
+                                                                      :title => "Create Training Date" %></h3>
+      </td>
+    </tr>
+    </thead>
+    <tbody>
+    <% @training_dates.each do |training_date| %>
+      <tr>
+        <td>
+          <%= training_date.inspect %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% end %>

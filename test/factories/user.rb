@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   sequence :email do |n|
     "email#{n}@example.com"
   end
@@ -9,7 +9,7 @@ FactoryGirl.define do
   factory :user do
     name
     email
-    password "password"
+    password { "password" }
   end
 
 end

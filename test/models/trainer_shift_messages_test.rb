@@ -10,7 +10,7 @@ class TrainerMessageTest < ActiveSupport::TestCase
     @trtype = ShiftType.find_by(short_name: 'TR')
 
     (1..50).each do |n|
-      FactoryGirl.create(:shift, shift_type_id: @trtype.id, shift_date: Date.today + n.days)
+      FactoryBot.create(:shift, shift_type_id: @trtype.id, shift_date: Date.today + n.days)
     end
   end
 

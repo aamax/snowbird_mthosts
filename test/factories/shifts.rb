@@ -11,12 +11,13 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  short_name      :string
+#  disabled        :boolean
 #
 
 # Read about factories at https://github.com/thoughtbot/factory_girl
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :shift do
-    shift_status_id     1
+    shift_status_id { 1 }
   end
 end

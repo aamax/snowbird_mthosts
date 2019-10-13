@@ -10,7 +10,7 @@ class SurveyorMessageTest < ActiveSupport::TestCase
     @svtype = ShiftType.find_by(short_name: 'SV')
 
     (1..50).each do |n|
-      FactoryGirl.create(:shift, shift_type_id: @svtype.id, shift_date: Date.today + n.days)
+      FactoryBot.create(:shift, shift_type_id: @svtype.id, shift_date: Date.today + n.days)
     end
   end
 

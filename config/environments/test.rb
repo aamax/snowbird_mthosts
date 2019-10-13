@@ -42,5 +42,5 @@ Mthost::Application.configure do
 
   # ActionMailer Config
   config.action_mailer.default_url_options = { :host => 'example.com' }
-
+  config.logger = ActiveSupport::Logger.new(config.paths['log'].first, 1, 50.megabytes)
 end

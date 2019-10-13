@@ -2,27 +2,27 @@ require "test_helper"
 
 class RookieMessageTest < ActiveSupport::TestCase
   def create_t1_shifts
-    t1type = FactoryGirl.create(:shift_type, short_name: 'T1')
+    t1type = FactoryBot.create(:shift_type, short_name: 'T1')
     (1..5).each do |n|
-      FactoryGirl.create(:shift, shift_date: Date.today + n.days, shift_type_id: t1type.id)
+      FactoryBot.create(:shift, shift_date: Date.today + n.days, shift_type_id: t1type.id)
     end
   end
 
   def create_t2andt3_shifts
-    t2type = FactoryGirl.create(:shift_type, short_name: 'T2')
-    t3type = FactoryGirl.create(:shift_type, short_name: 'T3')
+    t2type = FactoryBot.create(:shift_type, short_name: 'T2')
+    t3type = FactoryBot.create(:shift_type, short_name: 'T3')
     (1..5).each do |n|
-      FactoryGirl.create(:shift, shift_date: Date.today + 6.days + n.days, shift_type_id: t2type.id)
+      FactoryBot.create(:shift, shift_date: Date.today + 6.days + n.days, shift_type_id: t2type.id)
     end
     (1..5).each do |n|
-      FactoryGirl.create(:shift, shift_date: Date.today + 12.days + n.days, shift_type_id: t3type.id)
+      FactoryBot.create(:shift, shift_date: Date.today + 12.days + n.days, shift_type_id: t3type.id)
     end
   end
 
   def create_t4_shifts
-    t4type = FactoryGirl.create(:shift_type, short_name: 'T4')
+    t4type = FactoryBot.create(:shift_type, short_name: 'T4')
     (1..5).each do |n|
-      FactoryGirl.create(:shift, shift_date: Date.today + 6.days + n.days, shift_type_id: t4type.id)
+      FactoryBot.create(:shift, shift_date: Date.today + 6.days + n.days, shift_type_id: t4type.id)
     end
   end
 
@@ -40,14 +40,14 @@ class RookieMessageTest < ActiveSupport::TestCase
   def create_late_season_tours
     start_date = rookie_tour_date
     (1..5).each do |n|
-      FactoryGirl.create(:shift, shift_date: start_date + n.days, shift_type_id: @p1.id)
+      FactoryBot.create(:shift, shift_date: start_date + n.days, shift_type_id: @p1.id)
     end
   end
 
   def create_early_season_tours
     start_date = rookie_tour_date - 3.months
     (1..5).each do |n|
-      FactoryGirl.create(:shift, shift_date: start_date + n.days, shift_type_id: @p1.id)
+      FactoryBot.create(:shift, shift_date: start_date + n.days, shift_type_id: @p1.id)
     end
   end
 
@@ -75,18 +75,16 @@ class RookieMessageTest < ActiveSupport::TestCase
   def test_show_need_a_holiday_if_picked
     [@rookie_user].each do |u|
       HOLIDAYS.each do |h|
-        shift = FactoryGirl.create(:shift, shift_date: h, shift_type_id: @g1.id)
+        shift = FactoryBot.create(:shift, shift_date: h, shift_type_id: @g1.id)
         u.shifts << shift
         u.has_holiday_shift?.must_equal true
-
-        HostUtility.get_current_round(@sys_config.bingo_start_date, Date.today, @rookie_user).must_be :>, 6
         u.shift_status_message.include?("A <strong>Holiday Shift</strong> has been selected.").must_equal true
       end
     end
   end
 
   def test_show_need_a_holiday_if_picked_after_bingo
-    shift = FactoryGirl.create(:shift, shift_date: HOLIDAYS[0], shift_type_id: @g1.id)
+    shift = FactoryBot.create(:shift, shift_date: HOLIDAYS[0], shift_type_id: @g1.id)
     @rookie_user.shifts << shift
     @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 5)
     @sys_config.save
@@ -161,7 +159,7 @@ class RookieMessageTest < ActiveSupport::TestCase
     select_rookie_training_shifts
 
     last_date = Shift.maximum(:shift_date) + 1.day
-    FactoryGirl.create(:shift, shift_date: last_date, shift_type_id: ShiftType.find_by(short_name: 'P2').id)
+    FactoryBot.create(:shift, shift_date: last_date, shift_type_id: ShiftType.find_by(short_name: 'P2').id)
 
     Shift.all.each do |s|
       if s.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user))
