@@ -254,16 +254,16 @@ class User < ActiveRecord::Base
 
   def get_working_shifts
     user = User.includes(:shifts).find_by_id(id)
-    shifts = user.shifts.includes(:shift_type)
+    shifts = user.shifts.includes(:shift_type).to_a
     shifts ||= []
-    shifts + user.ongoing_trainings
+    shifts.concat user.ongoing_trainings
 
     working_shifts = shifts.flatten.sort {|a,b| a.shift_date <=> b.shift_date }
   end
 
   def get_next_shifts(num)
     working_shifts = get_working_shifts
-    working_shifts.to_a.delete_if {|s| s.shift_date < Date.today }
+    working_shifts.delete_if {|s| s.shift_date < Date.today }
     limit = num - 1
     working_shifts[0..limit]
   end
@@ -280,7 +280,7 @@ class User < ActiveRecord::Base
   end
 
   def has_ongoign_training_shift?
-    self.ongoing_trainings.count > 0
+    (self.ongoing_trainings.count > 0) && !rookie?
   end
 
   def get_day_offset
@@ -351,6 +351,12 @@ class User < ActiveRecord::Base
       rookie_selection_message(all_shifts, round,msg)
     else
       host_selection_message(all_shifts, round, day_offset, msg)
+    end
+
+    if self.has_ongoign_training_shift?
+      msg << "Your Ongoing Training has been scheduled!"
+    else
+      msg << "You still need to schedule your Ongoing Training Shift"
     end
     msg
   end

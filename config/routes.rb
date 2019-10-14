@@ -15,6 +15,7 @@ Mthost::Application.routes.draw do
   resources :host_haulers, only: [:index]
   resources :ongoing_trainings
   resources :training_dates
+  resources :ongoing_trainings
 
   get '/download_end_of_year', :to =>  "exports#eoy_download"
   get '/export/shift_summary/:year', :to =>  "exports#shift_summary_download"
@@ -73,8 +74,8 @@ Mthost::Application.routes.draw do
   get '/add_hauler/:date_value', :to => 'host_haulers#add_hauler'
   get '/hauler_scheduler', :to => 'host_haulers#scheduler'
   get '/delete_hauler/:hauler_id', :to => 'host_haulers#delete_hauler'
-
-  get '/ongoing_trainings/:user_id', :to => 'ongoing_trainings#index'
+  get '/drop_ongoing_training/:id', :to => 'ongoing_trainings#drop_shift'
+  get '/select_ongoing_training', :to => 'ongoing_trainings#select_ongoing_training'
 
   # catchall route to get pages
   get "/:id" => "pages#show"

@@ -1,0 +1,34 @@
+<br/><br/><br/>
+<h3>select training shift for <%= current_user.name %></h3>
+
+<hr/>
+<% if current_user.ongoing_trainer? %>
+  <h4>Trainer Shifts</h4>
+
+  <%= form_for @ongoing_training,
+               url: {action: "select_ongoing_trainer", method: :post},
+               html: {class: "nifty_form"} do |f| %>
+    <%= select_tag "trainer_date",
+                   options_from_collection_for_select(@trainer_dates, :id, :shift_date),
+                   {:multiple => false, :class=>"span2"} %>
+
+
+    <%= f.submit "Save", id: 'ongoing_training_form_submit', class: 'btn btn-success' %>
+    <%= link_to "Cancel", ongoing_trainings_path, class: "btn btn-warning" %>
+  <% end %>
+
+<% end %>
+<hr/>
+
+<h4>Trainee Shifts</h4>
+
+list all shifts that can be selected (no user, trainee, not working yet)
+button to "select" on shift row...
+button just calls get to server and updates, then returns to index page
+
+
+<%= select_tag "trainee_date",
+               options_from_collection_for_select(@trainee_dates, :id, :shift_date),
+               {:multiple => false, :class=>"span2"} %>
+submit trainee
+<br/><br/>

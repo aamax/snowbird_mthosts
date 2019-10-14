@@ -16,7 +16,7 @@ class TrainingDatesController < ApplicationController
   end
 
   def create
-    training_date = TrainingDate.find_by(shift_date: params[:shift_date])
+    training_date = TrainingDate.find_by(shift_date: params[:training_shift_date])
     if !training_date.nil?
       flash[:alert] = "Error creating training shift: Training Date already exists."
       redirect_to training_dates_path
@@ -24,7 +24,24 @@ class TrainingDatesController < ApplicationController
     end
     @ongoing_training = TrainingDate.create(shift_date: params[:training_shift_date])
 
-    redirect_to trainings_path
+    redirect_to ongoing_trainings_path
   end
+
+  def destroy
+    training_date = TrainingDate.find(params[:id])
+    if training_date.ongoing_trainings.count > 0
+      flash[:alert] = "Error destroying training date - referential integrity."
+    else
+      if !training_date.destroy
+        flash[:alert] = "Error destroying training date."
+      else
+        flash[:success] = "success deleting shift"
+      end
+    end
+    redirect_to ongoing_trainings_path
+  end
+
+
+
 end
 

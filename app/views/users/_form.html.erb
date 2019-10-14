@@ -109,8 +109,10 @@
         <td>
 
           <% if s.can_drop current_user %>
-              <%= link_to "<i class='icon-trash btn btn-danger' title='drop shift'>&nbsp;&nbsp;Drop</i>".html_safe,  "/drop_shift/#{s.id}",
-                          :confirm => "You sure you want to drop this shift?", :title => "Clear Shift", :class=>'drop_shift_btn' %>
+              <%= link_to "<i class='icon-trash btn btn-danger' title='drop shift'>&nbsp;&nbsp;Drop</i>".html_safe,
+                          "/drop_shift/#{s.id}",
+                          data: { :confirm => "You sure you want to drop this shift?" },
+                          :title => "Clear Shift", :class=>'drop_shift_btn' %>
           <% end %>
         </td>
       </tr>

@@ -1,11 +1,5 @@
 <% if current_user.has_role? :admin %>
   <h1>Training Administration</h1>
-  <ul>
-    <li>edit</li>
-    <li>delete</li>
-    <li>assign</li>
-    <li> FOR TRAINERS & TRAINEES</li>
-  </ul><br/><br/>
 
   <h2>Training Dates</h2>
   <table class='table table-striped'>
@@ -17,14 +11,26 @@
                                                             :title => "Create Training Date" %></h3>
       </td>
     </tr>
+    <tr>
+      <td>
+        Date
+      </td>
+    </tr>
     </thead>
     <tbody>
     <% @training_dates.each do |training_date| %>
       <tr>
         <td>
-          <%= training_date.inspect %>
+          <%= training_date.shift_date %>
         </td>
-      </tr>
+        <td>
+          <% if training_date.ongoing_trainings.count == 0 %>
+            <%= link_to "<i class='icon-trash btn btn-danger'></i>".html_safe,
+                        training_date, :method => :delete,
+                        :data => { confirm: "You sure you want to delete this training shift?" },
+                        :title => "Delete Training Date" %>
+          <% end %>
+        </td></tr>
     <% end %>
     </tbody>
   </table>
@@ -36,8 +42,19 @@
       <tr>
         <td>
           <h3>Trainings (<%= @ongoing_trainings.count %>) <%= link_to "<i class='icon-plus btn btn-success btn-large'></i>".html_safe,
-                                                              new_training_path,
+                                                              new_ongoing_training_path,
                                                               :title => "Create Training" %></h3>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          DATE
+        </td>
+        <td>
+          HOST
+        </td>
+        <td>
+          ROLE
         </td>
       </tr>
     </thead>
@@ -45,11 +62,65 @@
       <% @ongoing_trainings.each do |ongoing_training| %>
         <tr>
           <td>
-            <%= ongoing_training.inspect %>
+            <%= ongoing_training.shift_date %>
+          </td>
+          <td>
+            <%= ongoing_training.user.nil? ? '---' : ongoing_training.user.name %>
+          </td>
+          <td>
+            <%= ongoing_training.is_trainer? ? 'TRAINER' : 'TRAINEE' %>
+          </td>
+          <td>
+            <a href=<%= edit_ongoing_training_path(ongoing_training.id) %>><i class="icon-wrench btn btn-info"
+                                                    title="edit training"></i></a>
+
+            <%= link_to "<i class='icon-trash btn btn-danger'></i>".html_safe,
+                        ongoing_training, :method => :delete,
+                        data: { :confirm => "You sure you want to delete this training shift?" },
+                        :title => "Delete #{ongoing_training.id}" %>
+
           </td>
         </tr>
       <% end %>
     </tbody>
   </table>
 
+  <hr/>
 <% end %>
+
+
+<h1>Training Schedule</h1>
+
+<% if current_user.ongoing_trainings.count == 0 %>
+  <%= link_to "<i class='icon-plus btn btn-primary'> &nbsp;&nbsp;Select Training Shift</i>".html_safe,
+              '/select_ongoing_training',
+              :title => "Select and Ongoing Training Shift" %>
+<% else %>
+  <table class='table table-striped'>
+    <thead>
+      <tr>
+        <td>Training Date</td>
+        <td>Role</td>
+      </tr>
+    </thead>
+    <tbody>
+      <% current_user.ongoing_trainings.each do |ongoing_training| %>
+        <tr>
+          <td>
+            <%= ongoing_training.shift_date %>
+          </td>
+          <td>
+            <%= ongoing_training.is_trainer? ? 'TRAINER' : 'TRAINEE' %>
+          </td>
+          <td>
+            <%= link_to "<i class='icon-eraser btn btn-primary'></i>".html_safe,
+                        "/drop_ongoing_training/#{ongoing_training.id}",
+                        :title => "Drop #{ongoing_training.id}" %>
+          </td>
+        </tr>
+
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+<br/><br/>

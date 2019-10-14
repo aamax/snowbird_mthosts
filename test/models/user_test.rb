@@ -189,10 +189,10 @@ class UserTest < ActiveSupport::TestCase
         obj = TrainingDate.create(shift_date: "2020-01-0#{day}")
         obj.save
 
-        obj.trainings << OngoingTraining.create(user: trainee_user1, is_trainer: false)
-        obj.trainings << OngoingTraining.create(user: trainee_user2, is_trainer: false)
-        obj.trainings << OngoingTraining.create(user: trainee_user3, is_trainer: false)
-        obj.trainings << OngoingTraining.create(user: trainer_user, is_trainer: true)
+        obj.ongoing_trainings << OngoingTraining.create(user: trainee_user1, is_trainer: false)
+        obj.ongoing_trainings << OngoingTraining.create(user: trainee_user2, is_trainer: false)
+        obj.ongoing_trainings << OngoingTraining.create(user: trainee_user3, is_trainer: false)
+        obj.ongoing_trainings << OngoingTraining.create(user: trainer_user, is_trainer: true)
       end
 
       assert_equal 9, trainee_user1.training_dates.count
@@ -205,6 +205,23 @@ class UserTest < ActiveSupport::TestCase
         assert_equal 1, obj.trainers.count
         assert_equal 3, obj.trainees.count
       end
+    end
+
+    it 'should list ongoing trainings in the working shifts list' do
+      trainer_user = User.create(email: 'test1@test.com', password: 'password')
+      trainer_user.add_role :ongoing_trainer
+      trainee_user = User.create(email: 'trainee1@example.com', password: 'password')
+      obj = TrainingDate.create(shift_date: "#{Date.today.year}-01-01")
+
+      trainer_shift = OngoingTraining.create(user: trainer_user, is_trainer: true)
+      trainee_shift = OngoingTraining.create(user: trainee_user, is_trainer: false)
+      obj.ongoing_trainings << trainee_shift
+      obj.ongoing_trainings << trainer_shift
+
+      trainer_shifts = trainer_user.get_working_shifts
+      trainee_shifts = trainee_user.get_working_shifts
+      assert trainer_shifts.include? trainer_shift
+      assert trainee_shifts.include? trainee_shift
     end
   end
 end

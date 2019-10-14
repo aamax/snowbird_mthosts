@@ -15,6 +15,11 @@ namespace :db do
       ActiveRecord::Base.connection.execute("TRUNCATE TABLE shift_logs RESTART IDENTITY;")
       # ActiveRecord::Base.connection.execute("TRUNCATE TABLE shift_types RESTART IDENTITY;")
 
+      if ShiftType.find_by(short_name: 'OT').nil?
+        ShiftType.create(short_name: 'OT', description: 'Ongoing Mt Host Training',
+                         start_time: '08:00', end_time: '12:00', tasks: 'Training as Needed')
+      end
+
       # puts "disabling Kate's Acount"
       # u = User.find_by(name: 'Kate')
       # u.active_user = false
