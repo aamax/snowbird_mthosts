@@ -112,8 +112,24 @@ class OngoingTrainingsController < ApplicationController
   end
 
   def select_ongoing_training
-    @trainer_dates = OngoingTraining.where('is_trainer = true and user_id is null').map(&:training_date)
-    @trainee_dates = OngoingTraining.where('is_trainer = false and user_id is null').map(&:training_date)
+    @trainer_dates = OngoingTraining.where('is_trainer = true and user_id is null').map(&:training_date).uniq
+    @trainee_dates = OngoingTraining.where('is_trainer = false and user_id is null').map(&:training_date).uniq
+    @selected_trainings = current_user.ongoing_trainings
+  end
+
+  def make_ongoing_training_selection
+    training_date = TrainingDate.find_by(id: params[:id])
+    role = params[:is_trainer] == 'trainee' ? 'false' : 'true'
+    shift = training_date.ongoing_trainings.where("user_id is null and is_trainer = #{role}").first
+    if shift.nil?
+      flash[:error] = 'ERROR - training shift no longer available.'
+      redirect_to :back
+    else
+      shift.user_id = current_user.id
+      shift.save
+      flash[:success] = 'Training shift assigned successfully'
+      redirect_to '/select_ongoing_training'
+    end
   end
 
   private

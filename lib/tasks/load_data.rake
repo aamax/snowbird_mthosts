@@ -14,6 +14,8 @@ namespace :db do
       ActiveRecord::Base.connection.execute("TRUNCATE TABLE shifts RESTART IDENTITY;")
       ActiveRecord::Base.connection.execute("TRUNCATE TABLE shift_logs RESTART IDENTITY;")
       # ActiveRecord::Base.connection.execute("TRUNCATE TABLE shift_types RESTART IDENTITY;")
+      ActiveRecord::Base.connection.execute("TRUNCATE TABLE ongoing_traings RESTART IDENTITY;")
+      ActiveRecord::Base.connection.execute("TRUNCATE TABLE training_dates RESTART IDENTITY;")
 
       if ShiftType.find_by(short_name: 'OT').nil?
         ShiftType.create(short_name: 'OT', description: 'Ongoing Mt Host Training',
@@ -68,6 +70,11 @@ namespace :db do
 
       puts 'Load all shifts'
       Rake::Task['db:load_shifts'].invoke
+
+      puts 'Load all Ongoing Training Shifts'
+      Rake::Task['db:load_ongoing_training_shifts']
+
+
 
       puts "Shift Count Before Meetings: #{Shift.count}"
 
@@ -398,6 +405,13 @@ namespace :db do
     else
       puts "ERROR: shift loader file not found"
     end
+  end
+
+  desc "populate ongoing_training shifts"
+  task :load_ongoing_training_shifts => :environment do
+    # set host roles for trainers
+    # load trainer shifts and all trainee shifts
+    
   end
 
   desc 'initialize host hauler'

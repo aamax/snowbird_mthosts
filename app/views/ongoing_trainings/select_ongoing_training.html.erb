@@ -1,34 +1,69 @@
-<br/><br/><br/>
-<h3>select training shift for <%= current_user.name %></h3>
-
-<hr/>
-<% if current_user.ongoing_trainer? %>
-  <h4>Trainer Shifts</h4>
-
-  <%= form_for @ongoing_training,
-               url: {action: "select_ongoing_trainer", method: :post},
-               html: {class: "nifty_form"} do |f| %>
-    <%= select_tag "trainer_date",
-                   options_from_collection_for_select(@trainer_dates, :id, :shift_date),
-                   {:multiple => false, :class=>"span2"} %>
-
-
-    <%= f.submit "Save", id: 'ongoing_training_form_submit', class: 'btn btn-success' %>
-    <%= link_to "Cancel", ongoing_trainings_path, class: "btn btn-warning" %>
-  <% end %>
-
-<% end %>
-<hr/>
-
-<h4>Trainee Shifts</h4>
-
-list all shifts that can be selected (no user, trainee, not working yet)
-button to "select" on shift row...
-button just calls get to server and updates, then returns to index page
-
-
-<%= select_tag "trainee_date",
-               options_from_collection_for_select(@trainee_dates, :id, :shift_date),
-               {:multiple => false, :class=>"span2"} %>
-submit trainee
 <br/><br/>
+<h2>select training shift for <%= current_user.name %></h2>
+<hr/>
+<div class="well">
+  <h3>Current Scheduled Trainings (<%= @selected_trainings.count %>) </h3>
+  <table class='table table-striped'>
+    <thead>
+    <tr>
+      <td>
+        Date
+      </td>
+      <td>
+        Role
+      </td>
+    </tr>
+    </thead>
+    <tbody>
+    <% @selected_trainings.each do |training| %>
+      <tr>
+        <td>
+          <%= training.shift_date %>
+        </td>
+        <td>
+          <%= training.is_trainer == true ? 'Trainer' : 'Trainee' %>
+        </td>
+        <td>
+          <%= link_to "<i class='icon-eraser btn btn-primary'></i>".html_safe,
+                      "/drop_ongoing_training/#{training.id}",
+                      :title => "Drop #{training.id}" %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>
+
+<br/><hr/><br/>
+<div class="well">
+<h4>Select Trainee Shifts</h4>
+<table class='table table-striped'>
+  <thead>
+  <tr>
+    <td>
+      Date
+    </td>
+    <td>
+      Select
+    </td>
+  </tr>
+  </thead>
+  <tbody>
+  <% @trainee_dates.each do |shift| %>
+    <tr>
+      <td>
+        <%= shift.shift_date %> (<%= shift.trainee_shifts_open %> shift open)
+      </td>
+      <td>
+        <% if current_user.can_select_ongoing_training(shift.shift_date) %>
+          <%= link_to "<i class='icon-check btn btn-primary'></i>".html_safe,
+                      "/make_ongoing_training_selection/trainee/#{shift.id}", :method => :post,
+                      :title => "Select Trainee Shift" %>
+        <% end %>
+      </td></tr>
+  <% end %>
+  </tbody>
+</table>
+</div>
+
+

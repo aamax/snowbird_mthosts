@@ -76,6 +76,7 @@ Mthost::Application.routes.draw do
   get '/delete_hauler/:hauler_id', :to => 'host_haulers#delete_hauler'
   get '/drop_ongoing_training/:id', :to => 'ongoing_trainings#drop_shift'
   get '/select_ongoing_training', :to => 'ongoing_trainings#select_ongoing_training'
+  post '/make_ongoing_training_selection/:is_trainer/:id', :to => 'ongoing_trainings#make_ongoing_training_selection'
 
   # catchall route to get pages
   get "/:id" => "pages#show"

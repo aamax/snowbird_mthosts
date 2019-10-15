@@ -41,4 +41,12 @@ class TrainingDate < ActiveRecord::Base
     end
     users
   end
+
+  def trainee_shifts_open
+    ongoing_trainings.where("is_trainer = false and user_id is null").count
+  end
+
+  def trainer_shifts_open
+    ongoing_trainings.where("is_trainer = true and user_id is null").count
+  end
 end

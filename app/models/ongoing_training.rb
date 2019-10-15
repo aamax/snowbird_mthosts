@@ -31,10 +31,6 @@ class OngoingTraining < ActiveRecord::Base
   end
 
   def shift_type
-    # if ShiftType.find_by(short_name: 'OT').nil?
-    #   ShiftType.create(short_name: 'OT', description: 'Ongoing Mt Host Training',
-    #                    start_time: '08:00', end_time: '12:00', tasks: 'Training as Needed')
-    # end
     ShiftType.find_by(short_name: short_name)
   end
 

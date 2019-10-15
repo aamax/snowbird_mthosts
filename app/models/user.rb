@@ -248,6 +248,10 @@ class User < ActiveRecord::Base
     self.training_dates.map(&:shift_date).include? shift_date
   end
 
+  def can_select_ongoing_training(shift_date)
+    !is_working?(shift_date) && ongoing_trainings.count == 0
+  end
+
   def get_shift_list
     self.shifts.includes(:shift_type).sort {|a,b| a.shift_date <=> b.shift_date }
   end
