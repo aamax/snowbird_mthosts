@@ -19,7 +19,16 @@
     <th>Status/Notes</th>
   </tr>
 
+  <% current_date = nil %>
   <% @shifts.each do |shift| %>
+    <% if current_date != shift.day_and_date %>
+      <tr>
+        <td colspan="6">
+          ------------------------------------------------------------
+        </td>
+      </tr>
+      <% current_date = shift.day_and_date %>
+    <% end %>
   <tr>
     <td>
       <%= shift.day_and_date %>

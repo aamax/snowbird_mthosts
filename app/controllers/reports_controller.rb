@@ -105,7 +105,7 @@ class ReportsController < ApplicationController
       end
     elsif params[:id] == 'shift_summary'
       @report = 'shift_summary'
-      allshifts = Shift.unscoped.order(:shift_date)
+      allshifts = Shift.unscoped.order(shift_date: :asc, short_name: :asc)
       first_year = allshifts.first.shift_date.year
       last_year = allshifts.last.shift_date.year
       @years = []

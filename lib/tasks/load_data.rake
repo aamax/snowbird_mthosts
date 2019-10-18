@@ -14,11 +14,11 @@ namespace :db do
       ActiveRecord::Base.connection.execute("TRUNCATE TABLE shifts RESTART IDENTITY;")
       ActiveRecord::Base.connection.execute("TRUNCATE TABLE shift_logs RESTART IDENTITY;")
       # ActiveRecord::Base.connection.execute("TRUNCATE TABLE shift_types RESTART IDENTITY;")
-      ActiveRecord::Base.connection.execute("TRUNCATE TABLE ongoing_traings RESTART IDENTITY;")
+      ActiveRecord::Base.connection.execute("TRUNCATE TABLE ongoing_trainings RESTART IDENTITY;")
       ActiveRecord::Base.connection.execute("TRUNCATE TABLE training_dates RESTART IDENTITY;")
 
       if ShiftType.find_by(short_name: 'OT').nil?
-        ShiftType.create(short_name: 'OT', description: 'Ongoing Mt Host Training',
+        ShiftType.create(short_name: 'OT', description: 'OGOMT Ongoing On Mountain Training',
                          start_time: '08:00', end_time: '12:00', tasks: 'Training as Needed')
       end
 
@@ -62,6 +62,10 @@ namespace :db do
       # puts 'Loading shift types'
       # Rake::Task['db:load_shift_types'].invoke
 
+      # set roles for OGOMT hosts
+      set_ogomt_roles
+      set_survey_roles
+
       puts 'load 2019 rookies into system'
       Rake::Task['db:load_2019_rookies'].invoke
 
@@ -80,6 +84,10 @@ namespace :db do
 
       puts 'Load all Meeting Shifts For Users'
       Rake::Task['db:load_meetings'].invoke
+
+      populate_carol_hoban_2019_surveys
+
+      populate_2019_trainings
 
       puts 'initialize all user accounts for start of year'
       User.reset_all_accounts
@@ -142,7 +150,8 @@ namespace :db do
           usr.update_attributes(name: "#{row[0].strip} #{hash['last']}", email: hash['email'],
                          cell_phone: hash['mobile'], home_phone: hash['home'],
                          street: street_value, city: city_value,
-                         state: state_value, zip: zip_value, password: '5teep&Deep')
+                         state: state_value, zip: zip_value, password: '5teep&Deep',
+                         start_year: 2019)
         end
 
         puts "USER: #{usr.inspect}"
@@ -150,6 +159,16 @@ namespace :db do
           puts "\nERRROR in data:  #{usr.errors.messages}\n#{usr.inspect}\n-----\n#{hash}\n\n"
           next
         end
+        usr.save
+      end
+
+      usr = User.find_by(email: 'garthdriggs@gmail.com')
+      usr.active_user = true
+      usr.start_year = 2019
+      puts "USER: #{usr.inspect}"
+      if !usr.valid?
+        puts "\nERRROR in data:  #{usr.errors.messages}\n#{usr.inspect}\n-----\n#{hash}\n\n"
+      else
         usr.save
       end
     else
@@ -245,8 +264,7 @@ namespace :db do
         tag = hash['short_name']
 
         case tag
-        when 'A1','TL','C1weekend','C2weekend','C3weekend','C4weekend', 'SV', 'H1_weekday'
-
+        when 'A1','TL','C1weekend','C2weekend','C3weekend','C4weekend', 'SV' #, 'hidden_weekday'
           if ShiftType.find_by(short_name: tag).nil?
             binding.pry
           end
@@ -283,7 +301,6 @@ namespace :db do
               create_shift('C3weekend', dt)
               create_shift('C4weekend', dt)
               create_shift('SV', dt)
-
             when 'regular'
               if dt.friday?
                 create_shift('P1friday', dt)
@@ -359,8 +376,6 @@ namespace :db do
                 create_shift('P2weekday', dt)
                 create_shift('P3weekday', dt)
                 create_shift('P4weekday', dt)
-
-
                 # create_shift('H1weekday', dt)
               end
             when 'holiday_floats'
@@ -380,11 +395,45 @@ namespace :db do
               create_shift('F3weekend', dt)
               create_shift('F4weekend', dt)
               create_shift('SV', dt)
+            when 'holiday_floats_no_survey'
+              create_shift('P1weekend', dt)
+              create_shift('P2weekend', dt)
+              create_shift('P3weekend', dt)
+              create_shift('P4weekend', dt)
+              create_shift('H1weekend', dt)
+              create_shift('H2weekend', dt)
+              create_shift('H3weekend', dt)
+              create_shift('H4weekend', dt)
+              create_shift('G1weekend', dt)
+              create_shift('G2weekend', dt)
+              create_shift('G3weekend', dt)
+              create_shift('F1weekend', dt)
+              create_shift('F2weekend', dt)
+              create_shift('F3weekend', dt)
+              create_shift('F4weekend', dt)
             when 'end_of_season'
-               if dt.friday? || dt.saturday? || dt.sunday? || dt.strftime('%Y%m%d') == '20190525'
+               if dt.friday? || dt.saturday? || dt.sunday? || dt.strftime('%Y%m%d') == '20200525'
                 create_shift('A1', dt)
                 create_shift('A1', dt)
                 create_shift('TL', dt)
+               end
+            when 'regular_weekday'
+              if (dt.monday? || dt.tuesday? || dt.wednesday? || dt.thursday?) && (not_holiday(dt))
+                create_shift('P1weekday', dt)
+                create_shift('P2weekday', dt)
+                create_shift('P3weekday', dt)
+                create_shift('P4weekday', dt)
+              elsif dt.friday?
+                create_shift('P1friday', dt)
+                create_shift('P2friday', dt)
+                create_shift('P3friday', dt)
+                create_shift('P4friday', dt)
+                create_shift('H1friday', dt)
+                create_shift('H1friday', dt)
+                create_shift('G1friday', dt)
+                create_shift('G2friday', dt)
+                create_shift('G3friday', dt)
+                create_shift('G4friday', dt)
               end
             end
           else
@@ -409,9 +458,10 @@ namespace :db do
 
   desc "populate ongoing_training shifts"
   task :load_ongoing_training_shifts => :environment do
-    # set host roles for trainers
-    # load trainer shifts and all trainee shifts
-    
+    # create all training dates
+    # create 1 trainer and 3 trainees on each
+    # set trainer host for each
+
   end
 
   desc 'initialize host hauler'
@@ -619,5 +669,57 @@ namespace :db do
   #     puts "user loader file not found"
   #   end
   # end
+
+  def set_ogomt_roles
+    paul = User.find_by(email: 'altasnow@gmail.com')
+    paul.add_role :ongoing_trainer
+
+    chris = User.find_by(email: 'krishill0@gmail.com')
+    chris.add_role :ongoing_trainer
+
+    sara = User.find_by(email: 'sarah3884@yahoo.com')
+    sara.add_role :ongoing_trainer
+
+    eric = User.find_by(email: 'snowsawyer@hotmail.com')
+    eric.add_role :ongoing_trainer
+  end
+
+  def set_survey_roles
+    carol = User.find_by(email: 'cshobie1@msn.com')
+    carol.add_role :surveyor
+  end
+
+  def populate_carol_hoban_2019_surveys
+    puts "Loading Carol Hobans Survey Shifts..."
+    carol = User.find_by(email: 'cshobie1@msn.com')
+    dates = %w['2019-12-13' '2020-01-03' '2020-01-07' '2020-01-13' '2020-01-20' '2020-01-24' '2020-01-30' '2020-02-03'
+        '2020-02-05' '2020-02-11' '2020-02-19' '2020-02-21' '2020-02-27' '2020-03-02' '2020-03-12' '2020-03-16'
+        '2020-03-24' '2020-03-30']
+    dates.each do |date|
+      shift = Shift.where("short_name = 'SV' and shift_date = #{date}").first
+      shift.user_id = carol.id
+      shift.save
+    end
+    puts "Done loading Carols shifts."
+  end
+
+  def populate_2019_trainings
+    puts 'Populating 2019 training shifts...'
+    filename = 'lib/data/2019_trainings.csv'
+    trainers = { 118 => User.find_by(id: 118),
+                  61 => User.find_by(id: 61),
+                  42 => User.find_by(id: 42),
+                  118 => User.find_by(id: 118),
+                  131 => User.find_by(id: 131) }
+    CSV.foreach(filename, :headers => true) do |row|
+      hash = row.to_hash
+      dt = TrainingDate.create(shift_date: hash[:date])
+      OngoingTraining.create(training_date_id: dt.id, user_id: trainers[hash[:trainer]], is_trainer: true)
+      OngoingTraining.create(training_date_id: dt.id, is_trainer: false)
+      OngoingTraining.create(training_date_id: dt.id, is_trainer: false)
+      OngoingTraining.create(training_date_id: dt.id, is_trainer: false)
+    end
+    puts "Done Populating training shifts: Dates: #{TrainingDate.count} - Shifts: #{OngoingTraining.count}"
+  end
 end
 
