@@ -1,7 +1,7 @@
 # bundler 1.17.3
 
 source 'http://rubygems.org'
-gem 'rails', '4.2.8'
+gem 'rails', '4.2.11.1'
 # gem 'rails', '5.2.3'
 # ruby '2.2.3'
 ruby '2.4.5'
