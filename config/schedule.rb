@@ -20,6 +20,6 @@
 # Learn more: http://github.com/javan/whenever
 
 
-every :day, at: '7apm' do
+every :day, at: '7pm' do
   rake 'daily:mail_hosts_for_tomorow'
 end

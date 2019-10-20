@@ -713,8 +713,9 @@ namespace :db do
                   131 => User.find_by(id: 131) }
     CSV.foreach(filename, :headers => true) do |row|
       hash = row.to_hash
-      dt = TrainingDate.create(shift_date: hash[:date])
-      OngoingTraining.create(training_date_id: dt.id, user_id: trainers[hash[:trainer]], is_trainer: true)
+      dt = TrainingDate.create(shift_date: hash['date'])
+
+      OngoingTraining.create(training_date_id: dt.id, user_id: trainers[hash['trainer'].to_i].id, is_trainer: true)
       OngoingTraining.create(training_date_id: dt.id, is_trainer: false)
       OngoingTraining.create(training_date_id: dt.id, is_trainer: false)
       OngoingTraining.create(training_date_id: dt.id, is_trainer: false)

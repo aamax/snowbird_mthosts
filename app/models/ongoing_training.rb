@@ -34,7 +34,7 @@ class OngoingTraining < ActiveRecord::Base
     ShiftType.find_by(short_name: short_name)
   end
 
-  def can_drop(unused)
-    false
+  def can_drop(user)
+    user.admin? || (user_id == user.id)
   end
 end

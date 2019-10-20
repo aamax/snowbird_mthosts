@@ -11,13 +11,12 @@
 #
 
 class OngoingTrainingsController < ApplicationController
-  # authorize_resource
-  # load_resource
+  load_and_authorize_resource
 
   respond_to :html, :json, :js
 
   def index
-    @ongoing_trainings = OngoingTraining.all
+    @ongoing_trainings = OngoingTraining.includes(:training_date).includes(:user).all.to_a.sort { |a,b| a.shift_date <=> b.shift_date }
     @training_dates = TrainingDate.all
   end
 
@@ -108,13 +107,17 @@ class OngoingTrainingsController < ApplicationController
     @ongoing_training = OngoingTraining.find(params[:id])
     @ongoing_training.user_id = nil
     @ongoing_training.save
-    redirect_to ongoing_trainings_path
+    redirect_to :back
   end
 
   def select_ongoing_training
-    @trainer_dates = OngoingTraining.where('is_trainer = true and user_id is null').map(&:training_date).uniq
-    @trainee_dates = OngoingTraining.where('is_trainer = false and user_id is null').map(&:training_date).uniq
-    @selected_trainings = current_user.ongoing_trainings
+    if current_user.has_ongoing_training_shift?
+      redirect_to '/'
+      return
+    end
+    @trainer_dates = OngoingTraining.includes(:training_date).where('is_trainer = true and user_id is null').map(&:training_date).uniq
+    @trainee_dates = OngoingTraining.includes(:training_date).where('is_trainer = false and user_id is null').map(&:training_date).uniq
+    @selected_trainings = current_user.ongoing_trainings.includes(:training_date)
   end
 
   def make_ongoing_training_selection

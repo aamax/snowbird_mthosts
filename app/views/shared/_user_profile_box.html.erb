@@ -41,7 +41,12 @@
           <% end %>
           <br/>
           Seniority: <%= user.seniority %><br/>
-          Start Year:  <%= user.snowbird_start_year %> <br/>
+          Start Year:  <%= user.snowbird_start_year %> <br/><br/>
+          <% if user.has_ongoing_training_shift? %>
+            Hosts Ongoing On Mt Training obligation is met.
+          <% else %>
+            <strong>Host Still Needs to Schedule an Ongoing On Mt Training Shift.</strong>
+          <% end %><br/>
 
           <% if user.roles.length > 0 %>
               <br/>

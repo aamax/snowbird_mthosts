@@ -1,11 +1,10 @@
 class TrainingDatesController < ApplicationController
-  # authorize_resource
-  # load_resource
+  load_and_authorize_resource
 
   respond_to :html, :json, :js
 
   def index
-    @training_dates = TrainingDate.all
+    @training_dates = TrainingDate.all.order(:shift_date)
   end
 
   def new

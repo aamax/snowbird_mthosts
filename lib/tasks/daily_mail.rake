@@ -3,12 +3,12 @@ namespace :daily do
   desc "mail all users for tomorrows shifts"
   task :mail_hosts_for_tomorow => :environment do
     dt = Date.tomorrow
-    users = Shift.where(shift_date: dt).map {|s| s.user }
-    emailaddress = users.compact.map {|u| u.email}.join(',')
+
+    emailaddress = User.get_host_emails_for_date(dt)
+
     # if !emailaddress.blank?
     #   emailaddress += ",aamaxworks@gmail.com"
     # end
-
 
     @subject = "REMINDER: you are scheduled to work at Snowbird tomorrow!"
     @fromaddress = 'no-reply@snowbirdhosts.com'
