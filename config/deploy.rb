@@ -2,7 +2,7 @@
 lock "~> 3.11.2"
 
 set :application, "mthost"
-set :repo_url, "git@github.com:aamax/snowbird_mthosts.git"
+set :repo_url, "https://github.com/aamax/snowbird_mthosts.git"
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
