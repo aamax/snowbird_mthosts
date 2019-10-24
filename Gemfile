@@ -49,7 +49,7 @@ gem 'angularjs-rails'  #, '~>1.2.26'
 
 gem 'gon'
 
-gem 'puma', ">= 3.10.0"
+# gem 'puma', ">= 3.10.0"
 
 
 group :development do
@@ -81,3 +81,9 @@ gem 'activerecord-session_store'
 
 gem "simple_calendar", "~> 2.0"
 gem 'whenever', require: false
+
+gem 'capistrano', '~> 3.11'
+gem 'capistrano-rails', '~> 1.4'
+gem 'capistrano-passenger', '~> 0.2.0'
+gem 'capistrano-rbenv', '~> 2.1', '>= 2.1.4'
+
