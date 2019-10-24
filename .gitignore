@@ -31,7 +31,7 @@ db/*.sqlite3
 .redcar/
 .sass-cache
 /config/config.yml
-/config/database.yml
+#/config/database.yml
 /coverage.data
 /coverage/
 /db/*.javadb/
@@ -82,4 +82,4 @@ pickle-email-*.html
 
 /work/
 /shared
-/config/database.yml
+
