@@ -39,7 +39,7 @@ Mthost::Application.configure do
 
   # See everything in the log (default is :info)
   # TODO change eventually to :info
-  config.log_level = :info
+  config.log_level = :debug
 
   # Prepend all log lines with the following tags
   # config.log_tags = [ :subdomain, :uuid ]
@@ -47,7 +47,7 @@ Mthost::Application.configure do
   # Use a different logger for distributed setups
   # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
   Rails.logger = Logger.new(STDOUT)
-  config.logger = ActiveSupport::Logger.new(config.paths['log'].first, 1, 50.megabytes)
+  config.logger = ActiveSupport::Logger.new("log/#{Rails.env}.log", 1, 50.megabytes)
 
   # Set logger to STDOUT for Unicorn logging
   # config.logger = Logger.new(STDOUT)
