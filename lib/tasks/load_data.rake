@@ -709,7 +709,6 @@ namespace :db do
     trainers = { 118 => User.find_by(id: 118),
                   61 => User.find_by(id: 61),
                   42 => User.find_by(id: 42),
-                  118 => User.find_by(id: 118),
                   131 => User.find_by(id: 131) }
     CSV.foreach(filename, :headers => true) do |row|
       hash = row.to_hash
