@@ -23,8 +23,7 @@ namespace :db do
 
       # puts 'Loading shift types'
       # Rake::Task['db:load_shift_types'].invoke
-
-
+      
       puts 'load 2019 rookies into system'
       Rake::Task['db:load_2019_rookies'].invoke
 
@@ -51,15 +50,14 @@ namespace :db do
       puts 'Make targetted adjustments for 2019'
       Rake::Task['db:make_2019_adjustments'].invoke
 
-      # TODO uncomment these lines...
-      # puts 'initialize all user accounts for start of year'
-      # User.reset_all_accounts
-      #
-      # puts 'set my password'
-      # # set my password
-      # u = User.find_by(email: 'aamaxworks@gmail.com')
-      # u.password = ENV['AAMAX_PGPASS']
-      # u.save
+      puts 'initialize all user accounts for start of year'
+      User.reset_all_accounts
+
+      puts 'set my password'
+      # set my password
+      u = User.find_by(email: 'aamaxworks@gmail.com')
+      u.password = ENV['AAMAX_PGPASS']
+      u.save
 
       puts 'initialize host hauler data for 2020'
       Rake::Task['db:initialize_host_hauler'].invoke
@@ -489,11 +487,6 @@ namespace :db do
       end
 
       shift.user = surveyors[hash['host_id'].to_i]
-
-      # if hash['host_id'] != '8'
-      #   binding.pry
-      #   break
-      # end
 
       if !shift.save
         puts "***********************"
