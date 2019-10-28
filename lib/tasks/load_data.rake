@@ -3,6 +3,59 @@ require 'csv'
 DEFAULT_PASSWORD = "password"
 
 namespace :db do
+  # task :test_data => :environment do
+  #   filename = "/Users/allenmaxwell/Downloads/hosts.csv"
+  #   #
+  #   # User.all.each do |u|
+  #   #   arr = u.name.split(' ')
+  #   #   arr.each_with_index do |value, idx|
+  #   #     arr[idx] = clean_string(value)
+  #   #   end
+  #   #   # puts "first: #{u.name} => #{arr.join(' ')} truthy? #{u.name == arr.join(' ')}"
+  #   #
+  #   #   u.name = arr.join(' ')
+  #   #   u.save
+  #   # end
+  #
+  #
+  #   users = User.active_users.map(&:name)
+  #   host_list = []
+  #
+  #   if File.exists?(filename)
+  #     puts "checking host data..."
+  #     CSV.foreach(filename, :headers => true) do |row|
+  #       hash = row.to_hash
+  #       fname = row[0].strip.chars.reject { |char| char.ord == 160 }.join
+  #       lname = hash['lname'].strip.chars.reject { |char| char.ord == 160 }.join
+  #       host_list << "#{fname.strip} #{lname.strip}"
+  #
+  #
+  #       qry = "name = '#{fname.strip} #{lname.strip}'"
+  #       user = User.where(qry).first
+  #
+  #       if user.nil?
+  #         puts "Can't Find user: #{qry}"
+  #         puts "fname: [#{fname}] lname: [#{lname}]"
+  #         # fname.each_byte do |c|
+  #         #   puts c
+  #         # end
+  #         puts "=================\n\n"
+  #       end
+  #
+  #     end
+  #     puts "DONE"
+  #   end
+  #
+  #   puts host_list - users
+  #   puts '------'
+  #   puts users - host_list
+  #   puts "========"
+  #
+  # end
+
+
+
+
   desc "load all data"
   task :load_all_data => :environment do
     ActiveRecord::Base.transaction do
@@ -93,7 +146,8 @@ namespace :db do
           city_value = arr[2]
           state_value = arr[3]
           zip_value = arr[4]
-          usr = User.new(name: "#{row[0].strip} #{hash['last']}", email: hash['email'],
+          host_name = "#{clean_string(row[0])} #{clean_string(hash['last'])}"
+          usr = User.new(name: host_name, email: hash['email'],
                          cell_phone: hash['mobile'], home_phone: hash['home'],
                          street: street_value, city: city_value,
                          state: state_value, zip: zip_value, password: '5teep&Deep')
@@ -108,7 +162,8 @@ namespace :db do
           city_value = arr[2]
           state_value = arr[3]
           zip_value = arr[4]
-          usr.update_attributes(name: "#{row[0].strip} #{hash['last']}", email: hash['email'],
+          host_name = "#{clean_string(row[0])} #{clean_string(hash['last'])}"
+          usr.update_attributes(name: host_name, email: hash['email'],
                          cell_phone: hash['mobile'], home_phone: hash['home'],
                          street: street_value, city: city_value,
                          state: state_value, zip: zip_value, password: '5teep&Deep',
@@ -120,16 +175,6 @@ namespace :db do
           puts "\nERRROR in data:  #{usr.errors.messages}\n#{usr.inspect}\n-----\n#{hash}\n\n"
           next
         end
-        usr.save
-      end
-
-      usr = User.find_by(email: 'garthdriggs@gmail.com')
-      usr.active_user = true
-      usr.start_year = 2019
-      puts "USER: #{usr.inspect}"
-      if !usr.valid?
-        puts "\nERRROR in data:  #{usr.errors.messages}\n#{usr.inspect}\n-----\n#{hash}\n\n"
-      else
         usr.save
       end
     else
@@ -577,6 +622,11 @@ namespace :db do
     u.active_user = false
     u.save
 
+    usr = User.find_by(email: 'garthdriggs@gmail.com')
+    usr.active_user = true
+    usr.start_year = 2019
+    usr.save
+
     puts "set Stephen Smith as Team Leader"
     u = User.find_by(email: 'herkyp@yahoo.com')
     u.add_role :team_leader
@@ -596,6 +646,17 @@ namespace :db do
     u = User.find_by(email: 'heatherhansen0125@gmail.com')
     u.start_year = SysConfig.first.group_2_year
     u.save
+
+    # Fix Bad Names
+    User.all.each do |u|
+      arr = u.name.split(' ')
+      arr.each_with_index do |idx, value|
+        arr[idx] = clean_string(value)
+      end
+      puts "first: #{u.name} => #{arr.join(' ')} truthy? #{u.name == arr.join(' ')}"
+
+      # save u
+    end
   end
 
   desc 'make targetted adjustments for 2019 data load'
@@ -644,6 +705,9 @@ namespace :db do
     end
   end
 
+  def clean_string(string)
+    string.chars.reject { |char| char.ord == 160 }.join
+  end
   # host update for 2018/19 season
   # puts "disabling Kate's Acount"
   # u = User.find_by(name: 'Kate')
