@@ -571,11 +571,13 @@ namespace :db do
 
     usr = User.find_by(email: 'garthdriggs@gmail.com')
     usr.active_user = true
-    usr.start_year = 2019
+    usr.start_year = SysConfig.first.group_2_year
     usr.save
 
     puts "set Stephen Smith as Team Leader"
     u = User.find_by(email: 'herkyp@yahoo.com')
+    u.start_year = SysConfig.first.group_1_year
+    u.save
     u.add_role :team_leader
 
     puts "fix Clay Mendenhal"
