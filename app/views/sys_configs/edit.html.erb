@@ -72,15 +72,11 @@
     <% end %>
 
   </div>
-  <div class="span6">
+  <div class="span6 well">
     <% if current_user.admin? %>
-      <h1>Hello world</h1>
+      <h3>Variables</h3>
         ENVIRONMENT: <%= Rails.env %><br/>
         GMAIL USER: <%= ENV['GMAIL_USERNAME'] %><br/>
-        GMAIL PW: <%= ENV['GMAIL_PASSWORD'] %><br/>
-        PG PASS: <%= ENV['MTHOST_PGPASS'] %><br/>
-        AAMAX: <%= ENV['AAMAX_PGPASS'] %><br/>
-        SECRET: <%= ENV['SECRET_KEY_BASE'] %><br/>
     <% end %>
   </div>
 </div>

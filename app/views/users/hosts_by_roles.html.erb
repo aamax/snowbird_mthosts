@@ -7,7 +7,10 @@
       Team leaders: <%= @leaders.length %><br/>
       Trainers: <%= @trainers.length %><br/>
       Surveyors: <%= @surveyors.length %><br/>
+      Ongoing On Mt Trainers: <%= @ogom_trainers.length %><br/>
+
       Regular: <%= @regular.length %><br/>
+      InActive Hosts: <%= @inactive_users.length %><br/>
     </div>
     <hr/>
 
@@ -41,7 +44,17 @@
     </table>
     <hr/>
 
-    <h1>SURVEYORS(<%= @surveyors.count %>)</h1>
+  <h1>ONGOING ON MT. TRAINERS(<%= @ogom_trainers.count %>)</h1>
+  <table class='table table-striped'>
+    <tbody>
+
+    <%= render partial: 'user_group_display', locals: {collection: @ogom_trainers} %>
+
+    </tbody>
+  </table>
+  <hr/>
+
+  <h1>SURVEYORS(<%= @surveyors.count %>)</h1>
     <table class='table table-striped'>
       <tbody>
 

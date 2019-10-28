@@ -3,7 +3,6 @@ require 'csv'
 DEFAULT_PASSWORD = "password"
 
 namespace :db do
-
   desc "load all data"
   task :load_all_data => :environment do
     ActiveRecord::Base.transaction do
@@ -22,49 +21,9 @@ namespace :db do
                          start_time: '08:00', end_time: '12:00', tasks: 'Training as Needed')
       end
 
-      # puts "disabling Kate's Acount"
-      # u = User.find_by(name: 'Kate')
-      # u.active_user = false
-      # u.save
-      #
-      # puts 'de-activate Gabrielle Gale'
-      # u = User.find_by(email: 'gabrielle.bomgren.gale@gmail.com')
-      # u.active_user = false
-      # u.save
-      #
-      # puts 'de-activate Craig Whetman'
-      # u = User.find_by(email: 'craig_whetman@hotmail.com')
-      # u.active_user = false
-      # u.save
-      #
-      # puts "set Alan Marker seniority"
-      # u = User.find_by(email: 'akmarler@hotmail.com')
-      # u.start_year = 2013
-      # u.save
-      #
-      # puts "set Sarah R seniority"
-      # u = User.find_by(email: 'sarah3884@yahoo.com')
-      # u.start_year = 2013
-      # u.save
-      #
-      # puts 'Setting up config for season'
-      # Rake::Task['db:setup_config_for_2018'].invoke
-      #
-      # puts 'Loading Rookies for 2018'
-      # Rake::Task['db:load_2018_rookies'].invoke
-      #
-      # puts 'set seniority for Karen Weiss'
-      # u = User.find_by(email: 'kkweiss22@gmail.com')
-      # u.start_year = 2016
-      # u.snowbird_start_year = 2018
-      # u.save
-
       # puts 'Loading shift types'
       # Rake::Task['db:load_shift_types'].invoke
 
-      # set roles for OGOMT hosts
-      set_ogomt_roles
-      set_survey_roles
 
       puts 'load 2019 rookies into system'
       Rake::Task['db:load_2019_rookies'].invoke
@@ -72,31 +31,35 @@ namespace :db do
       puts 'set up configs for season'
       Rake::Task['db:setup_config_for_2019'].invoke
 
+      puts 'make host updates for current season'
+      Rake::Task['db:update_host_data_for_season'].invoke
+
       puts 'Load all shifts'
       Rake::Task['db:load_shifts'].invoke
 
       puts 'Load all Ongoing Training Shifts'
-      Rake::Task['db:load_ongoing_training_shifts']
+      Rake::Task['db:load_ongoing_training_shifts'].invoke
 
-
+      puts 'Populate Surveyor Shifts'
+      Rake::Task['db:populate_surveyor_shifts'].invoke
 
       puts "Shift Count Before Meetings: #{Shift.count}"
 
       puts 'Load all Meeting Shifts For Users'
       Rake::Task['db:load_meetings'].invoke
 
-      populate_carol_hoban_2019_surveys
+      puts 'Make targetted adjustments for 2019'
+      Rake::Task['db:make_2019_adjustments'].invoke
 
-      populate_2019_trainings
-
-      puts 'initialize all user accounts for start of year'
-      User.reset_all_accounts
-
-      puts 'set my password'
-      # set my password
-      u = User.find_by(email: 'aamaxworks@gmail.com')
-      u.password = ENV['AAMAX_PGPASS']
-      u.save
+      # TODO uncomment these lines...
+      # puts 'initialize all user accounts for start of year'
+      # User.reset_all_accounts
+      #
+      # puts 'set my password'
+      # # set my password
+      # u = User.find_by(email: 'aamaxworks@gmail.com')
+      # u.password = ENV['AAMAX_PGPASS']
+      # u.save
 
       puts 'initialize host hauler data for 2020'
       Rake::Task['db:initialize_host_hauler'].invoke
@@ -200,6 +163,7 @@ namespace :db do
     end
   end
 
+
   desc 'load all meetings and add to users'
   task :load_meetings => :environment do
     # get all meetings
@@ -234,6 +198,7 @@ namespace :db do
     c.group_3_year = 2018
     c.season_start_date = Date.new(2019, 10, 01)
     c.bingo_start_date = Date.new(2019, 11, 04)
+    c.shift_count = 3000
 
     if !c.save
       puts "error saving config record #{c.errors.messages}"
@@ -435,6 +400,30 @@ namespace :db do
                 create_shift('G3friday', dt)
                 create_shift('G4friday', dt)
               end
+            when 't1day'
+              create_shift_with_host('TR', dt, hash['host_id'])
+
+              create_shift('T1', dt)
+              create_shift('T1', dt)
+              create_shift('T1', dt)
+            when 't2day'
+              create_shift_with_host('TR', dt, hash['host_id'])
+
+              create_shift('T2', dt)
+              create_shift('T2', dt)
+              create_shift('T2', dt)
+            when 't3day'
+              create_shift_with_host('TR', dt, hash['host_id'])
+
+              create_shift('T3', dt)
+              create_shift('T3', dt)
+              create_shift('T3', dt)
+            when 't4day'
+              create_shift_with_host('TR', dt, hash['host_id'])
+
+              create_shift('T4', dt)
+              create_shift('T4', dt)
+              create_shift('T4', dt)
             end
           else
             st = {
@@ -456,12 +445,91 @@ namespace :db do
     end
   end
 
+  desc "populate surveyor shifts"
+  task :populate_surveyor_shifts => :environment do
+    puts 'populating survey shifts rake task start...'
+    bErrors = false
+    filename = 'lib/data/2019_surveys.csv'
+    surveyors = { 103 => User.find_by(id: 103), # Adam Vance
+                  147 => User.find_by(id: 147), # Carla Merrill
+                  8 => User.find_by(id: 8),  # Carol Hoban
+                  95 => User.find_by(id: 95), # Christine Gregory
+                  138 => User.find_by(id: 138),  # Dotti Gallagher
+                  120 => User.find_by(id: 120),  # Jenivere Stotesbery
+                  115 => User.find_by(id: 115),  # Mary Ness
+                  140 => User.find_by(id: 140),  # Sarah Haskin
+                  135 => User.find_by(id: 135), # Judy Calhoun
+                  31 => User.find_by(id: 31), # Jack Thompson
+                  150 => User.find_by(id: 150), # Kay Tran
+                  162 => User.find_by(id: 162) # Megan Wilson
+    }
+
+    # make sure surveyor roles are updated
+    puts 'updating surveyor role values'
+    User.all.each do |host|
+      if surveyors[host.id].nil?
+        host.remove_role :surveyor
+      else
+        host.add_role :surveyor
+      end
+    end
+
+    # set surveyor shift hosts
+    puts 'setting the hosts to all assigned surveyor shifts'
+    CSV.foreach(filename, :headers => true) do |row|
+      hash = row.to_hash
+      qry = "short_name = 'SV' and user_id is null and shift_date = '#{row[0]}'"
+      shift = Shift.where(qry).first
+      if shift.nil?
+        puts '***********************'
+        puts "ERROR: Shift not found: #{qry}"
+        puts "-------------------------"
+        bErrors = true
+        next
+      end
+
+      shift.user = surveyors[hash['host_id'].to_i]
+
+      # if hash['host_id'] != '8'
+      #   binding.pry
+      #   break
+      # end
+
+      if !shift.save
+        puts "***********************"
+        puts 'ERROR setting survey shift'
+        puts "shift: #{shift.inspect}\nrow: #{hash}\nERROR: #{shift.errors.inspect}"
+        puts "***********************\n\n"
+        bErrors = true
+      end
+    end
+    puts "Done setting surveyor shifts with #{ bErrors ? '' : 'OUT'} errors"
+  end
+
   desc "populate ongoing_training shifts"
   task :load_ongoing_training_shifts => :environment do
-    # create all training dates
-    # create 1 trainer and 3 trainees on each
-    # set trainer host for each
+    puts '    set roles for ogom trainers...'
+    trainers = { 118 => User.find_by(id: 118),
+                 61 => User.find_by(id: 61),
+                 42 => User.find_by(id: 42),
+                 131 => User.find_by(id: 131) }
+    trainers.each do |key, value|
+      value.add_role :ongoing_trainer
+    end
 
+    puts 'Populating 2019 OGOM training shifts...'
+    filename = 'lib/data/2019_trainings.csv'
+
+    CSV.foreach(filename, :headers => true) do |row|
+      hash = row.to_hash
+      dt = TrainingDate.create(shift_date: hash['date'])
+
+      OngoingTraining.create(training_date_id: dt.id, user_id: trainers[hash['trainer'].to_i].id, is_trainer: true)
+      OngoingTraining.create(training_date_id: dt.id, is_trainer: false)
+      OngoingTraining.create(training_date_id: dt.id, is_trainer: false)
+      OngoingTraining.create(training_date_id: dt.id, is_trainer: false)
+    end
+    puts "Done Populating OGOM training shifts: Dates: #{TrainingDate.count} - Shifts: #{OngoingTraining.count}"
   end
 
   desc 'initialize host hauler'
@@ -473,6 +541,82 @@ namespace :db do
       end
     end
     puts 'Done adding initial host hauler dates and seats...'
+  end
+
+  desc 'update host data for current season'
+  task :update_host_data_for_season => :environment do
+
+    puts 'Disable Hosts Not Returning'
+    puts "   Fred Manar"
+    u = User.find_by(email: 'fred_manar@hotmail.com')
+    u.active_user = false
+    u.save
+
+    u = User.find_by(email: 'ellen_miller@att.net')
+    u.active_user = false
+    u.save
+
+    u = User.find_by(email: 'hkbirich@gmail.com')
+    u.active_user = false
+    u.save
+
+    u = User.find_by(email: 'kkweiss22@gmail.com')
+    u.active_user = false
+    u.save
+
+    u = User.find_by(email: 'jvg2524@gmail.com')
+    u.active_user = false
+    u.save
+
+    u = User.find_by(email: 'sternds@gmail.com')
+    u.active_user = false
+    u.save
+
+    u = User.find_by(email: 'rfhall1@gmail.com')
+    u.active_user = false
+    u.save
+
+    u = User.find_by(email: 'michaeldalesteffen@gmail.com')
+    u.active_user = false
+    u.save
+
+    u = User.find_by(email: 'jdeisley@gmail.com')
+    u.active_user = false
+    u.save
+
+    puts "set Stephen Smith as Team Leader"
+    u = User.find_by(email: 'herkyp@yahoo.com')
+    u.add_role :team_leader
+
+    puts "fix Clay Mendenhal"
+    u = User.find_by(email: 'claybirdm@gmail.com')
+    u.start_year = 2009
+    u.snowbird_start_year = 2009
+    u.save
+
+    puts 'fix huggy start year'
+    u = User.find_by(email: 'yinyangyikes@gmail.com')
+    u.start_year = SysConfig.first.group_2_year
+    u.save
+
+    puts 'fix heather start year'
+    u = User.find_by(email: 'heatherhansen0125@gmail.com')
+    u.start_year = SysConfig.first.group_2_year
+    u.save
+  end
+
+  desc 'make targetted adjustments for 2019 data load'
+  task :make_2019_adjustments => :environment do
+    puts 'remove extra training shifts from 12/14 and 12/21'
+    Shift.where("shift_date = '2019-12-14' and short_name = 'T1'").first.delete
+    Shift.where("shift_date = '2019-12-21' and short_name = 'T1'").first.delete
+
+    puts 'change start and end time for OT shift types'
+    # one time manual tweak on OT shift type
+    st = ShiftType.find_by(short_name: 'OT')
+    st.start_time = '0830'
+    st.end_time = '1600'
+    st.save
   end
 
   def not_holiday(dt)
@@ -493,7 +637,57 @@ namespace :db do
     end
   end
 
+  def create_shift_with_host(shift_short_name, dt, host_id)
+    shift_type_id = ShiftType.find_by(short_name: shift_short_name).id
+    st = {
+        shift_type_id: shift_type_id,
+        shift_status_id: 1,
+        shift_date: dt,
+        user_id: host_id
+    }
+    if !Shift.create(st)
+      puts "ERROR\n    short_name: #{shift_short_name}\n------------\n\n"
+      raise 'error loading shifts'
+    end
+  end
 
+  # host update for 2018/19 season
+  # puts "disabling Kate's Acount"
+  # u = User.find_by(name: 'Kate')
+  # u.active_user = false
+  # u.save
+  #
+  # puts 'de-activate Gabrielle Gale'
+  # u = User.find_by(email: 'gabrielle.bomgren.gale@gmail.com')
+  # u.active_user = false
+  # u.save
+  #
+  # puts 'de-activate Craig Whetman'
+  # u = User.find_by(email: 'craig_whetman@hotmail.com')
+  # u.active_user = false
+  # u.save
+  #
+  # puts "set Alan Marker seniority"
+  # u = User.find_by(email: 'akmarler@hotmail.com')
+  # u.start_year = 2013
+  # u.save
+  #
+  # puts "set Sarah R seniority"
+  # u = User.find_by(email: 'sarah3884@yahoo.com')
+  # u.start_year = 2013
+  # u.save
+  #
+  # puts 'Setting up config for season'
+  # Rake::Task['db:setup_config_for_2018'].invoke
+  #
+  # puts 'Loading Rookies for 2018'
+  # Rake::Task['db:load_2018_rookies'].invoke
+  #
+  # puts 'set seniority for Karen Weiss'
+  # u = User.find_by(email: 'kkweiss22@gmail.com')
+  # u.start_year = 2016
+  # u.snowbird_start_year = 2018
+  # u.save
 
   # desc "evaluate shifts"
   # task :eval_shifts => :environment do
@@ -669,57 +863,5 @@ namespace :db do
   #     puts "user loader file not found"
   #   end
   # end
-
-  def set_ogomt_roles
-    paul = User.find_by(email: 'altasnow@gmail.com')
-    paul.add_role :ongoing_trainer
-
-    chris = User.find_by(email: 'krishill0@gmail.com')
-    chris.add_role :ongoing_trainer
-
-    sara = User.find_by(email: 'sarah3884@yahoo.com')
-    sara.add_role :ongoing_trainer
-
-    eric = User.find_by(email: 'snowsawyer@hotmail.com')
-    eric.add_role :ongoing_trainer
-  end
-
-  def set_survey_roles
-    carol = User.find_by(email: 'cshobie1@msn.com')
-    carol.add_role :surveyor
-  end
-
-  def populate_carol_hoban_2019_surveys
-    puts "Loading Carol Hobans Survey Shifts..."
-    carol = User.find_by(email: 'cshobie1@msn.com')
-    dates = %w['2019-12-13' '2020-01-03' '2020-01-07' '2020-01-13' '2020-01-20' '2020-01-24' '2020-01-30' '2020-02-03'
-        '2020-02-05' '2020-02-11' '2020-02-19' '2020-02-21' '2020-02-27' '2020-03-02' '2020-03-12' '2020-03-16'
-        '2020-03-24' '2020-03-30']
-    dates.each do |date|
-      shift = Shift.where("short_name = 'SV' and shift_date = #{date}").first
-      shift.user_id = carol.id
-      shift.save
-    end
-    puts "Done loading Carols shifts."
-  end
-
-  def populate_2019_trainings
-    puts 'Populating 2019 training shifts...'
-    filename = 'lib/data/2019_trainings.csv'
-    trainers = { 118 => User.find_by(id: 118),
-                  61 => User.find_by(id: 61),
-                  42 => User.find_by(id: 42),
-                  131 => User.find_by(id: 131) }
-    CSV.foreach(filename, :headers => true) do |row|
-      hash = row.to_hash
-      dt = TrainingDate.create(shift_date: hash['date'])
-
-      OngoingTraining.create(training_date_id: dt.id, user_id: trainers[hash['trainer'].to_i].id, is_trainer: true)
-      OngoingTraining.create(training_date_id: dt.id, is_trainer: false)
-      OngoingTraining.create(training_date_id: dt.id, is_trainer: false)
-      OngoingTraining.create(training_date_id: dt.id, is_trainer: false)
-    end
-    puts "Done Populating training shifts: Dates: #{TrainingDate.count} - Shifts: #{OngoingTraining.count}"
-  end
 end
 

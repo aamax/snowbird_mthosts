@@ -1,13 +1,15 @@
 <% if current_user.has_role? :admin %>
     Team leaders: <%= @leaders.length %><br/>
-    Seniors: <%= @senior.length %><br/>
-    Juniors: <%= @junior.length %><br/>
-    Freshmen: <%= @freshmen.length %><br/>
+    Seniors (no TLs or Cotter): <%= @senior.length %><br/>
+    Juniors: (no TLs) <%= @junior.length %><br/>
+    Freshmen: (no TLs) <%= @freshmen.length %><br/>
     Rookie: <%= @rookies.length %><br/>
-    All: <%= @users.length %><br/>
+    All Hosts (without Cotter): <%= @users.length %><br/>
+    InActive Hosts: <%= @inactive_users.length %><br/>
     <hr/>
     Trainers: <%= @trainers.length %><br/>
     Surveyors: <%= @surveyors.length %><br/>
+    Ongoing On Mt Trainers: <%= @ogom_trainers.length %>
     <hr/>
 
     <h1>MISSING  (<%= @missing.count %>)</h1>
@@ -113,6 +115,20 @@
       </tbody>
     </table>
     <hr/>
+
+  <h1>OnGoing On MT. Trainers(<%= @ogom_trainers.count %>)</h1>
+  <table class='table table-striped'>
+    <tbody>
+
+    <% @ogom_trainers.each do |u| %>
+      <tr id=<%= "user_record_#{u.id}" %> class='user_entry' >
+        <%= render 'user_index_entry', object: u %>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+  <hr/>
+
 <% else %>
     You don't have permission to view this report.  Sorry!
 <% end %>

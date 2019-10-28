@@ -1,15 +1,22 @@
 <% if current_user.has_role? :admin %>
     <div class='row'>
       <div class="span3">
+        <h4>Group 3</h4>
         Rookies: <%= User.rookies.length %> <br/>
 
         Freshmen: <%= User.group3.to_a.delete_if {|u| u.team_leader? }.length %> <br/>
 
+        <h4>Group 2</h4>
         Junior: <%= User.group2.to_a.delete_if {|u| u.team_leader? }.length %> <br/>
 
+        <h4>Group 1</h4>
         Senior: <%= User.group1.to_a.delete_if {|u| u.team_leader? }.delete_if {|u| u.supervisor? }.length %> (does not include TLs)<br/>
 
+        <br/>
+
         Team Leaders: <%= User.active_users.to_a.delete_if {|u| !u.team_leader? }.length %> <br/>
+
+        <hr/>
 
         Trainers: <%= User.active_users.to_a.delete_if {|u| !u.trainer? }.length %><br/>
 

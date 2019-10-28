@@ -66,19 +66,23 @@ class UsersController < ApplicationController
     @freshmen =  User.group3.includes(:roles).order(:name).to_a.delete_if {|u| u.team_leader? }
     @junior =  User.group2.includes(:roles).order(:name).to_a.delete_if {|u| u.team_leader? }
     @senior =  User.group1.includes(:roles).order(:name).to_a.delete_if {|u| u.team_leader? }.delete_if {|u| u.supervisor? }
-    @leaders =  User.active_users.order(:name).to_a.delete_if {|u| !u.team_leader? }
-    @trainers = User.active_users.order(:name).to_a.delete_if {|u| !u.has_role? :trainer}
-    @surveyors = User.active_users.order(:name).to_a.delete_if {|u| !u.has_role? :surveyor}
+    @leaders =  User.active_users.order(:name).to_a.delete_if {|u| !u.team_leader? }.delete_if {|u| u.supervisor? }
+    @trainers = User.active_users.order(:name).to_a.delete_if {|u| !u.has_role? :trainer}.delete_if {|u| u.supervisor? }
+    @surveyors = User.active_users.order(:name).to_a.delete_if {|u| !u.has_role? :surveyor}.delete_if {|u| u.supervisor? }
     @missing =  @users - (@rookies + @freshmen + @junior + @senior + @leaders)
+    @ogom_trainers = User.active_users.order(:name).to_a.delete_if {|u| !u.has_role? :ongoing_trainer}.delete_if {|u| u.supervisor? }
+    @inactive_users = User.inactive_users
   end
 
   def hosts_by_roles
     @users = User.includes(:shifts, :roles).active_users.order(:name).to_a
 
-    @leaders =  User.includes(:shifts).active_users.order(:name).to_a.delete_if {|u| !u.team_leader? }
-    @trainers = User.includes(:shifts).active_users.order(:name).to_a.delete_if {|u| !u.has_role? :trainer}
-    @surveyors = User.includes(:shifts).active_users.order(:name).to_a.delete_if {|u| !u.has_role? :surveyor}
+    @leaders =  User.includes(:shifts).active_users.order(:name).to_a.delete_if {|u| !u.team_leader? }.delete_if {|u| u.supervisor? }
+    @trainers = User.includes(:shifts).active_users.order(:name).to_a.delete_if {|u| !u.has_role? :trainer}.delete_if {|u| u.supervisor? }
+    @surveyors = User.includes(:shifts).active_users.order(:name).to_a.delete_if {|u| !u.has_role? :surveyor}.delete_if {|u| u.supervisor? }
     @admins = User.includes(:shifts).active_users.order(:name).to_a.delete_if {|u| !u.has_role? :admin}
+    @ogom_trainers = User.active_users.order(:name).to_a.delete_if {|u| !u.has_role? :ongoing_trainer}.delete_if {|u| u.supervisor? }.delete_if {|u| u.supervisor? }
+    @inactive_users = User.inactive_users
 
     @regular = @users - (@leaders + @trainers + @surveyors + @admins)
   end
