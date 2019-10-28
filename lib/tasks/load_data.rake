@@ -571,29 +571,29 @@ namespace :db do
 
     usr = User.find_by(email: 'garthdriggs@gmail.com')
     usr.active_user = true
-    usr.start_year = SysConfig.first.group_2_year
+    usr.start_year = HostConfig.group_2_year
     usr.save
 
     puts "set Stephen Smith as Team Leader"
     u = User.find_by(email: 'herkyp@yahoo.com')
-    u.start_year = SysConfig.first.group_1_year
+    u.start_year = HostConfig.group_1_year
     u.save
     u.add_role :team_leader
 
     puts "fix Clay Mendenhal"
     u = User.find_by(email: 'claybirdm@gmail.com')
-    u.start_year = 2009
+    u.start_year = HostConfig.group_1_year
     u.snowbird_start_year = 2009
     u.save
 
     puts 'fix huggy start year'
     u = User.find_by(email: 'yinyangyikes@gmail.com')
-    u.start_year = SysConfig.first.group_2_year
+    u.start_year = HostConfig.group_2_year
     u.save
 
     puts 'fix heather start year'
     u = User.find_by(email: 'heatherhansen0125@gmail.com')
-    u.start_year = SysConfig.first.group_2_year
+    u.start_year = HostConfig.group_2_year
     u.save
 
     # Fix Bad Names
@@ -602,9 +602,8 @@ namespace :db do
       arr.each_with_index do |value, idx|
         arr[idx] = clean_string(value)
       end
-      puts "first: #{u.name} => #{arr.join(' ')} truthy? #{u.name == arr.join(' ')}"
-
-      # save u
+      u.name = arr.join(' ')
+      u.save
     end
   end
 

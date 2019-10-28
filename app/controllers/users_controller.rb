@@ -61,16 +61,17 @@ class UsersController < ApplicationController
   end
 
   def hosts_by_seniority
-    @users = User.includes(:shifts).active_users.order(:name).to_a.delete_if {|u| u.supervisor? }
+    @users = User.includes(:shifts).active_users.order(:name).to_a.delete_if { |u| u.supervisor? }
     @rookies = User.rookies.includes(:roles).order(:name)
-    @freshmen =  User.group3.includes(:roles).order(:name).to_a.delete_if {|u| u.team_leader? }
-    @junior =  User.group2.includes(:roles).order(:name).to_a.delete_if {|u| u.team_leader? }
-    @senior =  User.group1.includes(:roles).order(:name).to_a.delete_if {|u| u.team_leader? }.delete_if {|u| u.supervisor? }
-    @leaders =  User.active_users.order(:name).to_a.delete_if {|u| !u.team_leader? }.delete_if {|u| u.supervisor? }
-    @trainers = User.active_users.order(:name).to_a.delete_if {|u| !u.has_role? :trainer}.delete_if {|u| u.supervisor? }
-    @surveyors = User.active_users.order(:name).to_a.delete_if {|u| !u.has_role? :surveyor}.delete_if {|u| u.supervisor? }
+    @freshmen =  User.group3.includes(:roles).order(:name).to_a.delete_if { |u| u.team_leader? }
+    @junior =  User.group2.includes(:roles).order(:name).to_a.delete_if { |u| u.team_leader? }
+    @senior =  User.group1.includes(:roles).order(:name).to_a.delete_if { |u| u.team_leader? }.delete_if {|u| u.supervisor? }
+    @leaders =  User.active_users.order(:name).to_a.delete_if { |u| !u.team_leader? }.delete_if {|u| u.supervisor? }
+    @trainers = User.active_users.order(:name).to_a.delete_if { |u| !u.has_role? :trainer}.delete_if {|u| u.supervisor? }
+    @surveyors = User.active_users.order(:name).to_a.delete_if { |u| !u.has_role? :surveyor}.delete_if {|u| u.supervisor? }
     @missing =  @users - (@rookies + @freshmen + @junior + @senior + @leaders)
-    @ogom_trainers = User.active_users.order(:name).to_a.delete_if {|u| !u.has_role? :ongoing_trainer}.delete_if {|u| u.supervisor? }
+
+    @ogom_trainers = User.active_users.order(:name).to_a.delete_if { |u| !u.has_role? :ongoing_trainer}.delete_if { |u| u.supervisor? }
     @inactive_users = User.inactive_users
   end
 
