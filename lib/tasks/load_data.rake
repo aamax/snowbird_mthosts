@@ -153,7 +153,6 @@ namespace :db do
     end
   end
 
-
   desc 'load all meetings and add to users'
   task :load_meetings => :environment do
     # get all meetings
@@ -596,6 +595,11 @@ namespace :db do
     u.start_year = HostConfig.group_2_year
     u.save
 
+    puts 'fix troy start year'
+    u = User.find_by(email: 'troybate@gmail.com')
+    u.start_year = HostConfig.group_3_year
+    u.save
+
     # Fix Bad Names
     User.all.each do |u|
       arr = u.name.split(' ')
@@ -613,8 +617,23 @@ namespace :db do
     Shift.where("shift_date = '2019-12-14' and short_name = 'T1'").first.delete
     Shift.where("shift_date = '2019-12-21' and short_name = 'T1'").first.delete
 
-    puts 'change start and end time for OT shift types'
+    # add training shifts for Huggy & Heater
+    huggy = User.find_by(email: 'yinyangyikes@gmail.com')
+    heather = User.find_by(email: 'heatherhansen0125@gmail.com')
+    meetings = ShiftType.where("short_name like 'M1' or short_name like 'M3'")
+    [huggy, heather].each do |u|
+      meetings.each do |m|
+        s_date = Date.parse(MEETINGS[m.short_name])
+        new_shift = Shift.create(:user_id => u.id,
+                                 :shift_type_id => m.id,
+                                 :shift_date => s_date,
+                                 :shift_status_id => 1,
+                                 :day_of_week => s_date.strftime("%a"))
+      end
+    end
+
     # one time manual tweak on OT shift type
+    puts 'change start and end time for OT shift types'
     st = ShiftType.find_by(short_name: 'OT')
     st.start_time = '0830'
     st.end_time = '1600'
