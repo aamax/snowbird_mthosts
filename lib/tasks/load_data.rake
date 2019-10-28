@@ -597,7 +597,7 @@ namespace :db do
     # Fix Bad Names
     User.all.each do |u|
       arr = u.name.split(' ')
-      arr.each_with_index do |idx, value|
+      arr.each_with_index do |value, idx|
         arr[idx] = clean_string(value)
       end
       puts "first: #{u.name} => #{arr.join(' ')} truthy? #{u.name == arr.join(' ')}"
