@@ -23,7 +23,7 @@ namespace :db do
 
       # puts 'Loading shift types'
       # Rake::Task['db:load_shift_types'].invoke
-      
+
       puts 'load 2019 rookies into system'
       Rake::Task['db:load_2019_rookies'].invoke
 
@@ -196,7 +196,7 @@ namespace :db do
     c.group_3_year = 2018
     c.season_start_date = Date.new(2019, 10, 01)
     c.bingo_start_date = Date.new(2019, 11, 04)
-    c.shift_count = 3000
+    c.shift_count = 3000  # TODO adjust this down for production before season start...
 
     if !c.save
       puts "error saving config record #{c.errors.messages}"
