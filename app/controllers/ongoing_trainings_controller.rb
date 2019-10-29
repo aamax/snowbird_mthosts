@@ -57,7 +57,7 @@ class OngoingTrainingsController < ApplicationController
                         user_id: user_id,
                         is_trainer: params[:ongoing_training][:is_trainer] == 1 }
     @training = OngoingTraining.create(training_params)
-
+    log_shift_selected(@training, @user)
     redirect_to ongoing_trainings_path
   end
 
@@ -100,13 +100,19 @@ class OngoingTrainingsController < ApplicationController
     @ongoing_training.user_id = user_id
     @ongoing_training.is_trainer = params[:ongoing_training][:is_trainer]
     @ongoing_training.save
+
+    update_training_shift(@ongoing_training, @user)
     redirect_to ongoing_trainings_path
   end
 
   def drop_shift
     @ongoing_training = OngoingTraining.find(params[:id])
+     training_user = @ongoing_training.user
     @ongoing_training.user_id = nil
     @ongoing_training.save
+
+    log_shift_dropped(@ongoing_training, training_user, current_user) if !training_user.nil?
+
     redirect_to :back
   end
 
@@ -131,12 +137,34 @@ class OngoingTrainingsController < ApplicationController
       shift.user_id = current_user.id
       shift.save
       flash[:success] = 'Training shift assigned successfully'
+      log_shift_selected(shift, current_user)
       redirect_to '/select_ongoing_training'
     end
   end
 
   private
-  # def trainings_params
-  #   params.require(:training).permit(:shift_date, :user_id, :is_trainer)
-  # end
+  def log_shift_dropped(shift, training_user, user_dropping)
+    shift_str = "#{shift.id}:#{shift.short_name}:#{shift.shift_date}"
+    trainer_string = shift.is_trainer ? "Trainer" : "Trainee"
+    ShiftLog.create(change_date: DateTime.now, user_id: user_dropping.id,
+                    shift_id: shift.id, action_taken: "Dropped OGOMt Training Shift",
+                    note: "#{user_dropping.name} DROPPED OGOMt Training shift #{shift_str} for user: #{training_user.name} dropped by: #{user_dropping.name} (#{trainer_string})")
+
+  end
+
+  def log_shift_selected(shift, training_user)
+    shift_str = "#{shift.id}:#{shift.short_name}:#{shift.shift_date}"
+    trainer_string = shift.is_trainer ? "Trainer" : "Trainee"
+    ShiftLog.create(change_date: DateTime.now, user_id: current_user.id,
+                    shift_id: shift.id, action_taken: "Selected OGOMt Training Shift",
+                    note: "#{current_user.name} Selected OGOMt Training shift #{shift_str} for user: #{training_user.name} selected by: #{current_user.name} (#{trainer_string})")
+  end
+
+  def update_training_shift(shift, training_user)
+    shift_str = "#{shift.id}:#{shift.short_name}:#{shift.shift_date}"
+    trainer_string = shift.is_trainer ? "Trainer" : "Trainee"
+    ShiftLog.create(change_date: DateTime.now, user_id: current_user.id,
+                    shift_id: shift.id, action_taken: "Updated OGOMt Training Shift",
+                    note: "#{current_user.name} Updated OGOMt Training shift #{shift_str} for user: #{training_user.name} Updated by: #{current_user.name} (#{trainer_string})")
+  end
 end

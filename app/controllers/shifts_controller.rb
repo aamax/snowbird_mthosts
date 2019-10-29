@@ -263,7 +263,6 @@ class ShiftsController < ApplicationController
     ShiftLog.create(change_date: DateTime.now, user_id: log_user.id,
                     shift_id: shift.id, action_taken: "Dropped Shift",
                     note: "#{user_dropping.name} DROPPED shift #{shift_str} for user: #{shift.user.name} dropped by: #{user_dropping.name}")
-
   end
 
   def log_shift_selected(shift, user_selecting)
