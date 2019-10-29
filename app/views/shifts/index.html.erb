@@ -39,11 +39,15 @@
 
         <% unless current_user.supervisor? %>
             <%= render "/users/shift_message", :user => current_user, :shift_page => true %>
-            <%= render "/users/selection_list", :user => current_user %>
+          <div class='span6 shift_user_listing'>
+          <%=
+            @user = current_user
+            render "/users/shift_summary", :user => @user
+          %>
+          </div>
         <% end %>
       </div>
     </div>
-
   </div>
 </div>
 <br/>

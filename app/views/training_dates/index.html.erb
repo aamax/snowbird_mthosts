@@ -1,33 +1,33 @@
 <% if current_user.has_role? :admin %>
-  <h1>Training Administration</h1>
+      <h1>Training Administration</h1>
 
-  <h2>Training Dates</h2>
-  <table class='table table-striped'>
-    <thead>
-    <tr>
-      <td>
-        <h3>Training Dates (<%= @training_dates.count %>) <%= link_to "<i class='icon-plus btn btn-success btn-large'></i>".html_safe,
-                                                                      new_training_date_path,
-                                                                      :title => "Create Training Date" %></h3>
-      </td>
-    </tr>
-    </thead>
-    <tbody>
-    <% @training_dates.each do |training_date| %>
-      <tr>
-        <td>
-          <%= training_date.inspect %>
-        </td>
-        <td>
-         <% if training_date.ongoing_trainings.count == 0 %>
-            <%= link_to "<i class='icon-trash btn btn-danger'></i>".html_safe,
-                      training_date, :method => :delete,
-                      :data => { confirm: "You sure you want to delete this training shift?" },
-                      :title => "Delete Training Date" %>
+      <h2>Training Dates</h2>
+      <table class='table table-striped'>
+        <thead>
+        <tr>
+          <td>
+            <h3>Training Dates (<%= @training_dates.count %>) <%= link_to "<i class='icon-plus btn btn-success btn-large'></i>".html_safe,
+                                                                          new_training_date_path,
+                                                                          :title => "Create Training Date" %></h3>
+          </td>
+        </tr>
+        </thead>
+        <tbody>
+        <% @training_dates.each do |training_date| %>
+          <tr>
+            <td>
+              <%= training_date.inspect %>
+            </td>
+            <td>
+              <% if training_date.ongoing_trainings.count == 0 %>
+                <%= link_to "<i class='icon-trash btn btn-danger'></i>".html_safe,
+                            training_date, :method => :delete,
+                            :data => { confirm: "You sure you want to delete this training shift?" },
+                            :title => "Delete Training Date" %>
+              <% end %>
+            </td>
+          </tr>
         <% end %>
-      </td>
-      </tr>
-    <% end %>
-    </tbody>
-  </table>
+        </tbody>
+      </table>
 <% end %>

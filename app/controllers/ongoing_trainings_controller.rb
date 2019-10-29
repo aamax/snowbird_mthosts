@@ -117,10 +117,6 @@ class OngoingTrainingsController < ApplicationController
   end
 
   def select_ongoing_training
-    if current_user.has_ongoing_training_shift?
-      redirect_to '/'
-      return
-    end
     @trainer_dates = OngoingTraining.includes(:training_date).where('is_trainer = true and user_id is null').map(&:training_date).uniq
     @trainee_dates = OngoingTraining.includes(:training_date).where('is_trainer = false and user_id is null').map(&:training_date).uniq
     @selected_trainings = current_user.ongoing_trainings.includes(:training_date)

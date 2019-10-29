@@ -359,7 +359,7 @@ class User < ActiveRecord::Base
   def shift_status_message
     msg = []
     day_offset = get_day_offset
-    num_selected = self.shifts.length
+    num_selected = self.get_working_shifts.length
     round = HostUtility.get_current_round(HostConfig.bingo_start_date, Date.today, self)
     has_holiday = has_holiday_shift?
     all_shifts = self.shifts

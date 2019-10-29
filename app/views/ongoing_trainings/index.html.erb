@@ -3,7 +3,6 @@
     Open Admin Page:&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
   </button>
 
-
   <div id="shift_filter" class="collapse out">
     <div class="well">
       <h1>Training Administration</h1>
@@ -17,18 +16,22 @@
                                                                           new_training_date_path,
                                                                           :title => "Create Training Date" %></h3>
           </td>
+          <td>
+
+          </td>
         </tr>
         <tr>
           <td>
             Date
           </td>
+
         </tr>
         </thead>
         <tbody>
         <% @training_dates.each do |training_date| %>
           <tr>
             <td>
-              <%= training_date.shift_date %>
+              <%= training_date.shift_date %> - <%= training_date.shift_date.strftime('%A') %>
             </td>
             <td>
               <% if training_date.ongoing_trainings.count == 0 %>
@@ -71,7 +74,7 @@
         <% @ongoing_trainings.each do |ongoing_training| %>
           <tr>
             <td>
-              <%= ongoing_training.shift_date %>
+              <%= ongoing_training.shift_date %> - <%= ongoing_training.shift_date.strftime('%A') %>
             </td>
             <td>
               <%= ongoing_training.user.nil? ? '---' : ongoing_training.user.name %>
@@ -97,10 +100,10 @@
     <hr/>
   </div>
 
-
 <% end %>
 
-<div class="well">
+<div class="row">
+<div class="well span5">
   <h1>Training Schedule</h1>
     <% if !current_user.has_ongoing_training_shift? %>
       <%= link_to "<i class='icon-plus btn btn-primary'> &nbsp;&nbsp;Select Trainings Page</i>".html_safe,
@@ -112,19 +115,20 @@
       <tr>
         <td>Training Date</td>
         <td>Role</td>
+        <td>Drop Shift</td>
       </tr>
       </thead>
       <tbody>
       <% current_user.ongoing_trainings.each do |ongoing_training| %>
         <tr>
           <td>
-            <%= ongoing_training.shift_date %>
+            <%= ongoing_training.shift_date %> - <%= ongoing_training.shift_date.strftime('%A') %>
           </td>
           <td>
             <%= ongoing_training.is_trainer? ? 'TRAINER' : 'TRAINEE' %>
           </td>
           <td>
-            <%= link_to "<i class='icon-eraser btn btn-primary'></i>".html_safe,
+            <%= link_to "<i class='icon-eraser btn btn-danger'></i>".html_safe,
                         "/drop_ongoing_training/#{ongoing_training.id}",
                         :title => "Drop #{ongoing_training.id}" %>
           </td>
@@ -133,5 +137,13 @@
       <% end %>
       </tbody>
     </table>
+</div>
+<div class="well span6">
+  <%=
+    @user = current_user
+    render "/users/shift_summary", :user => @user
+  %>
+</div>
+
 </div>
 <br/><br/>

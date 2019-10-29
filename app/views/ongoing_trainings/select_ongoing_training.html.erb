@@ -2,36 +2,10 @@
 <h2>select training shift for <%= current_user.name %></h2>
 <hr/>
 <div class="well">
-  <h3>Current Scheduled Trainings (<%= @selected_trainings.count %>) </h3>
-  <table class='table table-striped'>
-    <thead>
-    <tr>
-      <td>
-        Date
-      </td>
-      <td>
-        Role
-      </td>
-    </tr>
-    </thead>
-    <tbody>
-    <% @selected_trainings.each do |training| %>
-      <tr>
-        <td>
-          <%= training.shift_date %>
-        </td>
-        <td>
-          <%= training.is_trainer == true ? 'Trainer' : 'Trainee' %>
-        </td>
-        <td>
-          <%= link_to "<i class='icon-eraser btn btn-primary'></i>".html_safe,
-                      "/drop_ongoing_training/#{training.id}",
-                      :title => "Drop #{training.id}" %>
-        </td>
-      </tr>
-    <% end %>
-    </tbody>
-  </table>
+  <%=
+    @user = current_user
+    render "/users/shift_summary", :user => @user
+  %>
 </div>
 
 <br/><hr/><br/>
@@ -52,7 +26,7 @@
   <% @trainee_dates.each do |shift| %>
     <tr>
       <td>
-        <%= shift.shift_date %> (<%= shift.trainee_shifts_open %> shift open)
+        <%= shift.shift_date %> (<%= shift.trainee_shifts_open %> shifts available) - <%= shift.shift_date.strftime('%A') %>
       </td>
       <td>
         <% if current_user.can_select_ongoing_training(shift.shift_date) %>

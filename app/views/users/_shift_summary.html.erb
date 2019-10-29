@@ -1,0 +1,38 @@
+<h3>shift summary info: </h3>
+
+Click<strong><%= link_to " Here ", "/shift_print/#{@user.id}" %></strong>to view a printable shift form.<br/>
+
+<table class='table table-striped' id='shift_listing'>
+  <tr>
+    <th>Date</th>
+    <th>DOW</th>
+    <th>Shift</th>
+    <th>Status</th>
+    <th>Tools</th>
+  </tr>
+  <% @user.get_working_shifts.each do |s| %>
+    <tr>
+      <td><%= s.shift_date.strftime("%Y-%m-%d") %></td>
+      <td><%= s.day_of_week %></td>
+      <td><%= "#{s.shift_type.short_name[0..1]} - #{s.shift_type.description}" %></td>
+      <td><%= s.shift_type.tasks %></td>
+      <td>
+        <% if s.class == OngoingTraining %>
+          <% if s.can_drop current_user %>
+            <%= link_to "<i class='icon-trash btn btn-danger' title='drop shift'>&nbsp;&nbsp;Drop</i>".html_safe,
+                        "/drop_ongoing_training/#{s.id}",
+                        :title => "Drop #{s.id}" %>
+          <% end %>
+        <% else %>
+          <% if s.can_drop current_user %>
+            <%= link_to "<i class='icon-trash btn btn-danger' title='drop shift'>&nbsp;&nbsp;Drop</i>".html_safe,
+                        "/drop_shift/#{s.id}",
+                        data: { :confirm => "You sure you want to drop this shift?" },
+                        :title => "Clear Shift", :class=>'drop_shift_btn select_btn' %>
+          <% end %>
+        <% end %>
+
+      </td>
+    </tr>
+  <% end %>
+</table>
