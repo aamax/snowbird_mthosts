@@ -58,6 +58,7 @@ class OngoingTrainingsController < ApplicationController
                         is_trainer: params[:ongoing_training][:is_trainer] == 1 }
     @training = OngoingTraining.create(training_params)
     log_shift_selected(@training, @user)
+    flash[:success] = "Training shift created."
     redirect_to ongoing_trainings_path
   end
 
@@ -100,7 +101,7 @@ class OngoingTrainingsController < ApplicationController
     @ongoing_training.user_id = user_id
     @ongoing_training.is_trainer = params[:ongoing_training][:is_trainer]
     @ongoing_training.save
-
+    flash[:success] = "Training shift updated."
     update_training_shift(@ongoing_training, @user)
     redirect_to ongoing_trainings_path
   end
@@ -110,7 +111,7 @@ class OngoingTrainingsController < ApplicationController
      training_user = @ongoing_training.user
     @ongoing_training.user_id = nil
     @ongoing_training.save
-
+    flash[:success] = "Training shift dropped."
     log_shift_dropped(@ongoing_training, training_user, current_user) if !training_user.nil?
 
     redirect_to :back

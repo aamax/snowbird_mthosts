@@ -1,11 +1,33 @@
-<% if @user.head_shot.nil? || (@user.head_shot == '') %>
-    <%=  gravatar_image_tag(@user.email, :alt => @user.name) %>
+<div class="row">
+  <div class="span4">
+    <% if @user.head_shot.nil? || (@user.head_shot == '') %>
+      <%=  gravatar_image_tag(@user.email, :alt => @user.name) %>
       <%= link_to "Setup Gravatar", "http://gravatar.com" %>
-    <br/>
+      <br/>
 
-<% else %>
+    <% else %>
       <%= image_tag @user.head_shot %>
-<% end %>
+    <% end %>
+  </div>
+  <div class="span5 well">
+    <br/>
+    <% if !@user.confirmed %>
+      <h3>Be Sure You Are Confirmed!</h3><br/>
+    <% end %>
+    <strong>Confirmed? </strong>
+    <%= f.check_box :confirmed, :placeholder => "confirmed", class: 'active_edit', :required => !current_user.has_role?(:admin) %><br/>
+
+    <br/><br/>
+    <%= f.password_field :password, class: 'password_edit', placeholder: 'Password', :autocomplete => :off %> <br/>
+    <%= f.password_field :password_confirmation, class: 'password_edit', placeholder: 'Password Confirmation' %> <br/><br/>
+
+    <%= f.submit "Update", id: 'user_form_submit', class: 'btn btn-success' %>
+    <%= link_to "Cancel", users_path, class: "btn btn-warning" %>
+
+    <br/><br/>
+  </div>
+</div>
+
 <br/>
 <br/>
 <% if current_user.has_role? :admin %>
@@ -53,12 +75,6 @@
 <br/>
 
 <strong>seniority: </strong> <%= @user.seniority %><br/><br/>
-<strong>Confirmed? </strong>
-<%= f.check_box :confirmed, :placeholder => "confirmed", class: 'active_edit', :required => !current_user.has_role?(:admin) %><br/>
-
-
-<%= f.password_field :password, class: 'password_edit', placeholder: 'Password', :autocomplete => :off %> <br/>
-<%= f.password_field :password_confirmation, class: 'password_edit', placeholder: 'Password Confirmation' %> <br/><br/>
 
     <% unless current_user.has_role? :admin %>
         <h5>Roles:</h5>
