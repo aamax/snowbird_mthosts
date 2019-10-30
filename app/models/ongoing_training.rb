@@ -35,6 +35,11 @@ class OngoingTraining < ActiveRecord::Base
   end
 
   def can_drop(user)
-    user.admin? || (user_id == user.id)
+    return true if user.admin?
+
+    return false if self.shift_date < Date.today()
+    return false if user.id != user_id
+    return false if self.shift_date <= Date.today + 13.days
+    true
   end
 end

@@ -186,7 +186,7 @@ namespace :db do
     c.group_2_year = 2016
     c.group_3_year = 2017
     c.season_start_date = Date.new(2019, 10, 01)
-    c.bingo_start_date = Date.new(2019, 11, 04)
+    c.bingo_start_date = Date.new(2019, 11, 11)
     c.shift_count = 250  # TODO adjust up after bingo is done...
 
     if !c.save
