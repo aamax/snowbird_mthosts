@@ -39,8 +39,5 @@ class TrainingDatesController < ApplicationController
     end
     redirect_to ongoing_trainings_path
   end
-
-
-
 end
 

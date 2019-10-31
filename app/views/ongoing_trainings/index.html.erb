@@ -12,7 +12,7 @@
         <thead>
         <tr>
           <td>
-            <h3>Training Dates (<%= @training_dates.count %>) <%= link_to "<i class='icon-plus btn btn-success btn-large'></i>".html_safe,
+            <h3>Training Dates (<%= @training_dates.count %>) <%= link_to "<i class='icon-plus btn btn-success btn-large'>Add Training Date</i>".html_safe,
                                                                           new_training_date_path,
                                                                           :title => "Create Training Date" %></h3>
           </td>
@@ -53,7 +53,7 @@
         <thead>
         <tr>
           <td>
-            <h3>Trainings (<%= @ongoing_trainings.count %>) <%= link_to "<i class='icon-plus btn btn-success btn-large'></i>".html_safe,
+            <h3>Trainings (<%= @ongoing_trainings.count %>) <%= link_to "<i class='icon-plus btn btn-success btn-large'>Add Training Shift</i>".html_safe,
                                                                         new_ongoing_training_path,
                                                                         :title => "Create Training" %></h3>
           </td>

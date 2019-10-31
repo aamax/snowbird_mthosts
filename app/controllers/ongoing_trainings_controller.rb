@@ -35,8 +35,6 @@ class OngoingTrainingsController < ApplicationController
         redirect_to new_ongoing_training_path
         return
       end
-    else
-      user_id = @user.id
       if params[:ongoing_training][:is_trainer] == '1'
         if !@user.ongoing_trainer?
           flash[:alert] = "Error creating training shift: Host must be a Trainer to take this shift."
@@ -44,6 +42,7 @@ class OngoingTrainingsController < ApplicationController
         redirect_to new_ongoing_training_path
         return
       end
+      user_id = @user.id
     end
 
     training_date = TrainingDate.find_by(id: params[:training_date])
@@ -52,10 +51,10 @@ class OngoingTrainingsController < ApplicationController
       redirect_to new_ongoing_training_path
       return
     end
-
     training_params = { training_date_id: training_date.id,
                         user_id: user_id,
-                        is_trainer: params[:ongoing_training][:is_trainer] == 1 }
+                        is_trainer: params[:ongoing_training][:is_trainer] == '1' }
+
     @training = OngoingTraining.create(training_params)
     log_shift_selected(@training, @user)
     flash[:success] = "Training shift created."
@@ -69,6 +68,7 @@ class OngoingTrainingsController < ApplicationController
       flash[:alert] = "Error destroying training."
     else
       flash[:success] = "success deleting training"
+      delete_training_shift(training)
     end
     redirect_to ongoing_trainings_path
   end
@@ -140,6 +140,11 @@ class OngoingTrainingsController < ApplicationController
   end
 
   private
+
+  def ongoing_training_params
+    params.require(:ongoing_training).permit(:training_date_id, :user_id, :is_trainer)
+  end
+
   def log_shift_dropped(shift, training_user, user_dropping)
     shift_str = "#{shift.id}:#{shift.short_name}:#{shift.shift_date}"
     trainer_string = shift.is_trainer ? "Trainer" : "Trainee"
@@ -152,9 +157,10 @@ class OngoingTrainingsController < ApplicationController
   def log_shift_selected(shift, training_user)
     shift_str = "#{shift.id}:#{shift.short_name}:#{shift.shift_date}"
     trainer_string = shift.is_trainer ? "Trainer" : "Trainee"
+    trainer_name = training_user.nil? ? "UNSET" : training_user.name
     ShiftLog.create(change_date: DateTime.now, user_id: current_user.id,
                     shift_id: shift.id, action_taken: "Selected OGOMt Training Shift",
-                    note: "#{current_user.name} Selected OGOMt Training shift #{shift_str} for user: #{training_user.name} selected by: #{current_user.name} (#{trainer_string})")
+                    note: "#{current_user.name} Selected OGOMt Training shift #{shift_str} for user: #{trainer_name} selected by: #{current_user.name} (#{trainer_string})")
   end
 
   def update_training_shift(shift, training_user)
@@ -163,5 +169,13 @@ class OngoingTrainingsController < ApplicationController
     ShiftLog.create(change_date: DateTime.now, user_id: current_user.id,
                     shift_id: shift.id, action_taken: "Updated OGOMt Training Shift",
                     note: "#{current_user.name} Updated OGOMt Training shift #{shift_str} for user: #{training_user.name} Updated by: #{current_user.name} (#{trainer_string})")
+  end
+
+  def delete_training_shift(shift)
+    shift_str = "#{shift.id}:#{shift.short_name}:#{shift.shift_date}"
+    trainer_string = shift.is_trainer ? "Trainer" : "Trainee"
+    ShiftLog.create(change_date: DateTime.now, user_id: current_user.id,
+                    shift_id: shift.id, action_taken: "Deleted OGOMt Training Shift",
+                    note: "#{current_user.name} Deleted OGOMt Training shift #{shift_str} for user: #{training_user.name} Updated by: #{current_user.name} (#{trainer_string})")
   end
 end
