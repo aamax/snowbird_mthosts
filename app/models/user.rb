@@ -264,13 +264,15 @@ class User < ActiveRecord::Base
   end
 
   def can_select_ongoing_training(shift_date)
-    retval = !is_working?(shift_date) && (ongoing_trainings.count == 0) &&
-        (round1_date < Date.today) && !rookie?
-    if retval && !ongoing_trainer?
+    return false if  !(!is_working?(shift_date) && (round1_date < Date.today) && !rookie? && !admin?)
+
+    if !ongoing_trainer?
+      return false if (ongoing_trainings.count > 0)
       qry_str = 'user_id is null and is_trainer = false'
-      retval = TrainingDate.where(shift_date: shift_date).first.ongoing_trainings.where(qry_str).count > 0
+      return TrainingDate.where(shift_date: shift_date).first.ongoing_trainings.where(qry_str).count > 0
     end
-    retval
+
+    return true
   end
 
   def get_shift_list

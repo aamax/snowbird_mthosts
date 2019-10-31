@@ -339,6 +339,7 @@ class UserTest < ActiveSupport::TestCase
                         training_date_id: @training_date.id,
                         user_id: @user.id,
                         is_trainer: false)
+      @user.start_year = Date.today.year
       assert_equal false, @user.can_select_ongoing_training(dt)
     end
 

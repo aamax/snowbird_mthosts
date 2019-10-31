@@ -319,12 +319,6 @@ class ShiftsHelperTest < ActionView::TestCase
           @ogomt_shift3 = FactoryBot.create(:ongoing_training, training_date_id: @ogomt_shift_date.id, user_id: nil)
         end
 
-        # _(@ogomt_shift1.can_drop(@newer_user)).must_equal false
-        # _(@ogomt_shift2.can_drop(@middle_user)).must_equal false
-        # _(@ogomt_shift3.can_drop(@senior_user)).must_equal false
-        #
-        # _(@senior_user.can_select_ongoing_training(@ogomt_shift1.shift_date)).must_equal false
-
         it 'cannot pick prior to bingo start' do
           @sys_config.bingo_start_date = @pre_bingo_date
           @sys_config.save!
@@ -381,6 +375,8 @@ class ShiftsHelperTest < ActionView::TestCase
         end
 
         it 'cannot pick regular shift if working OGOMT shift' do
+          @sys_config.bingo_start_date = @round1_date
+          @sys_config.save!
           shift_date = @ogomt_shift1.shift_date
           regular_shift = FactoryBot.create(:shift, :shift_date => shift_date,
                                             :shift_type_id => @p1.id,
@@ -391,27 +387,57 @@ class ShiftsHelperTest < ActionView::TestCase
                                      HostUtility.can_select_params_for(@senior_user))).must_equal false
         end
 
-
-
-        focus
-
         it 'cannot pick if OGOMT trainer shift' do
-          _(false).must_equal true
+          @sys_config.bingo_start_date = @round1_date
+          @sys_config.save!
+          @ogomt_shift_date2 = FactoryBot.create(:training_date, shift_date: Date.today + 2.week)
+          @ogomt_shift2b = FactoryBot.create(:ongoing_training,
+                                             training_date_id: @ogomt_shift_date2.id,
+                                             user_id: nil, is_trainer: true)
+          _(@senior_user.can_select_ongoing_training(@ogomt_shift2b.shift_date)).must_equal false
         end
 
         it 'can pick if user is OGOMT trainer and it is a trainer shift' do
-          _(false).must_equal true
+          @sys_config.bingo_start_date = @round1_date
+          @sys_config.save!
+          @ogomt_shift_date2 = FactoryBot.create(:training_date, shift_date: Date.today + 2.week)
+          @ogomt_shift2b = FactoryBot.create(:ongoing_training,
+                                             training_date_id: @ogomt_shift_date2.id,
+                                             user_id: nil, is_trainer: true)
+          @senior_user.add_role :ongoing_trainer
+          _(@senior_user.can_select_ongoing_training(@ogomt_shift2b.shift_date)).must_equal true
         end
 
         it 'an OGOMT trainer can pick multiple trainer shifts' do
-          _(false).must_equal true
+          @sys_config.bingo_start_date = @round1_date
+          @sys_config.save!
+          @ogomt_shift_date2 = FactoryBot.create(:training_date, shift_date: Date.today + 2.week)
+          @ogomt_shift2b = FactoryBot.create(:ongoing_training,
+                                             training_date_id: @ogomt_shift_date2.id,
+                                             user_id: @senior_user.id, is_trainer: true)
+          @ogomt_shift_date3 = FactoryBot.create(:training_date, shift_date: Date.today + 3.week)
+          @ogomt_shift3 = FactoryBot.create(:ongoing_training,
+                                             training_date_id: @ogomt_shift_date3.id,
+                                             user_id: nil, is_trainer: true)
+
+          @senior_user.add_role :ongoing_trainer
+          _(@senior_user.can_select_ongoing_training(@ogomt_shift3.shift_date)).must_equal true
         end
 
         it 'an OGOMT trainer cannot pick multiple trainee shifts' do
-          _(false).must_equal true
+          @sys_config.bingo_start_date = @round1_date
+          @sys_config.save!
+          @ogomt_shift_date2 = FactoryBot.create(:training_date, shift_date: Date.today + 2.week)
+          @ogomt_shift2b = FactoryBot.create(:ongoing_training,
+                                             training_date_id: @ogomt_shift_date2.id,
+                                             user_id: @senior_user.id, is_trainer: false)
+          @ogomt_shift_date3 = FactoryBot.create(:training_date, shift_date: Date.today + 3.week)
+          @ogomt_shift3 = FactoryBot.create(:ongoing_training,
+                                            training_date_id: @ogomt_shift_date3.id,
+                                            user_id: nil, is_trainer: false)
+          _(@senior_user.can_select_ongoing_training(@ogomt_shift3.shift_date)).must_equal false
         end
       end
-
 
       it "can pick up to 5 shifts in round 1" do
         @sys_config.bingo_start_date = @round1_sr_date
