@@ -367,6 +367,9 @@ class User < ActiveRecord::Base
     all_shifts = self.shifts
 
     msg << "You are currently in <strong>round #{round}</strong>." if round < 5
+    msg << "Today is: #{Date.today}"
+    msg << "Bingo Start: #{HostConfig.bingo_start_date}"
+
     if has_holiday == true
       msg << "A <strong>Holiday Shift</strong> has been selected." #if round < 5
     else
@@ -513,6 +516,7 @@ class User < ActiveRecord::Base
       msg << "#{self.trainer_shift_count} trainer shifts selected"
     end
 
+    msg << "Bingo Date: #{HostConfig.bingo_start_date + day_offset.days}."
     case round
       when 0
         msg << "No Selections Until #{HostConfig.bingo_start_date + day_offset.days}."
