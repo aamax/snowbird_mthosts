@@ -329,20 +329,21 @@ class ShiftsHelperTest < ActionView::TestCase
         end
 
         it 'can pick if OGOMT trainee shift' do
-          @sys_config.bingo_start_date = @round1_date
+          @sys_config.bingo_start_date = @round1_sr_date
           @sys_config.save!
           shift_date = @ogomt_shift1.shift_date
+
           _(@senior_user.can_select_ongoing_training(shift_date)).must_equal true
           _(@newer_user.can_select_ongoing_training(shift_date)).must_equal false
           _(@middle_user.can_select_ongoing_training(shift_date)).must_equal false
 
-          @sys_config.bingo_start_date = @round1_date - 1.day
+          @sys_config.bingo_start_date = @round1_sr_date - 1.day
           @sys_config.save!
           _(@senior_user.can_select_ongoing_training(shift_date)).must_equal true
           _(@middle_user.can_select_ongoing_training(shift_date)).must_equal true
           _(@newer_user.can_select_ongoing_training(shift_date)).must_equal false
 
-          @sys_config.bingo_start_date = @round1_date - 2.days
+          @sys_config.bingo_start_date = @round1_sr_date - 2.days
           @sys_config.save!
           _(@senior_user.can_select_ongoing_training(shift_date)).must_equal true
           _(@middle_user.can_select_ongoing_training(shift_date)).must_equal true

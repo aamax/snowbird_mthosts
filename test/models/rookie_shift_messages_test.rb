@@ -31,10 +31,22 @@ class RookieMessageTest < ActiveSupport::TestCase
     create_t1_shifts
     create_t2andt3_shifts
     create_t4_shifts
-    @rookie_user.shifts << Shift.where("short_name = 'T1'").first
-    @rookie_user.shifts << Shift.where("short_name = 'T2'").first
-    @rookie_user.shifts << Shift.where("short_name = 'T3'").first
-    @rookie_user.shifts << Shift.where("short_name = 'T4'").first
+
+    shift = Shift.where("short_name = 'T1' and user_id is null").first
+    shift.user_id = @rookie_user.id
+    shift.save
+
+    shift =  Shift.where("short_name = 'T2' and user_id is null").first
+    shift.user_id = @rookie_user.id
+    shift.save
+
+    shift =  Shift.where("short_name = 'T3' and user_id is null").first
+    shift.user_id = @rookie_user.id
+    shift.save
+
+    shift =  Shift.where("short_name = 'T4' and user_id is null").first
+    shift.user_id = @rookie_user.id
+    shift.save
   end
 
   def create_late_season_tours
@@ -148,6 +160,7 @@ class RookieMessageTest < ActiveSupport::TestCase
     select_rookie_training_shifts
 
     msgs = @rookie_user.shift_status_message
+
     msgs.include?("You are currently in <strong>round 0</strong>.").must_equal true
     msgs.include?("You have 8 of 8 shifts selected").must_equal true
     msgs.include?("You have selected all your training shifts").must_equal true
@@ -160,6 +173,10 @@ class RookieMessageTest < ActiveSupport::TestCase
 
     last_date = Shift.maximum(:shift_date) + 1.day
     FactoryBot.create(:shift, shift_date: last_date, shift_type_id: ShiftType.find_by(short_name: 'P2').id)
+
+    (1..20).each do |d|
+      FactoryBot.create(:shift, shift_date: last_date + d.days, shift_type_id: @g1.id)
+    end
 
     Shift.all.each do |s|
       if s.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user))
@@ -196,11 +213,18 @@ class RookieMessageTest < ActiveSupport::TestCase
     @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 2)
     @sys_config.save
     select_rookie_training_shifts
+    last_date = @rookie_user.shifts.last.shift_date
+
+    (1..20).each do |d|
+      FactoryBot.create(:shift, shift_date: last_date + d.days, shift_type_id: @g1.id)
+    end
+
     Shift.all.each do |s|
       if s.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user))
         @rookie_user.shifts << s
       end
     end
+
     @rookie_user.shifts.count.must_equal 18
     msgs = @rookie_user.shift_status_message
     msgs.include?("You have selected all your training shifts").must_equal true
@@ -212,6 +236,10 @@ class RookieMessageTest < ActiveSupport::TestCase
     @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 3)
     @sys_config.save
     select_rookie_training_shifts
+    last_date = @rookie_user.shifts.last.shift_date
+    (1..20).each do |d|
+      FactoryBot.create(:shift, shift_date: last_date + d.days, shift_type_id: @g1.id)
+    end
     Shift.all.each do |s|
       if s.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user))
         @rookie_user.shifts << s
@@ -228,6 +256,10 @@ class RookieMessageTest < ActiveSupport::TestCase
     @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 4)
     @sys_config.save
     select_rookie_training_shifts
+    last_date = @rookie_user.shifts.last.shift_date
+    (1..20).each do |d|
+      FactoryBot.create(:shift, shift_date: last_date + d.days, shift_type_id: @g1.id)
+    end
     Shift.all.each do |s|
       if s.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user))
         @rookie_user.shifts << s

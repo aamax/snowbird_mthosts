@@ -58,9 +58,9 @@ class TeamleaderMessageTest < ActiveSupport::TestCase
       end
     end
 
-    (@teamleader.shifts.count == 52).must_equal true
-    (@teamleader.team_leader_shift_count == 50).must_equal true
+    _(@teamleader.shifts.count).must_equal 53
+    _(@teamleader.team_leader_shift_count).must_equal 51
     msgs = @teamleader.shift_status_message
-    msgs.include?("50 team leader shifts selected").must_equal true
+    _(msgs.include?("51 team leader shifts selected")).must_equal true
   end
 end

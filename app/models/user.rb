@@ -257,14 +257,18 @@ class User < ActiveRecord::Base
   end
 
   def self.get_host_emails_for_date(dt)
-    users = Shift.where(shift_date: dt).map {|s| s.user }
+    users = Shift.where(shift_date: dt).map {|s| s.user }.reject { |e| e.to_s.empty? }
     training_shifts = TrainingDate.where(shift_date: dt).first.ongoing_trainings.where("user_id is not null")
     users.concat training_shifts.map(&:user)
+
     emailaddress = users.map(&:email).join(',')
   end
 
   def can_select_ongoing_training(shift_date)
-    return false if  !(!is_working?(shift_date) && (round1_date < Date.today) && !rookie? && !admin?)
+    return true if admin?
+    return false if  is_working?(shift_date)
+    return false if (round1_date > Date.today)
+    return false if rookie?
 
     if !ongoing_trainer?
       return false if (ongoing_trainings.count > 0)
