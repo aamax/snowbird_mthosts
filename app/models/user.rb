@@ -385,12 +385,11 @@ class User < ActiveRecord::Base
       rookie_selection_message(all_shifts, round,msg)
     else
       host_selection_message(all_shifts, round, day_offset, msg)
-    end
-
-    if self.has_ongoign_training_shift?
-      msg << "Your Ongoing Training has been scheduled!"
-    else
-      msg << "You still need to schedule your Ongoing Training Shift"
+      if self.has_ongoign_training_shift?
+        msg << "Your Ongoing Training has been scheduled!"
+      else
+        msg << "You still need to schedule your Ongoing Training Shift"
+      end
     end
     msg
   end

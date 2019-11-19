@@ -29,6 +29,12 @@ class OngoingTrainingsController < ApplicationController
   def create
     @user = User.find_by(id: params[:ongoing_training][:user_id])
     user_id = nil
+    training_date = TrainingDate.find_by(id: params['training_date'])
+    if training_date.nil?
+      flash[:alert] = "Error creating training shift: can't find training date id: #{params['training_date']}."
+      redirect_to new_ongoing_training_path
+      return
+    end
     unless @user.nil?
       if @user.is_working?(training_date.shift_date)
         flash[:alert] = "Error creating training shift: Host is already working."
@@ -176,6 +182,6 @@ class OngoingTrainingsController < ApplicationController
     trainer_string = shift.is_trainer ? "Trainer" : "Trainee"
     ShiftLog.create(change_date: DateTime.now, user_id: current_user.id,
                     shift_id: shift.id, action_taken: "Deleted OGOMt Training Shift",
-                    note: "#{current_user.name} Deleted OGOMt Training shift #{shift_str} for user: #{training_user.name} Updated by: #{current_user.name} (#{trainer_string})")
+                    note: "#{current_user.name} Deleted OGOMt Training shift #{shift_str} Updated by: #{current_user.name} (#{trainer_string})")
   end
 end
