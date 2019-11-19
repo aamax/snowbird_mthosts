@@ -1,0 +1,51 @@
+<% if current_user.has_role? :admin %>
+  <h1>Ongoing On Mountain Training Report</h1>
+
+  <h3>Unscheduled Hosts</h3>
+  <table class="table table-striped">
+    <tr>
+      <th>Host Name</th>
+
+    </tr>
+    <% @unscheduled_hosts.each do |host| %>
+      <tr>
+        <td><%= host.name %></td>
+      </tr>
+    <% end %>
+  </table>
+
+  <br/><br/>
+
+  <h3>Last Year Trainings</h3>
+  <table class="table table-striped">
+    <tr>
+      <th>Host Name</th>
+
+    </tr>
+    <% @prev_year_trainings.each do |training| %>
+        <tr>
+          <td><%= training.user.name %></td>
+        </tr>
+    <% end %>
+  </table>
+
+  <br/><br/>
+
+  <h3>This Year Trainings Scheduled</h3>
+  <table class="table table-striped">
+    <tr>
+      <th>Host Name</th>
+      <th>Date</th>
+
+    </tr>
+    <% @curr_year_trainings.each do |training| %>
+
+      <tr>
+        <td><%= training.user.name %></td>
+        <td><%= training.shift_date %></td>
+      </tr>
+    <% end %>
+  </table>
+
+
+<% end %>

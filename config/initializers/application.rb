@@ -9,6 +9,8 @@ HOLIDAYS = [Date.new(2019,12,24),
             Date.new(2020,1,20),
             Date.new(2020,2,17)]
 
+OGOMT_FAKE_DATE = '2019-11-01'
+
 ROOKIE_TOUR_DATE = Date.parse("2020-02-01")
 
 MAX_SURVEY_COUNT = 5
