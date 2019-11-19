@@ -128,24 +128,28 @@ class ReportsController < ApplicationController
     elsif params[:id] == 'ongoing_training_report'
       @prev_year_trainings = []
       OngoingTraining.all.includes(:training_date).each do |training|
-        if training.shift_date == OGOMT_FAKE_DATE
-          @prev_year_trainings << training
+        if (training.shift_date.strftime('%Y-%m-%d') == OGOMT_FAKE_DATE) && !training.user_id.nil?
+          @prev_year_trainings << training.user.name
         end
       end
 
       @curr_year_trainings = []
       OngoingTraining.all.includes(:training_date).includes(:user).each do |training|
-        if (training.shift_date != OGOMT_FAKE_DATE) && (!training.user_id.nil?)
-          @curr_year_trainings << training
+        if (training.shift_date.strftime('%Y-%m-%d') != OGOMT_FAKE_DATE) && (!training.user_id.nil?)
+          @curr_year_trainings << training.user.name
         end
       end
 
       @unscheduled_hosts = []
       User.active_users.includes(:ongoing_trainings).each do |u|
         if u.ongoing_trainings.empty?
-          @unscheduled_hosts << u
+          @unscheduled_hosts << u.name
         end
       end
+
+      @prev_year_trainings.uniq!
+      @curr_year_trainings.uniq!
+      @unscheduled_hosts.uniq!
 
       # TODO sort all arrays by host name and/or shift date ******** <<<<<<<
 

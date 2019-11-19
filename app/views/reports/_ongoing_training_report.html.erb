@@ -1,6 +1,8 @@
 <% if current_user.has_role? :admin %>
   <h1>Ongoing On Mountain Training Report</h1>
 
+  <strong>NOTE:</strong> Date for Fake Training Shifts: <%= OGOMT_FAKE_DATE %><br/><br/>
+
   <h3>Unscheduled Hosts</h3>
   <table class="table table-striped">
     <tr>
@@ -9,7 +11,7 @@
     </tr>
     <% @unscheduled_hosts.each do |host| %>
       <tr>
-        <td><%= host.name %></td>
+        <td><%= host %></td>
       </tr>
     <% end %>
   </table>
@@ -20,11 +22,10 @@
   <table class="table table-striped">
     <tr>
       <th>Host Name</th>
-
     </tr>
     <% @prev_year_trainings.each do |training| %>
         <tr>
-          <td><%= training.user.name %></td>
+          <td><%= training %></td>
         </tr>
     <% end %>
   </table>
@@ -35,14 +36,14 @@
   <table class="table table-striped">
     <tr>
       <th>Host Name</th>
-      <th>Date</th>
+
 
     </tr>
     <% @curr_year_trainings.each do |training| %>
 
       <tr>
-        <td><%= training.user.name %></td>
-        <td><%= training.shift_date %></td>
+        <td><%= training %></td>
+
       </tr>
     <% end %>
   </table>
