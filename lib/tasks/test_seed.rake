@@ -55,6 +55,7 @@ namespace :db do
       @m2 = FactoryBot.create(:shift_type, short_name: 'M2')
       @m3 = FactoryBot.create(:shift_type, short_name: 'M3')
       @m4 = FactoryBot.create(:shift_type, short_name: 'M4')
+      @st = FactoryBot.create(:shift_type, short_name: 'ST')
 
       @start_date = (Date.today()  + 20.days)
       curr_date = @start_date - 1.day

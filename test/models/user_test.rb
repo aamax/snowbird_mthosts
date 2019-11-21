@@ -137,6 +137,13 @@ class UserTest < ActiveSupport::TestCase
 
       @user.tour_ratio.must_equal 75
     end
+
+    it 'tour types are identified' do
+      ShiftType.all.each do |st|
+        ashift = FactoryBot.create(:shift, :shift_type_id => st.id, :shift_date => Date.today - s.days)
+
+      end
+    end
   end
 
   describe "seniority" do

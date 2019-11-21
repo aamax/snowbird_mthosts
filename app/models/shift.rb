@@ -175,8 +175,8 @@ class Shift < ActiveRecord::Base
   end
 
   def is_tour?
-    !/P[1-4]/.match(self.short_name).nil?
-    #['P1','P2','P3','P4'].include? self.short_name
+    !/(P[1-4]|ST)/.match(self.short_name).nil?
+    #['P1','P2','P3','P4','ST'].include? self.short_name
   end
 
   def team_leader?
