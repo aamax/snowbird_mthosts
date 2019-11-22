@@ -74,7 +74,7 @@ class ShiftTest < ActiveSupport::TestCase
       NON_TOUR_TYPES.each do |shift_type|
         shift.shift_type = FactoryBot.create(:shift_type, short_name: shift_type)
         shift.save
-        shift.is_tour?.must_equal false
+        _(shift.is_tour?).must_equal false
       end
     end
   end

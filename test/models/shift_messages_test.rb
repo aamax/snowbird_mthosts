@@ -40,7 +40,6 @@ class UserMessageTest < ActiveSupport::TestCase
     @group3_user.shift_status_message.include?("No Selections Until #{HostUtility.date_for_round(@group3_user, 1)}.").must_equal true
   end
 
-  focus
   def test_after_bingo_messages
     @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@group1_user, 6)
     @sys_config.save
@@ -50,9 +49,8 @@ class UserMessageTest < ActiveSupport::TestCase
         @group1_user.shifts << s
       end
     end
-    binding.pry
 
-    (@group1_user.shifts.count >= 20).must_equal true
+    assert_operator(20, :<, @group1_user.shifts.count)
     msgs = @group1_user.shift_status_message
     msgs.include?("You have at least 20 shifts selected").must_equal true
   end

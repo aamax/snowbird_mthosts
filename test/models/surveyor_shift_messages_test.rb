@@ -73,7 +73,7 @@ class SurveyorMessageTest < ActiveSupport::TestCase
         end
       end
 
-      @surveyor.shifts.count.must_equal 53
+      _(@surveyor.shifts.count).must_equal 52
       @surveyor.survey_shift_count.must_equal 50
       msgs = @surveyor.shift_status_message
       msgs.include?("50 of 5 surveyor shifts selected").must_equal true

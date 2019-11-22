@@ -20,12 +20,12 @@ COTTER_EMAIL = 'jecotterii@gmail.com'
 KATE_EMAIL = 'kmcguinness@snowbird.com'
 
 TOUR_TYPES = %w[P1friday P1weekday P1weekend P2friday P2weekday P2weekend P3friday
-                  P3weekday P3weekend P4friday P4weekday P4weekend]
+                  P3weekday P3weekend P4friday P4weekday P4weekend ST]
 
 NON_TOUR_TYPES = %w[A1 C1weekend C2weekend C3weekend C4weekend F1weekend F2weekend
                       F3weekend F4weekend G1friday G1weekend G2friday G2weekend G3friday
                       G3weekend G4friday G4weekend H1friday H1weekday H1weekend
-                      H2weekend H3weekend H4weekend M1 M2 M3 M4 Race SE SH ST SV T1 T2
+                      H2weekend H3weekend H4weekend M1 M2 M3 M4 Race SE SH SV T1 T2
                       T3 T4 TL TLT TR]
 
 TRAINING_TYPES = %w[T1 T2 T3 T4]

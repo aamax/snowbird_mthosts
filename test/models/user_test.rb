@@ -74,6 +74,8 @@ class UserTest < ActiveSupport::TestCase
     @start_date = (Date.today()  + 20.days)
   end
 
+  # TODO: add ST type to tour count calculation
+
   describe 'tour ratio' do
     before do
       @p2.tasks = "peruvian morning tour"
@@ -140,8 +142,7 @@ class UserTest < ActiveSupport::TestCase
 
     it 'tour types are identified' do
       ShiftType.all.each do |st|
-        ashift = FactoryBot.create(:shift, :shift_type_id => st.id, :shift_date => Date.today - s.days)
-
+        ashift = FactoryBot.create(:shift, :shift_type_id => st.id, :shift_date => Date.today - 5.days)
       end
     end
   end
@@ -381,6 +382,35 @@ class UserTest < ActiveSupport::TestCase
       @user.start_year = Date.today.year
 
       assert_equal false, @user.can_select_ongoing_training(dt)
+    end
+  end
+
+  describe 'ongoing trainings display' do
+    before do
+      @training_date = TrainingDate.create(shift_date: Date.today)
+      @last_year_date = TrainingDate.create(shift_date: OGOMT_FAKE_DATE)
+    end
+
+    it 'displays symbol for last year credit' do
+      dt = Date.today
+      FactoryBot.create(:ongoing_training,
+                        training_date_id: @last_year_date.id,
+                        user_id: @user.id,
+                        is_trainer: false)
+      assert_equal 'LY Credit', @user.ongoing_training_display
+    end
+
+    it 'displays symbol for this years scheduled training' do
+      dt = Date.today
+      FactoryBot.create(:ongoing_training,
+                        training_date_id: @training_date.id,
+                        user_id: @user.id,
+                        is_trainer: false)
+      assert_equal 'TY', @user.ongoing_training_display
+    end
+
+    it 'blank if none scheduled' do
+      assert_equal '', @user.ongoing_training_display
     end
   end
 end

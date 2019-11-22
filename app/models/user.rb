@@ -127,6 +127,21 @@ class User < ActiveRecord::Base
     self.shifts.where("short_name in ('T1','T2','T3', 'T4')")
   end
 
+  def ongoing_training_display
+    retval = ''
+
+    if self.ongoing_trainings.count > 1
+      retval = self.ongoing_trainings.count
+    elsif self.ongoing_trainings.count == 1
+      if self.ongoing_trainings.first.shift_date.strftime("%Y-%m-%d") == OGOMT_FAKE_DATE
+        retval = 'LY Credit'
+      else
+        retval = 'TY'
+      end
+    end
+    retval
+  end
+
   def team_leaders
     self.shifts.where("shift_type_id in (#{ShiftType.team_lead_type.map(&:id).join(",")})")
   end
