@@ -412,5 +412,9 @@ class UserTest < ActiveSupport::TestCase
     it 'blank if none scheduled' do
       assert_equal '', @user.ongoing_training_display
     end
+
+    it 'shows "rookie" if the user is a rookie' do
+        assert_equal 'rookie', @rookie_user.ongoing_training_display
+    end
   end
 end

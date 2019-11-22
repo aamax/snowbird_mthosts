@@ -129,6 +129,7 @@ class User < ActiveRecord::Base
 
   def ongoing_training_display
     retval = ''
+    return 'rookie' if self.rookie?
 
     if self.ongoing_trainings.count > 1
       retval = self.ongoing_trainings.count
