@@ -194,19 +194,19 @@ class User < ActiveRecord::Base
   end
 
   def shifts_worked
-    worked = shifts
+    worked = shifts_for_credit
     worked = worked.to_a.delete_if {|s| (s.shift_date > Date.today) || (s.shift_status_id == -1) }
     worked
   end
 
   def pending_shifts
-    pending = shifts
+    pending = shifts_for_credit
     pending = pending.to_a.delete_if {|s| (s.shift_date <= Date.today) }
     pending
   end
 
   def missed_shifts
-    missed = shifts
+    missed = shifts_for_credit
     missed = missed.to_a.delete_if {|s| (s.shift_status_id != -1) }
     missed
   end
@@ -306,6 +306,15 @@ class User < ActiveRecord::Base
     shifts.concat user.ongoing_trainings
 
     working_shifts = shifts.flatten.sort {|a,b| a.shift_date <=> b.shift_date }
+  end
+
+  def shifts_for_credit
+    user = User.includes(:shifts).find_by_id(id)
+    shifts = user.shifts.includes(:shift_type).to_a
+    shifts ||= []
+    trainings_for_count = user.ongoing_trainings.to_a.delete_if { |s| !s.is_trainer? }
+    shifts.concat trainings_for_count
+    shifts.flatten.sort {|a,b| a.shift_date <=> b.shift_date }
   end
 
   def get_next_shifts(num)

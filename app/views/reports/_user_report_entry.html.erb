@@ -2,7 +2,7 @@
   <%= link_to object.name, user_path(object) %>
   <br/>(seniority: <%= object.seniority %> )
 </td>
-<td><%= object.shifts.count %> </td>
+<td><%= object.shifts_for_credit.count %> </td>
 <td><%= object.tours.count %></td>
 <td><%= "%.2f" % object.tour_ratio %></td>
 <td><%= object.team_leaders.count %></td>

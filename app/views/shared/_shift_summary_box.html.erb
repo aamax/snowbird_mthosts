@@ -9,13 +9,13 @@
     </tr>
     <tr>
       <td>
-        <strong> <%= user.shifts.count <= 20 ? 20 - user.shifts.count : 0 %> </strong>
+        <strong> <%= user.shifts_for_credit.count <= 20 ? 20 - user.shifts_for_credit.count : 0 %> </strong>
       </td>
       <td>
-        <strong> <%= user.shifts.count %> </strong>
+        <strong> <%= user.shifts_for_credit.count %> </strong>
       </td>
       <td>
-        <strong> <%= user.shifts.to_a.delete_if { |s| s.shift_date > Date.today() }.count %> </strong>
+        <strong> <%= user.shifts_for_credit.to_a.delete_if { |s| s.shift_date > Date.today() }.count %> </strong>
       </td>
       <td>
         <strong> 20 </strong>
