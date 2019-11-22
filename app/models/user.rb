@@ -124,7 +124,7 @@ class User < ActiveRecord::Base
   end
 
   def trainings
-    self.shifts.where("short_name in ('T1','T2','T3')")
+    self.shifts.where("short_name in ('T1','T2','T3', 'T4')")
   end
 
   def team_leaders
