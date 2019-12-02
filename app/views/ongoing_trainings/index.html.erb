@@ -90,7 +90,9 @@
                           ongoing_training, :method => :delete,
                           data: { :confirm => "You sure you want to delete this training shift?" },
                           :title => "Delete #{ongoing_training.id}" %>
-
+              <%= link_to "<i class='icon-eraser btn btn-warning'></i>".html_safe,
+                          "/drop_ongoing_training/#{ongoing_training.id}",
+                          :title => "Drop #{ongoing_training.id}" %>
             </td>
           </tr>
         <% end %>
@@ -129,8 +131,8 @@
           </td>
           <td>
             <%= link_to "<i class='icon-eraser btn btn-danger'></i>".html_safe,
-                        "/drop_ongoing_training/#{ongoing_training.id}",
-                        :title => "Drop #{ongoing_training.id}" %>
+                                                                              "/drop_ongoing_training/#{ongoing_training.id}",
+                                                                              :title => "Drop #{ongoing_training.id}" %>
           </td>
         </tr>
 

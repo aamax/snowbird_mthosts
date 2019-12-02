@@ -1,0 +1,73 @@
+<%= image_tag('header1.jpg', :alt => 'The View From The Peak', :class => 'host_banner_pic')   %>
+<h1>ARCHIVE...</h1>
+
+
+
+<br/>
+
+<div class='myhome_page'>
+  <% unless current_user.supervisor? %>
+    <div class='row'>
+      <div class='span6'>
+        <%= render '/shared/user_profile_box', :user => current_user %>
+        <br/>
+
+        <h3>Safety - Ride Another Day</h3>
+        <iframe width="560" height="315"
+                src="https://www.youtube.com/embed/gtBg54SfrWQ"
+                frameborder="0" gesture="media"
+                allowfullscreen>
+        </iframe>
+
+      </div>
+
+      <div class='span1'>&nbsp;</div>
+
+      <div class='span5'>
+        <%= render '/shared/next_three_shifts', :user => current_user %>
+        <br/>
+        <%= render '/shared/shift_summary_box', :user => current_user %>
+
+        <h3>The 2018 Team</h3>
+        <%= image_tag('hosts_2018.jpg', :alt => '2018 Host Team', :class => 'host_banner_pic')   %>
+
+      </div>
+  <% else %>
+
+    <h3>Safety - Ride Another Day</h3>
+    <iframe width="560" height="315"
+            src="https://www.youtube.com/embed/gtBg54SfrWQ"
+            frameborder="0" gesture="media"
+            allowfullscreen>
+
+    </iframe>
+  <% end %>
+  </div>
+  <br/>
+
+  <div class="row">
+    <h3 class="align-center">Guest Services Videos</h3>
+    <div class="span6">
+      <div style="position:relative;height:0;padding-bottom:56.27%"><iframe src="https://www.youtube.com/embed/2pnzuKEUJig?list=PLD9NRqd7LmSrDaR2QK8nV7dNFGbhKi-MJ&amp;ecver=2" style="position:absolute;width:100%;height:100%;left:0" width="640" height="360" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
+    </div>
+    <div class="span6">
+      <div style="position:relative;height:0;padding-bottom:56.27%"><iframe src="https://www.youtube.com/embed/q8TdojIzw74?list=PLD9NRqd7LmSrDaR2QK8nV7dNFGbhKi-MJ&amp;ecver=2" style="position:absolute;width:100%;height:100%;left:0" width="640" height="360" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
+    </div>
+  </div>
+
+  <br/>
+  <div class="row">
+    <div class='span12'>
+      <%= render '/shared/hosts_working_today', :user => current_user %>
+    </div>
+  </div>
+  <br/>
+
+  <%= image_tag("hosts_2012.jpg", :alt => "2012 mt host crew", :class => "host_banner_pic") %>
+
+</div>
+
+
+
+
+
