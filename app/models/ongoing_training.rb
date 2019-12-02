@@ -34,6 +34,10 @@ class OngoingTraining < ActiveRecord::Base
     ShiftType.find_by(short_name: short_name)
   end
 
+  def meeting?
+    false
+  end
+
   def can_drop(user)
     return true if user.admin?
 
