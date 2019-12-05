@@ -5,6 +5,10 @@
     ** UNSET **
   <% else %>
     <%= @driver.name %>
+    <br/>
+    <% if current_user.admin? %>
+      <a href="/drop_driver/<%= @selected_hauler.id %>" class='hauler_edit_btn btn btn-danger'>Drop</a>
+    <% end %>
   <% end %>
   &nbsp;&nbsp;
   <%= @selected_hauler.driver_admin_button(current_user) %>

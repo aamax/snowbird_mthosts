@@ -4,7 +4,7 @@
     <% @selected_hauler.riders.order(:id).each do |rider| %>
         <tr>
           <td>
-            <% if rider.can_select_rider(current_user) %>
+            <% if !@selected_hauler.driver.nil? && rider.can_select_rider(current_user) %>
                 <a href="/select_rider/<%= rider.id %>" class='hauler_edit_btn btn btn-success'>Select</a>
             <% end %>
             <% if rider.can_drop_rider(current_user) %>

@@ -17,7 +17,8 @@
     <div class="field">
       <strong>Eligible Hosts:</strong>
 
-      <%= select_tag("host", options_from_collection_for_select(@hauler.eligible_drivers, "id", "name")) %>
+      <%= select_tag("host",
+                     options_from_collection_for_select(@hauler.eligible_drivers, "id", "name")) %>
     </div>
 
     <br/><br/>

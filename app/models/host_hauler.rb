@@ -58,15 +58,11 @@ class HostHauler < ActiveRecord::Base
     return retval if self.open_seat_count == 0
 
     rider_list = self.riders.includes(:user).map { |r| r.user } << self.driver
-
-    # binding.pry
-
-
     User.active_users.map {|u| u }.delete_if {|u| rider_list.include?(u)}.sort {|y,x| y.name <=> x.name }
   end
 
   def eligible_drivers
-    User.with_role(:driver).map { |u| u }.sort {|y,x| y.name <=> x.name }
+    drivers = User.with_role(:driver).map { |u| u }.sort {|y,x| y.name <=> x.name }
   end
 
   def open_seat_count
