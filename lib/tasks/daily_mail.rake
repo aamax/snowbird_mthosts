@@ -10,6 +10,7 @@ namespace :daily do
     #   emailaddress += ",aamaxworks@gmail.com"
     # end
 
+
     @subject = "REMINDER: you are scheduled to work at Snowbird tomorrow!"
     @fromaddress = 'no-reply@snowbirdhosts.com'
     @message = "Just a friendly reminder that you are scheduled to work a shift at the Bird tommorrow.  Don't be late!"
