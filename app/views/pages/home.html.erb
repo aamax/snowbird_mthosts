@@ -18,6 +18,14 @@
       </div>
     </div>
   <% end %>
+  <br/>
+  <div class="row">
+    <div class='span12'>
+      <%= render '/shared/hosts_working_today', :user => current_user %>
+    </div>
+  </div>
+  <br/>
+
   <%= render '/shared/twitter_feeds' %>
 
   <div class="row">
