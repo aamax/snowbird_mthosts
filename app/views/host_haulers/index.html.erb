@@ -9,6 +9,10 @@
                     class: "icon-search btn btn-small btn-info"
         %>
         <%= "#{hauler.haul_date} : #{hauler.haul_date.strftime('%A')}" %>
+        &nbsp;
+        (seats: <%= hauler.riders.count %>
+        -
+        open seats: <%= hauler.open_seat_count %>)
       </td>
       <td>
         Driver: <%= hauler.driver_id.nil? ? "UnSet" : hauler.driver.name %>

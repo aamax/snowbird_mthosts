@@ -29,3 +29,5 @@ NON_TOUR_TYPES = %w[A1 C1weekend C2weekend C3weekend C4weekend F1weekend F2weeke
                       T3 T4 TL TLT TR]
 
 TRAINING_TYPES = %w[T1 T2 T3 T4]
+
+HAULER_RIDERS = 13

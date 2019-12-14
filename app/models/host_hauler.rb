@@ -15,7 +15,7 @@ class HostHauler < ActiveRecord::Base
 
   def self.add_hauler(date_value, driver_id = nil)
     hauler = HostHauler.create(haul_date: date_value, driver_id: driver_id)
-    (1..14).each do |number|
+    (1..HAULER_RIDERS).each do |number|
       Rider.create(host_hauler_id: hauler.id)
     end
     hauler
@@ -88,7 +88,7 @@ class HostHauler < ActiveRecord::Base
   end
 
   def remove_empty_seat
-    return if self.open_seat_count == 0
+    return false if self.open_seat_count == 0
     self.riders.each do |seat|
       if seat.user_id.nil?
         seat.delete

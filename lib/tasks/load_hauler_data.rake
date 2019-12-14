@@ -41,6 +41,28 @@ namespace :hauler do
   end
 
   # desc 'remove 14th seat if empty in haulers'
+  task :shorten_vans => :environment do
+    HostHauler.where('haul_date >= ?', Date.today).each do |hauler|
+      while hauler.riders.count > 13
+        if hauler.remove_empty_seat
+          puts "seat removed on #{hauler.haul_date.strftime('%Y-%m-%d')}"
+        else
+          puts "No seats empty on #{hauler.haul_date.strftime('%Y-%m-%d')}"
+          break
+        end
+      end
+      puts "Hauler shortening done."
+      puts "------------------------------------------\n"
+    end
+  end
+
+
+
+
+
+
+
+
   # task :shorten_vans => :environment do
   #   lost_seats = 0
   #   lost_hosts = []
