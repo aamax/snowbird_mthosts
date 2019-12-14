@@ -1,7 +1,7 @@
 <div class="well">
   <h5>RIDERS:</h5>
   <table class="table table-striped">
-    <% @selected_hauler.riders.order(:id).each do |rider| %>
+    <% @selected_hauler.sorted_riders.each do |rider| %>
         <tr>
           <td>
             <% if !@selected_hauler.driver.nil? && rider.can_select_rider(current_user) %>

@@ -25,6 +25,10 @@ class HostHauler < ActiveRecord::Base
     User.find_by(id: driver_id)
   end
 
+  def sorted_riders
+    riders.includes(:user).order('users.name')
+  end
+
   def driver_admin_button(current_user)
     return "" unless current_user.has_role? :driver
 

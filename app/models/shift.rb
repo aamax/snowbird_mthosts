@@ -340,6 +340,10 @@ class Shift < ActiveRecord::Base
 
   end
 
+  def self.shifts_for_date(shift_date)
+    Shift.where("shift_date = '#{shift_date}'").includes(:user).order('users.name')
+  end
+
   # def can_select_2016(test_user)
   #   retval = false
   #   if self.user_id.nil?
