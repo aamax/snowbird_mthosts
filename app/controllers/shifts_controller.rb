@@ -217,7 +217,7 @@ class ShiftsController < ApplicationController
 
     if params[:date]
       @datevalue = params[:date].to_date
-      @shifts = Shift.where("shift_date = ?", @datevalue)
+      @shifts = Shift.where("shift_date = ?", @datevalue).includes(:user).order('users.name')
 
       #if @datevalue >= HostSite::season_start
       #  @shifts = Shift.where("shift_date = ?", params[:date])
