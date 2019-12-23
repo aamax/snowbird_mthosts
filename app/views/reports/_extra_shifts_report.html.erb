@@ -1,0 +1,80 @@
+<h1>Hosts Over 20</h1>
+<table class="table-striped">
+  <tr>
+    <th>Name</th>
+    <th># Shifts</th>
+    <th></th>
+  </tr>
+
+  <% User.active_users.each do |host| %>
+    <% if !(host.trainer? || host.ongoing_trainer?) && (host.shifts_for_analysis.count > 20) %>
+      <tr>
+        <td>
+          <%= host.name %>
+        </td>
+        <td>
+          <%= host.shifts_for_analysis.count %>
+        </td>
+        <td>
+
+        </td>
+      </tr>
+      <tr>
+        <td></td><td></td>
+        <td>
+          <table class="table-striped">
+            <tr>
+              <th>
+                 Shifts
+              </th>
+              <th></th>
+              <th></th>
+            </tr>
+            <% host.shifts_for_analysis.each_with_index do |shift, idx| %>
+              <tr>
+                <td><%= idx + 1 %></td>
+                <td>
+                  <%= shift.shift_date %>
+                </td>
+                <td>&nbsp;&nbsp;</td>
+                <td>
+                  <%= shift.short_name %>
+                </td>
+                <td>
+                </td>
+              </tr>
+              <tr>
+                <td></td><td></td><td></td><td></td>
+                <td>
+                  <table class="table-striped">
+                    <%
+                      shift.shift_logs.each do |shift_log|
+                      next if shift_log.action_taken.include?('OGOMt')
+                    %>
+                      <tr>
+                        <td>
+                          <%= shift_log.change_date %>
+                        </td>
+                        <td>
+                          <%= shift_log.action_taken %>
+                        </td>
+                        <td>
+                          <%= shift_log.note %>
+                        </td>
+                      </tr>
+                    <% end %>
+                  </table>
+                </td>
+              </tr>
+
+
+              </tr>
+
+            <% end %>
+          </table>
+        </td>
+      </tr>
+
+    <% end %>
+  <% end %>
+</table>

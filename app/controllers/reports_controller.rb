@@ -154,6 +154,9 @@ class ReportsController < ApplicationController
       # TODO sort all arrays by host name and/or shift date ******** <<<<<<<
 
       @report = params[:id]
+    elsif params[:id] == 'extra_shifts_report'
+      @report = 'extra_shifts_report'
+
     end
   end
 

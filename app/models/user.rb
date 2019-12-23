@@ -317,6 +317,13 @@ class User < ActiveRecord::Base
     shifts.flatten.sort {|a,b| a.shift_date <=> b.shift_date }
   end
 
+  def shifts_for_analysis
+    user = User.includes(:shifts).find_by_id(id)
+    shifts = user.shifts.includes(:shift_type).to_a
+    shifts ||= []
+    shifts.flatten.sort {|a,b| a.shift_date <=> b.shift_date }
+  end
+
   def get_next_shifts(num)
     working_shifts = get_working_shifts
     working_shifts.delete_if {|s| s.shift_date < Date.today }
