@@ -118,6 +118,9 @@ class MailController < ApplicationController
       when 'ROOKIES'
         users = User.rookies
         users << User.find_by_name('John Cotter')
+      when 'SURVEYORS'
+        users = User.active_users.with_role(:surveyor)
+        users << User.find_by_name('John Cotter')
       when 'GROUP1'
         users = User.group1
         users << User.find_by_name('John Cotter')
