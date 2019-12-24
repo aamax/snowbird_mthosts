@@ -156,7 +156,13 @@ class ReportsController < ApplicationController
       @report = params[:id]
     elsif params[:id] == 'extra_shifts_report'
       @report = 'extra_shifts_report'
-
+      @target_hosts = User.active_users.map do |host|
+        if !(host.trainer? || host.ongoing_trainer?) && (host.shifts_for_analysis.count > 20)
+          host
+        else
+          nil
+        end
+      end.compact
     end
   end
 

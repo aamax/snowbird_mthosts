@@ -1,84 +1,50 @@
-<h1>Hosts Over 20</h1>
-<table class="table-striped">
-  <tr>
-    <th>Name</th>
-    <th># Shifts</th>
-    <th></th>
-  </tr>
 
-  <% User.active_users.each do |host| %>
-    <% if !(host.trainer? || host.ongoing_trainer?) && (host.shifts_for_analysis.count > 20) %>
+<% if @target_hosts.count == 0 %>
+  <strong>No target hosts over 20 shifts...</strong>
+<% else %>
+  <h2>Hosts Over 20</h2>
+  <% @target_hosts.each do |host| %>
+    <table class="table-striped">
       <tr>
-        <td>
-          <%= host.name %>
-        </td>
-        <td>
-          <%= host.shifts_for_analysis.count %>
-        </td>
-        <td>
-
-        </td>
+        <th><%= link_to host.name, user_path(host.id), target: :blank %></th>
+        <th>&nbsp;&nbsp;</th>
+        <th>[<%= host.shifts_for_analysis.count %>]</th>
       </tr>
-      <tr>
-        <td></td><td></td>
-        <td>
+    </table>
+
+    <% host.shifts_for_analysis.each_with_index do |shift, idx| %>
+      <div class="row">
+        <div class="span1">
+          <%= idx + 1 %>
+        </div>
+        <div class="span2">
+          <%= shift.shift_date %>
+        </div>
+        <div class="span1">
+          <%= shift.short_name %>
+        </div>
+        <div class="span8">
           <table class="table-striped">
-            <tr>
-              <th>
-                 Shifts
-              </th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th style="text-align: center">
-                LOGS
-              </th>
-            </tr>
-            <% host.shifts_for_analysis.each_with_index do |shift, idx| %>
+            <%
+              shift.shift_logs.each do |shift_log|
+                next if shift_log.action_taken.include?('OGOMt') %>
               <tr>
-                <td><%= idx + 1 %></td>
                 <td>
-                  <%= shift.shift_date %>
-                </td>
-                <td>&nbsp;&nbsp;</td>
-                <td>
-                  <%= shift.short_name %>
+                  <%= shift_log.change_date %>
                 </td>
                 <td>
+                  <%= shift_log.action_taken %>
                 </td>
-              </tr>
-              <tr>
-                <td></td><td></td><td></td><td></td>
                 <td>
-                  <table class="table-striped">
-                    <%
-                      shift.shift_logs.each do |shift_log|
-                      next if shift_log.action_taken.include?('OGOMt')
-                    %>
-                      <tr>
-                        <td>
-                          <%= shift_log.change_date %>
-                        </td>
-                        <td>
-                          <%= shift_log.action_taken %>
-                        </td>
-                        <td>
-                          <%= shift_log.note %>
-                        </td>
-                      </tr>
-                    <% end %>
-                  </table>
+                  <%= shift_log.note %>
                 </td>
               </tr>
-
-
-              </tr>
-
             <% end %>
           </table>
-        </td>
-      </tr>
-
+        </div>
+      </div>
+      <hr/>
     <% end %>
+    <hr/>
   <% end %>
-</table>
+<% end %>
