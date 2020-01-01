@@ -28,4 +28,13 @@ class UserMailer < ActionMailer::Base
           :body => message)
   end
 
+  def send_shift_change_email(toaddress, fromaddress, subject, message)
+    @user = toaddress
+    mail( :bcc => toaddress,
+          :from => fromaddress,
+          :reply_to => fromaddress,
+          :subject => subject,
+          :body => message)
+  end
+
 end

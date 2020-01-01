@@ -88,6 +88,7 @@ class ShiftsController < ApplicationController
     s.user_id = nil
     s.save
 
+    send_shift_change_email('dropped', s)
     redirect_to :back
   end
 
@@ -101,6 +102,8 @@ class ShiftsController < ApplicationController
       redirect_to "/shifts", :alert => "Sorry - this shift has already been taken. Please try a different shift"
       return
     end
+
+    send_shift_change_email('selected', s)
 
     redirect_to :back
   end
@@ -135,6 +138,9 @@ class ShiftsController < ApplicationController
       flash[:success] = "Shift updated."
       log_shift_update(previous_user_id, @shift, current_user)
       redirect_to shifts_path #+ "?" + strParams
+
+      send_shift_change_email('updated', @shift)
+
       return
     else
       @title = "Edit Shift"
@@ -306,5 +312,18 @@ class ShiftsController < ApplicationController
     ShiftLog.create(change_date: DateTime.now, user_id: user.id,
                 shift_id: shift_id, action_taken: "Failed Updating Shift",
                 note: "#{user.name} FAILED TO UPDATE shift #{shift_str} set from: #{prev_user_name} with hash: #{shift_hash.inspect}")
+  end
+
+  def send_shift_change_email(operation, shift)
+    # TODO - no op for now... implement cleanly when you have time
+
+
+    # @subject = "One of your shifts has changed (#{operation})"
+    # @fromaddress = 'no-reply@snowbirdhosts.com'
+    # @message = "Your #{shift.short_name} shift on #{shift.shift_date} has changed.  [#{operation}]"
+    # emailaddress = 'aamaxworks@gmail.com'
+    #
+    # msg = UserMailer.send_shift_change_email(emailaddress, @fromaddress, @subject, @message)
+    # msg.deliver unless msg.nil?
   end
 end

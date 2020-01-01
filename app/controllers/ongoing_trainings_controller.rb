@@ -44,9 +44,9 @@ class OngoingTrainingsController < ApplicationController
       if params[:ongoing_training][:is_trainer] == '1'
         if !@user.ongoing_trainer?
           flash[:alert] = "Error creating training shift: Host must be a Trainer to take this shift."
+          redirect_to new_ongoing_training_path
+          return
         end
-        redirect_to new_ongoing_training_path
-        return
       end
       user_id = @user.id
     end

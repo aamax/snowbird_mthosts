@@ -19,6 +19,9 @@
               <a href="/set_rider_to_host/<%= rider.id %>" class="hauler_edit_btn btn btn-info">
                 <i class="icon-wrench"></i>
               </a>
+              <% if !rider.user.nil? && rider.user.is_working?(@selected_hauler.haul_date) %>
+                <strong>working</strong>
+              <% end %>
             </td>
           <% end %>
         </tr>
