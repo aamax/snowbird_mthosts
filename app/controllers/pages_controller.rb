@@ -33,8 +33,6 @@ class PagesController < ApplicationController
           @mt_conditions << { label: condition.css('.sb-condition_label').text.strip,
                               value: condition.css('.sb-condition_value').text.strip }
         end
-
-
         render "/pages/#{pg_id}"
       end
     else

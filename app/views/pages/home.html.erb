@@ -21,45 +21,58 @@
   <br/>
 
   <button type="button" class="btn" data-toggle="collapse" data-target="#twitter_data">
-    <h4>Expand Twitter Feeds:</h4>&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
+    <h4>Twitter Feeds:</h4>&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
   </button>
 
   <button type="button" class="btn" data-toggle="collapse" data-target="#snow_report">
     <h4>Weather and Mountain Reports:</h4>&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
   </button>
 
+  <button type="button" class="btn" data-toggle="collapse" data-target="#hosts_working_today">
+    <h4>Hosts Working Next 3 Days</h4>&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
+  </button>
+
+  <button type="button" class="btn" data-toggle="collapse" data-target="#video_section">
+    <h4>Host & Team Videos</h4>&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
+  </button>
+
   <%= render '/shared/snow_report' %>
   <%= render '/shared/twitter_feeds' %>
 
-  <div class="row">
-    <div class='span12'>
-      <%= render '/shared/hosts_working_today', :user => current_user %>
+  <div id="hosts_working_today" class="collapse out">
+    <div class="row">
+      <div class='span12'>
+        <%= render '/shared/hosts_working_today', :user => current_user %>
+      </div>
     </div>
   </div>
   <br/>
 
+  <div id="video_section" class="collapse out">
+    <div class="row">
+      <div class="span4">
+        <iframe src="https://www.youtube.com/embed/gtBg54SfrWQ"
+                frameborder="0" gesture="media"
+                allowfullscreen>
+        </iframe>
+      </div>
+
+      <div class="span4">
+        <div style="position:relative;height:0;padding-bottom:56.27%"><iframe src="https://www.youtube.com/embed/2pnzuKEUJig?list=PLD9NRqd7LmSrDaR2QK8nV7dNFGbhKi-MJ&amp;ecver=2" style="position:absolute;width:100%;height:100%;left:0" width="640" height="360" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
+      </div>
+
+      <div class="span4">
+          <div style="position:relative;height:0;padding-bottom:56.27%"><iframe src="https://www.youtube.com/embed/q8TdojIzw74?list=PLD9NRqd7LmSrDaR2QK8nV7dNFGbhKi-MJ&amp;ecver=2" style="position:absolute;width:100%;height:100%;left:0" width="640" height="360" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
+      </div>
+    </div>
+  </div>
+
   <div class="row">
-    <div class="span4">
-      <iframe src="https://www.youtube.com/embed/gtBg54SfrWQ"
-              frameborder="0" gesture="media"
-              allowfullscreen>
-      </iframe>
-    </div>
-
-    <div class="span4">
-      <div style="position:relative;height:0;padding-bottom:56.27%"><iframe src="https://www.youtube.com/embed/2pnzuKEUJig?list=PLD9NRqd7LmSrDaR2QK8nV7dNFGbhKi-MJ&amp;ecver=2" style="position:absolute;width:100%;height:100%;left:0" width="640" height="360" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
-    </div>
-
-    <div class="span4">
-        <div style="position:relative;height:0;padding-bottom:56.27%"><iframe src="https://www.youtube.com/embed/q8TdojIzw74?list=PLD9NRqd7LmSrDaR2QK8nV7dNFGbhKi-MJ&amp;ecver=2" style="position:absolute;width:100%;height:100%;left:0" width="640" height="360" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
+    <div class="span12">
+      <h3>The 2018 Team</h3>
+      <%= image_tag('hosts_2018.jpg', :alt => '2018 Host Team', :class => 'host_banner_pic')   %>
     </div>
   </div>
-<div class="row">
-  <div class="span12">
-    <h3>The 2018 Team</h3>
-    <%= image_tag('hosts_2018.jpg', :alt => '2018 Host Team', :class => 'host_banner_pic')   %>
-  </div>
-</div>
 
 </div>
 
