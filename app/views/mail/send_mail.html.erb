@@ -1,4 +1,10 @@
 <h1>Create Email Message</h1>
+<div id="flash_notice">
+  <div class="alert alert-success">
+    <a class="close" data-dismiss="alert">×</a>
+    Your eMail is being sent.  Please wait...
+  </div>
+</div>
 
 <%= form_for(:mailmessage, :url => deliver_mail_path) do |f| %>
    
@@ -31,7 +37,17 @@
   </div>
 
   <div class="actions">
-    <%= f.submit('Send Email') %>
+    <%= f.submit('Send Email', id: 'mail_submit_btn', onclick: 'submitMail()') %>
   </div>
 
 <% end %>
+<script type="text/javascript">
+    document.getElementById("flash_notice").style.display = "none";
+
+    function submitMail() {
+        var btn = document.getElementById("mail_submit_btn");
+        btn.style.display = "none";
+        var flash = document.getElementById("flash_notice");
+        flash.style.display = "block";
+    };
+</script>
