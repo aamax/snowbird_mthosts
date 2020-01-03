@@ -1,0 +1,49 @@
+<div id="snow_report" class="collapse out">
+  <div class="well">
+    <div class="row">
+      <div class="span12">
+        <h3>Snow & Mountain Report</h3>
+        <strong>Last Updated At: </strong> <%= @update_date %>
+        <hr/>
+        <table class='table-striped span12'>
+          <tr>
+            <% @mt_conditions[0..4].each do |condition| %>
+              <td class="span2 snow_label">
+                <%= condition[:label] %>
+              </td>
+            <% end %>
+          </tr>
+          <tr>
+            <% @mt_conditions[0..4].each do |condition| %>
+              <td class="span2 snow_value">
+                <%= condition[:value] %>
+              </td>
+            <% end %>
+          </tr>
+          <tr><td colspan="5" class="snow_blank_row">&nbsp;</td></tr>
+          <tr>
+            <% @mt_conditions[5..7].each do |condition| %>
+              <td class="span2 snow_label">
+                <%= condition[:label] %>
+              </td>
+            <% end %>
+            <td class="span2 snow_label" colspan="2">
+              <%= @mt_conditions[8][:label] %>
+            </td>
+          </tr>
+          <tr>
+            <% @mt_conditions[5..7].each do |condition| %>
+              <td class="span2 snow_value">
+                <%= condition[:value] %>
+              </td>
+            <% end %>
+            <td class="span2 snow_value" colspan="2">
+              <%= @mt_conditions[8][:value] %>
+            </td>
+          </tr>
+        </table>
+
+      </div>
+    </div>
+  </div>
+</div>

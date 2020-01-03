@@ -19,14 +19,24 @@
     </div>
   <% end %>
   <br/>
+
+  <button type="button" class="btn" data-toggle="collapse" data-target="#twitter_data">
+    <h4>Expand Twitter Feeds:</h4>&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
+  </button>
+
+  <button type="button" class="btn" data-toggle="collapse" data-target="#snow_report">
+    <h4>Weather and Mountain Reports:</h4>&nbsp;&nbsp;<i class='icon-collapse icon-large icon-white'></i>
+  </button>
+
+  <%= render '/shared/snow_report' %>
+  <%= render '/shared/twitter_feeds' %>
+
   <div class="row">
     <div class='span12'>
       <%= render '/shared/hosts_working_today', :user => current_user %>
     </div>
   </div>
   <br/>
-
-  <%= render '/shared/twitter_feeds' %>
 
   <div class="row">
     <div class="span4">

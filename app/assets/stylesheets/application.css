@@ -17,4 +17,20 @@
     color: red;
 }
 
+.snow_label {
+    font-weight: bold;
+    font-size: medium;
+    text-align: center;
+    height: 2em;
+}
 
+.snow_value {
+    font-weight: lighter;
+    font-size: x-large;
+    text-align: center;
+    height: 2em;
+}
+
+.snow_blank_row {
+    height: 5em;
+}
