@@ -14,7 +14,7 @@ namespace :daily do
 
     @subject = "REMINDER: you are scheduled to work at Snowbird tomorrow!"
     @fromaddress = 'no-reply@snowbirdhosts.com'
-    @message = "Just a friendly reminder that you are scheduled to work a shift at the Bird tommorrow.  Don't be late!"
+    @message = "Just a friendly reminder that you are scheduled to work a shift at the Bird tomorrow.  Don't be late!"
 
     # if emailaddress.blank?
     #   @subject = "NO EMAILS TO SEND WORK NOTICE TO"
