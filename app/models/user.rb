@@ -195,7 +195,9 @@ class User < ActiveRecord::Base
 
   def shifts_worked
     worked = shifts_for_credit
-    worked = worked.to_a.delete_if {|s| (s.shift_date > Date.today) || (s.shift_status_id == -1) }
+    worked = worked.to_a.delete_if { |s|
+      (s.shift_date > Date.today) || (s.shift_status_id == -1)
+    }
     worked
   end
 

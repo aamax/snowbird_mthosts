@@ -34,6 +34,10 @@ class OngoingTraining < ActiveRecord::Base
     ShiftType.find_by(short_name: short_name)
   end
 
+  def shift_status_id
+    0
+  end
+
   def meeting?
     false
   end

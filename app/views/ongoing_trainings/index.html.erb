@@ -106,7 +106,7 @@
 
 <div class="row">
 <div class="well span5">
-  <h1>Training Schedule</h1>
+  <h1>User Training Schedule</h1>
     <% if !current_user.has_ongoing_training_shift? %>
       <%= link_to "<i class='icon-plus btn btn-primary'> &nbsp;&nbsp;Select Trainings Page</i>".html_safe,
                 '/select_ongoing_training',
@@ -139,6 +139,57 @@
       <% end %>
       </tbody>
     </table>
+
+  <hr/>
+
+  <% if current_user.has_role?(:ongoing_trainer) || current_user.has_role?(:admin) %>
+        <h3>Full Training Schedule</h3>
+        <ul>
+          <table class="table table-striped">
+            <% @training_dates.where("shift_date > '#{Date.today.strftime('%Y-%m-%d')}'").each do |training_date| %>
+              <tr>
+                <th>
+                  <li>
+                    <strong><%= training_date.shift_date %> <br/></strong>
+                  </li>
+                </th>
+              </tr>
+              <tr>
+                <td>
+                  <table class="table">
+                    <tr>
+                      <th class="span3">
+                        Trainers
+                      </th>
+                      <th class="span6">
+                        Hosts
+                      </th>
+                    </tr>
+                    <tr>
+                      <td>
+                        <ul>
+                          <% training_date.trainers.each do |u| %>
+                            <li><%= u.nil? ? '---' : u.name %></li>
+                          <% end %>
+                        </ul>
+                      </td>
+                      <td>
+                        <ul>
+                          <% training_date.trainees.each do |u| %>
+                            <li><%= u.nil? ? '---' : u.name %></li>
+                          <% end %>
+                        </ul>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            <% end %>
+          </table>
+        </ul>
+
+  <% end %>
+
 </div>
 <div class="well span6">
   <%=
