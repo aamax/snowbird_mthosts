@@ -37,6 +37,7 @@
 #
 
 
+# noinspection RubyInterpreter
 class User < ActiveRecord::Base
   include HostConfig
   rolify
@@ -450,6 +451,10 @@ class User < ActiveRecord::Base
 
   def last_name
     self.name.split(' ')[1..self.name.length].join(' ')
+  end
+
+  def self.sort_value(user)
+    user.nil? ? '' : user.name
   end
 
   def self.populate_meetings

@@ -11,7 +11,7 @@ class UserMailer < ActionMailer::Base
     end
 
     @user = toaddress
-    mail( :bcc => toaddress,
+    mail( :cc => toaddress,
           :from => fromaddress,
           :reply_to => fromaddress,
           :subject => subject,
@@ -21,7 +21,7 @@ class UserMailer < ActionMailer::Base
   def send_daily_email(toaddress, fromaddress, subject, message)
     # puts "\nPARAMS:\nto: #{toaddress}\nfrom: #{fromaddress}\nsubj: #{subject}\nmsg: #{message}\n\n"
     @user = toaddress
-    mail( :bcc => toaddress,
+    mail( :cc => toaddress,
           :from => fromaddress,
           :reply_to => fromaddress,
           :subject => subject,
@@ -30,7 +30,7 @@ class UserMailer < ActionMailer::Base
 
   def send_shift_change_email(toaddress, fromaddress, subject, message)
     @user = toaddress
-    mail( :bcc => toaddress,
+    mail( :cc => toaddress,
           :from => fromaddress,
           :reply_to => fromaddress,
           :subject => subject,

@@ -31,7 +31,7 @@ class TrainingDate < ActiveRecord::Base
     ongoing_trainings.each do |t|
       users << t.user unless t.is_trainer?
     end
-    users
+    users.sort { |a,b| User.sort_value(a) <=> User.sort_value(b) }
   end
 
   def trainers
@@ -39,7 +39,7 @@ class TrainingDate < ActiveRecord::Base
     ongoing_trainings.each do |t|
       users << t.user if t.is_trainer?
     end
-    users
+    users.sort { |a,b| User.sort_value(a) <=> User.sort_value(b) }
   end
 
   def trainee_shifts_open

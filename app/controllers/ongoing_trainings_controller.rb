@@ -16,8 +16,9 @@ class OngoingTrainingsController < ApplicationController
   respond_to :html, :json, :js
 
   def index
-    @ongoing_trainings = OngoingTraining.includes(:training_date).includes(:user).to_a.sort { |a,b| a.shift_date <=> b.shift_date }
-    @training_dates = TrainingDate.all
+    @ongoing_trainings = OngoingTraining.includes(:training_date).includes(:user).to_a
+                             .sort { |a,b| a.shift_date <=> b.shift_date }
+    @training_dates = TrainingDate.all.order(shift_date: :asc)
   end
 
   def new

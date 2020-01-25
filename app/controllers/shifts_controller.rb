@@ -44,11 +44,10 @@ class ShiftsController < ApplicationController
                           "shifts_i_can_pick" => current_user.has_role?(:admin) ? '0' : '1',
                           'shifttype' => "", 'dayofweek' => {}, "hosts" => {},
                           "date" => '', "date_for_calendar" => Date.today.strftime("%Y-%m-%d")
-
     }
 
     @shifts = Shift.get_shifts_for_index(current_user, @return_params,
-                                         form_filters).paginate(:page => params[:page], :per_page => per_page)
+      form_filters).paginate(:page => params[:page], :per_page => per_page)
     @shifts
   end
 

@@ -65,6 +65,10 @@ class Shift < ActiveRecord::Base
     where('distinct on (shift_date) shift_date, shift_type_id')
   }
 
+  def self.sort_value(shift)
+
+  end
+
   def self.assign_team_leaders(params)
     days = {'monday' => 1, 'tuesday' => 2, 'wednesday' => 3, 'thursday' => 4, 'friday' => 5, 'saturday' => 6, 'sunday' => 7}
     params.each do |day_str, user_name|

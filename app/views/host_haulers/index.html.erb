@@ -22,7 +22,7 @@
         <td colspan="2">
           <% if hauler.has_riders? %>
             <ul>
-              <% hauler.riders.each do |rider| %>
+              <% hauler.riders.sort { |a,b| User.sort_value(a.user) <=> User.sort_value(b.user) }.each do |rider| %>
                 <% if !rider.user_id.nil? %>
                   <li><%= rider.user.name %></li>
                 <% end %>

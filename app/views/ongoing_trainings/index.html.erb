@@ -150,7 +150,12 @@
               <tr>
                 <th>
                   <li>
-                    <strong><%= training_date.shift_date %> <br/></strong>
+                    <strong><%= training_date.shift_date %> &nbsp;&nbsp;&nbsp;
+                      <a href="/send_mail/OGOMT_THIS_DATE/?date=<%= training_date.shift_date %>"
+                         class='btn btn-info btn-small'>
+                        <i class='icon-envelope'></i> &nbsp;&nbsp;&nbsp; eMail Hosts
+                      </a>
+                      <br/></strong>
                   </li>
                 </th>
               </tr>

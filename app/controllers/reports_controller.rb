@@ -41,11 +41,11 @@ class ReportsController < ApplicationController
       #@hosts = User.group3.sort {|a, b| a.name <=> b.name} + User.group2.sort {|a, b| a.name <=> b.name} +
       #    User.group1.sort {|a, b| a.name <=> b.name} + User.rookies.sort {|a, b| a.name <=> b.name}
       users = User.includes(:shifts).active_users
-      users.map do |u|
-        name_array = u.name.split(' ')
-        u.name = "#{name_array[-1]}, #{name_array[0..-2].join(' ')}"
-      end
-      @hosts = users.sort { |a, b| a.name <=> b.name }
+      # users.map do |u|
+      #   name_array = u.name.split(' ')
+      #   u.name = "#{name_array[-1]}, #{name_array[0..-2].join(' ')}"
+      # end
+      @hosts = users.sort { |a, b| User.sort_value(a) <=> User.sort_value(b) }
       @hosts.delete_if {|h| h.email == COTTER_EMAIL }
 
       if params['filter'] && (params['filter']['Seniority'] || params['filter']['team_leaders'])
@@ -114,12 +114,14 @@ class ReportsController < ApplicationController
       end
       report_year = @years.last
       if params[:report_year].nil?
-        @shifts = Shift.includes(:user, :shift_type).order(:shift_date)
+        @shifts = Shift.includes(:user, :shift_type).order(shift_date: :asc, short_name: :asc)
       else
         report_year = params[:report_year].to_i
         start_year = "#{report_year}-09-01"
         end_year = "#{report_year + 1}-09-01"
-        @shifts = Shift.unscoped.includes(:user, :shift_type).where("shift_date between '#{start_year}' and '#{end_year}'").order(:shift_date)
+        @shifts = Shift.unscoped.includes(:user, :shift_type)
+                      .where("shift_date between '#{start_year}' and '#{end_year}'")
+                      .order(shift_date: :asc, short_name: :asc)
       end
       @report_year = report_year
     elsif params[:id] == 'shift_log_review'
@@ -151,7 +153,10 @@ class ReportsController < ApplicationController
       @curr_year_trainings.uniq!
       @unscheduled_hosts.uniq!
 
-      # TODO sort all arrays by host name and/or shift date ******** <<<<<<<
+      @prev_year_trainings.sort!
+      @curr_year_trainings.sort!
+      @unscheduled_hosts.sort!
+
 
       @report = params[:id]
     elsif params[:id] == 'extra_shifts_report'
@@ -162,7 +167,7 @@ class ReportsController < ApplicationController
         else
           nil
         end
-      end.compact
+      end.compact.sort { |a,b| User.sort_value(a) <=> User.sort_value(b) }
     end
   end
 

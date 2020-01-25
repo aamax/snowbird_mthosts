@@ -145,7 +145,11 @@ class MailController < ApplicationController
       when 'THIS_DATE'
         users = Shift.where(shift_date: params[:date]).map {|s| s.user }
         users << User.find_by_name('John Cotter')
-      when 'hauler'
+    when 'OGOMT_THIS_DATE'
+      # assumes there is only one training date per params[:date]...  TODO: revisit this when refactoring for future use
+        users = TrainingDate.where(shift_date: params[:date]).map { |t| t.ongoing_trainings }.first.map { |u| u.user }
+        users << User.find_by_name('John Cotter')
+    when 'hauler'
         hauler = HostHauler.find_by(id: params[:id])
         users = hauler.riders.map {|r| r.user.nil? ? nil : r.user }.compact
         users << hauler.driver
