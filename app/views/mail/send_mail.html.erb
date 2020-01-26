@@ -7,13 +7,20 @@
 </div>
 
 <%= form_for(:mailmessage, :url => deliver_mail_path) do |f| %>
-   
+
+
   <div class="readonlyfield">
     <%= f.label "TO:" %>
-    <%= f.text_area :toaddress, :value => @emailaddress,
-                      :readonly => true,
- 					  :style=>'width: 700px;',
+    <% if current_user.has_role? :admin %>
+      <%= f.text_area :toaddress, :value => @emailaddress,
+                      :style=>'width: 700px;',
                       :placeholder => 'Send To' %>
+    <% else %>
+      <%= f.text_area :toaddress, :value => @emailaddress,
+                      :readonly => true,
+                      :style=>'width: 700px;',
+                      :placeholder => 'Send To' %>
+  <% end %>
   </div>
 
   <div class="readonlyfield">
