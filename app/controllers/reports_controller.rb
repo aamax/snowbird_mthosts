@@ -144,8 +144,8 @@ class ReportsController < ApplicationController
 
       @unscheduled_hosts = []
       User.active_users.includes(:ongoing_trainings).each do |u|
-        if u.ongoing_trainings.empty?
-          @unscheduled_hosts << u.name
+        if u.ongoing_trainings.empty? && !u.rookie?
+          @unscheduled_hosts << { name: u.name, id: u.id }
         end
       end
 
@@ -155,8 +155,7 @@ class ReportsController < ApplicationController
 
       @prev_year_trainings.sort!
       @curr_year_trainings.sort!
-      @unscheduled_hosts.sort!
-
+      @unscheduled_hosts.sort_by! { |h| h[:name] }
 
       @report = params[:id]
     elsif params[:id] == 'extra_shifts_report'

@@ -11,7 +11,7 @@
     </tr>
     <% @unscheduled_hosts.each do |host| %>
       <tr>
-        <td><%= host %></td>
+        <td><%= link_to host[:name], "/users/#{host[:id]}" %></td>
       </tr>
     <% end %>
   </table>
