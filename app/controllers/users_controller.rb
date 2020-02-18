@@ -79,6 +79,7 @@ class UsersController < ApplicationController
     @users = User.includes(:shifts, :roles).active_users.order(:name).to_a
 
     @leaders =  User.includes(:shifts).active_users.order(:name).to_a.delete_if {|u| !u.team_leader? }.delete_if {|u| u.supervisor? }
+    @drivers = User.includes(:shifts).active_users.order(:name).to_a.delete_if { |u| !u.driver? }
     @trainers = User.includes(:shifts).active_users.order(:name).to_a.delete_if {|u| !u.has_role? :trainer}.delete_if {|u| u.supervisor? }
     @surveyors = User.includes(:shifts).active_users.order(:name).to_a.delete_if {|u| !u.has_role? :surveyor}.delete_if {|u| u.supervisor? }
     @admins = User.includes(:shifts).active_users.order(:name).to_a.delete_if {|u| !u.has_role? :admin}

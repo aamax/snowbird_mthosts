@@ -7,6 +7,7 @@
       Team leaders: <%= @leaders.length %><br/>
       Trainers: <%= @trainers.length %><br/>
       Surveyors: <%= @surveyors.length %><br/>
+      Drivers: <%= @drivers.length %><br/>
       Ongoing On Mt Trainers: <%= @ogom_trainers.length %><br/>
 
       Regular: <%= @regular.length %><br/>
@@ -29,6 +30,16 @@
       <tbody>
 
       <%= render partial: 'user_group_display', locals: {collection: @leaders} %>
+
+      </tbody>
+    </table>
+    <hr/>
+
+    <h1>Drivers (<%= @drivers.count %>)</h1>
+    <table class='table table-striped'>
+      <tbody>
+
+      <%= render partial: 'user_group_display', locals: { collection: @drivers } %>
 
       </tbody>
     </table>
