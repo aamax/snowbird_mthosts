@@ -29,6 +29,8 @@ class PagesController < ApplicationController
         conditions = doc.css('.sb-condition-small')
 
         @mt_conditions = []
+
+
         conditions.each do |condition|
           @mt_conditions << { label: condition.css('.sb-condition_label').text.strip,
                               value: condition.css('.sb-condition_value').text.strip }
