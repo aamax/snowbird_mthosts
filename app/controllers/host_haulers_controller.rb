@@ -119,4 +119,12 @@ class HostHaulersController < ApplicationController
       redirect_to "/hauler_scheduler"
     end
   end
+
+  def delete_all_entries
+    HostHauler.all.each do |hauler|
+      hauler.destroy
+    end
+    flash[:notice] = "Hauler schedule cleared."
+    redirect_to :back
+  end
 end

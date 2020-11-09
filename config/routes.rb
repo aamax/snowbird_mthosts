@@ -41,6 +41,7 @@ Mthost::Application.routes.draw do
   get '/set_start_year/:year', :to => "users#set_start_year"
   get '/clear_assignments', :to => "users#clear_assignments"
   get '/delete_shifts', :to => "shifts#delete_shifts"
+  get '/delete_hauler_entries', :to => "host_haulers#delete_all_entries"
   get '/reset_confirms_and_passwords', :to => "users#reset_confirms_and_passwords"
   get '/init_confirmations', :to => "users#init_confirmations"
   get '/init_meetings', :to => "users#init_meetings"

@@ -23,7 +23,7 @@ gem 'activerecord-deprecated_finders'
 
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-gem "pg", "~> 0.18"   # gem "pg", ">= 0.14.1"
+gem "pg", "~> 0.20.0" #0.18"   # gem "pg", ">= 0.14.1"
 gem "capybara", ">= 2.0.2", :group => :test
 gem "devise", ">= 2.2.3"
 gem "cancancan"
@@ -59,6 +59,7 @@ group :development do
 end
 
 group :test, :development do
+  gem "minitest-global_expectations"
   gem "ansi"
   gem 'minitest-rails'
   gem "minitest-rails-capybara"

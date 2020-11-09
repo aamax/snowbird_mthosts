@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ShiftsHelperTest < ActionView::TestCase
+class ShiftsHelperTestDisabled < ActionView::TestCase
 
   before do
     @sys_config = SysConfig.first

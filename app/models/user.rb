@@ -415,17 +415,17 @@ class User < ActiveRecord::Base
       msg << "NOTE:  You still need a <strong>Holiday Shift</strong>"
     end
 
-    if self.rookie?
-      rookie_training_message(all_shifts, round, msg)
-      rookie_selection_message(all_shifts, round,msg)
-    else
+    # if self.rookie?
+    #   rookie_training_message(all_shifts, round, msg)
+    #   rookie_selection_message(all_shifts, round,msg)
+    # else
       host_selection_message(all_shifts, round, day_offset, msg)
-      if self.has_ongoign_training_shift?
-        msg << "Your Ongoing Training has been scheduled!"
-      else
-        msg << "You still need to schedule your Ongoing Training Shift"
-      end
-    end
+      # if self.has_ongoign_training_shift?
+      #   msg << "Your Ongoing Training has been scheduled!"
+      # else
+      #   msg << "You still need to schedule your Ongoing Training Shift"
+      # end
+    # end
     msg
   end
 
@@ -487,9 +487,17 @@ class User < ActiveRecord::Base
   end
 
   def self.reset_all_accounts
-    User.active_users.each do |u|
+    User.all.each do |u|
+      if !u.active_user?
+        u.remove_role :admin
+        u.remove_role :team_leader
+        u.remove_role :trainer
+        u.remove_role :surveyor
+        u.remove_role :driver
+        u.remove_role :ongoing_trainer
+      end
       u.confirmed = false
-      u.password = '5teep&Deep'
+      u.password = DEFAULT_PASSWORD
       u.save
     end
   end

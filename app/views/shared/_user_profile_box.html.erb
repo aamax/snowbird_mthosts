@@ -33,21 +33,8 @@
           <%= user.city %> <%= user.city.blank? ? " #{user.state} #{user.zip}" : ", #{user.state} #{user.zip}" %><br/><br/>
 
           Shifts Selected: <%= user.shifts_for_credit.count %>  <br/>
-          Tour Ratio:
-          <% if user.tour_ratio > 50 %>
-              <span class="bad_ratio"><%= user.tour_ratio.round(2) %></span>
-          <% else %>
-              <%= user.tour_ratio.round(2) %>
-          <% end %>
-          <br/>
           Seniority: <%= user.seniority %><br/>
           Start Year:  <%= user.snowbird_start_year %> <br/><br/>
-          <% if user.has_ongoing_training_shift? %>
-            Hosts Ongoing On Mt Training obligation is met.
-          <% else %>
-            <strong>Host Still Needs to Schedule an Ongoing On Mt Training Shift.</strong>
-          <% end %><br/>
-
           <% if user.roles.length > 0 %>
               <br/>
               Roles:

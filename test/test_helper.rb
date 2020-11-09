@@ -52,7 +52,8 @@ ENV["RAILS_ENV"] = "test"
 Rails.env = 'test'
 require File.expand_path('../../config/environment', __FILE__)
 
-require "minitest/autorun"
+# require "minitest/autorun"
+require 'minitest/global_expectations/autorun'
 require "rails/test_help"
 require "minitest/rails"
 require "active_support/testing/setup_and_teardown"

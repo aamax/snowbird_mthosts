@@ -1,9 +1,8 @@
 require 'csv'
 
-DEFAULT_PASSWORD = "password"
 
 namespace :db do
-  desc "load all data"
+  desc "load all 2019 data"
   task :load_all_data => :environment do
     ActiveRecord::Base.transaction do
       # clear all data
@@ -166,6 +165,7 @@ namespace :db do
         next if (m.short_name == 'M1' || m.short_name == 'M3') && !u.rookie?
 
         s_date = Date.parse(MEETINGS[m.short_name])
+
         new_shift = Shift.create(:user_id=>u.id,
                                  :shift_type_id=>m.id,
                                  :shift_date=>s_date,

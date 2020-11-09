@@ -6,7 +6,7 @@
 
     <li><%= link_to "Shifts", shifts_path %></li>
 
-    <li><%= link_to "Training", ongoing_trainings_path %></li>
+<!--    <li><%#=# link_to "Training", ongoing_trainings_path %></li>-->
 
     <li><%= link_to "HostHauler", '/hauler_scheduler' %></li>
 
@@ -145,6 +145,9 @@
                               data: {confirm: "You sure you want to clear the assignments?"} %></li>
               <li><%= link_to "DELETE All Shifts", "/delete_shifts",
                               data: {confirm: "You sure you want to delete all shifts?"} %></li>
+            <li><%= link_to "DELETE All Host Hauler Entries", "/delete_hauler_entries",
+                            data: {confirm: "You sure you want to delete all of the hauler entries?"} %></li>
+
               <li><%= link_to "Set all Hosts As Rookies", "/set_start_year/#{SysConfig.first.season_year}",
                               data: {confirm: "You sure you want to reset all the host seniorities?"} %></li>
               <li><%= link_to "Set all Hosts As Group 3 (Newer)", "/set_start_year/#{SysConfig.first.group_3_year}",
