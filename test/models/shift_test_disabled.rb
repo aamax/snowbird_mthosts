@@ -16,7 +16,7 @@
 
 require "test_helper"
 
-class ShiftTest < ActiveSupport::TestCase
+class ShiftTestDisabled < ActiveSupport::TestCase
   before do
     @sys_config = SysConfig.first
     @p1 = ShiftType.find_by_short_name('P1')

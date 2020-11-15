@@ -315,8 +315,8 @@ class User < ActiveRecord::Base
     user = User.includes(:shifts).find_by_id(id)
     shifts = user.shifts.includes(:shift_type).to_a
     shifts ||= []
-    trainings_for_count = user.ongoing_trainings.to_a.delete_if { |s| !s.is_trainer? }
-    shifts.concat trainings_for_count
+    # trainings_for_count = user.ongoing_trainings.to_a.delete_if { |s| !s.is_trainer? }
+    # shifts.concat trainings_for_count
     shifts.flatten.sort {|a,b| a.shift_date <=> b.shift_date }
   end
 
@@ -351,9 +351,9 @@ class User < ActiveRecord::Base
 
   def get_day_offset
     retval = 0
-    if self.group_2?
+    if self.group_3? || self.group_2?
       retval = 1
-    elsif self.group_3? || self.rookie?
+    elsif self.rookie?
       retval = 2
     end
     retval
@@ -402,30 +402,14 @@ class User < ActiveRecord::Base
     day_offset = get_day_offset
     num_selected = self.get_working_shifts.length
     round = HostUtility.get_current_round(HostConfig.bingo_start_date, Date.today, self)
-    has_holiday = has_holiday_shift?
     all_shifts = self.shifts
 
     msg << "You are currently in <strong>round #{round}</strong>." if round < 5
     msg << "Today is: #{Date.today}"
     msg << "Bingo Start: #{HostConfig.bingo_start_date}"
 
-    if has_holiday == true
-      msg << "A <strong>Holiday Shift</strong> has been selected." #if round < 5
-    else
-      msg << "NOTE:  You still need a <strong>Holiday Shift</strong>"
-    end
+    host_selection_message(all_shifts, round, day_offset, msg)
 
-    # if self.rookie?
-    #   rookie_training_message(all_shifts, round, msg)
-    #   rookie_selection_message(all_shifts, round,msg)
-    # else
-      host_selection_message(all_shifts, round, day_offset, msg)
-      # if self.has_ongoign_training_shift?
-      #   msg << "Your Ongoing Training has been scheduled!"
-      # else
-      #   msg << "You still need to schedule your Ongoing Training Shift"
-      # end
-    # end
     msg
   end
 
@@ -554,29 +538,16 @@ class User < ActiveRecord::Base
   end
 
   def host_selection_message(all_shifts, round, day_offset, msg)
-    if self.surveyor?
-      msg << "#{self.survey_shift_count} of 5 surveyor shifts selected"
-    end
-
     if self.team_leader?
       msg << "#{self.team_leader_shift_count} team leader shifts selected"
     end
 
-    if self.trainer?
-      msg << "#{self.trainer_shift_count} trainer shifts selected"
-    end
-
-    msg << "Bingo Date: #{HostConfig.bingo_start_date + day_offset.days}."
     case round
       when 0
         msg << "No Selections Until #{HostConfig.bingo_start_date + day_offset.days}."
-      when 1..4
-        trshifts = 0
-        if self.trainer?
-          trshifts = self.shifts.to_a.delete_if {|sh| !sh.trainer? }.count
-        end
-        limit = round * 5 + 2 + trshifts
-        limit = 20 if limit > 20
+      when 1..3
+        limit = round * 5 + 2
+        limit = 18 if limit > 18
 
         if all_shifts.count < limit
           msg << "#{all_shifts.count} of #{limit} Shifts Selected.  You need to pick #{limit - all_shifts.count}"
@@ -584,10 +555,10 @@ class User < ActiveRecord::Base
           msg << "All required shifts selected for round #{round}. (#{all_shifts.count} of #{limit})"
         end
       else
-        if all_shifts.count < 20
-          msg << "#{all_shifts.count} of 20 Shifts Selected.  You need to pick #{20 - all_shifts.count}"
+        if all_shifts.count < 18
+          msg << "#{all_shifts.count} of 18 Shifts Selected.  You need to pick #{18 - all_shifts.count}"
         else
-          msg << "You have at least 20 shifts selected"
+          msg << "You have at least 18 shifts selected"
         end
     end
   end

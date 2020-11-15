@@ -195,6 +195,10 @@ class Shift < ActiveRecord::Base
     (self.short_name == "SV")
   end
 
+  def on_call?
+    (self.short_name == 'OC')
+  end
+
   def training?
     !/T[1-4]/.match(self.short_name).nil?
   end
@@ -208,69 +212,145 @@ class Shift < ActiveRecord::Base
   end
 
   def can_select(test_user, select_params)
-    retval = true
-
-  end
-
-  def can_select_2019(test_user, select_params)
     retval = false
     return false if (self.shift_date < Date.today) && !test_user.has_role?(:admin)
     return false if disabled?
-    if self.user_id.nil?
-      return true if test_user.has_role? :admin
 
+    if self.user_id.nil?
+      return true if test_user.admin?
+      return false if test_user.is_working?(self.shift_date)
+      return false if self.team_leader? && !test_user.team_leader?
+
+      round = select_params[:round]
+      return false if (round <= 0) && !test_user.team_leader?
       all_shifts =  select_params[:all_shifts] #test_user.shifts.to_a
+      return false if (round <= 3) && (all_shifts.count >= 18)
+      bingo_start = select_params[:bingo_start]
+      shift_count = select_params[:shift_count]
       working_shifts =  select_params[:working_shifts] #test_user.shifts.to_a.delete_if {|s| s.meeting? }
 
-      return false if test_user.is_working?(self.shift_date)
-      return true if test_user.admin?
-      return false if self.team_leader? && !test_user.team_leader?
-      return false if self.trainer? && !test_user.trainer?
-      return false if self.training? && !test_user.rookie?
-
-      bingo_start = select_params[:bingo_start] #HostConfig.bingo_start_date
-      round = select_params[:round] #HostUtility.get_current_round(bingo_start, Date.today, test_user)
-      shift_count = select_params[:shift_count] #working_shifts.count
-
-      if self.survey?
-        return false if !test_user.surveyor?
-        return false if (round < 5) && (test_user.survey_shift_count >= MAX_SURVEY_COUNT)
-        return true if self.survey?
-      end
-
-      return false if (round <= 4) && (all_shifts.count >= 20)
-      return true if test_user.team_leader?
-      return false if (round <= 0) && (!test_user.rookie? && !test_user.trainer? && !test_user.surveyor?)
-
-      if test_user.rookie?
-        return false if test_user.check_training_shifts(self) == false
-        if self.is_tour?
-          return false if (self.shift_date < rookie_tour_date(bingo_start))
+      if test_user.team_leader?
+        # if prior to end of bingo...
+        if round <= 3
+          if shift_count <= 6
+            if self.team_leader?
+              return true
+            else
+              return false
+            end
+          else
+            if self.on_call?
+              return true
+            else
+              return false
+            end
+          end
+        else
+          # after bingo
+          return true
         end
+      elsif test_user.group_1? || test_user.group_2? || test_user.group_3?
+        counts = Hash.new 0
+        working_shifts.map(&:short_name).each {|s| counts[s] += 1 }
+        a1_count = counts['A1']
+        oc_count = counts['OC']
+        return false if (round >= 1) && (a1_count < 6) && (self.short_name != 'A1')
 
-        if round <= 0
-          return false if shift_count >= 4
-        elsif round < 5
-          return false if ((shift_count) >= (round * 5) + 4)
+        if round <= 3
+          return false if ((round <= 3) and (a1_count < 6) and (self.short_name != 'A1'))
+
+          if round == 1
+            return false if ((self.short_name != 'A1') || (working_shifts.count >= 5)) && (a1_count >= 5)
+            return true
+          elsif round == 2
+            return false if (self.short_name != 'A1') && (a1_count < 6)
+            return false if (self.short_name == 'OC') && ((oc_count >= 4) || (test_user.shifts.count >= 12))
+            return false if (self.short_name == 'A1') && (a1_count >= 6)
+            return true
+          elsif round == 3
+            return false if (a1_count >= 6) && (oc_count >= 10)
+            return false if (a1_count >= 6) && (self.short_name == 'A1')
+
+          else
+            return true
+          end
+
+
+        else
+          return true
         end
       else
-        if round < 5
-          if test_user.trainer?
-            return true if self.trainer?
-            working_list_count = working_shifts.delete_if {|s| s.trainer? }.count
-            return false if (working_list_count >= (round * 5))
-          elsif test_user.surveyor?
-              working_list_count = working_shifts.delete_if {|s| s.survey? }.count
-              return false if (working_list_count >= (round * 5))
-          else
-            return false if (shift_count >= (round * 5))
-          end
-        end
+        return false
       end
+
       retval = true
     end
     retval
   end
+  # puts "round: #{round} sn: #{self.short_name} shifts: #{shift_count} wshifts: #{working_shifts.map(&:short_name)} bingo: #{bingo_start}  today: #{Date.today}  sdate: #{self.shift_date}"
+  # puts "TEST: #{(self.short_name != 'A1') || (working_shifts.count >= 5)}"
+
+  # puts "s: #{self.short_name}  a1: #{a1_count}   oc: #{oc_count}  #{(self.short_name != 'A1') && (a1_count < 6)}   #{(self.short_name == 'OC') && (working_shifts.count >= 10)}"
+
+  # def can_select_2019(test_user, select_params)
+  #   retval = false
+  #   return false if (self.shift_date < Date.today) && !test_user.has_role?(:admin)
+  #   return false if disabled?
+  #   if self.user_id.nil?
+  #     return true if test_user.has_role? :admin
+  #
+  #     all_shifts =  select_params[:all_shifts] #test_user.shifts.to_a
+  #     working_shifts =  select_params[:working_shifts] #test_user.shifts.to_a.delete_if {|s| s.meeting? }
+  #
+  #     return false if test_user.is_working?(self.shift_date)
+  #     return true if test_user.admin?
+  #     return false if self.team_leader? && !test_user.team_leader?
+  #     return false if self.trainer? && !test_user.trainer?
+  #     return false if self.training? && !test_user.rookie?
+  #
+  #     bingo_start = select_params[:bingo_start] #HostConfig.bingo_start_date
+  #     round = select_params[:round] #HostUtility.get_current_round(bingo_start, Date.today, test_user)
+  #     shift_count = select_params[:shift_count] #working_shifts.count
+  #
+  #     if self.survey?
+  #       return false if !test_user.surveyor?
+  #       return false if (round < 5) && (test_user.survey_shift_count >= MAX_SURVEY_COUNT)
+  #       return true if self.survey?
+  #     end
+  #
+  #     return false if (round <= 4) && (all_shifts.count >= 20)
+  #     return true if test_user.team_leader?
+  #     return false if (round <= 0) && (!test_user.rookie? && !test_user.trainer? && !test_user.surveyor?)
+  #
+  #     if test_user.rookie?
+  #       return false if test_user.check_training_shifts(self) == false
+  #       if self.is_tour?
+  #         return false if (self.shift_date < rookie_tour_date(bingo_start))
+  #       end
+  #
+  #       if round <= 0
+  #         return false if shift_count >= 4
+  #       elsif round < 5
+  #         return false if ((shift_count) >= (round * 5) + 4)
+  #       end
+  #     else
+  #       if round < 5
+  #         if test_user.trainer?
+  #           return true if self.trainer?
+  #           working_list_count = working_shifts.delete_if {|s| s.trainer? }.count
+  #           return false if (working_list_count >= (round * 5))
+  #         elsif test_user.surveyor?
+  #             working_list_count = working_shifts.delete_if {|s| s.survey? }.count
+  #             return false if (working_list_count >= (round * 5))
+  #         else
+  #           return false if (shift_count >= (round * 5))
+  #         end
+  #       end
+  #     end
+  #     retval = true
+  #   end
+  #   retval
+  # end
 
   def can_drop(current_user)
     return false if self.user_id.nil?
@@ -297,13 +377,13 @@ class Shift < ActiveRecord::Base
       else
         @shifts = @shifts.includes(:shift_type).where("id in (#{return_params['selectable_shifts'].keys.join(',')})")
       end
-      # @shifts = @shifts.includes(:shift_type).order(:shift_date, :short_name)
-      @shifts = @shifts.includes(:shift_type).order(:shift_date, :short_name)
+      # @shifts = @shifts.includes(:shift_type).order(:shift_date, :short_name, :updated_at desc)
+      # @shifts = @shifts.includes(:shift_type).order(:shift_date, :short_name, updated_at: :desc)
     else
       # @shifts = @shifts.includes(:user).includes(:shift_type).order(:shift_date, :short_name)
-      @shifts = @shifts.includes(:shift_type).order(:shift_date, :short_name)
+      # @shifts = @shifts.includes(:shift_type).order(:shift_date, :short_name, updated_at: :desc)
     end
-    @shifts
+    @shifts.includes(:shift_type).order(:shift_date, :short_name, updated_at: :asc)
   end
 
   def self.populate_selectable_flag_for_shifts(current_user, return_params)

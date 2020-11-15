@@ -63,28 +63,18 @@ module HostUtility
     return 0 if dt < bingo_start
 
     day_count = (dt - bingo_start).to_i
+    return 4 if day_count > 6
 
-    return 5 if day_count >= 6
-    round_num = (day_count / 2).to_i + 1
-    group_num = (day_count % 2).to_i
-
-    return round_num if (round_num >= 4) || (usr.group_1?)
-
-    if round_num == 3
-      return round_num
-    else
-      return round_num if usr.group_2? && (group_num >= 1)
-      return round_num if (usr.group_3? || usr.rookie?) && (group_num >= 2)
-      return (round_num - 1)
-    end
+    return (day_count / 2).to_i + 1 if usr.group_1?
+    return (day_count / 2).to_i + (day_count % 2)
   end
 
   def self.date_for_round(user, round_num)
-    num_days = (round_num - 1) * 3
+    num_days = (round_num - 1) * 2
     dt = HostConfig.bingo_start_date + num_days.days
-    if user.rookie? || user.group_3?
-      dt += 2.days
-    elsif user.group_2?
+    if user.rookie?
+      dt += 1.days
+    elsif user.group_2? || user.group_3?
       dt += 1.day
     end
     dt
@@ -92,10 +82,10 @@ module HostUtility
 
   def self.bingo_start_for_round(user, num)
     num_rounds = num - 1
-    dt = Date.today - (num_rounds * 3).days
+    dt = Date.today - (num_rounds * 2).days
 
     if user.rookie? || user.group_3?
-      dt -= 2.days
+      dt -= 1.days
     elsif user.group_2?
       dt -= 1.day
     end

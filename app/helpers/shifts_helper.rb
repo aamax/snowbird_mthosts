@@ -20,6 +20,6 @@ module ShiftsHelper
   end
 
   def getSelectedShifts(adate)
-    Shift.where("shift_date = ? and user_id is null", adate).count
+    Shift.where("shift_date = ? and user_id is null and ((disabled = false) OR (disabled is NULL))", adate).count
   end
 end

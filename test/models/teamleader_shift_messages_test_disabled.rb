@@ -15,6 +15,7 @@ class TeamleaderMessageTest < ActiveSupport::TestCase
     end
   end
 
+
   def test_show_teamleader_shift_count_pre_bingo
     @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@teamleader, 0)
     @sys_config.save
@@ -25,14 +26,14 @@ class TeamleaderMessageTest < ActiveSupport::TestCase
       end
     end
 
-    assert_equal(9, @teamleader.shifts.count)
-    assert_equal(7, @teamleader.team_leader_shift_count)
+    (@teamleader.shifts.count == 20).must_equal true
+    (@teamleader.team_leader_shift_count == 18).must_equal true
     msgs = @teamleader.shift_status_message
-    msgs.include?("7 team leader shifts selected").must_equal true
+    msgs.include?("18 team leader shifts selected").must_equal true
   end
 
-  def test_show_shift_count_in_round_3
-    @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@teamleader, 3)
+  def test_show_shift_count_in_round_4
+    @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@teamleader, 4)
     @sys_config.save
 
     Shift.all.each do |s|
@@ -41,10 +42,10 @@ class TeamleaderMessageTest < ActiveSupport::TestCase
       end
     end
 
-    assert_equal(9, @teamleader.shifts.count)
-    assert_equal(7, @teamleader.team_leader_shift_count)
+    (@teamleader.shifts.count == 20).must_equal true
+    (@teamleader.team_leader_shift_count == 18).must_equal true
     msgs = @teamleader.shift_status_message
-    msgs.include?("7 team leader shifts selected").must_equal(true, "#{msgs} was supposed to include: [7 team leader shifts selected]")
+    msgs.include?("18 team leader shifts selected").must_equal true
   end
 
   def test_show_shift_count_post_bingo
@@ -57,9 +58,9 @@ class TeamleaderMessageTest < ActiveSupport::TestCase
       end
     end
 
-    assert_equal(77, @teamleader.shifts.count)
-    assert_equal(75, @teamleader.team_leader_shift_count)
+    _(@teamleader.shifts.count).must_equal 52
+    _(@teamleader.team_leader_shift_count).must_equal 50
     msgs = @teamleader.shift_status_message
-    msgs.include?("75 team leader shifts selected").must_equal(true, "#{msgs} was supposed to include: [75 team leader shifts selected]")
+    _(msgs.include?("50 team leader shifts selected")).must_equal true
   end
 end

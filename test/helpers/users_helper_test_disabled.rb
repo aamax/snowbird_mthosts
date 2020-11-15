@@ -2,17 +2,32 @@ require "test_helper"
 
 # user picks shadow and round 1.  drop shadow.  message says pick shadow shifts
 
-class UsersHelperTest < ActionView::TestCase
+class UsersHelperTestDisabled < ActionView::TestCase
   before do
     @sys_config = SysConfig.first
+    @rookie_user = User.find_by_name('rookie')
     @group1_user = User.find_by_name('g1')
     @group2_user = User.find_by_name('g2')
     @group3_user = User.find_by_name('g3')
     @team_leader = User.find_by_name('teamlead')
 
     @tl = ShiftType.find_by_short_name('TL')
-    @a1 = ShiftType.find_by_short_name('A1')
-    @oc = ShiftType.find_by_short_name('OC')
+    @sh = ShiftType.find_by_short_name('SH')
+
+    @p1 = ShiftType.find_by_short_name('P1')
+    @p2 = ShiftType.find_by_short_name('P2')
+    @p3 = ShiftType.find_by_short_name('P3')
+    @p4 = ShiftType.find_by_short_name('P4')
+    @g1 = ShiftType.find_by_short_name('G1weekend')
+    @g2 = ShiftType.find_by_short_name('G2weekend')
+    @g3 = ShiftType.find_by_short_name('G3weekend')
+    @g4 = ShiftType.find_by_short_name('G4weekend')
+    @g5 = ShiftType.find_by_short_name('G5')
+    @c1 = ShiftType.find_by_short_name('C1')
+    @c2 = ShiftType.find_by_short_name('C2')
+    @c3 = ShiftType.find_by_short_name('C3')
+    @c4 = ShiftType.find_by_short_name('C4')
+    @bg = ShiftType.find_by_short_name('BG')
 
     @start_date = (Date.today()  + 20.days)
   end
