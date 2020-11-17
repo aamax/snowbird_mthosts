@@ -16,8 +16,6 @@ class ShiftsHelperTest < ActionView::TestCase
     Timecop.return
     Timecop.freeze(Date.parse("#{Date.today.year}-10-01"))
 
-
-
     @start_date = (Date.today() + 20.days)
 
     @pre_bingo_date = Date.today() + 1.day
@@ -98,7 +96,12 @@ class ShiftsHelperTest < ActionView::TestCase
       HostUtility.get_current_round(@start_date,
                                     Date.today() + 26.days, @senior_user).must_equal 4
       HostUtility.get_current_round(@start_date,
-                                    Date.today() + 45.days, @senior_user).must_equal 4
+                                    Date.today() + 27.days, @senior_user).must_equal 4
+
+      HostUtility.get_current_round(@start_date,
+                                    Date.today() + 28.days, @senior_user).must_equal 5
+      HostUtility.get_current_round(@start_date,
+                                    Date.today() + 38.days, @senior_user).must_equal 5
     end
 
     it 'sets round correctly for junior users' do
@@ -121,7 +124,11 @@ class ShiftsHelperTest < ActionView::TestCase
       HostUtility.get_current_round(@start_date,
                                     Date.today() + 26.days, @middle_user).must_equal 3
       HostUtility.get_current_round(@start_date,
-                                    Date.today() + 45.days, @middle_user).must_equal 4
+                                    Date.today() + 27.days, @middle_user).must_equal 4
+      HostUtility.get_current_round(@start_date,
+                                    Date.today() + 28.days, @middle_user).must_equal 4
+      HostUtility.get_current_round(@start_date,
+                                    Date.today() + 45.days, @middle_user).must_equal 5
     end
 
     it 'sets round correctly for freshmen users' do
@@ -144,7 +151,11 @@ class ShiftsHelperTest < ActionView::TestCase
       HostUtility.get_current_round(@start_date,
                                     Date.today() + 26.days, @newer_user).must_equal 3
       HostUtility.get_current_round(@start_date,
-                                    Date.today() + 45.days, @newer_user).must_equal 4
+                                    Date.today() + 27.days, @middle_user).must_equal 4
+      HostUtility.get_current_round(@start_date,
+                                    Date.today() + 28.days, @middle_user).must_equal 4
+      HostUtility.get_current_round(@start_date,
+                                    Date.today() + 45.days, @newer_user).must_equal 5
     end
   end
 
@@ -191,7 +202,7 @@ class ShiftsHelperTest < ActionView::TestCase
         assert_equal(9, @team_leader.shifts.count)
       end
 
-      it 'can select 9 OC shifts before bingo end (after TLs)' do
+      it 'can select 10 OC shifts before bingo end (after TLs)' do
         # add 7 TL shifts to team leader
         for s in 1..7 do
           s_date = Date.today() + s.days
@@ -205,7 +216,7 @@ class ShiftsHelperTest < ActionView::TestCase
         assert_equal(9, @team_leader.shifts.count)
 
         Shift.all.each do |s|
-          if @team_leader.shifts.count < 18
+          if @team_leader.shifts.count < SHIFT_TARGET
             # can select OC, cannot select others
             if s.on_call?
               s.can_select(@team_leader,
@@ -222,7 +233,7 @@ class ShiftsHelperTest < ActionView::TestCase
             # cannot select any shifts
             s.can_select(@team_leader,
                 HostUtility.can_select_params_for(@team_leader)).must_equal(false,
-                    "Can select when shouldn't: TEAM LEADER.  SHIFT: #{s.short_name}")
+                    "Can select when shouldn't: TEAM LEADER.  SHIFT: #{s.short_name}  TOTAL: #{@team_leader.shifts.count}")
            end
         end
       end
@@ -267,7 +278,7 @@ class ShiftsHelperTest < ActionView::TestCase
       end
 
       it 'can select any shift after bingo done' do
-        # populate user with all 18 shifts
+        # populate user with all SHIFT_TARGET shifts
         for i in 0..6 do
           s_date = Date.today + i.days
           new_shift = Shift.create(:user_id=>nil,
@@ -278,7 +289,7 @@ class ShiftsHelperTest < ActionView::TestCase
           @team_leader.shifts << new_shift
         end
 
-        for i in 7..15 do
+        for i in 7..16 do
           s_date = Date.today + i.days
           new_shift = Shift.create(:user_id=>nil,
                                    :shift_type_id=>@oc.id,
@@ -287,7 +298,7 @@ class ShiftsHelperTest < ActionView::TestCase
                                    :day_of_week=>s_date.strftime("%a"))
           @team_leader.shifts << new_shift
         end
-        assert_equal(18, @team_leader.shifts.count)
+        assert_equal(SHIFT_TARGET, @team_leader.shifts.count)
 
         # set time for after bingo
         Timecop.return
@@ -308,6 +319,7 @@ class ShiftsHelperTest < ActionView::TestCase
                                  :shift_date=>s_date,
                                  :shift_status_id => 1,
                                  :day_of_week=>s_date.strftime("%a"))
+
         # verify can select TL
         tl_shift.can_select(@team_leader,
             HostUtility.can_select_params_for(@team_leader)).must_equal(true,
@@ -324,7 +336,7 @@ class ShiftsHelperTest < ActionView::TestCase
                 "Cannot select when should: TEAM LEADER.  SHIFT: #{a1_shift.short_name}")
       end
 
-      it "cannot select more than 18 shifts during bingo" do
+      it "cannot select more than SHIFT_TARGET shifts during bingo" do
         @sys_config.bingo_start_date = @round1_date
         @sys_config.save!
         HostUtility.get_current_round(@sys_config.bingo_start_date,
@@ -339,7 +351,7 @@ class ShiftsHelperTest < ActionView::TestCase
           @team_leader.shifts << new_shift
         end
 
-        for i in 7..15 do
+        for i in 7..16 do
           s_date = Date.today + i.days
           new_shift = Shift.create(:user_id=>nil,
                                    :shift_type_id=>@oc.id,
@@ -348,7 +360,7 @@ class ShiftsHelperTest < ActionView::TestCase
                                    :day_of_week=>s_date.strftime("%a"))
           @team_leader.shifts << new_shift
         end
-        assert_equal(18, @team_leader.shifts.count)
+        assert_equal(SHIFT_TARGET, @team_leader.shifts.count)
 
         new_shift = FactoryBot.create(:shift, shift_type_id: @tl.id,
                        shift_date: @team_leader.shifts.map(&:shift_date).max + 1.day)
@@ -436,7 +448,7 @@ class ShiftsHelperTest < ActionView::TestCase
                                   "Can select when shouldn't: SENIOR.  SHIFT: #{new_shift.short_name}")
       end
 
-      it 'can select 5 A1 shifts in round 1' do
+      it 'can only select 5 A1 shifts in round 1' do
         round_1_date = HostUtility.date_for_round(@work_user, 1)
         Timecop.return
         Timecop.freeze(round_1_date)
@@ -469,7 +481,7 @@ class ShiftsHelperTest < ActionView::TestCase
         assert_equal(7, @work_user.shifts.count)
       end
 
-      it 'can select 1 A1 shift and 4 OC shifts in round 2' do
+      it 'can only select 2 A1 shifts and 3 OC shifts in round 2' do
         round_2_date = HostUtility.date_for_round(@work_user, 2)
         Timecop.return
         Timecop.freeze(round_2_date)
@@ -498,8 +510,8 @@ class ShiftsHelperTest < ActionView::TestCase
             a1_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'A1' }.count
             oc_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'OC' }.count
             @work_user.shifts << s
-            assert_equal('A1', s.short_name) if a1_count < 6
-            assert_equal('OC', s.short_name) if a1_count >= 6
+            assert_equal('A1', s.short_name) if a1_count < 7
+            assert_equal('OC', s.short_name) if a1_count >= 7
            end
         end
         assert_equal(12, @work_user.shifts.count)
@@ -507,11 +519,11 @@ class ShiftsHelperTest < ActionView::TestCase
         @work_user.shifts.map(&:short_name).each {|s| counts[s] += 1 }
         a1_count = counts['A1']
         oc_count = counts['OC']
-        assert_equal(6, a1_count)
-        assert_equal(4, oc_count)
+        assert_equal(7, a1_count)
+        assert_equal(3, oc_count)
       end
 
-      it 'can select 6 OC shifts in round 3' do
+      it 'can select only 5 OC shifts in round 3' do
         round_3_date = HostUtility.date_for_round(@work_user, 3)
         Timecop.return
         Timecop.freeze(round_3_date)
@@ -537,24 +549,57 @@ class ShiftsHelperTest < ActionView::TestCase
         Shift.all.each do |s|
           if s.can_select(@work_user,
                           HostUtility.can_select_params_for(@work_user)) == true
-            a1_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'A1' }.count
-            oc_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'OC' }.count
             @work_user.shifts << s
-
-            assert_equal('A1', s.short_name) if a1_count < 6
-            assert_equal('OC', s.short_name) if a1_count >= 6
           end
         end
-        assert_equal(18, @work_user.shifts.count)
+        assert_equal(17, @work_user.shifts.count)
         counts = Hash.new 0
         @work_user.shifts.map(&:short_name).each {|s| counts[s] += 1 }
         a1_count = counts['A1']
         oc_count = counts['OC']
-        assert_equal(6, a1_count)
+        assert_equal(7, a1_count)
+        assert_equal(8, oc_count)
+      end
+
+      it 'can only select 2 OC shifts in round 4' do
+        round_4_date = HostUtility.date_for_round(@work_user, 4)
+        Timecop.return
+        Timecop.freeze(round_4_date)
+
+        for i in 1..25 do
+          new_shift = Shift.create(:user_id=>nil,
+                                   :shift_type_id=>@a1.id,
+                                   :shift_date=>Date.today + i.days,
+                                   :shift_status_id => 1,
+                                   :day_of_week=> (Date.today + i.days).strftime("%a"))
+          new_shift = Shift.create(:user_id=>nil,
+                                   :shift_type_id=>@oc.id,
+                                   :shift_date=>Date.today + i.days,
+                                   :shift_status_id => 1,
+                                   :day_of_week=> (Date.today + i.days).strftime("%a"))
+          new_shift = Shift.create(:user_id=>nil,
+                                   :shift_type_id=>@tl.id,
+                                   :shift_date=>Date.today + i.days,
+                                   :shift_status_id => 1,
+                                   :day_of_week=> (Date.today + i.days).strftime("%a"))
+        end
+
+        Shift.all.each do |s|
+          if s.can_select(@work_user,
+                          HostUtility.can_select_params_for(@work_user)) == true
+            @work_user.shifts << s
+          end
+        end
+        assert_equal(19, @work_user.shifts.count)
+        counts = Hash.new 0
+        @work_user.shifts.map(&:short_name).each {|s| counts[s] += 1 }
+        a1_count = counts['A1']
+        oc_count = counts['OC']
+        assert_equal(7, a1_count)
         assert_equal(10, oc_count)
       end
 
-      it 'cannot select OC shift if A1 < 6 - even if OCs have been picked (i.e. A1 dropped during bingo)' do
+      it 'cannot select OC shift if A1 < 7 - even if OCs have been picked (i.e. A1 dropped during bingo)' do
         round_2_date = HostUtility.date_for_round(@work_user, 2)
         Timecop.return
         Timecop.freeze(round_2_date)
@@ -580,11 +625,7 @@ class ShiftsHelperTest < ActionView::TestCase
         Shift.all.each do |s|
           if s.can_select(@work_user,
                           HostUtility.can_select_params_for(@work_user)) == true
-            a1_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'A1' }.count
-            oc_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'OC' }.count
             @work_user.shifts << s
-            assert_equal('A1', s.short_name) if a1_count < 6
-            assert_equal('OC', s.short_name) if a1_count >= 6
           end
         end
         assert_equal(12, @work_user.shifts.count)
@@ -598,8 +639,8 @@ class ShiftsHelperTest < ActionView::TestCase
         @work_user.shifts.map(&:short_name).each {|s| counts[s] += 1 }
         a1_count = counts['A1']
         oc_count = counts['OC']
-        assert_equal(5, a1_count)
-        assert_equal(4, oc_count)
+        assert_equal(6, a1_count)
+        assert_equal(3, oc_count)
 
         Shift.all.each do |s|
           if s.can_select(@work_user,
@@ -741,8 +782,8 @@ class ShiftsHelperTest < ActionView::TestCase
             a1_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'A1' }.count
             oc_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'OC' }.count
             @work_user.shifts << s
-            assert_equal('A1', s.short_name) if a1_count < 6
-            assert_equal('OC', s.short_name) if a1_count >= 6
+            assert_equal('A1', s.short_name) if a1_count <= 6
+            assert_equal('OC', s.short_name) if a1_count > 6
           end
         end
         assert_equal(12, @work_user.shifts.count)
@@ -750,11 +791,11 @@ class ShiftsHelperTest < ActionView::TestCase
         @work_user.shifts.map(&:short_name).each {|s| counts[s] += 1 }
         a1_count = counts['A1']
         oc_count = counts['OC']
-        assert_equal(6, a1_count)
-        assert_equal(4, oc_count)
+        assert_equal(7, a1_count)
+        assert_equal(3, oc_count)
       end
 
-      it 'can select 6 OC shifts in round 3' do
+      it 'can select 5 OC shifts in round 3' do
         round_3_date = HostUtility.date_for_round(@work_user, 3)
         Timecop.return
         Timecop.freeze(round_3_date)
@@ -780,24 +821,67 @@ class ShiftsHelperTest < ActionView::TestCase
         Shift.all.each do |s|
           if s.can_select(@work_user,
                           HostUtility.can_select_params_for(@work_user)) == true
-            a1_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'A1' }.count
-            oc_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'OC' }.count
             @work_user.shifts << s
 
-            assert_equal('A1', s.short_name) if a1_count < 6
-            assert_equal('OC', s.short_name) if a1_count >= 6
+            a1_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'A1' }.count
+            oc_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'OC' }.count
+            assert_equal('A1', s.short_name) if a1_count < 7
+            assert_equal('OC', s.short_name) if a1_count > 7
           end
         end
-        assert_equal(18, @work_user.shifts.count)
+        assert_equal(17, @work_user.shifts.count)
         counts = Hash.new 0
         @work_user.shifts.map(&:short_name).each {|s| counts[s] += 1 }
         a1_count = counts['A1']
         oc_count = counts['OC']
-        assert_equal(6, a1_count)
+        assert_equal(7, a1_count)
+        assert_equal(8, oc_count)
+      end
+
+      it 'can only select 2 OC shifts in round 4' do
+        round_4_date = HostUtility.date_for_round(@work_user, 4)
+        Timecop.return
+        Timecop.freeze(round_4_date)
+
+        for i in 1..25 do
+          new_shift = Shift.create(:user_id=>nil,
+                                   :shift_type_id=>@a1.id,
+                                   :shift_date=>Date.today + i.days,
+                                   :shift_status_id => 1,
+                                   :day_of_week=> (Date.today + i.days).strftime("%a"))
+          new_shift = Shift.create(:user_id=>nil,
+                                   :shift_type_id=>@oc.id,
+                                   :shift_date=>Date.today + i.days,
+                                   :shift_status_id => 1,
+                                   :day_of_week=> (Date.today + i.days).strftime("%a"))
+          new_shift = Shift.create(:user_id=>nil,
+                                   :shift_type_id=>@tl.id,
+                                   :shift_date=>Date.today + i.days,
+                                   :shift_status_id => 1,
+                                   :day_of_week=> (Date.today + i.days).strftime("%a"))
+        end
+
+        Shift.all.each do |s|
+          if s.can_select(@work_user,
+                          HostUtility.can_select_params_for(@work_user)) == true
+            @work_user.shifts << s
+
+            a1_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'A1' }.count
+            oc_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'OC' }.count
+            assert_equal('A1', s.short_name) if a1_count < 7
+            assert_equal('OC', s.short_name) if a1_count > 7
+          end
+        end
+        assert_equal(19, @work_user.shifts.count)
+        counts = Hash.new 0
+        @work_user.shifts.map(&:short_name).each {|s| counts[s] += 1 }
+        a1_count = counts['A1']
+        oc_count = counts['OC']
+        assert_equal(7, a1_count)
         assert_equal(10, oc_count)
       end
 
-      it 'cannot select OC shift if A1 < 6 - even if OCs have been picked (i.e. A1 dropped during bingo)' do
+      it 'cannot select OC shift if A1 < 7 - even if OCs have been picked (i.e. A1 dropped during bingo)' do
         round_2_date = HostUtility.date_for_round(@work_user, 2)
         Timecop.return
         Timecop.freeze(round_2_date)
@@ -823,11 +907,12 @@ class ShiftsHelperTest < ActionView::TestCase
         Shift.all.each do |s|
           if s.can_select(@work_user,
                           HostUtility.can_select_params_for(@work_user)) == true
+            @work_user.shifts << s
             a1_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'A1' }.count
             oc_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'OC' }.count
-            @work_user.shifts << s
-            assert_equal('A1', s.short_name) if a1_count < 6
-            assert_equal('OC', s.short_name) if a1_count >= 6
+
+            assert_equal('A1', s.short_name) if a1_count < 7
+            assert_equal('OC', s.short_name) if a1_count > 7
           end
         end
         assert_equal(12, @work_user.shifts.count)
@@ -841,8 +926,8 @@ class ShiftsHelperTest < ActionView::TestCase
         @work_user.shifts.map(&:short_name).each {|s| counts[s] += 1 }
         a1_count = counts['A1']
         oc_count = counts['OC']
-        assert_equal(5, a1_count)
-        assert_equal(4, oc_count)
+        assert_equal(6, a1_count)
+        assert_equal(3, oc_count)
 
         Shift.all.each do |s|
           if s.can_select(@work_user,
@@ -984,8 +1069,8 @@ class ShiftsHelperTest < ActionView::TestCase
             a1_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'A1' }.count
             oc_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'OC' }.count
             @work_user.shifts << s
-            assert_equal('A1', s.short_name) if a1_count < 6
-            assert_equal('OC', s.short_name) if a1_count >= 6
+            assert_equal('A1', s.short_name) if a1_count < 7
+            assert_equal('OC', s.short_name) if a1_count >= 7
           end
         end
         assert_equal(12, @work_user.shifts.count)
@@ -993,8 +1078,8 @@ class ShiftsHelperTest < ActionView::TestCase
         @work_user.shifts.map(&:short_name).each {|s| counts[s] += 1 }
         a1_count = counts['A1']
         oc_count = counts['OC']
-        assert_equal(6, a1_count)
-        assert_equal(4, oc_count)
+        assert_equal(7, a1_count)
+        assert_equal(3, oc_count)
       end
 
       it 'can select 6 OC shifts in round 3' do
@@ -1027,16 +1112,59 @@ class ShiftsHelperTest < ActionView::TestCase
             oc_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'OC' }.count
             @work_user.shifts << s
 
-            assert_equal('A1', s.short_name) if a1_count < 6
-            assert_equal('OC', s.short_name) if a1_count >= 6
+            assert_equal('A1', s.short_name) if a1_count < 7
+            assert_equal('OC', s.short_name) if a1_count > 7
           end
         end
-        assert_equal(18, @work_user.shifts.count)
+        assert_equal(17, @work_user.shifts.count)
         counts = Hash.new 0
         @work_user.shifts.map(&:short_name).each {|s| counts[s] += 1 }
         a1_count = counts['A1']
         oc_count = counts['OC']
-        assert_equal(6, a1_count)
+        assert_equal(7, a1_count)
+        assert_equal(8, oc_count)
+      end
+
+      it 'can only select 2 OC shifts in round 4' do
+        round_4_date = HostUtility.date_for_round(@work_user, 4)
+        Timecop.return
+        Timecop.freeze(round_4_date)
+
+        for i in 1..25 do
+          new_shift = Shift.create(:user_id=>nil,
+                                   :shift_type_id=>@a1.id,
+                                   :shift_date=>Date.today + i.days,
+                                   :shift_status_id => 1,
+                                   :day_of_week=> (Date.today + i.days).strftime("%a"))
+          new_shift = Shift.create(:user_id=>nil,
+                                   :shift_type_id=>@oc.id,
+                                   :shift_date=>Date.today + i.days,
+                                   :shift_status_id => 1,
+                                   :day_of_week=> (Date.today + i.days).strftime("%a"))
+          new_shift = Shift.create(:user_id=>nil,
+                                   :shift_type_id=>@tl.id,
+                                   :shift_date=>Date.today + i.days,
+                                   :shift_status_id => 1,
+                                   :day_of_week=> (Date.today + i.days).strftime("%a"))
+        end
+
+        Shift.all.each do |s|
+          if s.can_select(@work_user,
+                          HostUtility.can_select_params_for(@work_user)) == true
+            a1_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'A1' }.count
+            oc_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'OC' }.count
+            @work_user.shifts << s
+
+            assert_equal('A1', s.short_name) if a1_count < 7
+            assert_equal('OC', s.short_name) if a1_count > 7
+          end
+        end
+        assert_equal(19, @work_user.shifts.count)
+        counts = Hash.new 0
+        @work_user.shifts.map(&:short_name).each {|s| counts[s] += 1 }
+        a1_count = counts['A1']
+        oc_count = counts['OC']
+        assert_equal(7, a1_count)
         assert_equal(10, oc_count)
       end
 
@@ -1069,8 +1197,8 @@ class ShiftsHelperTest < ActionView::TestCase
             a1_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'A1' }.count
             oc_count = @work_user.shifts.to_a.delete_if {|s| s.short_name != 'OC' }.count
             @work_user.shifts << s
-            assert_equal('A1', s.short_name) if a1_count < 6
-            assert_equal('OC', s.short_name) if a1_count >= 6
+            assert_equal('A1', s.short_name) if a1_count < 7
+            assert_equal('OC', s.short_name) if a1_count >= 7
           end
         end
         assert_equal(12, @work_user.shifts.count)
@@ -1084,8 +1212,8 @@ class ShiftsHelperTest < ActionView::TestCase
         @work_user.shifts.map(&:short_name).each {|s| counts[s] += 1 }
         a1_count = counts['A1']
         oc_count = counts['OC']
-        assert_equal(5, a1_count)
-        assert_equal(4, oc_count)
+        assert_equal(6, a1_count)
+        assert_equal(3, oc_count)
 
         Shift.all.each do |s|
           if s.can_select(@work_user,

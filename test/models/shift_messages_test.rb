@@ -150,36 +150,56 @@ class ShiftMessagesTest < ActiveSupport::TestCase
     end
   end
 
-  describe 'post-bingo' do
+  describe 'round 4' do
     it 'should show correct message for senior users' do
       Timecop.return
       Timecop.freeze(HostUtility.date_for_round(@senior_user, 4))
-      select_count_shifts(@senior_user, 20)
-      msgs = @senior_user.shift_status_message
-      msgs.include?("You have at least 18 shifts selected").must_equal(true, msgs)
+      validate_user_messages(@senior_user, 4)
     end
 
     it 'should show correct message for middle users' do
       Timecop.return
       Timecop.freeze(HostUtility.date_for_round(@middle_user, 4))
-      select_count_shifts(@middle_user, 20)
-      msgs = @middle_user.shift_status_message
-      msgs.include?("You have at least 18 shifts selected").must_equal(true, msgs)
+      validate_user_messages(@middle_user, 4)
     end
 
     it 'should show correct message for newer users' do
       Timecop.return
       Timecop.freeze(HostUtility.date_for_round(@newer_user, 4))
+      validate_user_messages(@newer_user, 4)
+    end
+  end
+
+  describe 'post-bingo' do
+    it 'should show correct message for senior users' do
+      Timecop.return
+      Timecop.freeze(HostUtility.date_for_round(@senior_user, 5))
+      select_count_shifts(@senior_user, 20)
+      msgs = @senior_user.shift_status_message
+      msgs.include?("You have at least 19 shifts selected").must_equal(true, msgs)
+    end
+
+    it 'should show correct message for middle users' do
+      Timecop.return
+      Timecop.freeze(HostUtility.date_for_round(@middle_user, 5))
+      select_count_shifts(@middle_user, 20)
+      msgs = @middle_user.shift_status_message
+      msgs.include?("You have at least 19 shifts selected").must_equal(true, msgs)
+    end
+
+    it 'should show correct message for newer users' do
+      Timecop.return
+      Timecop.freeze(HostUtility.date_for_round(@newer_user, 5))
       select_count_shifts(@newer_user, 20)
       msgs = @newer_user.shift_status_message
-      msgs.include?("You have at least 18 shifts selected").must_equal(true, msgs)
+      msgs.include?("You have at least 19 shifts selected").must_equal(true, msgs)
     end
   end
 
 
   def validate_user_messages(usr, round)
     shift_target = round * 5 + 2
-    shift_target = 18 if shift_target > 18
+    shift_target = SHIFT_TARGET if shift_target > SHIFT_TARGET
     msgs = usr.shift_status_message
     msgs.include?("You are currently in <strong>round #{round}</strong>.").must_equal(true, msgs)
 
@@ -187,31 +207,36 @@ class ShiftMessagesTest < ActiveSupport::TestCase
 
     msgs.include?("Bingo Start: #{HostUtility.date_for_round(@senior_user, 1)}")
         .must_equal(true, "#{msgs}")
+    msgs.include?("#{usr.shifts.count} of #{shift_target} Shifts Selected.  You need to pick #{shift_target - usr.shifts.count}")
+        .must_equal(true, "[#{usr.shifts.count} of #{shift_target} Shifts Selected.  You need to pick #{shift_target - usr.shifts.count}] #{msgs}")
 
-    msgs.include?("2 of #{shift_target} Shifts Selected.  You need to pick #{shift_target - 2}")
-        .must_equal(true, "[2 of #{shift_target} Shifts Selected.  You need to pick #{shift_target - 2}] #{msgs}")
-
-    for i in 1..((round * 5) - 1) do
+    for i in 1..((round * 5) - 2) do
+      break if i == SHIFT_TARGET - 2
       Shift.all.each do |s|
         if s.can_select(usr, HostUtility.can_select_params_for(usr)) == true
           usr.shifts << s
           msgs2 = usr.shift_status_message
+
           msgs2.include?("#{2 + i} of #{shift_target} Shifts Selected.  You need to pick #{shift_target - 2 - i}")
-              .must_equal(true,
-             "#{msgs2} vs [#{2 + i} of #{shift_target} Shifts Selected.  You need to pick #{shift_target - 2 - i}]")
+                .must_equal(true,
+                            "#{msgs2} vs [#{2 + i} of #{shift_target} Shifts Selected.  You need to pick #{shift_target - 2 - i}]")
           break
         end
       end
     end
-
     Shift.all.each do |s|
       if s.can_select(usr, HostUtility.can_select_params_for(usr)) == true
         usr.shifts << s
         msgs2 = usr.shift_status_message
-        msgs2.include?("All required shifts selected for round #{round}. (#{shift_target} of #{shift_target})")
-            .must_equal(true, msgs2)
+        if usr.shifts.count < SHIFT_TARGET
+          msgs2.include?("#{usr.shifts.count} of #{shift_target} Shifts Selected.  You need to pick #{shift_target - usr.shifts.count}")
+            .must_equal(true, "[#{msgs2}] vs. [#{usr.shifts.count} of #{shift_target} Shifts Selected.  You need to pick #{shift_target - usr.shifts.count}]")
+        else
+          msgs2.include?("You have at least #{SHIFT_TARGET} shifts selected").must_equal true
+        end
         break
       end
+
     end
   end
 

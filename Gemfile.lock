@@ -128,7 +128,7 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
-    erubi (1.9.0)
+    erubi (1.10.0)
     erubis (2.7.0)
     execjs (2.7.0)
     factory_bot (5.2.0)
@@ -274,7 +274,7 @@ GEM
     timecop (0.9.2)
     tinymce-rails (5.5.1)
       railties (>= 3.1.1)
-    tzinfo (1.2.7)
+    tzinfo (1.2.8)
       thread_safe (~> 0.1)
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
@@ -307,7 +307,7 @@ DEPENDENCIES
   bootstrap-will_paginate
   bullet
   cancancan
-  capistrano (~> 3.11)
+  capistrano (~> 3.14)
   capistrano-passenger (~> 0.2.0)
   capistrano-rails (~> 1.4)
   capistrano-rbenv (~> 2.1, >= 2.1.4)

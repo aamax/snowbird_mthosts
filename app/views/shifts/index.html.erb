@@ -57,7 +57,7 @@
 %>
 
 <div class="shift_page_body">
-  <% @shifts.includes(:user).includes(:shift_type).each do |s| %>
+  <% @shifts.includes(:shift_type).each do |s| %>
     <% next if s.disabled? && !current_user.has_role?(:admin) %>
       <% if curr_date != s.shift_date %>
           <% if curr_date != '' %>
@@ -79,7 +79,7 @@
 
           <div id='<%= "date_#{curr_date}" %>' class="collapse <%= @return_params['show_shifts_expanded'] == true ? "in" : "out" %>">
             <% if current_user.has_role? :admin %>
-              <br/><strong>Disable (<i class='icon-ban-circle btn btn-warning'></i>) OC shifts from Bottom Up...</strong> <br/><br/>
+              <br/><strong>ADMIN NOTE: Disable OC shifts from Bottom Up...</strong> <br/><br/>
             <% end %>
 
             <table class='table table-striped'>
@@ -96,8 +96,6 @@
                 <% end %>
               </tr>
       <% end %>
-
-
 
       <tr>
         <td>
@@ -137,15 +135,7 @@
                           "shift_logs/by_shift/#{s.id}",
                           :title => "Show Logs For This Shift" %>
 
-            <% if s.disabled? %>
-              <%= link_to "<i class='icon-lock btn btn-default'></i>".html_safe,
-                          "/enable_shift/#{s.id}",
-                          :title => "Enable Shift" %>
-            <% else %>
-              <%= link_to "<i class='icon-ban-circle btn btn-warning'></i>".html_safe,
-                          "/disable_shift/#{s.id}",
-                          :title => "Disable Shift" %>
-            <% end %>
+            &nbsp;&nbsp; Enabled?: <%= check_box_tag("shift_enabled_#{s.id}", "shift_enabled_#{s.id}", !s.disabled, :class => 'toggle_disabled') %>
           </td>
         <% end %>
       </tr>

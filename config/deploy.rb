@@ -1,5 +1,5 @@
 # config valid for current version and patch releases of Capistrano
-lock "~> 3.11.2"
+lock "~> 3.14.1"
 
 set :application, "mthost"
 set :repo_url, "https://github.com/aamax/snowbird_mthosts.git"

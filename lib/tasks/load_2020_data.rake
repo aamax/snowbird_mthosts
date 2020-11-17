@@ -95,7 +95,7 @@ namespace :db do
 
     c.season_start_date = Date.new(2020, 11, 01)
     c.bingo_start_date = Date.new(2020, 11, 23)
-    c.shift_count = 500  # TODO adjust up after bingo is done...
+    c.shift_count = 250  # TODO adjust up after bingo is done...
 
     if !c.save
       puts "error saving config record #{c.errors.messages}"
@@ -208,7 +208,7 @@ namespace :db do
   desc 'initialize host hauler'
   task :initialize_2020_host_hauler => :environment do
     jc = User.find_by(email: 'jecotterii@gmail.com')
-    (Date.parse('2020-12-18')..Date.parse('2021-04-03')).each do |dt|
+    (Date.parse('2020-12-01')..Date.parse('2021-04-03')).each do |dt|
       if dt.wednesday? || dt.thursday? || dt.friday? || dt.saturday? || dt.sunday?
         HostHauler.add_hauler(dt, jc.id)
       else

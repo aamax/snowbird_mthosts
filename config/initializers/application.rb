@@ -33,3 +33,7 @@ DEFAULT_PASSWORD = "'5teep&Deep'"
 # TRAINING_TYPES = %w[T1 T2 T3 T4]
 
 HAULER_RIDERS = 10 # total with driver
+
+SHIFT_TARGET = 19
+A1_COUNT = 7
+OC_COUNT = 10

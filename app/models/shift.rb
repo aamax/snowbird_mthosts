@@ -16,6 +16,7 @@
 
 # if shift status = -1   ->  missed shift
 
+
 class Shift < ActiveRecord::Base
   attr_accessible :user_id, :shift_type_id, :shift_status_id, :shift_date, :day_of_week, :user_can_select
   attr_accessor :user_can_select
@@ -222,61 +223,57 @@ class Shift < ActiveRecord::Base
       return false if self.team_leader? && !test_user.team_leader?
 
       round = select_params[:round]
+
       return false if (round <= 0) && !test_user.team_leader?
       all_shifts =  select_params[:all_shifts] #test_user.shifts.to_a
-      return false if (round <= 3) && (all_shifts.count >= 18)
+      return false if ((round <= 4) && (all_shifts.count >= (round * 5) + 2)) && !test_user.team_leader?
       bingo_start = select_params[:bingo_start]
       shift_count = select_params[:shift_count]
-      working_shifts =  select_params[:working_shifts] #test_user.shifts.to_a.delete_if {|s| s.meeting? }
+      working_shifts =  select_params[:working_shifts]
+
+      counts = Hash.new 0
+      working_shifts.map(&:short_name).each {|s| counts[s] += 1 }
+      a1_count = counts['A1']
+      oc_count = counts['OC']
+      tl_count = counts['TL']
 
       if test_user.team_leader?
+        return false if (tl_count < 7) && (self.short_name != 'TL')
+        return false if (oc_count < 10) && (tl_count >= 7) && (self.short_name != 'OC')
+
         # if prior to end of bingo...
-        if round <= 3
-          if shift_count <= 6
-            if self.team_leader?
-              return true
-            else
-              return false
-            end
-          else
-            if self.on_call?
-              return true
-            else
-              return false
-            end
-          end
+        if round <= 4
+           return false if (all_shifts.count >= 19) || (self.short_name == 'A1')
         else
           # after bingo
           return true
         end
       elsif test_user.group_1? || test_user.group_2? || test_user.group_3?
-        counts = Hash.new 0
-        working_shifts.map(&:short_name).each {|s| counts[s] += 1 }
-        a1_count = counts['A1']
-        oc_count = counts['OC']
-        return false if (round >= 1) && (a1_count < 6) && (self.short_name != 'A1')
-
-        if round <= 3
-          return false if ((round <= 3) and (a1_count < 6) and (self.short_name != 'A1'))
+        if round <= 4
+          return false if ((round <= 4) and (a1_count < 7) and (self.short_name != 'A1'))
 
           if round == 1
             return false if ((self.short_name != 'A1') || (working_shifts.count >= 5)) && (a1_count >= 5)
             return true
           elsif round == 2
-            return false if (self.short_name != 'A1') && (a1_count < 6)
-            return false if (self.short_name == 'OC') && ((oc_count >= 4) || (test_user.shifts.count >= 12))
-            return false if (self.short_name == 'A1') && (a1_count >= 6)
+            return false if (self.short_name != 'A1') && (a1_count < 7)
+            return false if (self.short_name == 'OC') && ((oc_count >= 3) || (test_user.shifts.count >= 12))
+            return false if (self.short_name == 'A1') && (a1_count >= 7)
             return true
-          elsif round == 3
-            return false if (a1_count >= 6) && (oc_count >= 10)
-            return false if (a1_count >= 6) && (self.short_name == 'A1')
+          elsif round == 3 || round == 4
+            return false if (a1_count >= 7) && (oc_count >= 10)
+            return false if (a1_count >= 7) && (self.short_name == 'A1')
+            return false if (a1_count < 7) && (self.short_name != 'A1')
 
+            max_shifts = (round * 5) + 2 > 19 ? 19 : (round * 5) + 2
+            return false if test_user.shifts.count >= max_shifts
+            return true
           else
             return true
           end
-
-
         else
+          return false if a1_count < 7 && (self.short_name != 'A1')
+
           return true
         end
       else

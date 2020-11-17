@@ -10,7 +10,7 @@
         Junior: <%= User.group2.to_a.delete_if {|u| u.team_leader? }.length %> <br/>
 
         <h4>Group 1</h4>
-        Senior: <%= User.group1.to_a.delete_if {|u| u.team_leader? }.delete_if {|u| u.supervisor? }.length %> (does not include TLs)<br/>
+        Senior: <%= User.group1.to_a.delete_if {|u| u.team_leader? }.delete_if {|u| u.supervisor? }.length %> (does not include TLs or supervisor)<br/>
 
         <br/>
 

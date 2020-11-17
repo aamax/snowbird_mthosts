@@ -24,13 +24,6 @@
 
 <td>
   <strong>Scheduled Shifts: </strong><%= object.shifts.length %> <br/>
-  <strong>Tour Ratio: </strong>
-  <% if object.tour_ratio > 50 %>
-    <span class="bad_ratio"> <%= object.tour_ratio.round(2) %></span>
-  <% else %>
-    <%= object.tour_ratio.round(2) %>
-  <% end %>
-  <br/>
   <strong>Shifts Worked: </strong> <%= object.shifts_worked.length %> <br/><br/>
   <strong>Active:</strong>
 

@@ -8,6 +8,7 @@
 #  shift_status_id :integer          default(1), not null
 #  shift_date      :date
 #  day_of_week     :string(255)
+#  day_of_week     :string(255)
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  short_name      :string
@@ -67,18 +68,35 @@ class ShiftsController < ApplicationController
     redirect_to :back
   end
 
-  def disable_shift
-    s = Shift.find(params[:id])
-    s.disabled = true
-    s.save
-    redirect_to :back
-  end
+  # def disable_shift
+  #   s = Shift.find(params[:id])
+  #   s.disabled = true
+  #   s.save
+  #
+  #   log_shift_enabled_or_disabled(s, current_user)
+  #   redirect_to :back
+  # end
+  #
+  # def enable_shift
+  #   s = Shift.find(params[:id])
+  #   s.disabled = false
+  #   s.save
+  #
+  #   log_shift_enabled_or_disabled(s, current_user)
+  #
+  #   redirect_to :back
+  # end
 
-  def enable_shift
-    s = Shift.find(params[:id])
-    s.disabled = false
+  def toggle_shift_disabled
+    arr = params['value'].split(',')
+    s = Shift.find(arr[0])
+    s.disabled = (arr[1] == 'false')
     s.save
-    redirect_to :back
+    log_shift_toggle_disabled(s, current_user)
+
+    render :json => {
+        shift: s
+    }
   end
 
   def drop_shift
@@ -269,6 +287,19 @@ class ShiftsController < ApplicationController
                     shift_id: shift.id, action_taken: "Dropped Shift",
                     note: "#{user_dropping.name} DROPPED shift #{shift_str} for user: #{shift.user.name} dropped by: #{user_dropping.name}")
   end
+
+  def log_shift_toggle_disabled(shift, user)
+    # must be admin
+    if user.admin?
+      shift_user = shift.user.nil? ? '---' : shift.user.name
+      shift_str = "#{shift.id}:#{shift.short_name}:#{shift.shift_date}:assigned:#{shift_user}"
+      ShiftLog.create(change_date: DateTime.now, user_id: user.id,
+                      shift_id: shift.id, action_taken: "Toggle Shift Disabled Flag",
+                      note: "#{current_user.name} Toggle Disabled Flag for shift #{shift_str}")
+    end
+  end
+
+
 
   def log_shift_selected(shift, user_selecting)
     shift_str = "#{shift.id}:#{shift.short_name}:#{shift.shift_date}"

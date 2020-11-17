@@ -404,7 +404,12 @@ class User < ActiveRecord::Base
     round = HostUtility.get_current_round(HostConfig.bingo_start_date, Date.today, self)
     all_shifts = self.shifts
 
-    msg << "You are currently in <strong>round #{round}</strong>." if round < 5
+    if round < 5
+      msg << "You are currently in <strong>round #{round}</strong>."
+    else
+      msg << "You are done with Shift Selection Bingo!"
+    end
+
     msg << "Today is: #{Date.today}"
     msg << "Bingo Start: #{HostConfig.bingo_start_date}"
 
@@ -539,27 +544,48 @@ class User < ActiveRecord::Base
 
   def host_selection_message(all_shifts, round, day_offset, msg)
     if self.team_leader?
-      msg << "#{self.team_leader_shift_count} team leader shifts selected"
+      counts = Hash.new 0
+      all_shifts.map(&:short_name).each {|s| counts[s] += 1 }
+      a1_count = counts['A1']
+      oc_count = counts['OC']
+      tl_count = counts['TL']
+
+      msg << "#{tl_count} team leader shifts selected"
+      msg << "#{oc_count} On Call shifts selected"
+      msg << "#{a1_count} A1 Shifts Selected"
+
+      if (a1_count >= 7) && (oc_count >= 10) && (all_shifts.count >= 19)
+        msg << "All Required Shifts Selected"
+      else
+        if a1_count < 7
+          msg << "You still need #{7 - tl_count} TL Shifts"
+        end
+        if oc_count < 10
+          msg << "You still need #{10 - oc_count} OC Shifts"
+        end
+      end
     end
 
-    case round
-      when 0
-        msg << "No Selections Until #{HostConfig.bingo_start_date + day_offset.days}."
-      when 1..3
-        limit = round * 5 + 2
-        limit = 18 if limit > 18
+    if !self.team_leader?
+      case round
+        when 0
+          msg << "No Selections Until #{HostConfig.bingo_start_date + day_offset.days}."
+        when 1..3
+          limit = round * 5 + 2
+          limit = 19 if limit > 19
 
-        if all_shifts.count < limit
-          msg << "#{all_shifts.count} of #{limit} Shifts Selected.  You need to pick #{limit - all_shifts.count}"
+          if all_shifts.count < limit
+            msg << "#{all_shifts.count} of #{limit} Shifts Selected.  You need to pick #{limit - all_shifts.count}"
+          else
+            msg << "All required shifts selected for round #{round}. (#{all_shifts.count} of #{limit})"
+          end
         else
-          msg << "All required shifts selected for round #{round}. (#{all_shifts.count} of #{limit})"
-        end
-      else
-        if all_shifts.count < 18
-          msg << "#{all_shifts.count} of 18 Shifts Selected.  You need to pick #{18 - all_shifts.count}"
-        else
-          msg << "You have at least 18 shifts selected"
-        end
+          if all_shifts.count < 19
+            msg << "#{all_shifts.count} of #{19} Shifts Selected.  You need to pick #{19 - all_shifts.count}"
+          else
+            msg << "You have at least #{19} shifts selected"
+          end
+      end
     end
   end
 

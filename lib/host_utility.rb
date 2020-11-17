@@ -63,7 +63,7 @@ module HostUtility
     return 0 if dt < bingo_start
 
     day_count = (dt - bingo_start).to_i
-    return 4 if day_count > 6
+    return 5 if day_count > 8
 
     return (day_count / 2).to_i + 1 if usr.group_1?
     return (day_count / 2).to_i + (day_count % 2)

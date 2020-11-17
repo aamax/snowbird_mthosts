@@ -43,3 +43,21 @@ $(document).ready ->
   $('.select_btn').click ->
     $('.select_btn').remove()
 
+  $('.toggle_disabled').change(->
+    # make ajax call to toggle disabled flag for shift
+    chkboxValue = this.checked
+
+    arr = this.name.split('_')
+    shiftID = arr[arr.length - 1]
+
+    $.ajax
+      type: "POST" # GET in place of POST
+      contentType: "application/json; charset=utf-8"
+      url: "/toggle_shift_disabled/#{shiftID},#{chkboxValue}"
+      dataType: "json"
+      success: (result) ->
+      #do somthing here
+        alert "Shift Disabled Flag Toggled: #{result.shift.short_name} on #{result.shift.shift_date}"
+      error: ->
+        alert "Error Toggling Shift Disabled Flag Value."
+  )
