@@ -109,9 +109,43 @@ namespace :db do
     tl_shift = ShiftType.find_by(short_name: 'TL')
     oc_shift = ShiftType.find_by(short_name: 'OC')
 
+    jc_user = User.find_by(email: COTTER_EMAIL)
+
     if a1_shift.nil? || tl_shift.nil? || oc_shift.nil?
       raise('Shift Type Not Found')
     end
+
+    start_date = '2020-11-30'.to_date
+    end_date = '2020-12-17'.to_date
+    (start_date..end_date).each do |dt|
+      if ((dt >= '2020-11-30'.to_date) && (dt <= '2020-12-06'.to_date)) ||
+          ((dt >= '2020-12-09'.to_date) && (dt <= '2020-12-11'.to_date))
+        create_shift(tl_shift, dt, jc_user.id)
+        create_shift(a1_shift, dt)
+      end
+
+      if (dt >= '2020-12-07'.to_date) && (dt <= '2020-12-08'.to_date)
+        create_shift(a1_shift, dt)
+        create_shift(a1_shift, dt)
+      end
+
+      if (dt >= '2020-12-12'.to_date) && (dt <= '2020-12-13'.to_date) ||
+          (dt == '2020-12-16'.to_date) || (dt == '2020-12-17'.to_date)
+        create_shift(tl_shift, dt, jc_user.id)
+        2.times do
+          create_shift(a1_shift, dt)
+        end
+      end
+
+      if (dt >= '2020-12-14'.to_date) && (dt <= '2020-12-15'.to_date)
+        3.times do
+          create_shift(a1_shift, dt)
+        end
+      end
+    end
+
+
+
 
     # 12/18 - 4/4 4 A1 shifts, 1 TL shift, 5 OC shifts
     #         if day is Fri, Sat, Sun: 5 more OC shifts
@@ -219,12 +253,13 @@ namespace :db do
   end
 
 
-  def create_shift(shift_type, dt)
+  def create_shift(shift_type, dt, usr_id = nil)
     shift_type_id = shift_type.id
     st = {
         shift_type_id: shift_type_id,
         shift_status_id: 1,
-        shift_date: dt
+        shift_date: dt,
+        user_id: usr_id
     }
     if !Shift.create(st)
       puts "ERROR\n    short_name: #{shift_short_name}\n------------\n\n"
