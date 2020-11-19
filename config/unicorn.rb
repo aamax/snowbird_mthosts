@@ -1,5 +1,11 @@
 # config/unicorn.rb
-worker_processes Integer(ENV["WEB_CONCURRENCY"] || 2)
+# worker_processes Integer(ENV["WEB_CONCURRENCY"] || 2)
+
+# Number of processes
+# Rule of thumb: 2x per CPU core available
+# worker_processes 2
+worker_processes 8
+
 timeout 15
 preload_app true
 
