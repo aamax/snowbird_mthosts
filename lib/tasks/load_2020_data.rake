@@ -142,10 +142,11 @@ namespace :db do
           create_shift(a1_shift, dt)
         end
       end
+
+      3.times do
+        create_shift(oc_shift, dt)
+      end
     end
-
-
-
 
     # 12/18 - 4/4 4 A1 shifts, 1 TL shift, 5 OC shifts
     #         if day is Fri, Sat, Sun: 5 more OC shifts
@@ -156,7 +157,13 @@ namespace :db do
       4.times do
           create_shift(a1_shift, dt)
       end
-      create_shift(tl_shift, dt)
+
+      if ((dt.wday >= 3) && (dt.wday <= 6)) || (dt.wday == 0)
+        create_shift(tl_shift, dt, jc_user.id)
+      else
+        create_shift(tl_shift, dt)
+      end
+
       num_on_call = 5
       if (dt.wday == 5) || (dt.wday == 6) || (dt.wday == 0) ||
           ((dt.month == 12) && (dt.year == 2020) && (dt.strftime('%d').to_i >= 23)) ||
