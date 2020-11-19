@@ -154,11 +154,20 @@ namespace :db do
     start_date = '2020-12-18'.to_date
     end_date = '2021-04-04'.to_date
     (start_date..end_date).each do |dt|
-      4.times do
+
+      # if Fri - Sun... john gets an A1 and 3 unassigned - else 4 unassigned
+      if ((dt.wday == 0) || (dt.wday == 5) || (dt.wday == 6))
+        create_shift(a1_shift, dt, jc_user.id)
+        3.times do
           create_shift(a1_shift, dt)
+        end
+      else
+        4.times do
+          create_shift(a1_shift, dt)
+        end
       end
 
-      if ((dt.wday >= 3) && (dt.wday <= 6)) || (dt.wday == 0)
+      if ((dt.wday >= 3) && (dt.wday <= 4))
         create_shift(tl_shift, dt, jc_user.id)
       else
         create_shift(tl_shift, dt)
