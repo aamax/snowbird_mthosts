@@ -11,6 +11,7 @@
               <td><%= s.short_name[0..1] %></td>
               <td><%= s.shift_type.description %></td>
               <td><%= s.shift_type.tasks %></td>
+              <td><%= (s.disabled == false) || (s.disabled.nil?) ? 'Working' : 'Called Off' %></td>
             </tr>
         <% end %>
       </table>

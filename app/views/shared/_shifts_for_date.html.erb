@@ -7,6 +7,7 @@
         <th>Shift Name</th>
         <th>Description</th>
         <th>Tasks</th>
+        <th>On Call</th>
       </tr>
       <% @shifts_today.each do |object| %>
           <tr>
@@ -34,6 +35,10 @@
             </td>
             <td>
               <%= @shifttype.tasks %>
+            </td>
+            <td>
+              <%= (object.disabled == false) || (object.disabled.nil?) && (!object.user_id.nil?) ?
+                      'Working' : (object.user_id.nil?) ? '' : 'Called Off' %>
             </td>
           </tr>
       <% end %>

@@ -1,7 +1,5 @@
 <div class='shifts_today_box span12'>
-  <%= render '/shared/shifts_for_date', :shift_date => Date.today %>
-
-  <%= render '/shared/shifts_for_date', :shift_date => (Date.today + 1.day) %>
-
-  <%= render '/shared/shifts_for_date', :shift_date => (Date.today + 2.days) %>
+  <% for x in 0..2 do %>
+    <%= render '/shared/shifts_for_date', :shift_date => Date.today + x.days %>
+  <% end %>
 </div>

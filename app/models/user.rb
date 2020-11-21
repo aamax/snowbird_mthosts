@@ -329,8 +329,10 @@ class User < ActiveRecord::Base
 
   def get_next_shifts(num)
     working_shifts = get_working_shifts
+
     working_shifts.delete_if {|s| s.shift_date < Date.today }
     limit = num - 1
+
     working_shifts[0..limit]
   end
 
