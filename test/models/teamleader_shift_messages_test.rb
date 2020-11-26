@@ -97,7 +97,7 @@ class TeamleaderMessageTest < ActiveSupport::TestCase
     end
 
     # can have 19 shifts total
-    assert_equal(103, @teamleader.shifts.count)
+    assert_equal(99, @teamleader.shifts.count)
 
     counts = Hash.new 0
     @teamleader.shifts.map(&:short_name).each {|s| counts[s] += 1 }
@@ -105,13 +105,13 @@ class TeamleaderMessageTest < ActiveSupport::TestCase
     oc_count = counts['OC']
     tl_count = counts['TL']
 
-    assert_equal(41, tl_count)
+    assert_equal(37, tl_count)
     assert_equal(52, oc_count)
     assert_equal(8, a1_count)
 
     msgs = @teamleader.shift_status_message
 
-    msgs.include?("41 team leader shifts selected").must_equal(true, msgs)
+    msgs.include?("37 team leader shifts selected").must_equal(true, msgs)
     msgs.include?("52 On Call shifts selected").must_equal(true, msgs)
     msgs.include?("All Required Shifts Selected").must_equal(true, msgs)
   end

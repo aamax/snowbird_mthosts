@@ -250,20 +250,20 @@ class Shift < ActiveRecord::Base
         end
       elsif test_user.group_1? || test_user.group_2? || test_user.group_3?
         if round <= 4
-          return false if ((round <= 4) and (a1_count < 7) and (self.short_name != 'A1'))
+          return false if ((round <= 4) and (a1_count < 5) and (self.short_name != 'A1'))
 
           if round == 1
             return false if ((self.short_name != 'A1') || (working_shifts.count >= 5)) && (a1_count >= 5)
             return true
           elsif round == 2
-            return false if (self.short_name != 'A1') && (a1_count < 7)
-            return false if (self.short_name == 'OC') && ((oc_count >= 3) || (test_user.shifts.count >= 12))
-            return false if (self.short_name == 'A1') && (a1_count >= 7)
+            return false if (self.short_name != 'A1') && (a1_count < 5)
+            return false if (self.short_name == 'OC') && ((oc_count >= 5) || (test_user.shifts.count >= 12))
+            return false if (self.short_name == 'A1') && (a1_count >= 5)
             return true
           elsif round == 3 || round == 4
-            return false if (a1_count >= 7) && (oc_count >= 10)
-            return false if (a1_count >= 7) && (self.short_name == 'A1')
-            return false if (a1_count < 7) && (self.short_name != 'A1')
+            return false if (a1_count >= 5) && (oc_count >= 12)
+            return false if (a1_count >= 5) && (self.short_name == 'A1')
+            return false if (a1_count < 5) && (self.short_name != 'A1')
 
             max_shifts = (round * 5) + 2 > 19 ? 19 : (round * 5) + 2
             return false if test_user.shifts.count >= max_shifts
@@ -272,7 +272,7 @@ class Shift < ActiveRecord::Base
             return true
           end
         else
-          return false if a1_count < 7 && (self.short_name != 'A1')
+          return false if a1_count < 5 && (self.short_name != 'A1')
 
           return true
         end
