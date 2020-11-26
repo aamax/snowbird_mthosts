@@ -167,6 +167,15 @@ class ReportsController < ApplicationController
           nil
         end
       end.compact.sort { |a,b| User.sort_value(a) <=> User.sort_value(b) }
+    elsif params[:id] == 'shift_inventory_report'
+      @report = 'shift_inventory_report'
+
+      @all_counts = Hash.new 0
+      Shift.all.map(&:short_name).each {|s| @all_counts[s] += 1 }
+
+      @selected_counts = Hash.new 0
+      Shift.where('user_id is not null').map(&:short_name).each {|s| @selected_counts[s] += 1 }
+
     end
   end
 

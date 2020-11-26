@@ -1,0 +1,33 @@
+<h3> Shift Inventory </h3>
+
+<table class="tabke table-bordered table-striped">
+  <tr>
+    <th class="span2">Type</th>
+    <th class="span2">Total</th>
+    <th class="span2">Selected</th>
+    <th class="span2">Remaining</th>
+  </tr>
+
+  <tr>
+    <td>TL</td>
+    <td><%= @all_counts['TL'] %></td>
+    <td><%= @selected_counts['TL'] %></td>
+    <td><%= @all_counts['TL'] - @selected_counts['TL'] %></td>
+  </tr>
+
+  <tr>
+    <td>A1</td>
+    <td><%= @all_counts['A1'] %></td>
+    <td><%= @selected_counts['A1'] %></td>
+    <td><%= @all_counts['A1'] - @selected_counts['A1'] %></td>
+  </tr>
+
+  <tr>
+    <td>OC</td>
+    <td><%= @all_counts['OC'] %></td>
+    <td><%= @selected_counts['OC'] %></td>
+    <td><%= @all_counts['OC'] - @selected_counts['OC'] %></td>
+  </tr>
+</table>
+
+<br/><br/>
