@@ -3,8 +3,8 @@
 
 # Number of processes
 # Rule of thumb: 2x per CPU core available
-# worker_processes 2
-worker_processes 8
+worker_processes 2
+# worker_processes 8
 
 timeout 15
 preload_app true
