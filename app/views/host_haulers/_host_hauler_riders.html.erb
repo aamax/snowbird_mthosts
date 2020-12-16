@@ -6,7 +6,9 @@
           <td>
             <% if !@selected_hauler.driver.nil? && rider.can_select_rider(current_user) %>
                 <a href="/select_rider/<%= rider.id %>" class='hauler_edit_btn btn btn-success'>Select</a>
-            <% elsif !current_user.is_working?(@selected_hauler.haul_date) %>
+            <% elsif
+               !current_user.is_working?(@selected_hauler.haul_date) && !current_user.admin?
+            %>
                 <a href="" class='hauler_edit_btn btn btn-warning'>Not Working</a>
             <% end %>
             <% if rider.can_drop_rider(current_user) %>
