@@ -18,7 +18,9 @@ class HostHaulersController < ApplicationController
   end
 
   def scheduler
-    @my_shifts = current_user.shifts.map { |shift| shift.shift_date.strftime("%Y-%m-%d") }
+    @my_shifts = current_user.shifts
+                             .reject { |s| s.meeting? }
+                             .map { |shift| shift.shift_date.strftime("%Y-%m-%d") }
     @start_day = params[:start_date]
     haul_array = HostHauler.all.map { |hauler| [hauler.haul_date, hauler.id] }
     @haulers = {}

@@ -266,6 +266,17 @@ class UserTest < ActiveSupport::TestCase
       # assert_includes emails, @trainer.email
     end
 
+    it 'should NOT get emails if shift is disabled' do
+      ashift = FactoryBot.create(:shift, :shift_type_id => @a1.id, :shift_date => Date.today)
+      @user1.shifts << ashift
+      ashift = FactoryBot.create(:shift, :shift_type_id => @a1.id, :shift_date => Date.today, :disabled => true)
+      @user2.shifts << ashift
+      emails = User.get_host_emails_for_date(Date.today).split(',')
+
+      assert_equal 1, emails.count
+      assert_includes emails, @user1.email
+    end
+
     # it 'should get emails for ongoing training shifts' do
     #   FactoryBot.create(:ongoing_training,
     #                     training_date_id: @training_date.id,

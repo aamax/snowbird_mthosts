@@ -43,7 +43,7 @@ namespace :hauler do
   # desc 'remove 14th seat if empty in haulers'
   task :shorten_vans => :environment do
     HostHauler.where('haul_date >= ?', Date.today).each do |hauler|
-      while hauler.riders.count > 13
+      while hauler.riders.count > 9
         if hauler.remove_empty_seat
           puts "seat removed on #{hauler.haul_date.strftime('%Y-%m-%d')}"
         else
