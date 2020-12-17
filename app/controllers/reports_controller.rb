@@ -248,51 +248,36 @@ class ReportsController < ApplicationController
 
   def duties_printable
     @title = "Daily Duties Report"
-    @start_date = params[:date].to_date if params[:date]
+    @start_date = params[:start_date].to_date if params[:start_date]
     @start_date ||= Date.today
 
     # number of days from start date
     @duration = params[:duration].to_i if params[:duration]
     @duration ||= 7
 
-    # @day1 = Shift.where("shift_date = ?", @date).order(:short_name, updated_at: :asc)
-    # @day2 = Shift.where("shift_date = ?", @date + 1.day).order(:short_name, updated_at: :asc)
-    # @day3 = Shift.where("shift_date = ?", @date + 2.day).order(:short_name, updated_at: :asc)
-    # @day4 = Shift.where("shift_date = ?", @date + 3.day).order(:short_name, updated_at: :asc)
-    # @day5 = Shift.where("shift_date = ?", @date + 4.day).order(:short_name, updated_at: :asc)
-    # @day6 = Shift.where("shift_date = ?", @date + 5.day).order(:short_name, updated_at: :asc)
-    # @day7 = Shift.where("shift_date = ?", @date + 6.day).order(:short_name, updated_at: :asc)
-    #
-    # days = [@day1, @day2, @day3, @day4, @day5, @day6, @day7]
-    #
-    # csv_string = CSV.generate do |csv|
-    #   # header row
-    #
-    #
-    #   # data rows
-    #   csv << ["Snowbird Mountain Host Staffing Report"]
-    #   days.each_with_index do |day, i|
-    #     csv << ["Staffing For:     #{(@date + i.day).strftime('%a.   %Y-%m-%d')}"]
-    #     # csv << [""]
-    #     #
-    #     # csv << ["Host", "Shift", "Description", "Tasks"]
-    #     # day.each do |objs|
-    #     #   name = objs.user.name unless objs.nil? || objs.user.nil?
-    #     #   name ||= "Unset"
-    #     #
-    #     #   csv << [name, objs.short_name, objs.shift_type.description,
-    #     #           objs.shift_type.tasks]
-    #     # end
-    #     csv <<[""]
-    #     csv << [""]
-    #   end
-    # end
-    #
-    # send_data csv_string,
-    #           :type => "text/csv; charset:iso-8859-1;header=present",
-    #
-    #
-    #          :disposition => "attachment; filename=daily_staffing_report#{@date.strftime('%a.%Y%m%d')}.csv"
+    @days = get_days_for_duties_report(@start_date, @duration)
+
+    csv_string = CSV.generate do |csv|
+      # data rows
+      csv << ["Snowbird Mountain Host Duties Report #{@start_date} for #{@duration} Days"]
+
+      @days.each do |key, shifts|
+
+        csv << ["Duties For:     #{key} #{shifts[0]}"]
+        csv << ['Shift Type', 'Host Name', 'Location', 'Time', 'Second Duty']
+
+        shifts[1..-1].each do |s|
+          csv << s
+        end
+        csv << [""]
+        csv << [""]
+        csv << [""]
+      end
+    end
+
+    send_data csv_string,
+              :type => "text/csv; charset:iso-8859-1;header=present",
+             :disposition => "attachment; filename=duties_report#{@start_date.strftime('%a.%Y%m%d')}_#{@duration}.csv"
   end
 
   private

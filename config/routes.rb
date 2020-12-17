@@ -28,7 +28,7 @@ Mthost::Application.routes.draw do
 
   get '/duties_report', :to => 'reports#duties_report'
   post '/duties_report', :to => 'reports#duties_report'
-  get '/daily_duties_printable', :to => "reports#duties_printable"
+  get '/duties_printable', :to => "reports#duties_printable"
 
   get '/shift_print/:id', :to => 'users#shift_print'
   post '/users/save_new', :to => 'users#save_new'
