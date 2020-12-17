@@ -25,6 +25,11 @@ Mthost::Application.routes.draw do
   get '/skipatrol', :to => "reports#skipatrol"
   post '/skipatrol', :to => "reports#skipatrol"
   get '/skipatrol_printable', :to => "reports#skipatrol_printable"
+
+  get '/duties_report', :to => 'reports#duties_report'
+  post '/duties_report', :to => 'reports#duties_report'
+  get '/daily_duties_printable', :to => "reports#duties_printable"
+
   get '/shift_print/:id', :to => 'users#shift_print'
   post '/users/save_new', :to => 'users#save_new'
   post '/shifts/assign_team_leaders', :to => 'shifts#assign_team_leaders'

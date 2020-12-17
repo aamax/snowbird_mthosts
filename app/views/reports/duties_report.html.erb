@@ -1,0 +1,63 @@
+<div class="row">
+  <div class="span12">
+    <h1>Host Duties Report</h1>  <br/>
+    <%= form_tag("/duties_report") do %>
+      <%= text_field_tag "start_date", "", :id => "filter_date", :class=>"span2 shift_date",
+                         :value=>@start_date, :readonly=>'readonly' %>&nbsp;
+      <%=  link_to "<i class='icon-calendar'></i>".html_safe, "#", :class=>"btn cal_icon",
+                   :id=>"set_date_btn",
+                   "data-date-format"=>"yyyy-mm-dd",
+                   "data-date"=>@start_date.strftime('%Y-%m-%d') %>
+      <%= number_field_tag 'duration', '', :id => 'duration_value', :class=> 'span2', :value => @duration  %>
+
+      <%=  submit_tag("Refresh", :class=>'btn btn-primary') %>
+    <% end %>
+  </div>
+</div>
+
+<%= link_to "Export Report <i class='icon-print'></i>".html_safe, "/duties_printable?start_date=#{@start_date}", :class => 'btn' %>
+
+<br/>
+<hr/>
+<br/>
+
+<div class="row">
+  <div class="span12">
+    <% if @days.count > 0 %>
+      <% @days.each do |key, value| %>
+        <table class="table table-striped table-bordered span12">
+          <tr>
+            <th>Date: <%= key %> </th>
+            <th colspan="4"><%= value.first %></th>
+          </tr>
+          <tr>
+            <th>Shift Type</th>
+            <th>Host Name</th>
+            <th>Location</th>
+            <th>Time</th>
+            <th>Second Duty</th>
+          </tr>
+
+          <% value[1..-1].each do |shift| %>
+            <tr>
+              <% shift.each do |entry| %>
+                <td>
+                  <%= entry %>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
+        </table>
+        <br/><br/>
+        <strong>All Positions will be a combination of Customer Service and Mask Encouragement</strong>
+
+        <br/>
+        <hr/>
+        <br/>
+
+      <% end %>
+    <% else %>
+      <h2>No Days Found...</h2>
+    <% end %>
+  </div>
+</div>

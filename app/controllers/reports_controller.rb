@@ -234,4 +234,310 @@ class ReportsController < ApplicationController
               :disposition => "attachment; filename=ski_patrol_report#{@date.strftime('%a.%Y%m%d')}.csv"
   end
 
+  def duties_report
+    @title = "Daily Duties Report"
+    @start_date = params[:start_date].to_date if params[:start_date]
+    @start_date ||= Date.today
+
+    # number of days from start date
+    @duration = params[:duration].to_i if params[:duration]
+    @duration ||= 7
+
+    @days = get_days_for_duties_report(@start_date, @duration)
+  end
+
+  def duties_printable
+    @title = "Daily Duties Report"
+    @start_date = params[:date].to_date if params[:date]
+    @start_date ||= Date.today
+
+    # number of days from start date
+    @duration = params[:duration].to_i if params[:duration]
+    @duration ||= 7
+
+    # @day1 = Shift.where("shift_date = ?", @date).order(:short_name, updated_at: :asc)
+    # @day2 = Shift.where("shift_date = ?", @date + 1.day).order(:short_name, updated_at: :asc)
+    # @day3 = Shift.where("shift_date = ?", @date + 2.day).order(:short_name, updated_at: :asc)
+    # @day4 = Shift.where("shift_date = ?", @date + 3.day).order(:short_name, updated_at: :asc)
+    # @day5 = Shift.where("shift_date = ?", @date + 4.day).order(:short_name, updated_at: :asc)
+    # @day6 = Shift.where("shift_date = ?", @date + 5.day).order(:short_name, updated_at: :asc)
+    # @day7 = Shift.where("shift_date = ?", @date + 6.day).order(:short_name, updated_at: :asc)
+    #
+    # days = [@day1, @day2, @day3, @day4, @day5, @day6, @day7]
+    #
+    # csv_string = CSV.generate do |csv|
+    #   # header row
+    #
+    #
+    #   # data rows
+    #   csv << ["Snowbird Mountain Host Staffing Report"]
+    #   days.each_with_index do |day, i|
+    #     csv << ["Staffing For:     #{(@date + i.day).strftime('%a.   %Y-%m-%d')}"]
+    #     # csv << [""]
+    #     #
+    #     # csv << ["Host", "Shift", "Description", "Tasks"]
+    #     # day.each do |objs|
+    #     #   name = objs.user.name unless objs.nil? || objs.user.nil?
+    #     #   name ||= "Unset"
+    #     #
+    #     #   csv << [name, objs.short_name, objs.shift_type.description,
+    #     #           objs.shift_type.tasks]
+    #     # end
+    #     csv <<[""]
+    #     csv << [""]
+    #   end
+    # end
+    #
+    # send_data csv_string,
+    #           :type => "text/csv; charset:iso-8859-1;header=present",
+    #
+    #
+    #          :disposition => "attachment; filename=daily_staffing_report#{@date.strftime('%a.%Y%m%d')}.csv"
+  end
+
+  private
+
+  def get_days_for_duties_report(start_date, duration)
+    shifts = Shift.where("shift_date >= ? AND shift_date < ?", @start_date, @start_date + @duration.days)
+         .order(shift_date: :asc, short_name: :asc, updated_at: :asc).to_a
+    shift_dates = shifts.map(&:shift_date).uniq.sort
+    hash = {}
+    shift_dates.each do |sd|
+      hash[sd] = []
+    end
+    shifts.each do |s|
+      hash[s.shift_date] << s
+    end
+
+    days_hash = {}
+    hash.each do |key, value|
+      days_hash[key] = []
+      days_hash[key] << value.first.day_of_week
+      days_hash[key] << get_tl_shift_for_report(value)
+
+      get_a1_shifts_for_report(value).each do |entry|
+        days_hash[key] << entry
+      end
+
+      get_oc_shifts_for_report(value).each do |entry|
+        days_hash[key] << entry
+      end
+
+      next
+    end
+
+    days_hash
+  end
+
+  def get_tl_shift_for_report(value)
+    retval = nil
+    value.each do |s|
+      if s.short_name == 'TL'
+        retval = ['TL', s.user.nil? ? 'UNSET' : s.user.name, 'Float', 'All Day', '']
+        break
+      end
+    end
+    retval
+  end
+
+  def get_a1_shifts_for_report(value)
+    retval = []
+    a1_count = 0
+    is_weekend = value.count >= 15
+    value.each do |entry|
+      next if entry.short_name != 'A1'
+
+      a1_count += 1
+      if entry.user.nil?
+        retval << [entry.short_name, 'UNSET',
+                   a1_location(a1_count),
+                   a1_time(a1_count),
+                   '']
+
+      elsif (entry.user.email == COTTER_EMAIL)
+        a1_count -= 1
+        retval << [entry.short_name, entry.user.name, 'Fill-In', 'All Day', '']
+      else
+        # populate A1 entries based on order
+        retval << [entry.short_name, entry.user.name,
+                   a1_location(a1_count),
+                   a1_time(a1_count),
+                   '']
+      end
+    end
+    retval
+  end
+
+  def get_oc_shifts_for_report(value)
+    retval = []
+    oc_count = 0
+    is_weekend = value.count >= 15
+    has_cotter = get_cotter_has_a1(value)
+
+    value.each do |entry|
+      if entry.short_name == 'OC'
+
+        if has_cotter
+          # populate first oc as last a1
+          if entry.user.nil?
+            retval << [entry.short_name, 'UNSET',
+                       a1_location(4),
+                       a1_time(4),
+                       '']
+          else
+            retval << [entry.short_name,
+                       entry.user.name,
+                       a1_location(4),
+                       a1_time(4),
+                       '']
+          end
+          has_cotter = false
+          next
+        end
+
+        oc_count += 1
+
+        if entry.user.nil?
+          retval << [entry.short_name, 'UNSET',
+                     oc_location(oc_count, is_weekend),
+                     oc_time(oc_count, is_weekend),
+                     oc_second_duty(oc_count, is_weekend)]
+        else
+          retval << [entry.short_name,
+                     entry.user.name,
+                     oc_location(oc_count, is_weekend),
+                     oc_time(oc_count, is_weekend),
+                     oc_second_duty(oc_count, is_weekend)]
+        end
+      end
+
+
+    end
+    retval
+  end
+
+  def a1_location(cnt)
+    case cnt
+    when 1..2
+      'Gad - Zoom Mask'
+    when 3..4
+      'Tram Mask'
+    else
+      'TBD'
+    end
+  end
+
+  def a1_time(cnt)
+    case cnt
+    when 1..2
+      '8:30 - 2:00'
+    when 3..4
+      '8:45 - 2:00'
+    else
+      'TBD'
+    end
+  end
+
+  def oc_location(cnt, is_weekend)
+    case cnt
+    when 1
+      'Creekside M&G'
+    when 2
+      'Portico M&G'
+    when 3
+      if is_weekend
+        'Portico M&G'
+      else
+        'Plasa Deck M&G'
+      end
+    when 4
+      if is_weekend
+        'Plaza Deck M&G'
+      else
+        'Portico PM'
+      end
+    when 5
+      'Plaza PUBS'
+    when 6
+      'Creekside Lunch'
+    when 7
+      'Mid-Gad Res'
+    when 8
+      'Summit Res'
+    when 9
+      'Portico PM'
+    else
+      'TBD'
+    end
+  end
+
+  def oc_time(cnt, is_weekend)
+    if is_weekend
+      case cnt
+      when 1..5
+        '8:30 - 10:30'
+      when 6..8
+        '11:00 - 2:00'
+      when 9
+        if is_weekend
+          '2:00 - 4:30'
+        else
+          'Plasa Deck M&G'
+        end
+      else
+        'TBD'
+      end
+    else
+      case cnt
+      when 1..3
+        '8:30 - 10:30'
+      when 4
+        '2:30 - 4:30'
+      when 5
+        '8:30 - 10:30'
+      else
+        'TBD'
+      end
+    end
+  end
+
+  def oc_second_duty(cnt, is_weekend)
+    if is_weekend
+      case cnt
+      when 1
+        'Plaza 1:30 - 2:30'
+      when 2
+        'Plaza 11:30 - 12:30'
+      when 3
+        'Plaza 12:30 - 1:30'
+      when 4
+        'Plaza 2:30 - 3:30'
+      when 5
+        'Plaza 10:30 - 11:30'
+      else
+        ''
+      end
+    else
+      case cnt
+      when 1
+        'Plaza 1:30 - 2:30'
+      when 2
+        'Plaza 11:30 - 12:30'
+      when 3
+        'Plaza 12:30 - 1:30'
+      when 4
+        'Plaza 10:30 - 11:30'
+      when 5
+        'Plaza 2:30 - 3:30'
+      else
+        ''
+      end
+    end
+  end
+
+  def get_cotter_has_a1(value)
+    value.reject { |s| s.user.nil? }
+          .reject { |s| s.short_name != 'A1'}
+          .map { |s| s.user.email }.uniq.include? COTTER_EMAIL
+  end
 end
