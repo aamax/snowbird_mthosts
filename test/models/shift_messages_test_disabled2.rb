@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ShiftMessagesTest < ActiveSupport::TestCase
+class ShiftMessagesTestDisabled2 < ActiveSupport::TestCase
   before do
     @sys_config = SysConfig.first
     @newer_user = User.find_by_name('g3')
@@ -18,7 +18,6 @@ class ShiftMessagesTest < ActiveSupport::TestCase
     (1..50).each do |n|
       FactoryBot.create(:shift, shift_type_id: @tl.id, shift_date: Date.today + n.days)
       FactoryBot.create(:shift, shift_type_id: @a1.id, shift_date: Date.today + n.days)
-      FactoryBot.create(:shift, shift_type_id: @oc.id, shift_date: Date.today + n.days)
     end
   end
 

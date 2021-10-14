@@ -17,11 +17,11 @@ namespace :db do
 
       puts User.all.count
 
-      # @rookie_user = FactoryBot.create(:user, name: 'rookie', start_year: 2013, active_user: true, confirmed: true)
-      # @rookie2 = FactoryBot.create(:user, name: 'rookie2', start_year: 2013, active_user: true, confirmed: true)
-      # @rookie3 = FactoryBot.create(:user, name: 'rookie3', start_year: 2013, active_user: true, confirmed: true)
-      #
-      # puts User.all.count
+      @rookie_user = FactoryBot.create(:user, name: 'rookie', start_year: Date.today.year, active_user: true, confirmed: true)
+      @rookie2 = FactoryBot.create(:user, name: 'rookie2', start_year: Date.today.year, active_user: true, confirmed: true)
+      @rookie3 = FactoryBot.create(:user, name: 'rookie3', start_year: Date.today.year, active_user: true, confirmed: true)
+
+      puts User.all.count
 
       @group1_user = FactoryBot.create(:user, name: 'g3', start_year: 2012, active_user: true, confirmed: true)
       @group2_user = FactoryBot.create(:user, name: 'g2', start_year: 2009, active_user: true, confirmed: true)
@@ -31,9 +31,9 @@ namespace :db do
 
       # @surveyor = FactoryBot.create(:user, name: 'surveyor', start_year: 2005 , active_user: true, confirmed: true)
       # @surveyor.add_role :surveyor
-      #
-      # @trainer = FactoryBot.create(:user, name: 'trainer', start_year: 2005 , active_user: true, confirmed: true)
-      # @trainer.add_role :trainer
+
+      @trainer = FactoryBot.create(:user, name: 'trainer', start_year: 2005 , active_user: true, confirmed: true)
+      @trainer.add_role :trainer
 
       puts User.all.count
 
@@ -43,58 +43,89 @@ namespace :db do
 
       @tl = FactoryBot.create(:shift_type, short_name: 'TL')
       @a1 = FactoryBot.create(:shift_type, short_name: 'A1')
-      @oc = FactoryBot.create(:shift_type, short_name: 'OC')
+
+      # @oc = FactoryBot.create(:shift_type, short_name: 'OC')
 
       # @sv = FactoryBot.create(:shift_type, short_name: 'SV')
-      # @tr = FactoryBot.create(:shift_type, short_name: 'TR')
       # @sh = FactoryBot.create(:shift_type, short_name: 'SH')
-      # @p1 = FactoryBot.create(:shift_type, short_name: 'P1')
-      # @p2 = FactoryBot.create(:shift_type, short_name: 'P2')
-      # @p3 = FactoryBot.create(:shift_type, short_name: 'P3')
-      # @p4 = FactoryBot.create(:shift_type, short_name: 'P4')
-      # @g1 = FactoryBot.create(:shift_type, short_name: 'G1weekend')
-      # @g2 = FactoryBot.create(:shift_type, short_name: 'G2weekend')
-      # @g3 = FactoryBot.create(:shift_type, short_name: 'G3weekend')
-      # @g4 = FactoryBot.create(:shift_type, short_name: 'G4weekend')
-      # @g1f = FactoryBot.create(:shift_type, short_name: 'G1friday')
-      # @g2f = FactoryBot.create(:shift_type, short_name: 'G2friday')
-      # @g3f = FactoryBot.create(:shift_type, short_name: 'G3friday')
-      # @g4f = FactoryBot.create(:shift_type, short_name: 'G4friday')
-      # @c1 = FactoryBot.create(:shift_type, short_name: 'C1weekend')
-      # @c2 = FactoryBot.create(:shift_type, short_name: 'C2weekend')
-      # @c3 = FactoryBot.create(:shift_type, short_name: 'C3weekend')
-      # @c4 = FactoryBot.create(:shift_type, short_name: 'C4weekend')
-      # @m1 = FactoryBot.create(:shift_type, short_name: 'M1')
+
+      # Meetings
+      @m1 = FactoryBot.create(:shift_type, short_name: 'M1')
       @m2 = FactoryBot.create(:shift_type, short_name: 'M2')
-      # @m3 = FactoryBot.create(:shift_type, short_name: 'M3')
+      @m3 = FactoryBot.create(:shift_type, short_name: 'M3')
       @m4 = FactoryBot.create(:shift_type, short_name: 'M4')
+
+      # trainer/trainee/ogomt trainer/ogomt trainee
+      # @tr = FactoryBot.create(:shift_type, short_name: 'TR')
+
+      # regular shifts - weekend
+      @p1end = FactoryBot.create(:shift_type, short_name: 'P1weekend')
+      @p2end = FactoryBot.create(:shift_type, short_name: 'P2weekend')
+      @p3end = FactoryBot.create(:shift_type, short_name: 'P3weekend')
+      @p4end = FactoryBot.create(:shift_type, short_name: 'P4weekend')
+
+      @g1end = FactoryBot.create(:shift_type, short_name: 'G1weekend')
+      @g2end = FactoryBot.create(:shift_type, short_name: 'G2weekend')
+      @g3end = FactoryBot.create(:shift_type, short_name: 'G3weekend')
+      @g4end = FactoryBot.create(:shift_type, short_name: 'G4weekend')
+
+      @c1end = FactoryBot.create(:shift_type, short_name: 'C1weekend')
+      @c2end = FactoryBot.create(:shift_type, short_name: 'C2weekend')
+
+      @h1end = FactoryBot.create(:shift_type, short_name: 'H1weekend')
+      @h2end = FactoryBot.create(:shift_type, short_name: 'H2weekend')
+      @h3end = FactoryBot.create(:shift_type, short_name: 'H3weekend')
+      @h4end = FactoryBot.create(:shift_type, short_name: 'H4weekend')
+
+      # regular shifts - weekday
+      @p1day = FactoryBot.create(:shift_type, short_name: 'P1weekday')
+      @p2day = FactoryBot.create(:shift_type, short_name: 'P2weekday')
+      @p3day = FactoryBot.create(:shift_type, short_name: 'P3weekday')
+      @p4day = FactoryBot.create(:shift_type, short_name: 'P4weekday')
+
+      @g1day = FactoryBot.create(:shift_type, short_name: 'G1weekday')
+      @g2day = FactoryBot.create(:shift_type, short_name: 'G2weekday')
+      @g3day = FactoryBot.create(:shift_type, short_name: 'G3weekday')
+
+      @h1day = FactoryBot.create(:shift_type, short_name: 'H1weekday')
+      @h2day = FactoryBot.create(:shift_type, short_name: 'H2weekday')
+
       # @st = FactoryBot.create(:shift_type, short_name: 'ST')
+
+
+      # TODO populate rookie training shifts
+      # TODO populate OGOMT shifts
 
       @start_date = (Date.today()  + 60.days)
       curr_date = @start_date - 1.day
       (0..24).each do |d|
         curr_date += 1.day
 
-        FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @a1.id)
-        FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @oc.id)
-        # FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @p3.id)
-        # FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @p4.id)
-        # FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @g1.id)
-        # FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @g2.id)
-        # FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @g3.id)
-        # FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @g4.id)
-        # FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @g1f.id)
-        # FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @g2f.id)
-        # FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @g3f.id)
-        # FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @g4f.id)
-        # FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @c3.id)
-        # FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @c4.id)
-        # FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @c1.id)
-        # FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @c2.id)
+        FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @p1end.id)
+        FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @p2end.id)
+        FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @p3end.id)
+        FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @p4end.id)
+
+        FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @g1end.id)
+        FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @g2end.id)
+        FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @g3end.id)
+        FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @g4end.id)
+
+        FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @c1end.id)
+        FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @c2end.id)
+
         FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @tl.id)
+
+        FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @a1.id)
       end
 
+      puts "Shift Count (before meetings): #{Shift.count}"
+
       User.populate_meetings
+
+      puts "Shift Count (All): #{Shift.count}"
+      puts "All Users: #{User.count}"
+      puts "Rookies: #{User.rookies.count}"
     end
   end
 end

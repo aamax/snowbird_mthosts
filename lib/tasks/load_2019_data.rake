@@ -3,7 +3,7 @@ require 'csv'
 
 namespace :db do
   desc "load all 2019 data"
-  task :load_all_data => :environment do
+  task :load_all_2019data => :environment do
     ActiveRecord::Base.transaction do
       # clear all data
       puts "Clearing all data: riders, host_haulers, shfits, shift_logs, shift_types"
@@ -131,7 +131,7 @@ namespace :db do
   end
 
   desc "populate shift types"
-  task :load_shift_types => :environment do
+  task :load_2019shift_types => :environment do
     # load up file
     filename = "lib/data/shift_type_2018.csv"
 
@@ -163,9 +163,7 @@ namespace :db do
 
       meetings.each do |m|
         next if (m.short_name == 'M1' || m.short_name == 'M3') && !u.rookie?
-
         s_date = Date.parse(MEETINGS[m.short_name])
-
         new_shift = Shift.create(:user_id=>u.id,
                                  :shift_type_id=>m.id,
                                  :shift_date=>s_date,
@@ -196,7 +194,7 @@ namespace :db do
   end
 
   desc "populate shifts"
-  task :load_shifts => :environment do
+  task :load_2019shifts => :environment do
     # load up file
     filename = "lib/data/shift_data.csv"
 
@@ -435,7 +433,7 @@ namespace :db do
   end
 
   desc "populate surveyor shifts"
-  task :populate_surveyor_shifts => :environment do
+  task :populate_2019surveyor_shifts => :environment do
     puts 'populating survey shifts rake task start...'
     bErrors = false
     filename = 'lib/data/2019_surveys.csv'
@@ -491,7 +489,7 @@ namespace :db do
   end
 
   desc "populate ongoing_training shifts"
-  task :load_ongoing_training_shifts => :environment do
+  task :load_2019ongoing_training_shifts => :environment do
     puts '    set roles for ogom trainers...'
     trainers = { 118 => User.find_by(id: 118),
                  61 => User.find_by(id: 61),
@@ -517,7 +515,7 @@ namespace :db do
   end
 
   desc 'initialize host hauler'
-  task :initialize_host_hauler => :environment do
+  task :initialize_2019host_hauler => :environment do
     jc = User.find_by(email: 'jecotterii@gmail.com')
     (Date.parse('2019-11-23')..Date.parse('2020-05-27')).each do |dt|
       if dt.thursday? || dt.friday? || dt.saturday? || dt.sunday?
@@ -528,7 +526,7 @@ namespace :db do
   end
 
   desc 'update host data for current season'
-  task :update_host_data_for_season => :environment do
+  task :update_2019host_data_for_season => :environment do
 
     puts 'Disable Hosts Not Returning'
     puts "   Fred Manar"

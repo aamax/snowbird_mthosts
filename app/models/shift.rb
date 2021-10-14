@@ -212,6 +212,7 @@ class Shift < ActiveRecord::Base
     Shift.where(:shift_date => self.shift_date).to_a.delete_if {|s| s.short_name == 'SH' }.map {|s| s.user }.to_a.delete_if {|u| u.nil? }
   end
 
+  # TODO - need to re-implement all can_select logic base on new year rules etc.
   def can_select(test_user, select_params)
     retval = false
     return false if (self.shift_date < Date.today) && !test_user.has_role?(:admin)
@@ -291,6 +292,8 @@ class Shift < ActiveRecord::Base
     end
     retval
   end
+
+
   # puts "round: #{round} sn: #{self.short_name} shifts: #{shift_count} wshifts: #{working_shifts.map(&:short_name)} bingo: #{bingo_start}  today: #{Date.today}  sdate: #{self.shift_date}"
   # puts "TEST: #{(self.short_name != 'A1') || (working_shifts.count >= 5)}"
 

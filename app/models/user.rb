@@ -80,7 +80,7 @@ class User < ActiveRecord::Base
 
   # don't allow non active users to log into the system
   def active_for_authentication?
-    super and self.has_role?(:admin) ? true : (self.active_user? || (self.email == 'kmcguinness@snowbird.com'))
+    super and self.has_role?(:admin) ? true : self.active_user?
   end
 
   def non_meeting_shifts
@@ -401,6 +401,7 @@ class User < ActiveRecord::Base
     true
   end
 
+  # TODO - refactor and re-implement with new rules
   def shift_status_message
     msg = []
     day_offset = get_day_offset
@@ -455,28 +456,6 @@ class User < ActiveRecord::Base
     meetings = ShiftType.where("short_name like 'M%'")
     Shift.delete_all("shift_type_id in (#{meetings.map(&:id).join(',')})")
     Rake::Task['db:load_meetings'].invoke
-
-    #
-    # first_date = SysConfig.first.season_start_date
-    # shift_types = {}
-    # ShiftType.all.each {|st| shift_types[st.short_name] = st.id }
-    #
-    # User.all.each do |u|
-    #   next if u.supervisor? || (u.active_user == false)
-    #
-    #   MEETINGS.each do |m|
-    #     next if ((m[:type] == "M1") || (m[:type] == "M3")) && !u.rookie?
-    #
-    #     s_date = Date.parse(m[:when])
-    #     st = shift_types[m[:type]]
-    #
-    #     new_shift = Shift.create(:user_id=>u.id,
-    #                              :shift_type_id=>st,
-    #                              :shift_date=>s_date,
-    #                              :shift_status_id => 1,
-    #                              :day_of_week=>s_date.strftime("%a"))
-    #   end
-    # end
   end
 
   def self.reset_all_accounts
