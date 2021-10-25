@@ -62,11 +62,31 @@ module HostUtility
   def self.get_current_round(bingo_start, dt, usr)
     return 0 if dt < bingo_start
 
-    day_count = (dt - bingo_start).to_i
-    return 5 if day_count > 8
+    case usr.seniority_group
+      when 1 # senior
+        day_count = (dt - bingo_start).to_i
+        round_num = (day_count / 3).to_i + 1
+      when 2 # junior
+        day_count = (dt - bingo_start).to_i - 1
+        round_num = (day_count / 3).to_i + 1
+        group_num = (day_count % 3).to_i
 
-    return (day_count / 2).to_i + 1 if usr.group_1?
-    return (day_count / 2).to_i + (day_count % 2)
+        if (round_num == 3 || round_num == 4) && group_num == 2
+          round_num += 1
+        end
+      when 3,4 # freshman or rookie
+        day_count = (dt - bingo_start).to_i - 2
+        round_num = (day_count / 3).to_i + 1
+
+        group_num = (day_count % 3).to_i
+
+        if (round_num == 3 || round_num == 4) && group_num > 0
+          round_num += 1
+        end
+      else
+    end
+
+    return round_num
   end
 
   def self.date_for_round(user, round_num)

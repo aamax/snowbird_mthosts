@@ -23,9 +23,9 @@ namespace :db do
 
       puts User.all.count
 
-      @group1_user = FactoryBot.create(:user, name: 'g3', start_year: 2012, active_user: true, confirmed: true)
+      @group1_user = FactoryBot.create(:user, name: 'g1', start_year: 2005, active_user: true, confirmed: true)
       @group2_user = FactoryBot.create(:user, name: 'g2', start_year: 2009, active_user: true, confirmed: true)
-      @group3_user = FactoryBot.create(:user, name: 'g1', start_year: 2005, active_user: true, confirmed: true)
+      @group3_user = FactoryBot.create(:user, name: 'g3', start_year: 2012, active_user: true, confirmed: true)
       @team_leader = FactoryBot.create(:user, name: 'teamlead', start_year: 2005 , active_user: true, confirmed: true)
       @team_leader.add_role :team_leader
 
@@ -55,8 +55,17 @@ namespace :db do
       @m3 = FactoryBot.create(:shift_type, short_name: 'M3')
       @m4 = FactoryBot.create(:shift_type, short_name: 'M4')
 
-      # trainer/trainee/ogomt trainer/ogomt trainee
-      # @tr = FactoryBot.create(:shift_type, short_name: 'TR')
+      # rookie trainer shift
+      @tr = FactoryBot.create(:shift_type, short_name: 'TR')
+
+      # rookie trainee shifts
+      @t1 = FactoryBot.create(:shift_type, short_name: 'T1')
+      @t2 = FactoryBot.create(:shift_type, short_name: 'T2')
+      @t3 = FactoryBot.create(:shift_type, short_name: 'T3')
+      @t4 = FactoryBot.create(:shift_type, short_name: 'T4')
+
+      # ogomt trainer shifts
+      # ogomt trainee shifts
 
       # regular shifts - weekend
       @p1end = FactoryBot.create(:shift_type, short_name: 'P1weekend')
@@ -120,12 +129,35 @@ namespace :db do
       end
 
       puts "Shift Count (before meetings): #{Shift.count}"
-
-      User.populate_meetings
+      populate_test_meetings
 
       puts "Shift Count (All): #{Shift.count}"
       puts "All Users: #{User.count}"
       puts "Rookies: #{User.rookies.count}"
+    end
+
+    def populate_test_meetings
+      # get all meetings
+      meetings = ShiftType.where("short_name like 'M%'")
+
+      puts "iterate all users..."
+
+      User.all.each do |u|
+        next if u.supervisor? || (u.active_user == false)
+
+        meetings.each do |m|
+          next if (m.short_name == 'M1' || m.short_name == 'M3') && !u.rookie?
+
+          s_date = Date.parse(MEETINGS[m.short_name])
+
+          new_shift = Shift.create(:user_id=>u.id,
+                                   :shift_type_id=>m.id,
+                                   :shift_date=>s_date,
+                                   :shift_status_id => 1,
+                                   :day_of_week=>s_date.strftime("%a"))
+        end
+      end
+      puts "Done adding meetings.  Shift Count: #{Shift.all.count}"
     end
   end
 end

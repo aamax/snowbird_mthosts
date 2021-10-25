@@ -212,19 +212,61 @@ class Shift < ActiveRecord::Base
     Shift.where(:shift_date => self.shift_date).to_a.delete_if {|s| s.short_name == 'SH' }.map {|s| s.user }.to_a.delete_if {|u| u.nil? }
   end
 
-  # TODO - need to re-implement all can_select logic base on new year rules etc.
   def can_select(test_user, select_params)
     retval = false
-    return false if (self.shift_date < Date.today) && !test_user.has_role?(:admin)
-    return false if disabled?
+    return retval if self.disabled?
+    return retval if (self.shift_date < Date.today) && (!test_user.admin?)
+    return false if test_user.is_working?(self.shift_date)
+    return retval if !test_user.team_leader? && self.team_leader?
+    return retval if !test_user.trainer? && self.trainer?
+    return retval if self.meeting?
+
+    all_shifts =  select_params[:all_shifts]
 
     if self.user_id.nil?
       return true if test_user.admin?
-      return false if test_user.is_working?(self.shift_date)
-      return false if self.team_leader? && !test_user.team_leader?
+
+      round = select_params[:round]
+      return false if ((round < 4) &&
+                      (all_shifts.count >= (round * 5) + 2)) &&
+                      (!test_user.team_leader? && !test_user.rookie?)
+      return false if ((round <= 4) && (all_shifts.count >= 20))
+
+      if test_user.team_leader?
+        return false if (round < 5) && all_shifts.count >= 20
+        return false if self.trainer? || self.training?
+        retval = true
+      elsif test_user.group_1? || test_user.group_2? || test_user.group_3?
+        return retval if self.team_leader?
+        retval = true
+      elsif test_user.rookie?
+        # if pre bingo (round 0) can only pick T1 - T4 shifts
+        return false if (round == 0) && !self.training? && all_shifts.count >= 8
+        return false if self.is_tour? && (self.shift_date < ROOKIE_TOUR_DATE)
+        return false if ((round <= 4) && (all_shifts.count >= (round * 5) + 8))
+
+        retval = true
+      end
 
 
-      return true
+
+    end
+
+
+
+
+    return retval
+
+
+
+
+
+
+    # if self.user_id.nil?
+    #   return false if self.team_leader? && !test_user.team_leader?
+    #
+    #
+    #   return true
 
 
 
@@ -289,7 +331,7 @@ class Shift < ActiveRecord::Base
       # end
       #
       # retval = true
-    end
+    # end
     retval
   end
 

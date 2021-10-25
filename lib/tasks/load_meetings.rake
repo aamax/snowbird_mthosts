@@ -3,6 +3,7 @@ namespace :data do
     puts "clearing all meeting shifts..."
 
     meetings = ShiftType.where("short_name = 'M1' OR short_name = 'M2' OR short_name = 'M3' OR short_name = 'M4'").map {|st| st.id}.join(',')
+
     if meetings.empty?
       ShiftType.create(short_name: 'M1', description: 'test meeting1')
       ShiftType.create(short_name: 'M2', description: 'test meeting2')
