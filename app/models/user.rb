@@ -460,14 +460,16 @@ class User < ActiveRecord::Base
 
   def self.reset_all_accounts
     User.all.each do |u|
-      if !u.active_user?
+      # remove all roles to initialize the system
+      # if !u.active_user?
         u.remove_role :admin
         u.remove_role :team_leader
         u.remove_role :trainer
         u.remove_role :surveyor
         u.remove_role :driver
         u.remove_role :ongoing_trainer
-      end
+      # end
+
       u.confirmed = false
       u.password = DEFAULT_PASSWORD
       u.save

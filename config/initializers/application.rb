@@ -1,6 +1,6 @@
 DAYNAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
 
-MEETINGS = { 'M1' => '2021-10-01', 'M2' => '2021-11-06', 'M3' => '2021-12-19', 'M4' => '2022-02-05' }
+MEETINGS = { 'M1' => '2021-10-30', 'M2' => '2021-11-06', 'M3' => '2021-12-19', 'M4' => '2022-02-05' }
 
 HOLIDAYS = [Date.new(2020,12,24),
             Date.new(2020,12,25),
@@ -35,7 +35,7 @@ NON_TOUR_TYPES = %w[C1weekend C2weekend
 
 TRAINING_TYPES = %w[T1 T2 T3 T4]
 
-HAULER_RIDERS = 10 # total with driver
+HAULER_RIDERS = 13 # total without driver
 
 # SHIFT_TARGET = 19
 # A1_COUNT = 7

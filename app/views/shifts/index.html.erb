@@ -78,10 +78,6 @@
       <br/>
 
           <div id='<%= "date_#{curr_date}" %>' class="collapse <%= @return_params['show_shifts_expanded'] == true ? "in" : "out" %>">
-            <% if current_user.has_role? :admin %>
-              <br/><strong>ADMIN NOTE: Disable OC shifts from Bottom Up...</strong> <br/><br/>
-            <% end %>
-
             <table class='table table-striped'>
               <tr>
                 <th>Host</th>
