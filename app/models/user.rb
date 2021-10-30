@@ -418,6 +418,12 @@ class User < ActiveRecord::Base
     msg << "Today is: #{Date.today}"
     msg << "Bingo Start: #{HostConfig.bingo_start_date}"
 
+    if self.has_holiday_shift?
+      msg << "A <strong>Holiday Shift</strong> has been selected."
+    else
+      msg << "NOTE:  You still need a <strong>Holiday Shift</strong>"
+    end
+
     host_selection_message(all_shifts, round, day_offset, msg)
 
     msg
@@ -460,6 +466,8 @@ class User < ActiveRecord::Base
 
   def self.reset_all_accounts
     User.all.each do |u|
+      next if (u.email == MAX_EMAIL) || (u.email == COTTER_EMAIL)
+
       # remove all roles to initialize the system
       # if !u.active_user?
         u.remove_role :admin

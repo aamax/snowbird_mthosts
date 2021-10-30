@@ -18,6 +18,10 @@ class OngoingTraining < ActiveRecord::Base
     is_trainer
   end
 
+  def disabled
+    false
+  end
+
   def shift_date
     training_date.shift_date
   end

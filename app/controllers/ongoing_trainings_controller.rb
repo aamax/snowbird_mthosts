@@ -16,9 +16,15 @@ class OngoingTrainingsController < ApplicationController
   respond_to :html, :json, :js
 
   def index
-    @ongoing_trainings = OngoingTraining.includes(:training_date).includes(:user).to_a
-                             .sort { |a,b| a.shift_date <=> b.shift_date }
     @training_dates = TrainingDate.all.order(shift_date: :asc)
+
+    @ongoing_trainings = []
+    @training_dates.each do |t_dt|
+      arr = t_dt.ongoing_trainings.to_a.sort { |a, b| b.is_trainer.to_s <=> a.is_trainer.to_s }
+      arr.each do |training|
+        @ongoing_trainings << training
+      end
+    end
   end
 
   def new
@@ -138,11 +144,16 @@ class OngoingTrainingsController < ApplicationController
       flash[:error] = 'ERROR - training shift no longer available.'
       redirect_to :back
     else
-      shift.user_id = current_user.id
-      shift.save
-      flash[:success] = 'Training shift assigned successfully'
-      log_shift_selected(shift, current_user)
-      redirect_to '/select_ongoing_training'
+      if current_user.ongoing_trainings.count > 0
+        flash[:error] = 'ERROR - user already has a training shift selected.'
+        redirect_to :root
+      else
+        shift.user_id = current_user.id
+        shift.save
+        flash[:success] = 'Training shift assigned successfully'
+        log_shift_selected(shift, current_user)
+        redirect_to '/select_ongoing_training'
+      end
     end
   end
 

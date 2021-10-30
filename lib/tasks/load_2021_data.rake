@@ -448,6 +448,76 @@ namespace :db do
     create_shift_with_host('TShadow', '2021-12-21', gigi.id)
   end
 
+  desc "populate ongoing_training shifts"
+  task :load_2021ongoing_training_shifts => :environment do
+     puts 'Populating (remaining) 2021 OGOM training shifts...'
+
+     ActiveRecord::Base.connection.execute("TRUNCATE TABLE ongoing_trainings RESTART IDENTITY;")
+     ActiveRecord::Base.connection.execute("TRUNCATE TABLE training_dates RESTART IDENTITY;")
+
+     if ShiftType.find_by(short_name: 'OT').nil?
+       ShiftType.create(short_name: 'OT', description: 'OGOMT Ongoing On Mountain Training',
+                        start_time: '08:00', end_time: '12:00', tasks: 'Training as Needed')
+     end
+
+     trainers = { eric: User.find_by(email: 'snowsawyer@hotmail.com'),
+                  sarah:  User.find_by(email: 'sarah3884@yahoo.com'),
+                  kris: User.find_by(email: 'krishill0@gmail.com'),
+                  paul: User.find_by(email: 'altasnow@gmail.com'),
+                  craig: User.find_by(email: 'craig_whetman@hotmail.com') }
+     shifts = {
+       '2022-01-21' => [trainers[:eric]],
+       '2022-01-23' => [trainers[:eric], trainers[:sarah]],
+       '2022-01-24' => [trainers[:eric]],
+       '2022-01-30' => [trainers[:sarah], trainers[:craig]],
+       '2022-02-03' => [trainers[:sarah]],
+       '2022-02-04' => [trainers[:eric]],
+       '2022-02-06' => [trainers[:eric], trainers[:kris]],
+       '2022-02-07' => [trainers[:eric]],
+       '2022-02-08' => [trainers[:kris]],
+       '2022-02-09' => [trainers[:kris]],
+       '2022-02-10' => [trainers[:paul]],
+       '2022-02-13' => [trainers[:sarah], trainers[:craig]],
+       '2022-02-16' => [trainers[:sarah]],
+       '2022-02-17' => [trainers[:paul]],
+       '2022-02-18' => [trainers[:eric]],
+       '2022-02-20' => [trainers[:eric], trainers[:kris]],
+       '2022-02-21' => [trainers[:eric]],
+       '2022-02-22' => [trainers[:kris]],
+       '2022-02-23' => [trainers[:kris]],
+       '2022-02-24' => [trainers[:paul]],
+       '2022-02-27' => [trainers[:sarah], trainers[:craig]]
+     }
+
+     shifts.each do |key, value|
+       dt = TrainingDate.create(shift_date: key)
+       for  trainer in value do
+         OngoingTraining.create(training_date_id: dt.id,
+                                user_id: trainer.id, is_trainer: true)
+         OngoingTraining.create(training_date_id: dt.id, is_trainer: false)
+         OngoingTraining.create(training_date_id: dt.id, is_trainer: false)
+         OngoingTraining.create(training_date_id: dt.id, is_trainer: false)
+       end
+
+
+     end
+
+
+    # filename = 'lib/data/2019_trainings.csv'
+    #
+    # CSV.foreach(filename, :headers => true) do |row|
+    #   hash = row.to_hash
+    #   dt = TrainingDate.create(shift_date: hash['date'])
+    #
+    #   OngoingTraining.create(training_date_id: dt.id, user_id: trainers[hash['trainer'].to_i].id, is_trainer: true)
+    #   OngoingTraining.create(training_date_id: dt.id, is_trainer: false)
+    #   OngoingTraining.create(training_date_id: dt.id, is_trainer: false)
+    #   OngoingTraining.create(training_date_id: dt.id, is_trainer: false)
+    # end
+    puts "Done Populating OGOM training shifts: Dates: #{TrainingDate.count} - Shifts: #{OngoingTraining.count}"
+  end
+
+
   def update_user_role(email, role)
     u = User.find_by(email: email)
     u.add_role role
