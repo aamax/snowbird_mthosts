@@ -406,29 +406,28 @@ class ShiftTest < ActiveSupport::TestCase
       end
 
       describe 'rookies' do
-        
+
         it 'rookies - pre bingo - can pick 4 training shifts, no other types' do
           setup_vars
           @sys_config.bingo_start_date = Date.today + 7.days
           @sys_config.save!
-
           trainer_shift = FactoryBot.create(:shift, :shift_date => Date.today + 4.weeks,
                                             :shift_type_id => @tr.id, :user_id => nil)
           t1_shift = FactoryBot.create(:shift, shift_date: Date.today + 5.weeks, shift_type_id: @t1.id)
-          t12_shift = FactoryBot.create(:shift, shift_date: Date.today + 6.weeks, shift_type_id: @t1.id)
-          t13_shift = FactoryBot.create(:shift, shift_date: Date.today + 7.weeks, shift_type_id: @t1.id)
-          t14_shift = FactoryBot.create(:shift, shift_date: Date.today + 8.weeks, shift_type_id: @t1.id)
+          t1_2_shift = FactoryBot.create(:shift, shift_date: Date.today + 6.weeks, shift_type_id: @t1.id)
+          t1_3_shift = FactoryBot.create(:shift, shift_date: Date.today + 7.weeks, shift_type_id: @t1.id)
+          t1_4_shift = FactoryBot.create(:shift, shift_date: Date.today + 8.weeks, shift_type_id: @t1.id)
 
           trainer_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
 
           t1_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
           @rookie_user.shifts << t1_shift
-          t12_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
-          @rookie_user.shifts << t12_shift
-          t13_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
-          @rookie_user.shifts << t13_shift
-          t14_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
-          @rookie_user.shifts << t14_shift
+          t1_2_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+          @rookie_user.shifts << t1_2_shift
+          t1_3_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+          @rookie_user.shifts << t1_3_shift
+          t1_4_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+          @rookie_user.shifts << t1_4_shift
 
           Shift.all.each do |s|
             s.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false

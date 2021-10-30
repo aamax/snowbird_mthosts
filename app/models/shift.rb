@@ -241,7 +241,7 @@ class Shift < ActiveRecord::Base
         retval = true
       elsif test_user.rookie?
         # if pre bingo (round 0) can only pick T1 shifts
-        return false if (round == 0) && !self.training? && all_shifts.count >= 8
+        return false if (round == 0) && (!self.training? || (all_shifts.count >= 8))
         return false if self.is_tour? && (self.shift_date < ROOKIE_TOUR_DATE)
         return false if ((round <= 4) && (all_shifts.count >= (round * 5) + 8))
 
@@ -253,7 +253,9 @@ class Shift < ActiveRecord::Base
         return false if training_shifts.count >= 4 && self.training?
 
         last_training = training_shifts.sort { |a,b| a.shift_date <=> b.shift_date }.last
-        return false if !last_training.nil? && last_training.shift_date > self.shift_date
+        return true if (last_training.nil? || training_shifts.count < 4) && self.training?
+
+        return false if !self.training? && (!last_training.nil? && (last_training.shift_date > self.shift_date))
 
         retval = true
       end
