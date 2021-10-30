@@ -87,7 +87,7 @@ class NonRookieMessageTest < ActiveSupport::TestCase
     msgs.include?("You are currently in <strong>round 2</strong>.").must_equal true
     msgs.include?("All required shifts selected for round 2. (12 of 12)").must_equal true
   end
-  
+
   def test_round_three_status_messages
     @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@group3_user, 3)
     @sys_config.save
