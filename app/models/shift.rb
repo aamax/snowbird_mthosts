@@ -344,7 +344,6 @@ class Shift < ActiveRecord::Base
 
   def self.get_shifts_for_index(current_user, return_params, form_filters)
     apply_filters_for_shift_request(form_filters, return_params)
-
     populate_selectable_flag_for_shifts(current_user, return_params)
 
     if return_params['show_only_shifts_i_can_pick'] == true
@@ -353,13 +352,13 @@ class Shift < ActiveRecord::Base
       else
         @shifts = @shifts.includes(:shift_type).where("id in (#{return_params['selectable_shifts'].keys.join(',')})")
       end
-      # @shifts = @shifts.includes(:shift_type).order(:shift_date, :short_name, :updated_at desc)
-      # @shifts = @shifts.includes(:shift_type).order(:shift_date, :short_name, updated_at: :desc)
+      @shifts = @shifts.includes(:shift_type).order(:shift_date, :short_name, updated_at: :desc)
+      @shifts = @shifts.includes(:shift_type).order(:shift_date, :short_name, updated_at: :desc)
     else
-      # @shifts = @shifts.includes(:user).includes(:shift_type).order(:shift_date, :short_name)
-      # @shifts = @shifts.includes(:shift_type).order(:shift_date, :short_name, updated_at: :desc)
+      @shifts = @shifts.includes(:user).includes(:shift_type).order(:shift_date, :short_name)
+      @shifts = @shifts.includes(:shift_type).order(:shift_date, :short_name, updated_at: :desc)
     end
-    @shifts.includes(:shift_type).order(:shift_date, :short_name, updated_at: :asc)
+    # @shifts.includes(:shift_type).order(:shift_date, :short_name, updated_at: :asc)
   end
 
   def self.populate_selectable_flag_for_shifts(current_user, return_params)
@@ -370,6 +369,8 @@ class Shift < ActiveRecord::Base
     shift_count = working_shifts.count
     select_params = {all_shifts: all_shifts, working_shifts: working_shifts, bingo_start: bingo_start,
                      round: round, shift_count: shift_count}
+
+    # select_params = HostUtility.can_select_params_for(current_user)
 
     return_params['selectable_shifts'] = {}
     @shifts.each do |shift|
@@ -402,7 +403,6 @@ class Shift < ActiveRecord::Base
     @shifts = @shifts.by_shift_type(return_params['shift_types_to_show']).by_date(return_params['date_set_to_show'])
     @shifts = @shifts.by_day_of_week(return_params['days_of_week_to_show']).by_users(return_params['hosts_to_show'])
     @shifts = @shifts.by_unselected(return_params['show_only_unselected'])
-
   end
 
   def self.shifts_for_date(shift_date)
