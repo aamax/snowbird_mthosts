@@ -355,11 +355,13 @@ class User < ActiveRecord::Base
 
   def get_day_offset
     retval = 0
-    if self.group_3? || self.group_2?
+
+    if self.group_2?
       retval = 1
-    elsif self.rookie?
+    elsif self.group_3? || self.rookie?
       retval = 2
     end
+
     retval
   end
 

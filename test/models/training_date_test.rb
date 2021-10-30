@@ -35,4 +35,7 @@ class TrainingDateTest < ActiveSupport::TestCase
     assert_equal trainer_user, obj.trainers.first
     assert_equal trainee_user, obj.trainees.first
   end
+
+  # TODO can only select trainings if you are not working, don't already have a training and not a rookie
+  # TODO OR, if you are a trainer and aren't already training that day - and it's a trainer shift
 end
