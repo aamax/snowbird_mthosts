@@ -94,12 +94,13 @@ class ShiftTest < ActiveSupport::TestCase
     setup_vars
 
     # populate and select training shifts
-    @rookie_user.shifts << FactoryBot.create(:shift, shift_date: @round1_date + 1.day, shift_type_id: @t1.id)
-    @rookie_user.shifts << FactoryBot.create(:shift, shift_date: @round1_date + 3.day, shift_type_id: @t1.id)
-    @rookie_user.shifts << FactoryBot.create(:shift, shift_date: @round1_date + 5.day, shift_type_id: @t1.id)
-    @rookie_user.shifts << FactoryBot.create(:shift, shift_date: @round1_date + 7.day, shift_type_id: @t1.id)
 
-    @last_training_date = @round1_date + 7.day
+    @rookie_user.shifts << FactoryBot.create(:shift, shift_date: @round1_date + 20.day, shift_type_id: @t1.id)
+    @rookie_user.shifts << FactoryBot.create(:shift, shift_date: @round1_date + 22.day, shift_type_id: @t1.id)
+    @rookie_user.shifts << FactoryBot.create(:shift, shift_date: @round1_date + 24.day, shift_type_id: @t1.id)
+    @rookie_user.shifts << FactoryBot.create(:shift, shift_date: @round1_date + 26.day, shift_type_id: @t1.id)
+
+    @last_training_date = @round1_date + 26.day
 
     # setup regular shifts for selection
     dt_index = 0
@@ -446,6 +447,12 @@ class ShiftTest < ActiveSupport::TestCase
           @sys_config.save!
           @rookie_user.shifts.map(&:short_name).count.must_equal 8
 
+          training_shifts = []
+          @rookie_user.shifts.each do |s|
+            training_shifts << s if s.training?
+          end
+          training_shifts.count.must_equal 4
+
           # pick all 20 shifts
           Shift.all.each do |s|
             break if @rookie_user.shifts.count >= 20
@@ -477,6 +484,9 @@ class ShiftTest < ActiveSupport::TestCase
               s.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
             end
           end
+          s = FactoryBot.create(:shift, shift_date: @round1_date + 25.day, shift_type_id: @p1end.id)
+          (s.shift_date < @last_training_date).must_equal true
+          s.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
         end
 
         it "after bingo - rookies: cannot pick any selected shift" do
@@ -505,12 +515,12 @@ class ShiftTest < ActiveSupport::TestCase
           shift.can_select(@team_leader, HostUtility.can_select_params_for(@team_leader)).must_equal true
         end
 
-        # can't pick if disabled
         it 'after bingo - rookies: cannot pick if shift is disabled' do
           setup_vars_for_rookies
-          @sys_config.bingo_start_date = @after_bingo_date - 7.days
+          @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 5) - 8.days
           @sys_config.save!
-          shift = FactoryBot.create(:shift, shift_date: Date.today + 5.days, shift_type_id: @g1end.id)
+
+          shift = FactoryBot.create(:shift, shift_date: Date.today + 30.days, shift_type_id: @g1end.id)
           shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
 
           shift.disabled = true
@@ -725,12 +735,12 @@ class ShiftTest < ActiveSupport::TestCase
       end
 
       describe 'rookie' do
-        
+
         it 'round 1 - rookies: cannot pick shift before last training shift' do
           setup_vars_for_rookies
           @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 1)
           @sys_config.save!
-          shift = FactoryBot.create(:shift, shift_date: @round1_date + 6.day, shift_type_id: @g1end.id)
+          shift = FactoryBot.create(:shift, shift_date: @round1_date + 25.days, shift_type_id: @g1end.id)
           shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
         end
 
@@ -885,6 +895,15 @@ class ShiftTest < ActiveSupport::TestCase
       end
 
       describe 'rookie' do
+        it 'round 2 - rookies: cannot pick shift before last training shift' do
+          setup_vars_for_rookies
+          @sys_config.bingo_start_date = HostUtility.bingo_start_for_round(@rookie_user, 2)
+          @sys_config.save!
+          shift = FactoryBot.create(:shift, shift_date: @round1_date + 6.day, shift_type_id: @g1end.id)
+          shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+        end
+
+
         it 'round 2 - rookies: can pick 10 shifts, all after training dates, P shifts after 2/1' do
           setup_vars_for_rookies
           @sys_config.bingo_start_date = @round2_date - 2.day

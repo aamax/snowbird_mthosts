@@ -107,7 +107,7 @@ module HostUtility
 
   def self.bingo_start_for_round(user, num)
     return Date.today - 9.days if num == 4
-    return Date.today - 12.days if num == 5
+    return Date.today - 12.days if num >= 5
 
     adjusted_seniority = user.seniority_group
     adjusted_seniority -= 1 if user.rookie?

@@ -414,7 +414,7 @@ class User < ActiveRecord::Base
     if round < 5
       msg << "You are currently in <strong>round #{round}</strong>."
     else
-      msg << "You are done with Shift Selection Bingo!"
+      msg << "Shift Selection Bingo is over..."
     end
 
     msg << "Today is: #{Date.today}"
@@ -541,23 +541,12 @@ class User < ActiveRecord::Base
     if self.team_leader?
       counts = Hash.new 0
       all_shifts.map(&:short_name).each {|s| counts[s] += 1 }
-      a1_count = counts['A1']
-      oc_count = counts['OC']
       tl_count = counts['TL']
 
       msg << "#{tl_count} team leader shifts selected"
-      msg << "#{oc_count} On Call shifts selected"
-      msg << "#{a1_count} A1 Shifts Selected"
 
-      if (a1_count >= 7) && (oc_count >= 10) && (all_shifts.count >= 19)
+      if (all_shifts.count >= 20)
         msg << "All Required Shifts Selected"
-      else
-        if a1_count < 7
-          msg << "You still need #{7 - tl_count} TL Shifts"
-        end
-        if oc_count < 10
-          msg << "You still need #{10 - oc_count} OC Shifts"
-        end
       end
     end
 
@@ -567,7 +556,7 @@ class User < ActiveRecord::Base
           msg << "No Selections Until #{HostConfig.bingo_start_date + day_offset.days}."
         when 1..3
           limit = round * 5 + 2
-          limit = 19 if limit > 19
+          limit = 20 if limit > 20
 
           if all_shifts.count < limit
             msg << "#{all_shifts.count} of #{limit} Shifts Selected.  You need to pick #{limit - all_shifts.count}"
@@ -575,10 +564,10 @@ class User < ActiveRecord::Base
             msg << "All required shifts selected for round #{round}. (#{all_shifts.count} of #{limit})"
           end
         else
-          if all_shifts.count < 19
-            msg << "#{all_shifts.count} of #{19} Shifts Selected.  You need to pick #{19 - all_shifts.count}"
+          if all_shifts.count < 20
+            msg << "#{all_shifts.count} of #{20} Shifts Selected.  You need to pick #{20 - all_shifts.count}"
           else
-            msg << "You have at least #{19} shifts selected"
+            msg << "You have at least #{20} shifts selected"
           end
       end
     end
