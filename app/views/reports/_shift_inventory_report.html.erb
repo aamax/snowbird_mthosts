@@ -28,6 +28,27 @@
     <td><%= @selected_counts['OC'] %></td>
     <td><%= @all_counts['OC'] - @selected_counts['OC'] %></td>
   </tr>
+
+
+
+    <% @all_counts.each do |key, value| %>
+    <tr>
+      <td><%= key %></td>
+      <td><%= value %></td>
+    </tr>
+    <% end %>
+
+
+<!--  <tr>-->
+<!--    <td>MEETINGS</td>-->
+<!--    <td><%#= @all_counts['MEETINGS'] %></td>-->
+<!--    <td><%#= @selected_counts['MEETINGS'] %></td>-->
+<!--    <td><%#= @all_counts['MEETINGS'] - @selected_counts['MEETINGS'] %></td>-->
+<!--  </tr>-->
+
+
+
+
 </table>
 
 <br/><br/>
