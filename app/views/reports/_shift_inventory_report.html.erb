@@ -31,12 +31,28 @@
 
 
 
-    <% @all_counts.each do |key, value| %>
+  <% @all_counts.each do |key, value| %>
     <tr>
       <td><%= key %></td>
-      <td><%= value %></td>
+      <td><%= @all_counts[key] %></td>
+      <td><%= @selected_counts[key] %></td>
+      <td><%= @all_counts[key] - @selected_counts[key] %></td>
     </tr>
-    <% end %>
+
+  <% end %>
+
+  <tr>
+    <td></td>
+    <td>
+      <%
+        @value = 0
+        @all_counts.each do |key, value|
+          @value += value
+        end
+      %>
+      <%= @value %>
+    </td>
+  </tr>
 
 
 <!--  <tr>-->

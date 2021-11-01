@@ -280,9 +280,9 @@ namespace :db do
     end
 
     # 1/17 & 2/21:  regular weekend
-    ('2022-01-17'.to_date..'2022-02-21'.to_date).each do |dt|
-      create_weekend_shift(dt)
-    end
+    create_weekend_shift('2022-01-17')
+    create_weekend_shift('2022-02-21')
+
 
     # 4/18 - 5/1:  4 hosts per day
     ('2022-04-18'.to_date..'2022-05-01'.to_date).each do |dt|
