@@ -2,12 +2,12 @@ DAYNAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
 
 MEETINGS = { 'M1' => '2021-10-30', 'M2' => '2021-11-06', 'M3' => '2021-12-19', 'M4' => '2022-02-05' }
 
-HOLIDAYS = [Date.new(2020,12,24),
-            Date.new(2020,12,25),
-            Date.new(2020,12,31),
-            Date.new(2021,1,1),
-            Date.new(2021,1,18),
-            Date.new(2021,2,15)]
+HOLIDAYS = [Date.new(2021,12,24),
+            Date.new(2021,12,25),
+            Date.new(2021,12,31),
+            Date.new(2022,1,1),
+            Date.new(2022,1,17),
+            Date.new(2022,2,21)]
 
 ROOKIE_TOUR_DATE = Date.new(2022,02,01)
 
