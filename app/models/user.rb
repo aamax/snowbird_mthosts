@@ -305,7 +305,7 @@ class User < ActiveRecord::Base
   end
 
   def get_working_shifts
-    user = User.includes(:shifts).find_by_id(id)
+    user = User.find_by_id(id) #User.includes(:shifts).find_by_id(id)
     shifts = user.shifts.includes(:shift_type).to_a
     shifts ||= []
     shifts.concat user.ongoing_trainings
@@ -314,16 +314,16 @@ class User < ActiveRecord::Base
   end
 
   def shifts_for_credit
-    user = User.includes(:shifts).find_by_id(id)
+    user = User.find_by_id(id) # User.includes(:shifts).find_by_id(id)
     shifts = user.shifts.includes(:shift_type).to_a
     shifts ||= []
-    # trainings_for_count = user.ongoing_trainings.to_a.delete_if { |s| !s.is_trainer? }
-    # shifts.concat trainings_for_count
+    trainings_for_count = user.ongoing_trainings.to_a.delete_if { |s| !s.is_trainer? }
+    shifts.concat trainings_for_count
     shifts.flatten.sort {|a,b| a.shift_date <=> b.shift_date }
   end
 
   def shifts_for_analysis
-    user = User.includes(:shifts).find_by_id(id)
+    user = User.find_by_id(id) #User.includes(:shifts).find_by_id(id)
     shifts = user.shifts.includes(:shift_type).to_a
     shifts ||= []
     shifts.flatten.sort {|a,b| a.shift_date <=> b.shift_date }
@@ -551,24 +551,55 @@ class User < ActiveRecord::Base
     end
 
     if !self.team_leader?
-      case round
-        when 0
-          msg << "No Selections Until #{HostConfig.bingo_start_date + day_offset.days}."
-        when 1..3
-          limit = round * 5 + 2
-          limit = 20 if limit > 20
+      if !self.rookie?
+        case round
+          when 0
+            msg << "No Selections Until #{HostConfig.bingo_start_date + day_offset.days}."
+          when 1..3
+            limit = round * 5 + 2
+            limit = 20 if limit > 20
 
-          if all_shifts.count < limit
-            msg << "#{all_shifts.count} of #{limit} Shifts Selected.  You need to pick #{limit - all_shifts.count}"
+            if all_shifts.count < limit
+              msg << "#{all_shifts.count} of #{limit} Shifts Selected.  You need to pick #{limit - all_shifts.count}"
+            else
+              msg << "All required shifts selected for round #{round}. (#{all_shifts.count} of #{limit})"
+            end
           else
-            msg << "All required shifts selected for round #{round}. (#{all_shifts.count} of #{limit})"
-          end
+            if all_shifts.count < 20
+              msg << "#{all_shifts.count} of #{20} Shifts Selected.  You need to pick #{20 - all_shifts.count}"
+            else
+              msg << "You have at least #{20} shifts selected"
+            end
+        end
+      else
+        # is a rookie
+        training_shifts = self.training_shifts_list
+        if training_shifts.count < 4
+          msg << "You need to select a training shift."
+        else
+          msg << "You have selected all the required training shifts."
+        end
+
+        case round
+          when 0
+            msg << "You have #{all_shifts.count} of 8 shifts selected"
+          when 1..3
+            limit = round * 5 + 8
+            limit = 20 if limit > 20
+
+            if all_shifts.count < limit
+              msg << "#{all_shifts.count} of #{limit} Shifts Selected.  You need to pick #{limit - all_shifts.count}"
+            else
+              msg << "All required shifts selected for round #{round}. (#{all_shifts.count} of #{limit})"
+            end
         else
           if all_shifts.count < 20
             msg << "#{all_shifts.count} of #{20} Shifts Selected.  You need to pick #{20 - all_shifts.count}"
           else
             msg << "You have at least #{20} shifts selected"
           end
+        end
+
       end
     end
   end

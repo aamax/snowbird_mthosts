@@ -1,5 +1,13 @@
 <div class="well">
   <h5>RIDERS:</h5>
+
+  <% if !current_user.is_working?(@selected_hauler.haul_date) %>
+      <div class="filter_box">
+        <strong>You Are Not Working.</strong><br/>
+          You may only select seats if you are working on this date.
+      </div>
+  <% end %>
+
   <table class="table table-striped">
     <% @selected_hauler.sorted_riders.each do |rider| %>
         <tr>

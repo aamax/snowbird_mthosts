@@ -69,8 +69,6 @@ class ShiftTest < ActiveSupport::TestCase
     # rookie trainER shift
     @tr = ShiftType.find_by(short_name: "TR")
 
-    # TODO add in OGOMT
-
     @regular_shift_types = [
       @p1end, @p2end, @p3end, @p4end, @g1end, @g2end, @g3end, @g4end,
       @c1end, @c2end, @h1end, @h2end, @h3end, @h4end, @p1day, @p2day,
