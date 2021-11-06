@@ -301,6 +301,7 @@ class User < ActiveRecord::Base
   end
 
   def get_shift_list
+    binding.pry
     self.shifts.includes(:shift_type).sort {|a,b| a.shift_date <=> b.shift_date }
   end
 
@@ -315,9 +316,9 @@ class User < ActiveRecord::Base
 
   def shifts_for_credit
     user = User.find_by_id(id) # User.includes(:shifts).find_by_id(id)
-    shifts = user.shifts.includes(:shift_type).to_a
+    shifts = user.shifts.to_a
     shifts ||= []
-    trainings_for_count = user.ongoing_trainings.to_a.delete_if { |s| !s.is_trainer? }
+    trainings_for_count = user.ongoing_trainings.includes(:training_date).to_a.delete_if { |s| !s.is_trainer? }
     shifts.concat trainings_for_count
     shifts.flatten.sort {|a,b| a.shift_date <=> b.shift_date }
   end
@@ -428,6 +429,20 @@ class User < ActiveRecord::Base
 
     host_selection_message(all_shifts, round, day_offset, msg)
 
+    if self.ongoing_trainer?
+      if self.ongoing_trainings.count > 0
+        msg << 'You Are Scheduled As An On Going On Mountain Training Trainer.'
+      else
+        msg << 'You Do Not Have Any Training Shifts Yet.'
+      end
+    else
+      if self.ongoing_trainings.count > 0
+        msg << 'You have selected an Ongoing On Mountain Training Shift.'
+      else
+        msg << 'You have not signed up for Ongoing On Mountain Training Yet.'
+      end
+
+    end
     msg
   end
 

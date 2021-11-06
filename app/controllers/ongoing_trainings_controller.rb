@@ -19,7 +19,7 @@ class OngoingTrainingsController < ApplicationController
     @training_dates = TrainingDate.all.order(shift_date: :asc)
 
     @ongoing_trainings = []
-    @training_dates.each do |t_dt|
+    @training_dates.includes(:ongoing_trainings).each do |t_dt|
       arr = t_dt.ongoing_trainings.to_a.sort { |a, b| b.is_trainer.to_s <=> a.is_trainer.to_s }
       arr.each do |training|
         @ongoing_trainings << training

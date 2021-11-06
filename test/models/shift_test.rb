@@ -188,19 +188,15 @@ class ShiftTest < ActiveSupport::TestCase
       @g2shift.can_drop(@middle_user).must_equal false
       @g3shift.can_drop(@senior_user).must_equal false
 
+      # cannot drop OGOMTraining shifts
+      @ogomt_shift_date = FactoryBot.create(:training_date, shift_date: Date.today + 1.week)
+      @ogomt_shift1 = FactoryBot.create(:ongoing_training, training_date_id: @ogomt_shift_date.id, user_id: @newer_user.id)
+      @ogomt_shift2 = FactoryBot.create(:ongoing_training, training_date_id: @ogomt_shift_date.id, user_id: @middle_user.id)
+      @ogomt_shift3 = FactoryBot.create(:ongoing_training, training_date_id: @ogomt_shift_date.id, user_id: @senior_user.id)
 
-      # TODO - add team leader and trainer and trainee logic to can drop
-
-      # TODO - ogomt can drop logic
-      # # cannot drop OGOMTraining shifts
-      # @ogomt_shift_date = FactoryBot.create(:training_date, shift_date: Date.today + 1.week)
-      # @ogomt_shift1 = FactoryBot.create(:ongoing_training, training_date_id: @ogomt_shift_date.id, user_id: @newer_user.id)
-      # @ogomt_shift2 = FactoryBot.create(:ongoing_training, training_date_id: @ogomt_shift_date.id, user_id: @middle_user.id)
-      # @ogomt_shift3 = FactoryBot.create(:ongoing_training, training_date_id: @ogomt_shift_date.id, user_id: @senior_user.id)
-      #
-      # _(@ogomt_shift1.can_drop(@newer_user)).must_equal false
-      # _(@ogomt_shift2.can_drop(@middle_user)).must_equal false
-      # _(@ogomt_shift3.can_drop(@senior_user)).must_equal false
+      _(@ogomt_shift1.can_drop(@newer_user)).must_equal false
+      _(@ogomt_shift2.can_drop(@middle_user)).must_equal false
+      _(@ogomt_shift3.can_drop(@senior_user)).must_equal false
     end
 
     it 'can drop any shifts outside of 2 week window' do
