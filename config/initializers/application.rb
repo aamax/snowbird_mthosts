@@ -11,10 +11,8 @@ HOLIDAYS = [Date.new(2021,12,24),
 
 ROOKIE_TOUR_DATE = Date.new(2022,02,01)
 
-# OGOMT_FAKE_DATE = '2019-11-01'
-#
-# ROOKIE_TOUR_DATE = Date.parse("2020-02-01")
-#
+OGOMT_FAKE_DATE = '2019-11-01'
+
 # MAX_SURVEY_COUNT = 5
 
 MAX_EMAIL = 'aamaxworks@gmail.com'
