@@ -227,10 +227,19 @@ class Shift < ActiveRecord::Base
       return true if test_user.admin?
 
       round = select_params[:round]
-      return false if ((round < 4) &&
-                      (all_shifts.count >= (round * 5) + 2)) &&
-                      (!test_user.team_leader? && !test_user.rookie?)
+
+      if test_user.trainer?
+        trainer_shifts = all_shifts.map(&:short_name).delete_if { |s| s != 'TR'}
+        test_count = all_shifts.count - trainer_shifts.count
+        return false if ((round < 4) && (test_count >= (round * 5) + 2)) &&
+            (!test_user.team_leader? && !test_user.rookie?)
+      else
+        return false if ((round < 4) && (all_shifts.count >= (round * 5) + 2)) &&
+          (!test_user.team_leader? && !test_user.rookie?)
+      end
+
       return false if ((round <= 4) && (all_shifts.count >= 20))
+      return false if ((round <= 4) && (self.is_tour?) && (test_user.tours.count >= 7))
 
       if test_user.team_leader?
         return false if (round < 5) && all_shifts.count >= 20

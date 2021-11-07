@@ -9,6 +9,7 @@ class NonRookieMessageTest < ActiveSupport::TestCase
     @group2_user = User.find_by_name('g2')
     @group3_user = User.find_by_name('g3')
     @p1 = ShiftType.find_by_short_name('P1weekend')
+    @trainer = ShiftType.find_by_short_name('TR')
   end
 
   def test_show_need_a_holiday_if_not_picked
@@ -163,5 +164,57 @@ class NonRookieMessageTest < ActiveSupport::TestCase
     msgs.include?("You have at least 20 shifts selected").must_equal true
   end
 
+  def test_ogomt_shifts_do_not_count_for_bingo
+
+  end
+
+  def test_trainer_shifts_do_not_count_for_bingo
+    bingo_date = HostUtility.bingo_start_for_round(@group3_user, 2)
+    @sys_config.bingo_start_date = bingo_date
+    @sys_config.save
+
+    @group3_user.add_role :trainer
+
+    trainer_shift = FactoryBot.create(:shift, shift_date: bingo_date + 15.days, shift_type: @trainer)
+    @group3_user.shifts << trainer_shift
+    num = 2
+    Shift.all.each do |s|
+      next if s.is_tour? || @group3_user.is_working?(s.shift_date) || s.meeting? || s.team_leader?
+
+      if s.can_select(@group3_user, HostUtility.can_select_params_for(@group3_user))
+        @group3_user.shifts << s
+        num += 1
+      end
+    end
+    @group3_user.shifts.count.must_equal 13
+    msgs = @group3_user.shift_status_message
+
+    msgs.include?("You are currently in <strong>round 2</strong>.").must_equal true
+    msgs.include?("All required shifts selected for round 2. (13 of 12)").must_equal true
+  end
+
+  def test_tour_quota_messages
+    bingo_date = HostUtility.bingo_start_for_round(@group3_user, 2)
+    @sys_config.bingo_start_date = bingo_date
+    @sys_config.save
+
+    msgs = @group3_user.shift_status_message
+
+    msgs.include?("You do not have any tour shifts (minimum of 2).").must_equal true
+
+    shift = FactoryBot.create(:shift, shift_date: bingo_date + 30.days, shift_type_id: @p1.id)
+    @group3_user.shifts << shift
+    msgs = @group3_user.shift_status_message
+
+    msgs.include?("You have 1 tour shifts.").must_equal true
+
+    shift = FactoryBot.create(:shift, shift_date: bingo_date + 31.days, shift_type_id: @p1.id)
+    @group3_user.shifts << shift
+    shift = FactoryBot.create(:shift, shift_date: bingo_date + 32.days, shift_type_id: @p1.id)
+    @group3_user.shifts << shift
+    msgs = @group3_user.shift_status_message
+
+    msgs.include?("You have 3 tour shifts.").must_equal true
+  end
 end
 

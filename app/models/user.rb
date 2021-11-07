@@ -441,8 +441,9 @@ class User < ActiveRecord::Base
       else
         msg << 'You have not signed up for Ongoing On Mountain Training Yet.'
       end
-
     end
+
+
     msg
   end
 
@@ -553,6 +554,13 @@ class User < ActiveRecord::Base
   end
 
   def host_selection_message(all_shifts, round, day_offset, msg)
+    tour_count = self.tours.count
+    if tour_count == 0
+      msg << 'You do not have any tour shifts (minimum of 2).'
+    else
+      msg << "You have #{tour_count} tour shifts."
+    end
+
     if self.team_leader?
       counts = Hash.new 0
       all_shifts.map(&:short_name).each {|s| counts[s] += 1 }
