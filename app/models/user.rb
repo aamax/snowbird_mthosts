@@ -279,8 +279,8 @@ class User < ActiveRecord::Base
     users = Shift.where(shift_date: dt)
                  .where("disabled is NULL OR disabled = false")
                  .map {|s| s.user }.reject { |e| e.to_s.empty? }
-    # training_shifts = TrainingDate.where(shift_date: dt)&.first&.ongoing_trainings&.where("user_id is not null")
-    # users.concat training_shifts.map(&:user) if training_shifts
+    training_shifts = TrainingDate.where(shift_date: dt)&.first&.ongoing_trainings&.where("user_id is not null")
+    users.concat training_shifts.map(&:user) if training_shifts
 
     emailaddress = users.map(&:email).join(',')
   end
