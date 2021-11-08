@@ -296,7 +296,7 @@ class UserTest < ActiveSupport::TestCase
       @user.start_year = Date.today.year
       assert_equal false, @user.can_select_ongoing_training(dt)
     end
-    
+
     it 'can select if non-trainer shift' do
       dt = Date.today
       FactoryBot.create(:ongoing_training,
