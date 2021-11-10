@@ -39,4 +39,12 @@ class OGOMTrainerMessageTest < ActiveSupport::TestCase
     msgs = @user.shift_status_message
     msgs.include?('You have selected an Ongoing On Mountain Training Shift.').must_equal true
   end
+
+  def test_rookies_do_not_pick_ogomt
+    user = User.find_by(email: 'email1@example.com')
+    user.rookie?.must_equal true
+
+    msgs = user.shift_status_message
+    msgs.include?('You do not need to select an Ongoing On Mountain Training Shift.').must_equal true
+  end
 end

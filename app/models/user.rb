@@ -439,10 +439,13 @@ class User < ActiveRecord::Base
       if self.ongoing_trainings.count > 0
         msg << 'You have selected an Ongoing On Mountain Training Shift.'
       else
-        msg << 'You have not signed up for Ongoing On Mountain Training Yet.'
+        if self.rookie?
+          msg << 'You do not need to select an Ongoing On Mountain Training Shift.'
+        else
+          msg << 'You have not signed up for Ongoing On Mountain Training Yet.'
+        end
       end
     end
-
 
     msg
   end
