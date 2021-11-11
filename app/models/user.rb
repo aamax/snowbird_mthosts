@@ -301,7 +301,6 @@ class User < ActiveRecord::Base
   end
 
   def get_shift_list
-    binding.pry
     self.shifts.includes(:shift_type).sort {|a,b| a.shift_date <=> b.shift_date }
   end
 
