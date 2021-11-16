@@ -263,6 +263,20 @@ class User < ActiveRecord::Base
     false
   end
 
+  def is_working_on_mountain?(shift_date, working_shifts=nil)
+    return true if is_ongoing_training?(shift_date)
+    if working_shifts.nil?
+      working_shifts = self.shifts
+    end
+    working_shifts.each do |s|
+      next if s.non_mountain_meeting?
+      if s.shift_date == shift_date
+        return true
+      end
+    end
+    false
+  end
+
   def is_ongoing_training?(shift_date)
     self.training_dates.map(&:shift_date).include? shift_date
   end

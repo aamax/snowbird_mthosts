@@ -16,7 +16,7 @@ class Rider < ActiveRecord::Base
   def can_select_rider(user)
     self.user_id.nil? &&
       user_not_in_hauler(user) &&
-      user.is_working?(host_hauler.haul_date) &&
+      user.is_working_on_mountain?(host_hauler.haul_date) &&
       host_hauler.haul_date >= Date.today
   end
 

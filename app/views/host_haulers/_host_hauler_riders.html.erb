@@ -1,7 +1,7 @@
 <div class="well">
   <h5>RIDERS:</h5>
 
-  <% if !current_user.is_working?(@selected_hauler.haul_date) %>
+  <% if !current_user.is_working_on_mountain?(@selected_hauler.haul_date) %>
       <div class="filter_box">
         <strong>You Are Not Working.</strong><br/>
           You may only select seats if you are working on this date.
@@ -14,11 +14,14 @@
           <td>
             <% if !@selected_hauler.driver.nil? && rider.can_select_rider(current_user) %>
                 <a href="/select_rider/<%= rider.id %>" class='hauler_edit_btn btn btn-success'>Select</a>
-            <% elsif
-               !current_user.is_working?(@selected_hauler.haul_date) && !current_user.admin?
-            %>
+            <% elsif !current_user.is_working_on_mountain?(@selected_hauler.haul_date) && !current_user.admin? %>
                 <a href="" class='hauler_edit_btn btn btn-warning'>Not Working</a>
+            <% else %>
+              <% if @selected_hauler.driver.nil? %>
+                No Driver Set
+              <% end %>
             <% end %>
+            
             <% if rider.can_drop_rider(current_user) %>
                 <a href="/drop_rider/<%= rider.id %>" class='hauler_edit_btn btn btn-danger'>Drop</a>
             <% end %>
@@ -31,7 +34,7 @@
               <a href="/set_rider_to_host/<%= rider.id %>" class="hauler_edit_btn btn btn-info">
                 <i class="icon-wrench"></i>
               </a>
-              <% if !rider.user.nil? && rider.user.is_working?(@selected_hauler.haul_date) %>
+              <% if !rider.user.nil? && rider.user.is_working_on_mountain?(@selected_hauler.haul_date) %>
                 <strong>working</strong>
               <% end %>
             </td>

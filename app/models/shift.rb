@@ -207,6 +207,10 @@ class Shift < ActiveRecord::Base
     !/M[1-4]/.match(self.short_name).nil?
   end
 
+  def non_mountain_meeting?
+    !/M[1-2]/.match(self.short_name).nil?
+  end
+
   def users_on_date
     Shift.where(:shift_date => self.shift_date).to_a.delete_if {|s| s.short_name == 'SH' }.map {|s| s.user }.to_a.delete_if {|u| u.nil? }
   end

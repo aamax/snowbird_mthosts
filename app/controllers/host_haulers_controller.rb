@@ -19,7 +19,7 @@ class HostHaulersController < ApplicationController
 
   def scheduler
     @my_shifts = current_user.get_working_shifts
-                   .reject { |s| s.meeting? }
+                   .reject { |s| s.non_mountain_meeting? }
                    .map { |shift| shift.shift_date.strftime("%Y-%m-%d") }
 
     # @my_shifts = current_user.shifts
