@@ -243,7 +243,7 @@ class Shift < ActiveRecord::Base
       end
 
       return false if ((round <= 4) && (all_shifts.count >= 20))
-      return false if ((round <= 4) && (self.is_tour?) && (test_user.tours.count >= 7))
+      # return false if ((round <= 4) && (self.is_tour?) && (test_user.tours.count >= 7))
 
       if test_user.team_leader?
         return false if (round < 5) && all_shifts.count >= 20
