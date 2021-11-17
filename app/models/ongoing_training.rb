@@ -46,6 +46,10 @@ class OngoingTraining < ActiveRecord::Base
     false
   end
 
+  def non_mountain_meeting?
+    false
+  end
+
   def can_drop(user)
     return true if user.admin?
 
