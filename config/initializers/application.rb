@@ -16,7 +16,7 @@ OGOMT_FAKE_DATE = '2019-11-01'
 # MAX_SURVEY_COUNT = 5
 
 MAX_EMAIL = 'aamaxworks@gmail.com'
-COTTER_EMAIL = 'jecotterii@gmail.com'
+# COTTER_EMAIL = 'jecotterii@gmail.com'
 SUPERVISOR_EMAIL = 'bfessler@snowbird.com'
 
 # KATE_EMAIL = 'kmcguinness@snowbird.com'
