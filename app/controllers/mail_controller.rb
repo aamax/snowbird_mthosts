@@ -30,14 +30,15 @@ class MailController < ApplicationController
     @fromaddress = current_user.email if current_user #params[:mailmessage][:fromaddress]
     @fromaddress ||= params[:mailmessage][:fromaddress]
     @message = "FROM: #{current_user.name}(#{current_user.email})\n\n#{params[:mailmessage][:message]}"
-
-    if params[:include_john] == '1'
-      jemail = User.find_by_name('John Cotter').email
-
-      unless @useremail.include? jemail
-        @useremail += ",#{jemail}"
-      end
-    end
+    #
+    # # TODO - john email
+    # if params[:include_john] == '1'
+    #   jemail = User.find_by_name('John Cotter').email
+    #
+    #   unless @useremail.include? jemail
+    #     @useremail += ",#{jemail}"
+    #   end
+    # end
 
     # break @useremail into chunks to try and placate Google...
     email_array = @useremail.split(',').each_slice(10).to_a
@@ -111,44 +112,58 @@ class MailController < ApplicationController
     case @emailaddress
       when 'ADMINUSERS'
         users = User.with_role(:admin)
-        users << User.find_by_name('John Cotter')
+        # TODO john email
+        # users << User.find_by_name('John Cotter')
       when 'TEAMLEADER'
         users = User.active_users.with_role(:team_leader)
-        users << User.find_by_name('John Cotter')
+        # TODO john email
+        # users << User.find_by_name('John Cotter')
       when 'ROOKIES'
         users = User.rookies
-        users << User.find_by_name('John Cotter')
+        # TODO john email
+        # users << User.find_by_name('John Cotter')
       when 'SURVEYORS'
         users = User.active_users.with_role(:surveyor)
-        users << User.find_by_name('John Cotter')
+        # TODO john email
+        # users << User.find_by_name('John Cotter')
       when 'GROUP1'
         users = User.group1
-        users << User.find_by_name('John Cotter')
+        # TODO john email
+        # users << User.find_by_name('John Cotter')
       when 'GROUP2'
         users = User.group2
-        users << User.find_by_name('John Cotter')
+        # TODO john email
+        # users << User.find_by_name('John Cotter')
       when 'GROUP3'
         users = User.group3
-        users << User.find_by_name('John Cotter')
+        # TODO john email
+        # users << User.find_by_name('John Cotter')
       when 'ALLACTIVEHOSTS'
         users = User.active_users
-        users << User.find_by_name('John Cotter')
+        # TODO john email
+        #  users << User.find_by_name('John Cotter')
       when 'ALLHOSTS'
         users = User.all
-        users << User.find_by_name('John Cotter')
+        # TODO john email
+        # users << User.find_by_name('John Cotter')
       when 'ALLINACTIVEHOSTS'
         users = User.inactive_users
-        users << User.find_by_name('John Cotter')
+        # TODO john email
+        # users << User.find_by_name('John Cotter')
       when 'NONCONFIRMED'
         users = User.non_confirmed_users
-        users << User.find_by_name('John Cotter')
+        # TODO john email
+        # users << User.find_by_name('John Cotter')
       when 'THIS_DATE'
         users = Shift.where(shift_date: params[:date]).map {|s| s.user }
-        users << User.find_by_name('John Cotter')
+        # TODO john email
+        #  users << User.find_by_name('John Cotter')
     when 'OGOMT_THIS_DATE'
       # assumes there is only one training date per params[:date]...  TODO: revisit this when refactoring for future use
         users = TrainingDate.where(shift_date: params[:date]).map { |t| t.ongoing_trainings }.first.map { |u| u.user }
-        users << User.find_by_name('John Cotter')
+
+      # TODO - john email
+      #   users << User.find_by_name('John Cotter')
     when 'hauler'
         hauler = HostHauler.find_by(id: params[:id])
         users = hauler.riders.map {|r| r.user.nil? ? nil : r.user }.compact

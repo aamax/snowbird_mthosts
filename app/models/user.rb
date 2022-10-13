@@ -319,6 +319,7 @@ class User < ActiveRecord::Base
   end
 
   def get_working_shifts
+    return if id.nil?
     user = User.find_by_id(id) #User.includes(:shifts).find_by_id(id)
     shifts = user.shifts.includes(:shift_type).to_a
     shifts ||= []

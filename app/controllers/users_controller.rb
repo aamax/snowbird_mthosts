@@ -99,6 +99,7 @@ class UsersController < ApplicationController
   end
 
   def new
+    @user = User.new
     @user.start_year = HostConfig.season_year
     @user.active_user = true
   end

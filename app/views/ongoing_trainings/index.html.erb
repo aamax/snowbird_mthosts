@@ -195,6 +195,25 @@
 
   <% end %>
 
+  <h3>Training Schedule</h3>
+  <table>
+    <% training_dates.each do |training_date| %>
+      <%  %>
+      <%= ongoing_training.inspect %>
+        <% next if ongoing_training.user.nil? %>
+        <tr>
+
+          <td><%= ongoing_training.user.name %></td>
+        </tr>
+
+
+
+    <% end %>
+  </table>
+
+
+
+
 </div>
 <div class="well span6">
   <%=
