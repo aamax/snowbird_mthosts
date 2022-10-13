@@ -21,7 +21,7 @@ SUPERVISOR_EMAIL = 'bfessler@snowbird.com'
 
 # KATE_EMAIL = 'kmcguinness@snowbird.com'
 
-DEFAULT_PASSWORD = "'5teep&Deep22'"
+DEFAULT_PASSWORD = "5teep&Deep22"
 
 TOUR_TYPES = %w[P1weekend P1weekday P2weekend P2weekday P3weekend
                   P3weekday P4weekend P4weekday]
