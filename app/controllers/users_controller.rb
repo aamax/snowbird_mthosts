@@ -227,7 +227,7 @@ class UsersController < ApplicationController
 
   def send_test_email
     UserNotifierMailer.send_signup_email('aamaxworks@gmail.com').deliver
-    redirect_to(:home, :notice => 'email sent!')
+    redirect_to(root_path, :notice => 'email sent!')
   end
 
   private

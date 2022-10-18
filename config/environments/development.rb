@@ -34,7 +34,7 @@ Mthost::Application.configure do
     #     :enable_starttls_auto => true
     # }
   end
-  config.action_mailer.delivery_method = :letter_opener
+  # config.action_mailer.delivery_method = :letter_opener
   config.paperclip_defaults = {
       :storage => :s3,
       :url => ':s3_domain_url',
