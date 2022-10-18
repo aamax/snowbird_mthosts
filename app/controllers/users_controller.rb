@@ -225,6 +225,11 @@ class UsersController < ApplicationController
     redirect_to :back, :notice => "All Meetings have been processed."
   end
 
+  def send_test_email
+    UserNotifierMailer.send_signup_email('aamaxworks@gmail.com').deliver
+    redirect_to(:home, :notice => 'email sent!')
+  end
+
   private
   def process_user_roles params
     return if !current_user.has_role? :admin

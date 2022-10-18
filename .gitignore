@@ -83,3 +83,4 @@ pickle-email-*.html
 /work/
 /shared
 
+sendgrid.env
