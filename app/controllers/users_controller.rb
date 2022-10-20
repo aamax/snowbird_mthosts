@@ -225,15 +225,15 @@ class UsersController < ApplicationController
     redirect_to :back, :notice => "All Meetings have been processed."
   end
 
-  def send_shift_reminder_email
-    emailaddress = 'aamaxworks@gmail.com'
-
-    @subject = "REMINDER: you are scheduled to work at Snowbird tomorrow!"
-    @fromaddress = 'no-reply@snowbirdhosts.com'
-    @message = "Just a friendly reminder that you are scheduled to work a shift at the Bird tomorrow.  Don't be late!"
-
-    UserNotifierMailer.send_shift_reminder_email(emailaddress, @fromaddress, @subject, @message).deliver
-  end
+  # def send_shift_reminder_email
+  #   emailaddress = 'aamaxworks@gmail.com'
+  #
+  #   @subject = "REMINDER: you are scheduled to work at Snowbird tomorrow!"
+  #   @fromaddress = 'no-reply@snowbirdhosts.com'
+  #   @message = "Just a friendly reminder that you are scheduled to work a shift at the Bird tomorrow.  Don't be late!"
+  #
+  #   UserNotifierMailer.send_shift_reminder_email(emailaddress, @fromaddress, @subject, @message).deliver
+  # end
 
 
   private

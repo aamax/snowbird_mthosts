@@ -1,5 +1,16 @@
 class MailController < ApplicationController
 
+  def send_shift_reminder_email
+    emailaddress = 'aamaxworks@gmail.com'
+
+    @subject = "REMINDER: you are scheduled to work at Snowbird tomorrow!"
+    @fromaddress = 'no-reply@snowbirdhosts.com'
+    @message = "Just a friendly reminder that you are scheduled to work a shift at the Bird tomorrow.  Don't be late!"
+
+    UserNotifierMailer.send_shift_reminder_email(emailaddress, @fromaddress, @subject, @message).deliver
+    redirect_to root_path, :notice => "Email Sent to #{emailaddress}"
+  end
+
   # select hosts form
   def select_hosts_for_email
     if current_user.has_role? :admin

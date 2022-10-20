@@ -17,7 +17,7 @@ Mthost::Application.routes.draw do
   resources :training_dates
   resources :ongoing_trainings
 
-  get 'send_shift_reminder_email', :to => "users#send_shift_reminder_email"
+  get 'send_shift_reminder_email', :to => "mail#send_shift_reminder_email"
 
   get '/download_end_of_year', :to =>  "exports#eoy_download"
   get '/export/shift_summary/:year', :to =>  "exports#shift_summary_download"
