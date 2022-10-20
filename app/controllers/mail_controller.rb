@@ -3,11 +3,7 @@ class MailController < ApplicationController
   def send_shift_reminder_email
     emailaddress = 'aamaxworks@gmail.com'
 
-    @subject = "REMINDER: you are scheduled to work at Snowbird tomorrow!"
-    @fromaddress = 'no-reply@snowbirdhosts.com'
-    @message = "Just a friendly reminder that you are scheduled to work a shift at the Bird tomorrow.  Don't be late!"
-
-    UserNotifierMailer.send_shift_reminder_email(emailaddress, @fromaddress, @subject, @message).deliver
+    UserNotifierMailer.send_shift_reminder_email(emailaddress).deliver
     redirect_to root_path, :notice => "Email Sent to #{emailaddress}"
   end
 
@@ -32,6 +28,7 @@ class MailController < ApplicationController
     }.delete_if { |v| v[1] == "0"}.map { |m| User.find(m[0]).email }.join(",")
     @title = params[:title]
     @fromaddress = current_user.email
+
     render :send_mail
   end
 
@@ -40,27 +37,23 @@ class MailController < ApplicationController
     @subject = params[:mailmessage][:subject]
     @fromaddress = current_user.email if current_user #params[:mailmessage][:fromaddress]
     @fromaddress ||= params[:mailmessage][:fromaddress]
-    @message = "FROM: #{current_user.name}(#{current_user.email})\n\n#{params[:mailmessage][:message]}"
-    #
-    # # TODO - john email
-    # if params[:include_john] == '1'
-    #   jemail = User.find_by_name('John Cotter').email
-    #
-    #   unless @useremail.include? jemail
-    #     @useremail += ",#{jemail}"
-    #   end
-    # end
+    @message = "FROM: [#{current_user.name}(#{current_user.email})]<hr/><p>#{params[:mailmessage][:message]}</p>"
 
     # break @useremail into chunks to try and placate Google...
-    email_array = @useremail.split(',').each_slice(10).to_a
-    email_array.each do |emails|
-      msg = UserMailer.send_email(current_user, emails.join(','), @fromaddress,
-                                  @subject, @message)
-      msg.deliver unless msg.nil?
-    end
+    # email_array = @useremail.split(',').each_slice(10).to_a
+    # email_array.each do |emails|
+    #
+    #
+    #
+    #   msg = UserMailer.send_email(current_user, emails.join(','), @fromaddress,
+    #                               @subject, @message)
+    #   msg.deliver unless msg.nil?
+    # end
     # msg = UserMailer.send_email(current_user, @useremail, @fromaddress,
     #                              @subject, @message)
     # msg.deliver unless msg.nil?
+
+    UserNotifierMailer.send_email(@useremail, @fromaddress, @subject, @message).deliver
 
     flash[:notice] = "Email sent to #{@useremail}..."
     redirect_to(root_path)
@@ -123,58 +116,31 @@ class MailController < ApplicationController
     case @emailaddress
       when 'ADMINUSERS'
         users = User.with_role(:admin)
-        # TODO john email
-        # users << User.find_by_name('John Cotter')
       when 'TEAMLEADER'
         users = User.active_users.with_role(:team_leader)
-        # TODO john email
-        # users << User.find_by_name('John Cotter')
       when 'ROOKIES'
         users = User.rookies
-        # TODO john email
-        # users << User.find_by_name('John Cotter')
-      when 'SURVEYORS'
+       when 'SURVEYORS'
         users = User.active_users.with_role(:surveyor)
-        # TODO john email
-        # users << User.find_by_name('John Cotter')
       when 'GROUP1'
         users = User.group1
-        # TODO john email
-        # users << User.find_by_name('John Cotter')
       when 'GROUP2'
         users = User.group2
-        # TODO john email
-        # users << User.find_by_name('John Cotter')
-      when 'GROUP3'
+       when 'GROUP3'
         users = User.group3
-        # TODO john email
-        # users << User.find_by_name('John Cotter')
       when 'ALLACTIVEHOSTS'
         users = User.active_users
-        # TODO john email
-        #  users << User.find_by_name('John Cotter')
       when 'ALLHOSTS'
         users = User.all
-        # TODO john email
-        # users << User.find_by_name('John Cotter')
       when 'ALLINACTIVEHOSTS'
         users = User.inactive_users
-        # TODO john email
-        # users << User.find_by_name('John Cotter')
       when 'NONCONFIRMED'
         users = User.non_confirmed_users
-        # TODO john email
-        # users << User.find_by_name('John Cotter')
       when 'THIS_DATE'
         users = Shift.where(shift_date: params[:date]).map {|s| s.user }
-        # TODO john email
-        #  users << User.find_by_name('John Cotter')
-    when 'OGOMT_THIS_DATE'
-      # assumes there is only one training date per params[:date]...  TODO: revisit this when refactoring for future use
-        users = TrainingDate.where(shift_date: params[:date]).map { |t| t.ongoing_trainings }.first.map { |u| u.user }
-
-      # TODO - john email
-      #   users << User.find_by_name('John Cotter')
+    # when 'OGOMT_THIS_DATE'
+    #   # assumes there is only one training date per params[:date]...  TODO: revisit this when refactoring for future use
+    #     users = TrainingDate.where(shift_date: params[:date]).map { |t| t.ongoing_trainings }.first.map { |u| u.user }
     when 'hauler'
         hauler = HostHauler.find_by(id: params[:id])
         users = hauler.riders.map {|r| r.user.nil? ? nil : r.user }.compact

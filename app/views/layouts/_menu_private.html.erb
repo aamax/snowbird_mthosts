@@ -6,7 +6,7 @@
 
     <li><%= link_to "Shifts", shifts_path %></li>
 
-    <li><%= link_to "Training", ongoing_trainings_path %></li>
+<!--    <li><%#= link_to "Training", ongoing_trainings_path %></li>-->
 
     <li><%= link_to "HostHauler", '/hauler_scheduler' %></li>
 
@@ -96,7 +96,7 @@
             <li><%= link_to "Shift Creation Wizard", "#{shift_collections_path}/?date=#{Date.today}" %></li>
             <li><%= link_to "Assign Team Leader Shifts", "/assign_team_leaders" %></li>
             <li><%= link_to "Manage Configurations", edit_sys_config_path(SysConfig.first) %></li>
-            <li><%= link_to "Manage Max's Message", edit_page_path('aamax') %></li>
+<!--            <li><%#= link_to "Manage Max's Message", edit_page_path('aamax') %></li>-->
             <li class='disabled'>Exports</li>
             <li><a href="/download_end_of_year">End of Year Shift Summary</a></li>
 

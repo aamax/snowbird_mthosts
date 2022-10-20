@@ -17,8 +17,6 @@ Mthost::Application.routes.draw do
   resources :training_dates
   resources :ongoing_trainings
 
-  get 'send_shift_reminder_email', :to => "mail#send_shift_reminder_email"
-
   get '/download_end_of_year', :to =>  "exports#eoy_download"
   get '/export/shift_summary/:year', :to =>  "exports#shift_summary_download"
   get '/hosts_by_seniority', :to => 'users#hosts_by_seniority'
@@ -37,13 +35,18 @@ Mthost::Application.routes.draw do
   post '/shifts/assign_team_leaders', :to => 'shifts#assign_team_leaders'
   get '/assign_team_leaders', :to => 'shifts#edit_team_leader_shifts'
 
-  get '/show_contact_info', :to => "pages#show_contact_info"
+  # EMAIL STUFF
+  get 'send_shift_reminder_email', :to => "mail#send_shift_reminder_email"
   get '/select_hosts_for_email', :to => "mail#select_hosts_for_email"
+
   get '/send_custom_mail', :to => "mail#send_custom_mail"
   post '/send_custom_mail', :to => "mail#send_custom_mail"
   post '/deliver_mail', :to => "mail#deliver_mail"
   get '/send_mail/:address', :to => "mail#send_mail"
   get '/send_mail/hauler/:hauler_id', :to => 'mail#send_hauler_mail'
+
+
+  get '/show_contact_info', :to => "pages#show_contact_info"
 
   get '/set_start_year/:year', :to => "users#set_start_year"
   get '/clear_assignments', :to => "users#clear_assignments"
