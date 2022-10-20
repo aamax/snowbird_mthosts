@@ -23,8 +23,12 @@ namespace :daily do
     # end
     exit(0) if emailaddress.blank?
 
-    msg = UserMailer.send_daily_email(emailaddress, @fromaddress, @subject, @message)
-    msg.deliver unless msg.nil?
+    UserNotifierMailer.send_shift_reminder(emailaddress, @fromaddress, @subject, @message).deliver unless msg.nil?
+
+
+    # old email using gmail
+    # msg = UserMailer.send_daily_email(emailaddress, @fromaddress, @subject, @message)
+    # msg.deliver unless msg.nil?
 
 
     # TODO: send text message?
