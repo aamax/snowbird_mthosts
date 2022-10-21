@@ -3,26 +3,26 @@ require 'csv'
 namespace :db do
   desc "load all 2022 data"
   task :load_2022_data => :environment do
-#     ActiveRecord::Base.transaction do
-#       # clear all data
-#       puts "Clearing all data: riders, host_haulers, shfits, shift_logs, shift_types"
-#       ActiveRecord::Base.connection.execute("TRUNCATE TABLE riders RESTART IDENTITY;")
-#       ActiveRecord::Base.connection.execute("TRUNCATE TABLE host_haulers RESTART IDENTITY;")
-#       ActiveRecord::Base.connection.execute("TRUNCATE TABLE shifts RESTART IDENTITY;")
-#       ActiveRecord::Base.connection.execute("TRUNCATE TABLE shift_logs RESTART IDENTITY;")
-#       ActiveRecord::Base.connection.execute("TRUNCATE TABLE shift_types RESTART IDENTITY;")
-#       ActiveRecord::Base.connection.execute("TRUNCATE TABLE ongoing_trainings RESTART IDENTITY;")
-#       ActiveRecord::Base.connection.execute("TRUNCATE TABLE training_dates RESTART IDENTITY;")
-#
-#       puts 'Loading shift types'
-#       Rake::Task['db:load_2021_shift_types'].invoke
-#
-#       puts 'load 2021 rookies into system'
-#       Rake::Task['db:load_2021_rookies'].invoke
-#
-#       puts 'set up configs for season'
-#       Rake::Task['db:setup_config_for_2021'].invoke
-#
+    ActiveRecord::Base.transaction do
+      # clear all data
+      puts "Clearing all data: riders, host_haulers, shfits, shift_logs, shift_types"
+      ActiveRecord::Base.connection.execute("TRUNCATE TABLE riders RESTART IDENTITY;")
+      ActiveRecord::Base.connection.execute("TRUNCATE TABLE host_haulers RESTART IDENTITY;")
+      ActiveRecord::Base.connection.execute("TRUNCATE TABLE shifts RESTART IDENTITY;")
+      ActiveRecord::Base.connection.execute("TRUNCATE TABLE shift_logs RESTART IDENTITY;")
+      ActiveRecord::Base.connection.execute("TRUNCATE TABLE shift_types RESTART IDENTITY;")
+      ActiveRecord::Base.connection.execute("TRUNCATE TABLE ongoing_trainings RESTART IDENTITY;")
+      ActiveRecord::Base.connection.execute("TRUNCATE TABLE training_dates RESTART IDENTITY;")
+
+      puts 'Loading shift types'
+      Rake::Task['db:load_2022_shift_types'].invoke
+
+      puts 'load 2021 rookies into system'
+      Rake::Task['db:load_2022_rookies'].invoke
+
+      puts 'set up configs for season'
+      Rake::Task['db:setup_config_for_2022'].invoke
+
 #       puts 'make host updates for current season'
 #       Rake::Task['db:update_2021_host_data_for_season'].invoke
 #
@@ -36,16 +36,16 @@ namespace :db do
 #       Rake::Task['db:load_2021_team_lead_shadow_shifts'].invoke
 #
 #       puts "Shift Count Before Meetings: #{Shift.count}\n\n\n"
-#
-#       puts 'Load all Meeting Shifts For Users'
-#       Rake::Task['db:load_2021_meetings'].invoke
-#
-#       puts 'initialize all user accounts for start of year'
-#       User.reset_all_accounts
-#
-#       puts 'Update Roles For users: Team lead, driver, admin, trainer, ogomt_trainer'
-#       Rake::Task['db:update_2021_host_roles'].invoke
-#
+
+      puts 'Load all Meeting Shifts For Users'
+      Rake::Task['db:load_2022_meetings'].invoke
+
+      puts 'initialize all user accounts for start of year'
+      User.reset_all_accounts
+
+      puts 'Update Roles For users: Team lead, driver, admin, trainer, ogomt_trainer'
+      Rake::Task['db:update_2022_host_roles'].invoke
+
 #       puts 'set my password and confirm me'
 #       # set my password
 #       u = User.find_by(email: 'aamaxworks@gmail.com')
@@ -59,10 +59,10 @@ namespace :db do
 #       puts "\n\n\n\n"
 #
 #       Rake::Task['db:show_system_stats'].invoke
-#     end
-#
-#     puts "DONE WITH SEASON PREP... 2021"
-#   end
+    end
+
+    puts "DONE WITH SEASON PREP... 2022"
+  end
 #
 #   desc "show system stats for review"
 #   task :show_system_stats => :environment do
@@ -75,103 +75,96 @@ namespace :db do
 #     puts "Freshmen: #{User.group3.count}"
 #     puts "Rookies: #{User.rookies.count}"
 #   end
-#
-#   desc "populate shift types"
-#   task :load_2021_shift_types => :environment do
-#     # load up file
-#     filename = "lib/data/shift_type_2021.csv"
-#
-#     if File.exists?(filename)
-#       puts "loading shift type data..."
-#       CSV.foreach(filename, :headers => true) do |row|
-#         hash = row.to_hash
-#
-#         next if (row[0].to_s == '#') || hash['short_name'].nil?
-#
-#         st = ShiftType.new(hash)
-#         if !st.save
-#           puts "failed: #{hash} - #{st.errors.messages}"
-#         end
-#       end
-#       puts "done loading shift type data.  Type Count: #{ShiftType.all.count}"
-#     else
-#       puts "shift type loader file not found"
-#     end
-#   end
-#
-#   desc 'load 2021 rookies'
-#   task :load_2021_rookies => :environment do
-#     puts "loading 2021 rookie data..."
-#
-#     create_2021_rookie_user('Steve Altman', 'stevealtman2016@gmail.com')
-#     create_2021_rookie_user('Katie Bertram', 'katbertram235@yahoo.com')
-#     create_2021_rookie_user('Jennifer Carey', 'jcarey1017@outlook.com')
-#     create_2021_rookie_user('Jerry Christensen', 'daneindenmark@me.com')
-#     create_2021_rookie_user('Wilma Corkery', 'corkerywil@aol.com')
-#     create_2021_rookie_user('Jeffrey Ginsburg', 'jginzy@gmail.com')
-#     create_2021_rookie_user('Suzanne Glow', 'glowsum@yahoo.com')
-#     create_2021_rookie_user('Kelli Harrington', 'kaharrington@me.com')
-#     create_2021_rookie_user('Philip Jung', 'jungpbj@gmail.com')
-#     create_2021_rookie_user('Geof Kieburtz', 'gkieburtz@gmail.com')
-#     create_2021_rookie_user('Evan Matheson', 'ejmatheson@msn.com')
-#     create_2021_rookie_user('Tiffany Owens', 'jtcbowens@msn.com')
-#     create_2021_rookie_user('Cort Pouch', 'chpouch@gmail.com')
-#     create_2021_rookie_user('Nuri Pujao', 'nuri.betof@gmail.com')
-#     create_2021_rookie_user('Scott Strahan', 'sstrahan78@msn.com')
-#     create_2021_rookie_user('Craig Sturm', 'sturm.craig@gmail.com')
-#
-#     puts "DONE WITH ROOKIE LOAD... "
-#   end
-#
-#   desc "populate sys config settings for 2021"
-#   task :setup_config_for_2021 => :environment do
-#     puts "purging existing sys config record from system..."
-#     ActiveRecord::Base.connection.execute("TRUNCATE TABLE sys_configs RESTART IDENTITY;")
-#     c = SysConfig.new
-#     c.season_year = 2021
-#     c.group_1_year = 2014
-#     c.group_2_year = 2016
-#     c.group_3_year = 2017
-#     c.season_start_date = Date.new(2021, 10, 29)
-#     c.bingo_start_date = Date.new(2021, 11, 8)
-#     c.shift_count = 250  # TODO adjust up after bingo is done...
-#
-#     if !c.save
-#       puts "error saving config record #{c.errors.messages}"
-#     end
-#     puts "Done with setting up System Config."
-#   end
-#
-#   desc 'load all meetings and add to users'
-#   task :load_2021_meetings => :environment do
-#     # delete all existing meeting shifts
-#     puts "delete all existing meetings"
-#     Shift.where(short_name: 'M1').delete_all
-#     Shift.where(short_name: 'M2').delete_all
-#     Shift.where(short_name: 'M3').delete_all
-#     Shift.where(short_name: 'M4').delete_all
-#
-#     # get all meetings
-#     meetings = ShiftType.where("short_name like 'M%'")
-#
-#     puts "iterate all users..."
-#     User.all.each do |u|
-#       next if u.supervisor? || (u.active_user == false)
-#
-#       meetings.each do |m|
-#         next if ((m.short_name == 'M1') || (m.short_name == 'M3')) && !u.rookie?
-#
-#         s_date = Date.parse(MEETINGS[m.short_name])
-#         new_shift = Shift.create(:user_id=>u.id,
-#                                  :shift_type_id=>m.id,
-#                                  :shift_date=>s_date,
-#                                  :shift_status_id => 1,
-#                                  :day_of_week=>s_date.strftime("%a"))
-#       end
-#     end
-#     puts "Done adding meetings.  Shift Count: #{Shift.all.count}"
-#   end
-#
+
+  desc "populate shift types"
+  task :load_2022_shift_types => :environment do
+    # load up file
+    filename = "lib/data/shift_type_2022.csv"
+
+    if File.exists?(filename)
+      puts "loading shift type data..."
+      CSV.foreach(filename, :headers => true) do |row|
+        hash = row.to_hash
+
+        next if (row[0].to_s == '#') || hash['short_name'].nil?
+
+        st = ShiftType.new(hash)
+        if !st.save
+          puts "failed: #{hash} - #{st.errors.messages}"
+        end
+      end
+      puts "done loading shift type data.  Type Count: #{ShiftType.all.count}"
+    else
+      puts "shift type loader file not found"
+    end
+  end
+
+  desc 'load 2022 rookies'
+  task :load_2022_rookies => :environment do
+    puts "loading 2022 rookie data..."
+
+    create_2022_rookie_user('Sue Bias', 'bias.sooze@gmail.com')
+    create_2022_rookie_user('Tiffany Bloomquist', 'tiffbloomquist@gmail.com')
+    create_2022_rookie_user('Dustin Jackman', 'dustinjackman@gmail.com')
+    create_2022_rookie_user('Kathy McBane', 'ski.mcbane@gmail.com')
+    create_2022_rookie_user('Christina Patten', 'chrissypatten@gmail.com')
+    create_2022_rookie_user('Michele Thompson', 'peacockmpt@gmail.com')
+    create_2022_rookie_user('George Walker', 'geowalkerjr@msn.com')
+    create_2022_rookie_user('Patrice Zhoa', 'patrice.zhao@gmail.com')
+    create_2022_rookie_user('Peter Vander', 'petervander11@gmail.com')
+
+    puts "DONE WITH ROOKIE LOAD... "
+  end
+
+  desc "populate sys config settings for 2022"
+  task :setup_config_for_2022 => :environment do
+    puts "purging existing sys config record from system..."
+    ActiveRecord::Base.connection.execute("TRUNCATE TABLE sys_configs RESTART IDENTITY;")
+    c = SysConfig.new
+    c.season_year = 2022
+    c.group_1_year = 2014
+    c.group_2_year = 2016
+    c.group_3_year = 2017
+    c.season_start_date = Date.new(2022, 10, 29)
+    c.bingo_start_date = Date.new(2022, 11, 7)
+    c.shift_count = 250  # TODO adjust up after bingo is done...
+
+    if !c.save
+      puts "error saving config record #{c.errors.messages}"
+    end
+    puts "Done with setting up System Config."
+  end
+
+  desc 'load all meetings and add to users'
+  task :load_2022_meetings => :environment do
+    # delete all existing meeting shifts
+    puts "delete all existing meetings"
+    Shift.where(short_name: 'M1').delete_all
+    Shift.where(short_name: 'M2').delete_all
+    Shift.where(short_name: 'M3').delete_all
+    Shift.where(short_name: 'M4').delete_all
+
+    # get all meetings
+    meetings = ShiftType.where("short_name like 'M%'")
+
+    puts "iterate all users..."
+    User.all.each do |u|
+      next if u.supervisor? || (u.active_user == false)
+
+      meetings.each do |m|
+        next if ((m.short_name == 'M1') || (m.short_name == 'M3')) && !u.rookie?
+
+        s_date = Date.parse(MEETINGS[m.short_name])
+        new_shift = Shift.create(:user_id=>u.id,
+                                 :shift_type_id=>m.id,
+                                 :shift_date=>s_date,
+                                 :shift_status_id => 1,
+                                 :day_of_week=>s_date.strftime("%a"))
+      end
+    end
+    puts "Done adding meetings.  Shift Count: #{Shift.all.count}"
+  end
+
 #   desc 'update host data for current season'
 #   task :update_2021_host_data_for_season => :environment do
 #     puts "-----------------------------------------------"
@@ -297,55 +290,65 @@ namespace :db do
 #     # Memorial Day
 #     create_flex_host_day('2022-05-30'.to_date, 4)
 #   end
-#
-#   desc 'update host roles'
-#   task :update_2021_host_roles => :environment do
-#     # set drivers
-#     # Same Hosts that were drivers last year are drivers this year.
-#     update_user_role('akmarler@hotmail.com', :driver)
-#     update_user_role('dostar227@msn.com', :driver)
-#     update_user_role('snoman2490@msn.com', :driver)
-#     update_user_role('altabirdskiers@gmail.com', :driver)
-#     update_user_role('jecotterii@gmail.com', :driver)
-#     update_user_role('itinslc@hotmail.com', :driver)
-#     update_user_role('alohamaddy@yahoo.com', :driver)
-#     update_user_role('mikedufordconst@yahoo.com', :driver)
-#
-#     # set rookie trainers
-#     # Rookie Trainers are Paul E, Eric Sawyer, Kris Hill, Sarah Reifsntder
-#     update_user_role('snowsawyer@hotmail.com', :trainer)
-#     update_user_role('krishill0@gmail.com', :trainer)
-#     update_user_role('altasnow@gmail.com', :trainer)
-#     update_user_role('sarah3884@yahoo.com', :trainer)
-#
-#     # set ogomt trainers
-#     # OGOMT Trainers are Paul E, Eric Sawyer, Kris Hill, Sarah Reifsntder and Craig Whetman
-#     update_user_role('snowsawyer@hotmail.com', :ongoing_trainer)
-#     update_user_role('krishill0@gmail.com', :ongoing_trainer)
-#     update_user_role('altasnow@gmail.com', :ongoing_trainer)
-#     update_user_role('sarah3884@yahoo.com', :ongoing_trainer)
-#     update_user_role('craig_whetman@hotmail.com', :ongoing_trainer)
-#
-#     # set admins me and john
-#     update_user_role('aamaxworks@gmail.com', :admin)
-#     update_user_role('jecotterii@gmail.com', :admin)
-#
-#     # set team leaders
-#     # Team Leaders:
-#     update_user_role('buglady@me.com', :team_leader)
-#     update_user_role('alohamaddy@yahoo.com', :team_leader)
-#     update_user_role('mikedufordconst@yahoo.com', :team_leader)
-#     update_user_role('heidi@netdiverse.com', :team_leader)
-#     update_user_role('larry.walz@me.com', :team_leader)
-#     update_user_role('snoman2490@msn.com', :team_leader)
-#     update_user_role('giperez@earthlink.net', :team_leader)
-#     update_user_role('akmarler@hotmail.com', :team_leader)
-#     update_user_role('gmlj56@gmail.com', :team_leader)
-#     update_user_role('sarah3884@yahoo.com', :team_leader)
-#     update_user_role('herkyp@yahoo.com', :team_leader)
-#     update_user_role('markhooyer@gmail.com', :team_leader)
-#   end
-#
+
+  desc 'update host roles'
+  task :update_2021_host_roles => :environment do
+    # set drivers
+    # Same Hosts that were drivers last year are drivers this year.
+    # update_user_role('akmarler@hotmail.com', :driver)
+    # update_user_role('dostar227@msn.com', :driver)
+    # update_user_role('snoman2490@msn.com', :driver)
+    # update_user_role('altabirdskiers@gmail.com', :driver)
+    # update_user_role('jecotterii@gmail.com', :driver)
+    # update_user_role('itinslc@hotmail.com', :driver)
+    # update_user_role('alohamaddy@yahoo.com', :driver)
+    # update_user_role('mikedufordconst@yahoo.com', :driver)
+
+    # set rookie trainers
+    # Rookie Trainers are Paul E, Eric Sawyer, Kris Hill, Sarah Reifsntder
+    # update_user_role('snowsawyer@hotmail.com', :trainer)
+    # update_user_role('krishill0@gmail.com', :trainer)
+    # update_user_role('altasnow@gmail.com', :trainer)
+    # update_user_role('sarah3884@yahoo.com', :trainer)
+
+    # set ogomt trainers
+    # OGOMT Trainers are Paul E, Eric Sawyer, Kris Hill, Sarah Reifsntder and Craig Whetman
+    # update_user_role('snowsawyer@hotmail.com', :ongoing_trainer)
+    # update_user_role('krishill0@gmail.com', :ongoing_trainer)
+    # update_user_role('altasnow@gmail.com', :ongoing_trainer)
+    # update_user_role('sarah3884@yahoo.com', :ongoing_trainer)
+    # update_user_role('craig_whetman@hotmail.com', :ongoing_trainer)
+
+    # set admins me and supervisor
+    update_user_role('aamaxworks@gmail.com', :admin)
+    update_user_role(SUPERVISOR_EMAIL, :admin)
+
+    # set team leaders
+    # Team Leaders:
+    update_user_role('alohamaddy@yahoo.com', :team_leader)
+    update_user_role('mikedufordconst@yahoo.com', :team_leader)
+    update_user_role('buglady@me.com', :team_leader)
+    update_user_role('markhooyer@gmail.com', :team_leader)
+    update_user_role('gmlj56@gmail.com', :team_leader)
+    update_user_role('jonelast@hotmail.com', :team_leader)
+    update_user_role('snoman2490@msn.com', :team_leader)
+    update_user_role('akmarler@hotmail.com', :team_leader)
+    update_user_role('heidi@netdiverse.com', :team_leader)
+    update_user_role('dostar227@msn.com', :team_leader)
+    update_user_role('sarah3884@yahoo.com', :team_leader)
+    update_user_role('herkyp@yahoo.com', :team_leader)
+    update_user_role('larry.walz@me.com', :team_leader)
+    update_user_role('giperez@earthlink.net', :team_leader)
+
+    # de-activate non-returning hosts
+    de_activate_host('dldeisley@gmail.com')
+    de_activate_host('giperez@earthlink.net')
+    de_activate_host('rlbskier@gmail.com')
+    de_activate_host('snowsawyer@hotmail.com')
+    de_activate_host('brneiman@comcast.net')
+    de_activate_host('nettecoleman@hotmail.com')
+  end
+
 #   desc "populate rookie training and trainer shifts"
 #   task :load_2021_rookie_training_shifts => :environment do
 #     paul = User.find_by(email: 'altasnow@gmail.com')
@@ -535,23 +538,23 @@ namespace :db do
 #     u.save
 #   end
 #
-#   def create_2021_rookie_user(name_value, email_value)
-#     puts "creating rookie: #{name_value} #{email_value}"
-#     usr = User.find_by(email: email_value)
-#     if !usr.nil?
-#       puts "Possible Error! =========>  User Already Exists: #{email_value} - #{usr.name}"
-#       return
-#     end
-#
-#     usr = User.new(name: name_value, email: email_value, password: DEFAULT_PASSWORD)
-#     usr.active_user = true
-#     usr.start_year = 2021
-#     usr.snowbird_start_year = 2021
-#     if !usr.valid?
-#       puts "\nERRROR in data:  #{usr.errors.messages}\n#{usr.inspect}\n-----\n#{hash}\n\n"
-#     end
-#     usr.save
-#   end
+  def create_2022_rookie_user(name_value, email_value)
+    puts "creating rookie: #{name_value} #{email_value}"
+    usr = User.find_by(email: email_value)
+    if !usr.nil?
+      puts "Possible Error! =========>  User Already Exists: #{email_value} - #{usr.name}"
+      return
+    end
+
+    usr = User.new(name: name_value, email: email_value, password: DEFAULT_PASSWORD)
+    usr.active_user = true
+    usr.start_year = 2022
+    usr.snowbird_start_year = 2022
+    if !usr.valid?
+      puts "\nERRROR in data:  #{usr.errors.messages}\n#{usr.inspect}\n-----\n#{hash}\n\n"
+    end
+    usr.save
+  end
 #
 #   def create_shift(shift_short_name, dt)
 #     shift_type_id = ShiftType.find_by(short_name: shift_short_name).id

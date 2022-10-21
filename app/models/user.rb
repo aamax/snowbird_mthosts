@@ -501,7 +501,7 @@ class User < ActiveRecord::Base
 
   def self.reset_all_accounts
     User.all.each do |u|
-      next if (u.email == MAX_EMAIL) || (u.email == COTTER_EMAIL)
+      next if (u.email == MAX_EMAIL)
 
       # remove all roles to initialize the system
       # if !u.active_user?

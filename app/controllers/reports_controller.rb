@@ -280,6 +280,23 @@ class ReportsController < ApplicationController
              :disposition => "attachment; filename=duties_report#{@start_date.strftime('%a.%Y%m%d')}_#{@duration}.csv"
   end
 
+  def hauler_drivers_report
+    # csv_string = CSV.generate do |csv|
+    #   # data rows
+    #   csv << ["Snowbird Mountain Host Hauler Drivers"]
+    #   csv << ['driver name']
+    #   User.all.each do |u|
+    #     next if !u.driver?
+    #
+    #     csv << u.name
+    #   end
+    # end
+    #
+    # send_data csv_string,
+    #           :type => "text/csv; charset:iso-8859-1;header=present",
+    #           :disposition => "attachment; filename=host_hauler_drivers.csv"
+  end
+
   private
 
   def get_days_for_duties_report(start_date, duration)
