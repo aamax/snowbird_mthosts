@@ -18,6 +18,7 @@ namespace :db do
       usr = User.find_by(email: SUPERVISOR_EMAIL)
       if !usr.nil?
         puts "=========>  Supervisor User Already Exists: #{usr.email} - #{usr.name}"
+        usr.start_year = 2021 # fake it so he isn't a rookie
       else
         usr = User.new(name: 'Brandon Fessler', email: SUPERVISOR_EMAIL, password: DEFAULT_PASSWORD)
         usr.active_user = true
@@ -26,9 +27,10 @@ namespace :db do
         if !usr.valid?
           puts "\nERRROR in data:  #{usr.errors.messages}\n#{usr.inspect}\n-----\n#{hash}\n\n"
         end
-        usr.save
       end
+      usr.save
       update_user_role(SUPERVISOR_EMAIL, :admin)
+      update_user_role(SUPERVISOR_EMAIL, :supervisor)
 
       puts 'Loading shift types'
       Rake::Task['db:load_2022_shift_types'].invoke
