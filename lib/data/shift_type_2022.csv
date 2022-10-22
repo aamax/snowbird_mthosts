@@ -4,44 +4,48 @@ M2,All Host Training Meeting,0800,1700,
 # M3,On Mountain Rookie Training,0800,1700,
 M4,Mid-Year Training Meeting,1600,2100,
 
-TR,Trainer Shift,0800,1600,Group Leader Rookie Training
-T1,Rookie Training Shift,0800,1600,Rookie Training
+# TR,Trainer Shift,0800,1600,Group Leader Rookie Training
+# T1,Rookie Training Shift,0800,1600,Rookie Training
 # T2,Rookie Training Shift 2,0800,1600,Rookie Training Type 2
 # T3,Rookie Training Shift 3,0800,1600,Rookie Training Type 3
 # T4,Rookie Training Shift 4,0800,1600,Rookie Training Type 4
 
-TL,Team Lead,0800,1600,Roam
-TShadow, Team Lead Shadow Training, 0800, 1600, Train as Directed With TL
+TL,Team Lead,0800,1600,Roam - 10:30 Tour on Weekdays
+# TShadow, Team Lead Shadow Training, 0800, 1600, Train as Directed With TL
 
 A1,All Mountain,0800,1600,General Duties as needed. Flexible
 ST,Special Tour,0800,1600
 
-P1weekend,SB Ctr 1st Floor,0800,1600,10:30 Tour. Mt Presence: PM - P/MB
+P1weekend,SB Ctr 1st Floor,0800,1600,10:30 Tour. Mt Presence: Gad - PM
 P2weekend,SB Ctr 2nd Floor,0800,1600,10:30 Tour. Mt Presence: PM - P/MB
 P3weekend,Plaza Deck,0800,1650,9:30 Tour. Mt Presence: PM - P/MB. Portico 3:15-4:50
 P4weekend,Plaza Deck,0800,1650,9:30 Tour. Mt Presence: PM - P/MB. Portico 3:15-4:50
 
-G1weekend,Peruvian Express,0830,1650,Big Emma 1:30 2:30 3:30. Mt Presence: Gad AM
-G2weekend,Portico,0800,1600,Big Emma 1:00 2:00 3:00. Mt Presence: Gad AM
-G3weekend,Plaza Deck (lv 9:30),0800,1600,Big Emma 10:30 11:30 12:30. Mt Presence: Gad PM
-G4weekend,Snow Test,0800,1600,Big Emma 10:00 11:00 12:00. Mt Presence: Gad PM.  Creekside 3:15-4:50
+G1weekend,Peruvian Express,0830,1650,Big Emma 1:45 and 3:15. Mt Presence: P/MB - AM
+G2weekend,Portico,0800,1600,Big Emma 1:00 2:30. Mt Presence: Gad AM
+G3weekend,Plaza Deck (lv 9:45),0800,1600,Big Emma 10:45 112:15. Mt Presence: Gad PM
+G4weekend,Snow Test,0800,1600,Big Emma 10:00 11:30. Mt Presence: Gad PM.  Creekside 3:15-4:50
 
 H1weekend,Hidden Peak,0800,1600, 8:30 tram: Hid Pk 9:00-12:00. Mt Presence: 1st Mineral - 2nd Peruvian
 H2weekend,Hidden Peak,0800,1600, 8:30 tram: Hid Pk 9:00-12:00. Mt Presence: 1st Mineral - 2nd Peruvian
 H3weekend,Portico,0800,1600, Hidden Peek 12:00-1:30. Mt Presence: 1st Mineral - 2nd Peruvian
 H4weekend,Plaza Deck,0800,1600, Hidden Peek 12:00-1:30. Mt Presence: 1st Mineral - 2nd Peruvian
 
-C1weekend,Creekside,0800,1600,Hidden Peek 1:30-3:00. Mt Presence: PM - Gad
-C2weekend,Creekside,0800,1600,Hidden Peek 1:30-3;00. Mt Presence: PM - Gad
+C1weekend,Creekside,0800,1600,Hidden Peek 1:30-3:00. Mt Presence: AM - Gad
+C2weekend,Creekside,0800,1600,Hidden Peek 1:30-3;00. Mt Presence: AM - Gad
 
-G1weekday,Creekside,0830,1650,Big Emma 1:30 2:30 3:30. Mt Presence: Gad AM
-G2weekday,Portico,0800,1600,Big Emma 1:00 2:00 3:00. Mt Presence: Gad AM
-G3weekday,Snow Test,0800,1600,Big Emma 10:30 11:30 12:30. Mt Presence: Gad PM
+Survey,Cliff Back Door,0800,1600,Surveys 11:00-2:00
 
-H1weekday,Hidden Peak,0800,1600, 8:30 tram: Hid Pk 9:00-12:00. Mt Presence: As Available
-H2weekday,Hidden Peak,0800,1600,Hidden Peak 12:00-3:30. Mt Presence As Available
 
-P1weekday,Plaza Deck,0800,1600,10:30 Tour. Mt Presence: PM
-P3weekday,Plaza Deck,0800,1600,9:30 Tour. Mt Presence: PM. Portico 3:15-4:50
-P4weekday,Plaza Deck,0830,1650,9:30 Tour. Mt Presence: PM. Portico 3:15-4:50
+
+G1weekday,Creekside,0830,1650,Big Emma 1:00 3:15. Mt Presence: Gad AM
+G2weekday,Portico,0800,1600,Big Emma 12:15 2:30. Mt Presence: Gad AM
+G3weekday,Snow Test,0800,1600,Big Emma 11:30 1:45. Mt Presence: Gad AM/PM
+
+H1weekday,Hidden Peak,0800,1600, 8:30 tram: Hid Pk 9:00-12:00. Mt Presence: P/MB - PM
+H2weekday,N/A,0800,1600,Hidden Peak 12:00-3:00. Mt Presence P/MB - AM
+
+P1weekday,Plaza Deck,0800,1600,10:30 Tour. Mt Presence: Gad - PM
+P3weekday,Plaza Deck,0800,1600,9:30 Tour. Mt Presence: Gad - PM. Portico 3:15-4:50
+P4weekday,Plaza Deck,0830,1650,9:30 Tour. Mt Presence: P/MB - PM. Portico 3:15-4:50
 
