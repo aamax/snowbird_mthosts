@@ -61,7 +61,7 @@ class UsersController < ApplicationController
   end
 
   def hosts_by_seniority
-    @users = User.includes(:shifts).active_users.order(:name).to_a.delete_if { |u| u.supervisor? }
+    @users = User.includes(:shifts).active_users.order(:name).to_a.delete_if { |u| u.supervisor? || u.is_max? }
     @rookies = User.rookies.includes(:roles).order(:name)
     @freshmen =  User.group3.includes(:roles).order(:name).to_a.delete_if { |u| u.team_leader? }
     @junior =  User.group2.includes(:roles).order(:name).to_a.delete_if { |u| u.team_leader? }
@@ -70,6 +70,7 @@ class UsersController < ApplicationController
     @trainers = User.active_users.order(:name).to_a.delete_if { |u| !u.has_role? :trainer}.delete_if {|u| u.supervisor? }
     @surveyors = User.active_users.order(:name).to_a.delete_if { |u| !u.has_role? :surveyor}.delete_if {|u| u.supervisor? }
     @missing =  @users - (@rookies + @freshmen + @junior + @senior + @leaders)
+    @admin_and_supervisors = @users = User.includes(:shifts).active_users.order(:name).to_a.delete_if { |u| !u.supervisor? && !u.is_max? }
 
     @ogom_trainers = User.active_users.order(:name).to_a.delete_if { |u| !u.has_role? :ongoing_trainer}.delete_if { |u| u.supervisor? }
     @inactive_users = User.inactive_users

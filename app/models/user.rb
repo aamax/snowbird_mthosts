@@ -183,7 +183,7 @@ class User < ActiveRecord::Base
   end
 
   def supervisor?
-    self.email == 'jecotterii@gmail.com'
+    self.has_role? :supervisor
   end
 
   def trainer?

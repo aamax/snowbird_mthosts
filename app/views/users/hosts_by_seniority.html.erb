@@ -1,18 +1,34 @@
 <% if current_user.has_role? :admin %>
+    Admin & Supervisors: <%= @admin_and_supervisors.length %>
     Team leaders: <%= @leaders.length %><br/>
     Seniors (no TLs or Cotter): <%= @senior.length %><br/>
     Juniors: (no TLs) <%= @junior.length %><br/>
     Freshmen: (no TLs) <%= @freshmen.length %><br/>
     Rookie: <%= @rookies.length %><br/>
-    All Hosts (without Cotter): <%= @users.length %><br/>
+    All Hosts (without Cotter or Max): <%= @users.length %><br/>
     InActive Hosts: <%= @inactive_users.length %><br/>
     <hr/>
     Trainers: <%= @trainers.length %><br/>
     Surveyors: <%= @surveyors.length %><br/>
-    Ongoing On Mt Trainers: <%= @ogom_trainers.length %>
+<!--    Ongoing On Mt Trainers: <%#= @ogom_trainers.length %>-->
     <hr/>
 
-    <h1>MISSING  (<%= @missing.count %>)</h1>
+  <h1>Note: Dick Hill is included in the numbers for Senior Hosts</h1>
+
+  <h1>MISSING  (<%= @admin_and_supervisors.count %>)</h1>
+  <table class='table table-striped'>
+    <tbody>
+
+    <% @admin_and_supervisors.each do |u| %>
+      <tr id=<%= "user_record_#{u.id}" %> class='user_entry' >
+        <%= render 'user_index_entry', object: u %>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+  <hr/>
+
+  <h1>MISSING  (<%= @missing.count %>)</h1>
     <table class='table table-striped'>
       <tbody>
 
