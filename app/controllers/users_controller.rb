@@ -70,7 +70,7 @@ class UsersController < ApplicationController
     @trainers = User.active_users.order(:name).to_a.delete_if { |u| !u.has_role? :trainer}.delete_if {|u| u.supervisor? }
     @surveyors = User.active_users.order(:name).to_a.delete_if { |u| !u.has_role? :surveyor}.delete_if {|u| u.supervisor? }
     @missing =  @users - (@rookies + @freshmen + @junior + @senior + @leaders)
-    @admin_and_supervisors = @users = User.includes(:shifts).active_users.order(:name).to_a.delete_if { |u| !u.supervisor? && !u.is_max? }
+    @admin_and_supervisors = User.includes(:shifts).active_users.order(:name).to_a.delete_if { |u| !u.supervisor? && !u.is_max? }
 
     @ogom_trainers = User.active_users.order(:name).to_a.delete_if { |u| !u.has_role? :ongoing_trainer}.delete_if { |u| u.supervisor? }
     @inactive_users = User.inactive_users

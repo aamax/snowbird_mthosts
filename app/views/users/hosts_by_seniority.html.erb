@@ -1,5 +1,5 @@
 <% if current_user.has_role? :admin %>
-    Admin & Supervisors: <%= @admin_and_supervisors.length %>
+    Admin & Supervisors: <%= @admin_and_supervisors.length %><br/>
     Team leaders: <%= @leaders.length %><br/>
     Seniors (no TLs or Cotter): <%= @senior.length %><br/>
     Juniors: (no TLs) <%= @junior.length %><br/>
@@ -13,9 +13,9 @@
 <!--    Ongoing On Mt Trainers: <%#= @ogom_trainers.length %>-->
     <hr/>
 
-  <h1>Note: Dick Hill is included in the numbers for Senior Hosts</h1>
+  <strong>Note: Dick Hill is included in the numbers for Senior Hosts</strong>
 
-  <h1>MISSING  (<%= @admin_and_supervisors.count %>)</h1>
+  <h1>Supervisors & Admins  (<%= @admin_and_supervisors.count %>)</h1>
   <table class='table table-striped'>
     <tbody>
 
