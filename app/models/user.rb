@@ -499,7 +499,7 @@ class User < ActiveRecord::Base
     Rake::Task['db:load_meetings'].invoke
   end
 
-  def self.reset_all_accounts
+  def self.reset_all_accounts(reset_passwords = true)
     User.all.each do |u|
       next if (u.email == MAX_EMAIL)
 
@@ -514,7 +514,7 @@ class User < ActiveRecord::Base
       # end
 
       u.confirmed = false
-      u.password = DEFAULT_PASSWORD
+      u.password = DEFAULT_PASSWORD if reset_passwords == true
       u.save
     end
   end

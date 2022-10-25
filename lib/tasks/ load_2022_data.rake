@@ -1,3 +1,5 @@
+#  RAILS_ENV=production bundle exec rake db:load_2022_data
+
 require 'csv'
 
 namespace :db do
@@ -56,7 +58,7 @@ namespace :db do
       Rake::Task['db:load_2022_meetings'].invoke
 
       puts 'initialize all user accounts for start of year'
-      User.reset_all_accounts
+      User.reset_all_accounts(false)
 
       puts 'Update Roles For users: Team lead, driver, admin, trainer, ogomt_trainer'
       Rake::Task['db:update_2022_host_roles'].invoke
