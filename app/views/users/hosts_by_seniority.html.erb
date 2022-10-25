@@ -1,15 +1,15 @@
 <% if current_user.has_role? :admin %>
     Admin & Supervisors: <%= @admin_and_supervisors.length %><br/>
     Team leaders: <%= @leaders.length %><br/>
-    Seniors (no TLs or Cotter): <%= @senior.length %><br/>
+    Seniors (no TLs or Admins): <%= @senior.length %><br/>
     Juniors: (no TLs) <%= @junior.length %><br/>
     Freshmen: (no TLs) <%= @freshmen.length %><br/>
     Rookie: <%= @rookies.length %><br/>
-    All Hosts (without Cotter or Max): <%= @users.length %><br/>
+    All Hosts (without Admins): <%= @users.length %><br/>
     InActive Hosts: <%= @inactive_users.length %><br/>
     <hr/>
     Trainers: <%= @trainers.length %><br/>
-    Surveyors: <%= @surveyors.length %><br/>
+<!--    Surveyors: <%#= @surveyors.length %><br/>-->
 <!--    Ongoing On Mt Trainers: <%#= @ogom_trainers.length %>-->
     <hr/>
 
@@ -119,31 +119,31 @@
     </table>
     <hr/>
 
-    <h1>SURVEYORS(<%= @surveyors.count %>)</h1>
-    <table class='table table-striped'>
-      <tbody>
+<!--    <h1>SURVEYORS(<%#= @surveyors.count %>)</h1>-->
+<!--    <table class='table table-striped'>-->
+<!--      <tbody>-->
 
-      <% @surveyors.each do |u| %>
-          <tr id=<%= "user_record_#{u.id}" %> class='user_entry' >
-            <%= render 'user_index_entry', object: u %>
-          </tr>
-      <% end %>
-      </tbody>
-    </table>
-    <hr/>
+      <%# @surveyors.each do |u| %>
+<!--          <tr id=<%#= "user_record_#{u.id}" %> class='user_entry' >-->
+            <%#= render 'user_index_entry', object: u %>
+<!--          </tr>-->
+      <%# end %>
+<!--      </tbody>-->
+<!--    </table>-->
+<!--    <hr/>-->
 
-  <h1>OnGoing On MT. Trainers(<%= @ogom_trainers.count %>)</h1>
-  <table class='table table-striped'>
-    <tbody>
+<!--  <h1>OnGoing On MT. Trainers(<%#= @ogom_trainers.count %>)</h1>-->
+<!--  <table class='table table-striped'>-->
+<!--    <tbody>-->
 
-    <% @ogom_trainers.each do |u| %>
-      <tr id=<%= "user_record_#{u.id}" %> class='user_entry' >
-        <%= render 'user_index_entry', object: u %>
-      </tr>
-    <% end %>
-    </tbody>
-  </table>
-  <hr/>
+    <%# @ogom_trainers.each do |u| %>
+<!--      <tr id=<%#= "user_record_#{u.id}" %> class='user_entry' >-->
+        <%#= render 'user_index_entry', object: u %>
+<!--      </tr>-->
+    <%# end %>
+<!--    </tbody>-->
+<!--  </table>-->
+<!--  <hr/>-->
 
 <% else %>
     You don't have permission to view this report.  Sorry!

@@ -1,17 +1,12 @@
 short_name,description,start_time,end_time,tasks
 M1,Rookie Training Meeting,0800,1700,
 M2,All Host Training Meeting,0800,1700,
-# M3,On Mountain Rookie Training,0800,1700,
 M4,Mid-Year Training Meeting,1600,2100,
 
-# TR,Trainer Shift,0800,1600,Group Leader Rookie Training
-# T1,Rookie Training Shift,0800,1600,Rookie Training
-# T2,Rookie Training Shift 2,0800,1600,Rookie Training Type 2
-# T3,Rookie Training Shift 3,0800,1600,Rookie Training Type 3
-# T4,Rookie Training Shift 4,0800,1600,Rookie Training Type 4
+TR,Trainer Shift,0800,1600,Group Leader Rookie Training
+T1,Rookie Training Shift,0800,1600,Rookie Training
 
 TL,Team Lead,0800,1600,Roam - 10:30 Tour on Weekdays
-# TShadow, Team Lead Shadow Training, 0800, 1600, Train as Directed With TL
 
 A1,All Mountain,0800,1600,General Duties as needed. Flexible
 ST,Special Tour,0800,1600

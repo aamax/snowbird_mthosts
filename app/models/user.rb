@@ -60,8 +60,8 @@ class User < ActiveRecord::Base
   has_many :riders
   has_many :host_haulers, through: :riders
 
-  has_many :ongoing_trainings
-  has_many :training_dates, through: :ongoing_trainings
+  # has_many :ongoing_trainings
+  # has_many :training_dates, through: :ongoing_trainings
 
   scope :active_users, -> {where(active_user: true)}
   scope :inactive_users, -> {where(active_user: false)}
@@ -128,21 +128,21 @@ class User < ActiveRecord::Base
     self.shifts.where("short_name in ('T1','T2','T3', 'T4')")
   end
 
-  def ongoing_training_display
-    retval = ''
-    return 'rookie' if self.rookie?
-
-    if self.ongoing_trainings.count > 1
-      retval = self.ongoing_trainings.count
-    elsif self.ongoing_trainings.count == 1
-      if self.ongoing_trainings.first.shift_date.strftime("%Y-%m-%d") == OGOMT_FAKE_DATE
-        retval = 'LY Credit'
-      else
-        retval = 'TY'
-      end
-    end
-    retval
-  end
+  # def ongoing_training_display
+  #   retval = ''
+  #   return 'rookie' if self.rookie?
+  #
+  #   if self.ongoing_trainings.count > 1
+  #     retval = self.ongoing_trainings.count
+  #   elsif self.ongoing_trainings.count == 1
+  #     if self.ongoing_trainings.first.shift_date.strftime("%Y-%m-%d") == OGOMT_FAKE_DATE
+  #       retval = 'LY Credit'
+  #     else
+  #       retval = 'TY'
+  #     end
+  #   end
+  #   retval
+  # end
 
   def team_leaders
     self.shifts.where("shift_type_id in (#{ShiftType.team_lead_type.map(&:id).join(",")})")
@@ -178,9 +178,9 @@ class User < ActiveRecord::Base
     retval
   end
 
-  def ongoing_trainer?
-    self.has_role? :ongoing_trainer
-  end
+  # def ongoing_trainer?
+  #   self.has_role? :ongoing_trainer
+  # end
 
   def supervisor?
     self.has_role? :supervisor
@@ -250,7 +250,7 @@ class User < ActiveRecord::Base
   end
 
   def is_working?(shift_date, working_shifts=nil)
-    return true if is_ongoing_training?(shift_date)
+    # return true if is_ongoing_training?(shift_date)
     if working_shifts.nil?
       working_shifts = self.shifts
     end
@@ -264,7 +264,7 @@ class User < ActiveRecord::Base
   end
 
   def is_working_on_mountain?(shift_date, working_shifts=nil)
-    return true if is_ongoing_training?(shift_date)
+    # return true if is_ongoing_training?(shift_date)
     if working_shifts.nil?
       working_shifts = self.shifts
     end
@@ -277,42 +277,42 @@ class User < ActiveRecord::Base
     false
   end
 
-  def is_ongoing_training?(shift_date)
-    self.training_dates.map(&:shift_date).include? shift_date
-  end
+  # def is_ongoing_training?(shift_date)
+  #   self.training_dates.map(&:shift_date).include? shift_date
+  # end
 
-  def has_ongoing_training_shift?
-    if rookie?
-      true
-    else
-      ongoing_trainings.count > 0
-    end
-  end
+  # def has_ongoing_training_shift?
+  #   if rookie?
+  #     true
+  #   else
+  #     ongoing_trainings.count > 0
+  #   end
+  # end
 
   def self.get_host_emails_for_date(dt)
     users = Shift.where(shift_date: dt)
                  .where("disabled is NULL OR disabled = false")
                  .map {|s| s.user }.reject { |e| e.to_s.empty? }
-    training_shifts = TrainingDate.where(shift_date: dt)&.first&.ongoing_trainings&.where("user_id is not null")
-    users.concat training_shifts.map(&:user) if training_shifts
+    # training_shifts = TrainingDate.where(shift_date: dt)&.first&.ongoing_trainings&.where("user_id is not null")
+    # users.concat training_shifts.map(&:user) if training_shifts
 
     emailaddress = users.map(&:email).join(',')
   end
 
-  def can_select_ongoing_training(shift_date)
-    return true if admin?
-    return false if  is_working?(shift_date)
-    return false if (round1_date > Date.today)
-    return false if rookie?
-
-    if !ongoing_trainer?
-      return false if (ongoing_trainings.count > 0)
-      qry_str = 'user_id is null and is_trainer = false'
-      return TrainingDate.where(shift_date: shift_date).first.ongoing_trainings.where(qry_str).count > 0
-    end
-
-    return true
-  end
+  # def can_select_ongoing_training(shift_date)
+  #   return true if admin?
+  #   return false if  is_working?(shift_date)
+  #   return false if (round1_date > Date.today)
+  #   return false if rookie?
+  #
+  #   if !ongoing_trainer?
+  #     return false if (ongoing_trainings.count > 0)
+  #     qry_str = 'user_id is null and is_trainer = false'
+  #     return TrainingDate.where(shift_date: shift_date).first.ongoing_trainings.where(qry_str).count > 0
+  #   end
+  #
+  #   return true
+  # end
 
   def get_shift_list
     self.shifts.includes(:shift_type).sort {|a,b| a.shift_date <=> b.shift_date }
@@ -323,7 +323,7 @@ class User < ActiveRecord::Base
     user = User.find_by_id(id) #User.includes(:shifts).find_by_id(id)
     shifts = user.shifts.includes(:shift_type).to_a
     shifts ||= []
-    shifts.concat user.ongoing_trainings
+    # shifts.concat user.ongoing_trainings
 
     working_shifts = shifts.flatten.sort {|a,b| a.shift_date <=> b.shift_date }
   end
@@ -332,8 +332,8 @@ class User < ActiveRecord::Base
     user = User.find_by_id(id) # User.includes(:shifts).find_by_id(id)
     shifts = user.shifts.to_a
     shifts ||= []
-    trainings_for_count = user.ongoing_trainings.includes(:training_date).to_a.delete_if { |s| !s.is_trainer? }
-    shifts.concat trainings_for_count
+    # trainings_for_count = user.ongoing_trainings.includes(:training_date).to_a.delete_if { |s| !s.is_trainer? }
+    # shifts.concat trainings_for_count
     shifts.flatten.sort {|a,b| a.shift_date <=> b.shift_date }
   end
 
@@ -364,9 +364,9 @@ class User < ActiveRecord::Base
     !need_holiday
   end
 
-  def has_ongoign_training_shift?
-    (self.ongoing_trainings.count > 0) && !rookie?
-  end
+  # def has_ongoign_training_shift?
+  #   (self.ongoing_trainings.count > 0) && !rookie?
+  # end
 
   def get_day_offset
     retval = 0
@@ -443,23 +443,23 @@ class User < ActiveRecord::Base
 
     host_selection_message(all_shifts, round, day_offset, msg)
 
-    if self.ongoing_trainer?
-      if self.ongoing_trainings.count > 0
-        msg << 'You Are Scheduled As An On Going On Mountain Training Trainer.'
-      else
-        msg << 'You Do Not Have Any Training Shifts Yet.'
-      end
-    else
-      if self.ongoing_trainings.count > 0
-        msg << 'You have selected an Ongoing On Mountain Training Shift.'
-      else
-        if self.rookie?
-          msg << 'You do not need to select an Ongoing On Mountain Training Shift.'
-        else
-          msg << 'You have not signed up for Ongoing On Mountain Training Yet.'
-        end
-      end
-    end
+    # if self.ongoing_trainer?
+    #   if self.ongoing_trainings.count > 0
+    #     msg << 'You Are Scheduled As An On Going On Mountain Training Trainer.'
+    #   else
+    #     msg << 'You Do Not Have Any Training Shifts Yet.'
+    #   end
+    # else
+    #   if self.ongoing_trainings.count > 0
+    #     msg << 'You have selected an Ongoing On Mountain Training Shift.'
+    #   else
+    #     if self.rookie?
+    #       msg << 'You do not need to select an Ongoing On Mountain Training Shift.'
+    #     else
+    #       msg << 'You have not signed up for Ongoing On Mountain Training Yet.'
+    #     end
+    #   end
+    # end
 
     msg
   end

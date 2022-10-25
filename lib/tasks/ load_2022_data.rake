@@ -44,9 +44,9 @@ namespace :db do
       puts 'Load all shifts'
       Rake::Task['db:load_2022_shifts'].invoke
 
-#       puts 'Load all Rookie Training and Trainer Shifts'
-#       Rake::Task['db:load_2021_rookie_training_shifts'].invoke
-#
+      puts 'Load all Rookie Training and Trainer Shifts'
+      Rake::Task['db:load_2022_rookie_training_shifts'].invoke
+
 #       puts 'Load Team Lead Shadow Shifts'
 #       Rake::Task['db:load_2021_team_lead_shadow_shifts'].invoke
 #
@@ -397,79 +397,65 @@ namespace :db do
     de_activate_host('nettecoleman@hotmail.com')
   end
 
-#   desc "populate rookie training and trainer shifts"
-#   task :load_2021_rookie_training_shifts => :environment do
-#     paul = User.find_by(email: 'altasnow@gmail.com')
-#     eric = User.find_by(email: 'snowsawyer@hotmail.com')
-#     kris = User.find_by(email: 'krishill0@gmail.com')
-#     sarah = User.find_by(email: 'sarah3884@yahoo.com')
-#
-#     court = User.find_by(email: 'chpouch@gmail.com')
-#     craig = User.find_by(email: 'sturm.craig@gmail.com')
-#     jen = User.find_by(email: 'jcarey1017@outlook.com')
-#     jeff = User.find_by(email: 'jginzy@gmail.com')
-#     kelli = User.find_by(email: 'kaharrington@me.com')
-#     tiffany = User.find_by(email: 'jtcbowens@msn.com')
-#     philip = User.find_by(email: 'jungpbj@gmail.com')
-#     steve = User.find_by(email: 'stevealtman2016@gmail.com')
-#     geoff = User.find_by(email: 'gkieburtz@gmail.com')
-#     suzanne = User.find_by(email: 'glowsum@yahoo.com')
-#     wilma = User.find_by(email: 'corkerywil@aol.com')
-#     scott = User.find_by(email: 'sstrahan78@msn.com')
-#     katie = User.find_by(email: 'katbertram235@yahoo.com')
-#     evan = User.find_by(email: 'ejmatheson@msn.com')
-#     jerry = User.find_by(email: 'daneindenmark@me.com')
-#     nuri = User.find_by(email: 'nuri.betof@gmail.com')
-#
-#     create_rookie_training_day('2021-12-20'.to_date, paul, [court, craig, jen])
-#
-#     create_rookie_training_day('2021-12-21'.to_date, eric, [jeff, kelli, tiffany])
-#
-#     create_rookie_training_day('2021-12-22'.to_date, sarah, [philip, steve])
-#
-#     create_rookie_training_day('2021-12-23'.to_date, paul, [evan, jerry, geoff])
-#
-#     create_rookie_training_day('2021-12-24'.to_date, paul, [katie, suzanne, wilma])
-#
-#     create_rookie_training_day('2021-12-26'.to_date, kris, [scott])
-#
-#     create_rookie_training_day('2021-12-26'.to_date, eric, [court, geoff])
-#
-#     create_rookie_training_day('2021-12-28'.to_date, kris, [steve, jeff, tiffany])
-#
-#     create_rookie_training_day('2021-12-29'.to_date, eric, [craig, jen, wilma])
-#
-#     create_rookie_training_day('2021-12-30'.to_date, paul, [evan, jerry, suzanne])
-#
-#     create_rookie_training_day('2021-12-31'.to_date, paul, [philip, katie])
-#
-#     create_rookie_training_day('2022-01-01'.to_date, paul, [kelli, scott])
-#
-#     create_rookie_training_day('2022-01-02'.to_date, kris, [katie, suzanne])
-#
-#     create_rookie_training_day('2022-01-04'.to_date, eric, [craig, steve, tiffany])
-#
-#     create_rookie_training_day('2022-01-05'.to_date, kris, [philip, jen, kelli])
-#
-#     create_rookie_training_day('2022-01-06'.to_date, kris, [evan, jerry, jeff])
-#
-#     create_rookie_training_day('2022-01-07'.to_date, kris, [court, geoff, wilma])
-#
-#     create_rookie_training_day('2022-01-08'.to_date, paul, [scott])
-#
-#     create_rookie_training_day('2022-01-09'.to_date, eric, [katie, geoff])
-#
-#     create_rookie_training_day('2022-01-11'.to_date, sarah, [suzanne, wilma])
-#
-#     create_rookie_training_day('2022-01-12'.to_date, sarah, [jen, kelli, tiffany])
-#
-#     create_rookie_training_day('2022-01-13'.to_date, eric, [evan, jerry, steve])
-#
-#     create_rookie_training_day('2022-01-14'.to_date, eric, [craig, court, philip])
-#
-#     create_rookie_training_day('2022-01-15'.to_date, paul, [scott, jeff])
-#   end
-#
+  desc "populate rookie training and trainer shifts"
+  task :load_2022_rookie_training_shifts => :environment do
+    kris = User.find_by(email: 'krishill0@gmail.com')
+    sarah = User.find_by(email: 'sarah3884@yahoo.com')
+
+    sarah_shifts = [
+      '2022-12-06','2022-12-09','2022-12-10',
+      '2022-12-17','2022-12-18',
+      '2022-12-20','2022-12-22','2022-12-23','2022-12-24','2023-01-09',
+      '2023-01-13'
+    ]
+
+    kris_shifts = [
+      '2022-12-11','2022-12-13','2022-12-14','2022-12-16','2023-01-10',
+      '2023-01-14','2023-01-15'
+    ]
+
+    sarah_shifts.each do |s|
+      create_rookie_training_day(s.to_date, sarah)
+    end
+    kris_shifts.each do |s|
+      create_rookie_training_day(s.to_date, kris)
+      # if s == '2023-01-15'
+      #   # disable for makeup day
+      #
+      # end
+    end
+  end
+
+  def is_disabled(dt, shift_short_name)
+    ((shift_short_name == 'TR') || (shift_short_name == 'T1')) && ((dt == '2023-01-15'.to_date) || (dt == '2022-12-18'.to_date))
+  end
+
+  def create_shift_with_host(shift_short_name, dt, host_id)
+    shift_type_id = ShiftType.find_by(short_name: shift_short_name).id
+    st = {
+      shift_type_id: shift_type_id,
+      shift_status_id: 1,
+      shift_date: dt,
+      user_id: host_id,
+      disabled: is_disabled(dt, shift_short_name)
+    }
+
+    if !Shift.create(st)
+      puts "ERROR\n    short_name: #{shift_short_name}\n------------\n\n"
+      raise 'error loading shifts'
+    end
+  end
+
+  def create_rookie_training_day(dt, trainer)
+    # create trainer shift
+    create_shift_with_host('TR', dt, trainer.id)
+
+    # create 3 rookie trainee shifts
+    (1..3).each do |d|
+      create_shift('T1', dt)
+    end
+  end
+
 #   desc "populate team lead shadow shifts"
 #   task :load_2021_team_lead_shadow_shifts => :environment do
 #     puts "loading team lead and shadow shifts for training"
@@ -597,8 +583,14 @@ namespace :db do
     st = {
       shift_type_id: shift_type_id,
       shift_status_id: 1,
-      shift_date: dt
+      shift_date: dt,
+      disabled: is_disabled(dt, shift_short_name)
     }
+
+    # if (shift_short_name == 'T1') && ((dt == '2023-01-15'.to_date) || (dt == '2022-12-18'.to_date))
+    #   st[:disabled] = true
+    # end
+
     if !Shift.create(st)
       puts "ERROR\n    short_name: #{shift_short_name}\n------------\n\n"
       raise 'error loading shifts'

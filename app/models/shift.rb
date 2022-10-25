@@ -18,7 +18,7 @@
 
 
 class Shift < ActiveRecord::Base
-  attr_accessible :user_id, :shift_type_id, :shift_status_id, :shift_date, :day_of_week, :user_can_select
+  attr_accessible :user_id, :shift_type_id, :shift_status_id, :shift_date, :day_of_week, :user_can_select, :disabled
   attr_accessor :user_can_select
 
   before_save :set_day_of_week, :set_short_name
