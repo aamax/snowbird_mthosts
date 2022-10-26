@@ -224,54 +224,84 @@ class Shift < ActiveRecord::Base
     return retval if !test_user.team_leader? && self.team_leader?
     return retval if !test_user.trainer? && self.trainer?
     return retval if self.meeting?
+    return retval if self.training? && !test_user.rookie?
 
     all_shifts =  select_params[:all_shifts]
+    round = select_params[:round]
+    return false if ((round <= 4) && (all_shifts.count >= 20))
 
     if self.user_id.nil?
       return true if test_user.admin?
 
-      round = select_params[:round]
+      # NOTE: meetings (rookie, all host and mid year) all count as a shift worked
 
-      if test_user.trainer?
-        trainer_shifts = all_shifts.map(&:short_name).delete_if { |s| s != 'TR'}
-        test_count = all_shifts.count - trainer_shifts.count
-        return false if ((round < 4) && (test_count >= (round * 5) + 2)) &&
-            (!test_user.team_leader? && !test_user.rookie?)
-      else
-        return false if ((round < 4) && (all_shifts.count >= (round * 5) + 2)) &&
-          (!test_user.team_leader? && !test_user.rookie?)
-      end
-
-      return false if ((round <= 4) && (all_shifts.count >= 20))
-      # return false if ((round <= 4) && (self.is_tour?) && (test_user.tours.count >= 7))
-
-      if test_user.team_leader?
-        return false if (round < 5) && all_shifts.count >= 20
-        return false if self.trainer? || self.training?
-        retval = true
-      elsif test_user.group_1? || test_user.group_2? || test_user.group_3?
-        return retval if self.team_leader?
-        retval = true
-      elsif test_user.rookie?
-        # if pre bingo (round 0) can only pick T1 shifts
-        return false if (round == 0) && (!self.training? || (all_shifts.count >= 8))
-        return false if self.is_tour? && (self.shift_date < ROOKIE_TOUR_DATE)
-        return false if ((round <= 4) && (all_shifts.count >= (round * 5) + 8))
-
-        training_shifts = []
-        test_user.shifts.each do |s|
-          training_shifts << s if s.training?
+      if !test_user.rookie?
+        if test_user.team_leader?
+          # can select any shift - other filters already applied...
+          return true
         end
-        return false if training_shifts.count < 4 && !self.training?
-        return false if training_shifts.count >= 4 && self.training?
 
-        last_training = training_shifts.sort { |a,b| a.shift_date <=> b.shift_date }.last
-        return true if (last_training.nil? || training_shifts.count < 4) && self.training?
+        if test_user.driver? && test_user.driving_this_day?(self.date)
+          # during bingo - up to their quota of 20
+          # allow to pick shift if they are driving that day
+          return true
+        end
 
-        return false if !self.training? && (!last_training.nil? && (last_training.shift_date > self.shift_date))
+        # if Trainers: trainer shifts are set up prior to
+          # bingo for them… They count towards the 20 but I will
+          # try to make it so they can pick 5 in each round (on top
+          # of the trainer shifts) until they hit their 20.
+          # A little benefit of being a trainer :D
+        if test_user.trainer?
+          trainer_shifts = all_shifts.map(&:short_name).delete_if { |s| s != 'TR'}
+          test_count = all_shifts.count - trainer_shifts.count
+          return false if ((round < 4) && (test_count >= (round * 5) + 2))
+          return true
+        end
+
+        # if Regular Host: pick 5 shifts in each rotation of the
+          # bingo rounds until 20.  Seniority is determined by start
+          # year as a host and balanced across the field as best we can…
+        return false if ((round < 4) && (all_shifts.count >= (round * 5) + 2))
+
+
+        # tour limits - max 7, min 2 during bingo
+        if (round <= 4) && (test_user.tours.count >= 7) && (shift.is_tour?)
+          return false
+        end
+        retval = true
+      else
+        # TODO: logic for 2022
+        #   Rookies: pick training shifts prior to bingo… must complete training before other shifts can be selected.
+          #     pick during rookie training so we can ensure they pick correctly
+          # pick a training shift per week 1 - 3
+          # work a regular shift in week 4/5
+          # pick a training shift in week 6
+          # able to pick any shifts after week 6
+          #
+          # in bingo session 1 they will already have their 5 shifts
+          # in session 2 they pick 5 shifts AFTER their last training shift
+          # sessions 3 & 4 - they pick 5 shifts AFTER their last training shift for a total of 20
+        # return false if (round == 0) && (!self.training? || (all_shifts.count >= 8))
+        # return false if self.is_tour? && (self.shift_date < ROOKIE_TOUR_DATE)
+        # return false if ((round <= 4) && (all_shifts.count >= (round * 5) + 8))
+        #
+        # training_shifts = []
+        # test_user.shifts.each do |s|
+        #   training_shifts << s if s.training?
+        # end
+        # return false if training_shifts.count < 4 && !self.training?
+        # return false if training_shifts.count >= 4 && self.training?
+        #
+        # last_training = training_shifts.sort { |a,b| a.shift_date <=> b.shift_date }.last
+        # return true if (last_training.nil? || training_shifts.count < 4) && self.training?
+        #
+        # return false if !self.training? && (!last_training.nil? && (last_training.shift_date > self.shift_date))
+
 
         retval = true
       end
+
     end
 
     return retval

@@ -176,6 +176,25 @@ class ReportsController < ApplicationController
 
       @selected_counts = Hash.new 0
       Shift.where('user_id is not null').map(&:short_name).each {|s| @selected_counts[s] += 1 }
+    elsif params[:id] == 'team_leader_shift_report'
+      @report = 'team_leader_shift_report'
+
+      @tl_shifts = Shift.where(short_name: 'TL').to_a
+
+      respond_to do |format|
+        format.html
+        format.csv do
+          file = CSV.generate do |csv|
+            csv << "Day/Date,Host,ShiftType,Description,Tasks".split(',')
+            @tl_shifts.each do |shift|
+              csv << "#{shift.day_and_date},#{shift.user.nil? ? "-" : shift.user.name},#{shift.shift_type.short_name},#{shift.shift_type.description},#{shift.shift_type.description},#{shift.shift_type.tasks}".split(',')
+            end
+          end
+          render text: file
+        end
+        format.xls
+      end
+
     end
   end
 

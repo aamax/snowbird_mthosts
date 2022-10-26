@@ -1,0 +1,46 @@
+<h1>Team Leader Shifts</h1>
+
+<%= link_to "Export List", "/reports/team_leader_shift_report.csv" %>
+<br/><br/>
+
+<table class="table table-striped">
+  <tr>
+    <th>Day/Date</th>
+    <th>Host</th>
+    <th>Shift Type</th>
+    <th>Description</th>
+    <th>Tasks</th>
+  </tr>
+
+  <% @tl_shifts.each do |shift| %>
+    <tr>
+      <td>
+        <%= shift.day_and_date %>
+      </td>
+      <td>
+        <%= shift.user.nil? ? "-" : shift.user.name %>
+      </td>
+      <% if shift.shift_type.nil? %>
+        <td>
+          Unknown
+        </td>
+        <td>
+          Unknown
+        </td>
+        <td>
+          Unknown
+        </td>
+      <% else %>
+        <td>
+          <%= shift.shift_type.short_name %>
+        </td>
+        <td>
+          <%= shift.shift_type.description %>
+        </td>
+        <td>
+          <%= shift.shift_type.tasks %>
+        </td>
+      <% end %>
+    </tr>
+  <% end %>
+</table>

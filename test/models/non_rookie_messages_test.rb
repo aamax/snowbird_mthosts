@@ -59,10 +59,11 @@ class NonRookieMessageTest < ActiveSupport::TestCase
         end
       end
     end
-    @group2_user.shifts.count.must_equal 7
+
     msgs = @group2_user.shift_status_message
     msgs.include?("You are currently in <strong>round 1</strong>.").must_equal true
     msgs.include?("All required shifts selected for round 1. (7 of 7)").must_equal true
+    @group2_user.shifts.count.must_equal 7
   end
 
   def test_round_two_status_messages
@@ -83,10 +84,10 @@ class NonRookieMessageTest < ActiveSupport::TestCase
         end
       end
     end
-    @group3_user.shifts.count.must_equal 12
     msgs = @group3_user.shift_status_message
     msgs.include?("You are currently in <strong>round 2</strong>.").must_equal true
     msgs.include?("All required shifts selected for round 2. (12 of 12)").must_equal true
+    @group3_user.shifts.count.must_equal 12
   end
 
   def test_round_three_status_messages
@@ -107,10 +108,10 @@ class NonRookieMessageTest < ActiveSupport::TestCase
         end
       end
     end
-    @group3_user.shifts.count.must_equal 17
     msgs = @group3_user.shift_status_message
     msgs.include?("You are currently in <strong>round 3</strong>.").must_equal true
     msgs.include?("All required shifts selected for round 3. (17 of 17)").must_equal true
+    @group3_user.shifts.count.must_equal 17
   end
 
   def test_round_four_status_messages
@@ -131,10 +132,10 @@ class NonRookieMessageTest < ActiveSupport::TestCase
         end
       end
     end
-    @group3_user.shifts.count.must_equal 20
     msgs = @group3_user.shift_status_message
     msgs.include?("You are currently in <strong>round 4</strong>.").must_equal true
     msgs.include?("You have at least 20 shifts selected").must_equal true
+    @group3_user.shifts.count.must_equal 20
   end
 
   def test_after_bingo_status_message
@@ -157,11 +158,11 @@ class NonRookieMessageTest < ActiveSupport::TestCase
         end
       end
     end
-    (@group2_user.shifts.count > 20).must_equal true
     msgs = @group2_user.shift_status_message
 
     msgs.include?("Shift Selection Bingo is over...").must_equal true
     msgs.include?("You have at least 20 shifts selected").must_equal true
+    (@group2_user.shifts.count > 20).must_equal true
   end
 
   def test_ogomt_shifts_do_not_count_for_bingo
@@ -186,11 +187,11 @@ class NonRookieMessageTest < ActiveSupport::TestCase
         num += 1
       end
     end
-    @group3_user.shifts.count.must_equal 13
     msgs = @group3_user.shift_status_message
 
     msgs.include?("You are currently in <strong>round 2</strong>.").must_equal true
     msgs.include?("All required shifts selected for round 2. (13 of 12)").must_equal true
+    @group3_user.shifts.count.must_equal 13
   end
 
   def test_tour_quota_messages

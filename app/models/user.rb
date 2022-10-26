@@ -519,6 +519,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def driving_this_day?(date)
+    !HostHauler.where(haul_date: date, driver_id: self.id).empty?
+  end
+
   private
 
   def clear_shifts_on_destroy
