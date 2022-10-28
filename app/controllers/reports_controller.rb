@@ -112,32 +112,48 @@ class ReportsController < ApplicationController
       @leaders =  User.active_users.order(:name).to_a.delete_if { |u| !u.team_leader? }.delete_if { |u| u.supervisor? || u.is_max? }
       @trainers = User.active_users.order(:name).to_a.delete_if { |u| !u.has_role? :trainer}.delete_if { |u| u.supervisor? || u.is_max? }
       @admin_and_supervisors = User.includes(:shifts).active_users.order(:name).to_a.delete_if { |u| !u.supervisor? && !u.is_max? }
-
+      @drivers = User.active_users.order(:name).to_a.delete_if { |u| !u.driver? }.delete_if { |u| u.supervisor? || u.is_max? }
       respond_to do |format|
         format.csv do
           file = CSV.generate do |csv|
-            csv << "Name,start year,snowbird year,seniority,group".split(',')
+            csv << "GROUP,Number".split(',')
+            csv << "Team Leaders,#{@leaders.count}".split(',')
+            csv << "Seniors,#{@senior.count}".split(',')
+            csv << "Juniors,#{@junior.count}".split(',')
+            csv << "Freshmen,#{@freshmen.count}".split(',')
+            csv << "Rookies,#{@rookies.count}".split(',')
+            csv << "Trainers,#{@trainers.count}".split(',')
+            csv << "Drivers,#{@leaders.count}".split(',')
+            csv << "Admins,#{@admin_and_supervisors.count}".split(',')
+            csv << '------------'.split(',')
+            csv << '------------'.split(',')
+
+            csv << "Name,start year,seniority,group".split(',')
             @leaders.each do |u|
-              csv << "#{u.name},#{u.start_year} - #{u.snowbird_start_year}, #{u.seniority},Team Leader".split(',')
+              csv << "#{u.name},#{u.snowbird_start_year}, #{u.seniority},Team Leader".split(',')
             end
             @senior.each do |u|
-              csv << "#{u.name},#{u.start_year} - #{u.snowbird_start_year}, #{u.seniority},Senior".split(',')
+              csv << "#{u.name},#{u.snowbird_start_year}, #{u.seniority},Senior".split(',')
             end
             @junior.each do |u|
-              csv << "#{u.name},#{u.start_year} - #{u.snowbird_start_year}, #{u.seniority},Junior".split(',')
+              csv << "#{u.name},#{u.snowbird_start_year}, #{u.seniority},Junior".split(',')
             end
             @freshmen.each do |u|
-              csv << "#{u.name},#{u.start_year} - #{u.snowbird_start_year}, #{u.seniority},Freshmen".split(',')
+              csv << "#{u.name},#{u.snowbird_start_year}, #{u.seniority},Freshmen".split(',')
             end
             @rookies.each do |u|
-              csv << "#{u.name},#{u.start_year} - #{u.snowbird_start_year}, #{u.seniority},Rookie".split(',')
+              csv << "#{u.name},#{u.snowbird_start_year}, #{u.seniority},Rookie".split(',')
             end
             @trainers.each do |u|
-              csv << "#{u.name},#{u.start_year} - #{u.snowbird_start_year}, #{u.seniority},Trainer".split(',')
+              csv << "#{u.name},#{u.snowbird_start_year}, #{u.seniority},Trainer".split(',')
+            end
+            @drivers.each do |u|
+              csv << "#{u.name},#{u.snowbird_start_year}, #{u.seniority},Driver".split(',')
             end
             @admin_and_supervisors.each do |u|
-              csv << "#{u.name},#{u.start_year} - #{u.snowbird_start_year}, #{u.seniority},Admin/Supervisor".split(',')
+              csv << "#{u.name},#{u.snowbird_start_year}, #{u.seniority},Admin/Supervisor".split(',')
             end
+
           end
           render text: file
         end
