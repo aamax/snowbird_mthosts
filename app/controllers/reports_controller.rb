@@ -103,6 +103,45 @@ class ReportsController < ApplicationController
         end
         format.xls
       end
+    elsif params[:id] == 'hosts_by_seniority_export'
+      @users = User.includes(:shifts).active_users.order(:name).to_a.delete_if { |u| u.supervisor? || u.is_max? }
+      @rookies = User.rookies.includes(:roles).order(:name).to_a.delete_if { |u| u.supervisor? || u.is_max? }
+      @freshmen =  User.group3.includes(:roles).order(:name).to_a.delete_if { |u| u.team_leader? }.delete_if { |u| u.supervisor? || u.is_max? }
+      @junior =  User.group2.includes(:roles).order(:name).to_a.delete_if { |u| u.team_leader? }.delete_if { |u| u.supervisor? || u.is_max? }
+      @senior =  User.group1.includes(:roles).order(:name).to_a.delete_if { |u| u.team_leader? }.delete_if { |u| u.supervisor? || u.is_max? }
+      @leaders =  User.active_users.order(:name).to_a.delete_if { |u| !u.team_leader? }.delete_if { |u| u.supervisor? || u.is_max? }
+      @trainers = User.active_users.order(:name).to_a.delete_if { |u| !u.has_role? :trainer}.delete_if { |u| u.supervisor? || u.is_max? }
+      @admin_and_supervisors = User.includes(:shifts).active_users.order(:name).to_a.delete_if { |u| !u.supervisor? && !u.is_max? }
+
+      respond_to do |format|
+        format.csv do
+          file = CSV.generate do |csv|
+            csv << "Name,start year,snowbird year,seniority,group".split(',')
+            @leaders.each do |u|
+              csv << "#{u.name},#{u.start_year} - #{u.snowbird_start_year}, #{u.seniority},Team Leader".split(',')
+            end
+            @senior.each do |u|
+              csv << "#{u.name},#{u.start_year} - #{u.snowbird_start_year}, #{u.seniority},Senior".split(',')
+            end
+            @junior.each do |u|
+              csv << "#{u.name},#{u.start_year} - #{u.snowbird_start_year}, #{u.seniority},Junior".split(',')
+            end
+            @freshmen.each do |u|
+              csv << "#{u.name},#{u.start_year} - #{u.snowbird_start_year}, #{u.seniority},Freshmen".split(',')
+            end
+            @rookies.each do |u|
+              csv << "#{u.name},#{u.start_year} - #{u.snowbird_start_year}, #{u.seniority},Rookie".split(',')
+            end
+            @trainers.each do |u|
+              csv << "#{u.name},#{u.start_year} - #{u.snowbird_start_year}, #{u.seniority},Trainer".split(',')
+            end
+            @admin_and_supervisors.each do |u|
+              csv << "#{u.name},#{u.start_year} - #{u.snowbird_start_year}, #{u.seniority},Admin/Supervisor".split(',')
+            end
+          end
+          render text: file
+        end
+      end
     elsif params[:id] == 'shift_summary'
       @report = 'shift_summary'
       allshifts = Shift.unscoped.order(shift_date: :asc, short_name: :asc)

@@ -266,37 +266,54 @@ class Shift < ActiveRecord::Base
 
 
         # tour limits - max 7, min 2 during bingo
-        if (round <= 4) && (test_user.tours.count >= 7) && (shift.is_tour?)
+        if (round <= 4) && (test_user.tours.count >= 7) && (self.is_tour?)
           return false
         end
         retval = true
       else
         # TODO: logic for 2022
-        #   Rookies: pick training shifts prior to bingo… must complete training before other shifts can be selected.
-          #     pick during rookie training so we can ensure they pick correctly
-          # pick a training shift per week 1 - 3
-          # work a regular shift in week 4/5
-          # pick a training shift in week 6
-          # able to pick any shifts after week 6
-          #
-          # in bingo session 1 they will already have their 5 shifts
-          # in session 2 they pick 5 shifts AFTER their last training shift
-          # sessions 3 & 4 - they pick 5 shifts AFTER their last training shift for a total of 20
-        # return false if (round == 0) && (!self.training? || (all_shifts.count >= 8))
-        # return false if self.is_tour? && (self.shift_date < ROOKIE_TOUR_DATE)
-        # return false if ((round <= 4) && (all_shifts.count >= (round * 5) + 8))
+        #   Rookies: pick training shifts prior to bingo… must complete training
+        #         before other shifts can be selected.
         #
-        # training_shifts = []
-        # test_user.shifts.each do |s|
-        #   training_shifts << s if s.training?
-        # end
-        # return false if training_shifts.count < 4 && !self.training?
-        # return false if training_shifts.count >= 4 && self.training?
         #
-        # last_training = training_shifts.sort { |a,b| a.shift_date <=> b.shift_date }.last
-        # return true if (last_training.nil? || training_shifts.count < 4) && self.training?
+        # pre- bingo for rookies:
+        # determine which week # the shift is in (1-6 for training shifts)
         #
-        # return false if !self.training? && (!last_training.nil? && (last_training.shift_date > self.shift_date))
+        # if week 3 is 1, 2, or 3:  rookie can pick 1 shift in that week for training (T1 shift)
+        #
+        # if week is 4 or 5: rookie can pick 2 shifts during those 2 weeks (non training shifts - any regular hosts can pick - not TL etc)
+        #
+        # if week is 6: rookie can pick 1 training shift (T1)
+        #
+        # After week 6 - rookies can pick any shifts they like during bingo rotation… see below
+        #
+        # bingo for rookies:
+        # they pick their training shifts prior to bingo starting (on 10/29). This includes the 2 shifts in week 4 and 5
+        # at that point, including the meetings (3) they will have 9 shifts picked.  4 T1, 2 regular shifts and 3 meetings
+        #
+        # When bingo starts they will not pick any shifts until round 2 where they will pick 4 shifts to give them 10 + 3 meetings
+        #
+        # round 3: they will pick 5 shifts (total of 18)
+        # round 4: they will pick 2 (total of 20)
+        #
+        # ------------------
+        #
+        # get week # for shift
+        # if week 1-3 or 6 and not T1: false
+        # if week 1 and no week 1 picked - can pick (T1) else false
+        # if week 2 and no week 2 picked - can pick (T1) else false
+        # if week 3 and no week 3 picked - can pick (T1) else false
+        # if week 4 or 5 and no 2 shifts picked in 4 and 5 - can pick (any shift)
+        # if week 6 and no week 6 picked - can pick (T1) else false
+        # if not T1 and in weeks 1-3 or 4 - false
+        #
+        # if after week 6
+        #     if training shifts not picked - then false
+        #           training shifts include 4 T1 and 2 non-T1 in week 4 and 5
+        # after training shifts are picked - rookie will have 10 shifts (counting meetings)
+        #
+        # not picking in round 1 or 2
+        #
 
 
         retval = true

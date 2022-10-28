@@ -9,10 +9,7 @@ class ShiftsHelperTestDisabled < ActionView::TestCase
     @middle_user = User.find_by_name('g2')
     @senior_user = User.find_by_name('g1')
     @team_leader = User.find_by_name('teamlead')
-    @surveyor = User.find_by_name('surveyor')
     @trainer = User.find_by_name('trainer')
-
-    @sh = ShiftType.find_by_short_name('SH')
 
     @p1 = ShiftType.find_by_short_name('P1')
     @p2 = ShiftType.find_by_short_name('P2')
@@ -27,16 +24,11 @@ class ShiftsHelperTestDisabled < ActionView::TestCase
     @c2 = ShiftType.find_by_short_name('C2')
     @c3 = ShiftType.find_by_short_name('C3weekend')
     @c4 = ShiftType.find_by_short_name('C4weekend')
-    @bg = ShiftType.find_by_short_name('BG')
 
     @tl = ShiftType.find_by_short_name('TL')
-    @sv = ShiftType.find_by(short_name: "SV")
-    @tr = ShiftType.find_by(short_name: "TR")
+     @tr = ShiftType.find_by(short_name: "TR")
 
     @t1 = FactoryBot.create(:shift_type, short_name: 'T1')
-    @t2 = FactoryBot.create(:shift_type, short_name: 'T2')
-    @t3 = FactoryBot.create(:shift_type, short_name: 'T3')
-    @t4 = FactoryBot.create(:shift_type, short_name: 'T4')
 
     Timecop.freeze(Date.parse("2017-10-01"))
     @start_date = (Date.today() + 20.days)

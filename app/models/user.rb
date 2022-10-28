@@ -153,9 +153,9 @@ class User < ActiveRecord::Base
   end
 
   def seniority
-    if (self.active_user != true) && (self.name != 'John Cotter')
+    if (self.active_user != true) && (self.email != SUPERVISOR_EMAIL)
       retval = 'InActive'
-    elsif self.name == 'John Cotter'
+    elsif self.email == SUPERVISOR_EMAIL
       retval = 'Supervisor'
     else
       retval = "Rookie" if self.rookie?
