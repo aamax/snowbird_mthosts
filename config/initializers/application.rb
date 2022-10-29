@@ -2,14 +2,14 @@ DAYNAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
 
 MEETINGS = { 'M1' => '2022-10-29', 'M2' => '2022-11-05', 'M4' => '2023-02-04' }
 
-HOLIDAYS = [Date.new(2021,12,24),
-            Date.new(2021,12,25),
-            Date.new(2021,12,31),
-            Date.new(2022,1,1),
-            Date.new(2022,1,16),
-            Date.new(2022,2,20)]
+HOLIDAYS = [Date.new(2022,12,24),
+            Date.new(2022,12,25),
+            Date.new(2022,12,31),
+            Date.new(2023,1,1),
+            Date.new(2023,1,16),
+            Date.new(2023,2,20)]
 
-ROOKIE_TOUR_DATE = Date.new(2022,02,01)
+ROOKIE_TOUR_DATE = Date.new(2023,02,01)
 
 OGOMT_FAKE_DATE = '2019-11-01'
 

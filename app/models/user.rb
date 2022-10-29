@@ -591,6 +591,8 @@ class User < ActiveRecord::Base
 
       if (all_shifts.count >= 20)
         msg << "All Required Shifts Selected"
+      else
+        msg << "You have selected #{all_shifts.count} shifts."
       end
     end
 
@@ -626,9 +628,9 @@ class User < ActiveRecord::Base
 
         case round
           when 0
-            msg << "You have #{all_shifts.count} of 8 shifts selected"
+            msg << "You have #{all_shifts.count} of 9 shifts selected"
           when 1..3
-            limit = round * 5 + 8
+            limit = round * 5 + 9
             limit = 20 if limit > 20
 
             if all_shifts.count < limit
