@@ -383,7 +383,7 @@ class Shift < ActiveRecord::Base
     return false if self.shift_date < Date.today()
     return false if current_user.id != self.user_id
     return false if self.shift_date <= Date.today + 13.days
-    return false if current_user.rookie? && self.shift_date < ROOKIE_TRAINING_END
+    # return false if current_user.rookie? && self.shift_date < ROOKIE_TRAINING_END
     true
   end
 
