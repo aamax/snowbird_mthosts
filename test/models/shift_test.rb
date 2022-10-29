@@ -72,7 +72,7 @@ class ShiftTest < ActiveSupport::TestCase
       @p3day, @p4day, @g1day, @g2day, @g3day, @h1day, @h2day
     ]
 
-    Timecop.freeze(Date.parse("2017-10-01"))
+    Timecop.freeze(Date.parse("2022-10-01"))
     @start_date = (Date.today() + 20.days)
 
     @pre_bingo_date = Date.today() + 1.day
@@ -85,28 +85,28 @@ class ShiftTest < ActiveSupport::TestCase
     @after_bingo_date = Date.today - 12.day
   end
 
-  def setup_vars_for_rookies
-    setup_vars
-
-    # populate and select training shifts
-
-    @rookie_user.shifts << FactoryBot.create(:shift, shift_date: @round1_date + 20.day, shift_type_id: @t1.id)
-    @rookie_user.shifts << FactoryBot.create(:shift, shift_date: @round1_date + 22.day, shift_type_id: @t1.id)
-    @rookie_user.shifts << FactoryBot.create(:shift, shift_date: @round1_date + 24.day, shift_type_id: @t1.id)
-    @rookie_user.shifts << FactoryBot.create(:shift, shift_date: @round1_date + 26.day, shift_type_id: @t1.id)
-
-    @last_training_date = @round1_date + 26.day
-
-    # setup regular shifts for selection
-    dt_index = 0
-    for dt in @after_bingo_date + 10.days..(@after_bingo_date + 25.days)
-      @regular_shift_types.each do |st|
-        shift = FactoryBot.create(:shift, shift_date: dt, shift_type_id: st.id)
-      end
-    end
-    @pre_allowed_tour = FactoryBot.create(:shift, shift_date: ROOKIE_TOUR_DATE - 5.days, shift_type_id: @p1end.id)
-    @allowed_tour = FactoryBot.create(:shift, shift_date: ROOKIE_TOUR_DATE, shift_type_id: @p1end.id)
-  end
+  # def setup_vars_for_rookies
+  #   setup_vars
+  #
+  #   # populate and select training shifts
+  #
+  #   @rookie_user.shifts << FactoryBot.create(:shift, shift_date: @round1_date + 20.day, shift_type_id: @t1.id)
+  #   @rookie_user.shifts << FactoryBot.create(:shift, shift_date: @round1_date + 22.day, shift_type_id: @t1.id)
+  #   @rookie_user.shifts << FactoryBot.create(:shift, shift_date: @round1_date + 24.day, shift_type_id: @t1.id)
+  #   @rookie_user.shifts << FactoryBot.create(:shift, shift_date: @round1_date + 26.day, shift_type_id: @t1.id)
+  #
+  #   @last_training_date = @round1_date + 26.day
+  #
+  #   # setup regular shifts for selection
+  #   dt_index = 0
+  #   for dt in @after_bingo_date + 10.days..(@after_bingo_date + 25.days)
+  #     @regular_shift_types.each do |st|
+  #       shift = FactoryBot.create(:shift, shift_date: dt, shift_type_id: st.id)
+  #     end
+  #   end
+  #   @pre_allowed_tour = FactoryBot.create(:shift, shift_date: ROOKIE_TOUR_DATE - 5.days, shift_type_id: @p1end.id)
+  #   @allowed_tour = FactoryBot.create(:shift, shift_date: ROOKIE_TOUR_DATE, shift_type_id: @p1end.id)
+  # end
 
   def run_bingo_shift_max_pick(bingo_start_date, user, round_number, max_number_shifts)
     @sys_config.bingo_start_date = bingo_start_date
@@ -438,37 +438,261 @@ class ShiftTest < ActiveSupport::TestCase
         end
       end
 
-      # describe 'rookies' do
-      #
-      #   it 'rookies - pre bingo - can pick 4 training shifts, no other types' do
-      #     setup_vars
-      #     @sys_config.bingo_start_date = Date.today + 7.days
-      #     @sys_config.save!
-      #     trainer_shift = FactoryBot.create(:shift, :shift_date => Date.today + 4.weeks,
-      #                                       :shift_type_id => @tr.id, :user_id => nil)
-      #     t1_shift = FactoryBot.create(:shift, shift_date: Date.today + 5.weeks, shift_type_id: @t1.id)
-      #     t1_2_shift = FactoryBot.create(:shift, shift_date: Date.today + 6.weeks, shift_type_id: @t1.id)
-      #     t1_3_shift = FactoryBot.create(:shift, shift_date: Date.today + 7.weeks, shift_type_id: @t1.id)
-      #     t1_4_shift = FactoryBot.create(:shift, shift_date: Date.today + 8.weeks, shift_type_id: @t1.id)
-      #
-      #     trainer_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
-      #
-      #     t1_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
-      #     @rookie_user.shifts << t1_shift
-      #     t1_2_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
-      #     @rookie_user.shifts << t1_2_shift
-      #     t1_3_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
-      #     @rookie_user.shifts << t1_3_shift
-      #     t1_4_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
-      #     @rookie_user.shifts << t1_4_shift
-      #
-      #     Shift.all.each do |s|
-      #       s.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
-      #     end
-      #
-      #     @rookie_user.shifts.map(&:short_name).count.must_equal 8
-      #   end
-      # end
+      describe 'rookies' do
+        before do
+          @training_shifts = Shift.where(short_name: 'T1')
+          @starting_date = @training_shifts.first.shift_date
+        end
+
+        # focus
+        it 'can pick training shift in week 1' do
+          setup_vars
+          # first week @starting_date  shift 1
+          t1_shift = @training_shifts.first
+
+          t1_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+          @rookie_user.shifts << t1_shift
+          t2_shift = @training_shifts.second
+          t2_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+        end
+
+        # focus
+        it 'can pick training shift in week 2' do
+          setup_vars
+          # select first shift in week 1
+          t1_shift = @training_shifts.first
+          @rookie_user.shifts << t1_shift
+
+          # second week @starting_date + 7.days  shift 1
+          t2_shift = @training_shifts.where(shift_date: Shift::ROOKIE_TRAINING_WEEK2).first
+          t3_shift = @training_shifts.where(shift_date: Shift::ROOKIE_TRAINING_WEEK2).second
+          t2_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+          t3_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+          @rookie_user.shifts << t3_shift
+          t2_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+          @training_shifts.second.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+        end
+
+        # focus
+        it 'can pick training shift in week 3' do
+          setup_vars
+          t1_shift = @training_shifts.first
+          @rookie_user.shifts << t1_shift
+          t2_shift = @training_shifts.where(shift_date: Shift::ROOKIE_TRAINING_WEEK2).first
+          @rookie_user.shifts << t2_shift
+
+          t2b_shift = @training_shifts.where(shift_date: Shift::ROOKIE_TRAINING_WEEK2 + 1.day).first
+          t2b_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+
+          # third week @starting_date + 14.days  shift 1
+          t3_shift = @training_shifts.where(shift_date: Shift::ROOKIE_TRAINING_WEEK3).first
+          t4_shift = @training_shifts.where(shift_date: Shift::ROOKIE_TRAINING_WEEK3).second
+          t3_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+          t4_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+          @rookie_user.shifts << t3_shift
+          t4_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+          @training_shifts.second.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+          @training_shifts.where(shift_date: Shift::ROOKIE_TRAINING_WEEK2).second.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+        end
+
+        it 'can pick regular shifts in week 4 and 5' do
+          setup_vars
+          t1_shift = @training_shifts.first
+          @rookie_user.shifts << t1_shift
+          t2_shift = @training_shifts.where(shift_date: Shift::ROOKIE_TRAINING_WEEK2).first
+          @rookie_user.shifts << t2_shift
+          t3_shift = @training_shifts.where(shift_date: Shift::ROOKIE_TRAINING_WEEK3).first
+          @rookie_user.shifts << t3_shift
+
+          # cannot pick training shift in week 4 or 5 or 6
+          t4_shift = @training_shifts.where(shift_date: Shift::ROOKIE_TRAINING_WEEK4).first
+          t5_shift = @training_shifts.where(shift_date: Shift::ROOKIE_TRAINING_WEEK5).first
+          t6_shift = @training_shifts.where(shift_date: Shift::ROOKIE_TRAINING_WEEK6).first
+
+          t4_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+          t5_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+          t6_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+
+          # can pick regular shift in week 4 and 5
+          shift4 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK4,
+                                    shift_type_id: @regular_shift_types[0].id)
+          shift5 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK5,
+                                    shift_type_id: @regular_shift_types[0].id)
+          shift4.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+          shift5.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+          @rookie_user.shifts << shift4
+          shift5.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+          @rookie_user.shifts << shift5
+
+          shift6 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK5 + 4.days,
+                                     shift_type_id: @regular_shift_types[0].id)
+
+          shift6.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+
+          shift7 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK5 + 2.weeks,
+                                     shift_type_id: @regular_shift_types[0].id)
+          shift7.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+        end
+
+        it 'can pick training shift in week 6' do
+          setup_vars
+          t1_shift = @training_shifts.first
+          @rookie_user.shifts << t1_shift
+          t2_shift = @training_shifts.where(shift_date: Shift::ROOKIE_TRAINING_WEEK2).first
+          @rookie_user.shifts << t2_shift
+          t3_shift = @training_shifts.where(shift_date: Shift::ROOKIE_TRAINING_WEEK3).first
+          @rookie_user.shifts << t3_shift
+          shift4 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK4,
+                                     shift_type_id: @regular_shift_types[0].id)
+          shift5 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK5,
+                                     shift_type_id: @regular_shift_types[0].id)
+          @rookie_user.shifts << shift4
+          @rookie_user.shifts << shift5
+
+          t4_shift = @training_shifts.where(shift_date: Shift::ROOKIE_TRAINING_WEEK6).first
+          t4_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+
+          t5_shift = @training_shifts.where(shift_date: Shift::ROOKIE_TRAINING_WEEK6 + 1.day).first
+          t5_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+
+          t3b_shift = @training_shifts.where(shift_date: Shift::ROOKIE_TRAINING_WEEK3 + 1.day).first
+          t3b_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+          @rookie_user.shifts << t4_shift
+          t5_shift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+        end
+
+        it 'no training picked, can only see week 1' do
+          setup_vars
+          regular_shift1 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK1,
+                                     shift_type_id: @regular_shift_types[0].id)
+          regular_shift2 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK2,
+                                             shift_type_id: @regular_shift_types[0].id)
+          regular_shift3 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK3,
+                                             shift_type_id: @regular_shift_types[0].id)
+          regular_shift4 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK4,
+                                             shift_type_id: @regular_shift_types[0].id)
+          regular_shift5 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK5,
+                                             shift_type_id: @regular_shift_types[0].id)
+          regular_shift6 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_END + 1.day,
+                                             shift_type_id: @regular_shift_types[0].id)
+          training_shift1 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK1,
+                                             shift_type_id: @t1.id)
+          training_shift2 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK2,
+                                              shift_type_id: @t1.id)
+          regular_shift1.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+          regular_shift2.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+          regular_shift3.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+          regular_shift4.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+          regular_shift5.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+          regular_shift6.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+          training_shift1.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+          training_shift2.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+        end
+
+        it 'can not pick regular shifts prior to training shift 3 for week 4 and 5 ' do
+          setup_vars
+          t1_shift = @training_shifts.first
+          @rookie_user.shifts << t1_shift
+          t2_shift = @training_shifts.where(shift_date: Shift::ROOKIE_TRAINING_WEEK2).first
+          @rookie_user.shifts << t2_shift
+          t3_shift = @training_shifts.where(shift_date: Shift::ROOKIE_TRAINING_WEEK3).first
+          @rookie_user.shifts << t3_shift
+
+          badshift = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK3 + 1.day,
+                                       shift_type_id: @regular_shift_types[0].id)
+          badshift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+
+          badshift2 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_END + 1.day,
+                                       shift_type_id: @regular_shift_types[0].id)
+          badshift2.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+        end
+
+        it 'can not pick regular shifts after picking regs in week 4 and 5' do
+          setup_vars
+          t1_shift = @training_shifts.first
+          @rookie_user.shifts << t1_shift
+          t2_shift = @training_shifts.where(shift_date: Shift::ROOKIE_TRAINING_WEEK2).first
+          @rookie_user.shifts << t2_shift
+          t3_shift = @training_shifts.where(shift_date: Shift::ROOKIE_TRAINING_WEEK3).first
+          @rookie_user.shifts << t3_shift
+
+          reg_shift1 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK4,
+                                      shift_type_id: @regular_shift_types[0].id)
+          reg_shift2 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK5,
+                                         shift_type_id: @regular_shift_types[0].id)
+          @rookie_user.shifts << reg_shift1
+          @rookie_user.shifts << reg_shift2
+
+          badshift = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK3 + 1.day,
+                                       shift_type_id: @regular_shift_types[0].id)
+          @rookie_user.shifts.count.must_equal 8
+          badshift.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+        end
+
+        it 'can only see training shifts for week you are picking' do
+          setup_vars
+          training_shift1 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK1,
+                                              shift_type_id: @t1.id)
+          training_shift2 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK2,
+                                              shift_type_id: @t1.id)
+          training_shift3 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK3,
+                                              shift_type_id: @t1.id)
+          training_shift6 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK6,
+                                              shift_type_id: @t1.id)
+          regular_shift4 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK4,
+                                             shift_type_id: @regular_shift_types[0].id)
+          regular_shift5 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK5,
+                                             shift_type_id: @regular_shift_types[0].id)
+          regular_shift6 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK6,
+                                             shift_type_id: @regular_shift_types[0].id)
+
+          training_shift1.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+          training_shift2.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+          @rookie_user.shifts << training_shift1
+          training_shift2.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+          training_shift3.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+          @rookie_user.shifts << training_shift2
+          training_shift3.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+          training_shift6.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+          @rookie_user.shifts << training_shift3
+          training_shift6.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+          @rookie_user.shifts << regular_shift4
+
+          regular_shift6.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+          training_shift6.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+          @rookie_user.shifts << regular_shift5
+
+          training_shift6.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal true
+          regular_shift6.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+        end
+
+        it 'cannot pick shifts after training quota reached until round 1' do
+          setup_vars
+          training_shift1 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK1,
+                                              shift_type_id: @t1.id)
+          training_shift2 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK2,
+                                              shift_type_id: @t1.id)
+          training_shift3 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK3,
+                                              shift_type_id: @t1.id)
+          training_shift6 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK6,
+                                              shift_type_id: @t1.id)
+          regular_shift4 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK4,
+                                             shift_type_id: @regular_shift_types[0].id)
+          regular_shift5 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_WEEK5,
+                                             shift_type_id: @regular_shift_types[0].id)
+          regular_shift6 = FactoryBot.create(:shift, shift_date: Shift::ROOKIE_TRAINING_END + 2.day,
+                                             shift_type_id: @regular_shift_types[0].id)
+
+          @rookie_user.shifts << training_shift1
+          @rookie_user.shifts << training_shift2
+          @rookie_user.shifts << training_shift3
+          @rookie_user.shifts << regular_shift4
+          @rookie_user.shifts << regular_shift5
+          @rookie_user.shifts << training_shift6
+
+          regular_shift6.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
+        end
+      end
     end
 
     describe 'after bingo' do

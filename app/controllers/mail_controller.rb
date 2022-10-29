@@ -37,21 +37,7 @@ class MailController < ApplicationController
     @subject = params[:mailmessage][:subject]
     @fromaddress = current_user.email if current_user #params[:mailmessage][:fromaddress]
     @fromaddress ||= params[:mailmessage][:fromaddress]
-    @message = "FROM: [#{current_user.name}(#{current_user.email})]<hr/><p>#{params[:mailmessage][:message]}</p>"
-
-    # break @useremail into chunks to try and placate Google...
-    # email_array = @useremail.split(',').each_slice(10).to_a
-    # email_array.each do |emails|
-    #
-    #
-    #
-    #   msg = UserMailer.send_email(current_user, emails.join(','), @fromaddress,
-    #                               @subject, @message)
-    #   msg.deliver unless msg.nil?
-    # end
-    # msg = UserMailer.send_email(current_user, @useremail, @fromaddress,
-    #                              @subject, @message)
-    # msg.deliver unless msg.nil?
+    @message = "Reply To: [#{current_user.name}(#{current_user.email})]<hr/><p>#{params[:mailmessage][:message]}</p>"
 
     UserNotifierMailer.send_email(@useremail, @fromaddress, @subject, @message).deliver
 

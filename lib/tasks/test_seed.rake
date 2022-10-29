@@ -52,7 +52,7 @@ namespace :db do
       # Meetings
       @m1 = FactoryBot.create(:shift_type, short_name: 'M1')
       @m2 = FactoryBot.create(:shift_type, short_name: 'M2')
-      @m3 = FactoryBot.create(:shift_type, short_name: 'M3')
+      # @m3 = FactoryBot.create(:shift_type, short_name: 'M3')
       @m4 = FactoryBot.create(:shift_type, short_name: 'M4')
 
       # rookie trainer shift
@@ -60,9 +60,9 @@ namespace :db do
 
       # rookie trainee shifts
       @t1 = FactoryBot.create(:shift_type, short_name: 'T1')
-      @t2 = FactoryBot.create(:shift_type, short_name: 'T2')
-      @t3 = FactoryBot.create(:shift_type, short_name: 'T3')
-      @t4 = FactoryBot.create(:shift_type, short_name: 'T4')
+      # @t2 = FactoryBot.create(:shift_type, short_name: 'T2')
+      # @t3 = FactoryBot.create(:shift_type, short_name: 'T3')
+      # @t4 = FactoryBot.create(:shift_type, short_name: 'T4')
 
       # ogomt trainer shifts
       # ogomt trainee shifts
@@ -124,8 +124,16 @@ namespace :db do
         FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @c2end.id)
 
         FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @tl.id)
-
         FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @a1.id)
+      end
+
+      # set up static rookie training dates
+      curr_date = Shift::ROOKIE_TRAINING_WEEK1
+      (0..37).each do |d|
+        curr_date += 1.day
+        FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @tr.id)
+        FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @t1.id)
+        FactoryBot.create(:shift, shift_date: curr_date, shift_type_id: @t1.id)
       end
 
       puts "Shift Count (before meetings): #{Shift.count}"

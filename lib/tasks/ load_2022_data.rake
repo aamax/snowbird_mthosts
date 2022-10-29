@@ -141,8 +141,8 @@ namespace :db do
     c = SysConfig.new
     c.season_year = 2022
     c.group_1_year = 2014
-    c.group_2_year = 2016
-    c.group_3_year = 2017
+    c.group_2_year = 2019
+    c.group_3_year = 2021
     c.season_start_date = Date.new(2022, 10, 29)
     c.bingo_start_date = Date.new(2022, 11, 7)
     c.shift_count = 250  # TODO adjust up after bingo is done...
@@ -251,6 +251,7 @@ namespace :db do
     holiday_dates << '2023-02-12'.to_date
     holiday_dates << '2023-02-18'.to_date
     holiday_dates << '2023-02-19'.to_date
+    holiday_dates << '2023-02-20'.to_date
     holiday_dates << '2023-02-25'.to_date
     holiday_dates << '2023-02-26'.to_date
     holiday_dates << '2023-03-04'.to_date
@@ -275,8 +276,6 @@ namespace :db do
     weekday_dates << '2023-01-04'.to_date
     weekday_dates << '2023-01-05'.to_date
     weekday_dates << '2023-01-06'.to_date
-    weekday_dates << '2023-01-07'.to_date
-    weekday_dates << '2023-01-08'.to_date
     weekday_dates << '2023-01-09'.to_date
     weekday_dates << '2023-01-10'.to_date
     weekday_dates << '2023-01-11'.to_date
@@ -301,6 +300,14 @@ namespace :db do
     weekday_dates << '2023-02-08'.to_date
     weekday_dates << '2023-02-09'.to_date
     weekday_dates << '2023-02-10'.to_date
+
+    weekday_dates << '2023-02-13'.to_date
+    weekday_dates << '2023-02-14'.to_date
+    weekday_dates << '2023-02-15'.to_date
+    weekday_dates << '2023-02-16'.to_date
+    weekday_dates << '2023-02-17'.to_date
+
+
     weekday_dates << '2023-02-21'.to_date
     weekday_dates << '2023-02-22'.to_date
     weekday_dates << '2023-02-23'.to_date
@@ -348,6 +355,8 @@ namespace :db do
     weekday_dates.each do |dt|
       create_weekday_shift(dt)
     end
+    create_shift('TS', '2022-12-17'.to_date)
+    create_shift('TS', '2022-12-18'.to_date)
   end
 
   desc 'update host roles'
@@ -547,7 +556,7 @@ namespace :db do
 
     create_shift('C1weekend', dt)
     create_shift('C2weekend', dt)
-    create_shift('Survey', dt)
+    # create_shift('Survey', dt)
 
     create_shift('TL', dt)
   end
@@ -566,7 +575,7 @@ namespace :db do
 
     create_shift('H1weekday', dt)
     create_shift('H2weekday', dt)
-    create_shift('Survey', dt)
+    # create_shift('Survey', dt)
 
     create_shift('TL', dt)
   end

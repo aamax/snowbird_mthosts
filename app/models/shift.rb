@@ -18,6 +18,14 @@
 
 
 class Shift < ActiveRecord::Base
+  ROOKIE_TRAINING_WEEK1 = Date.new(2022,12,06)
+  ROOKIE_TRAINING_WEEK2 = Date.new(2022,12,13)
+  ROOKIE_TRAINING_WEEK3 = Date.new(2022,12,20)
+  ROOKIE_TRAINING_WEEK4 = Date.new(2022,12,27)
+  ROOKIE_TRAINING_WEEK5 = Date.new(2023,01,03)
+  ROOKIE_TRAINING_WEEK6 = Date.new(2023,01,10)
+  ROOKIE_TRAINING_END = Date.new(2023,01,15)
+
   attr_accessible :user_id, :shift_type_id, :shift_status_id, :shift_date, :day_of_week, :user_can_select, :disabled
   attr_accessor :user_can_select
 
@@ -271,51 +279,29 @@ class Shift < ActiveRecord::Base
         end
         retval = true
       else
-        # TODO: logic for 2022
-        #   Rookies: pick training shifts prior to bingo… must complete training
-        #         before other shifts can be selected.
-        #
-        #
-        # pre- bingo for rookies:
-        # determine which week # the shift is in (1-6 for training shifts)
-        #
-        # if week 3 is 1, 2, or 3:  rookie can pick 1 shift in that week for training (T1 shift)
-        #
-        # if week is 4 or 5: rookie can pick 2 shifts during those 2 weeks (non training shifts - any regular hosts can pick - not TL etc)
-        #
-        # if week is 6: rookie can pick 1 training shift (T1)
-        #
-        # After week 6 - rookies can pick any shifts they like during bingo rotation… see below
-        #
-        # bingo for rookies:
-        # they pick their training shifts prior to bingo starting (on 10/29). This includes the 2 shifts in week 4 and 5
-        # at that point, including the meetings (3) they will have 9 shifts picked.  4 T1, 2 regular shifts and 3 meetings
-        #
-        # When bingo starts they will not pick any shifts until round 2 where they will pick 4 shifts to give them 10 + 3 meetings
-        #
-        # round 3: they will pick 5 shifts (total of 18)
-        # round 4: they will pick 2 (total of 20)
-        #
-        # ------------------
-        #
-        # get week # for shift
-        # if week 1-3 or 6 and not T1: false
-        # if week 1 and no week 1 picked - can pick (T1) else false
-        # if week 2 and no week 2 picked - can pick (T1) else false
-        # if week 3 and no week 3 picked - can pick (T1) else false
-        # if week 4 or 5 and no 2 shifts picked in 4 and 5 - can pick (any shift)
-        # if week 6 and no week 6 picked - can pick (T1) else false
-        # if not T1 and in weeks 1-3 or 4 - false
-        #
-        # if after week 6
-        #     if training shifts not picked - then false
-        #           training shifts include 4 T1 and 2 non-T1 in week 4 and 5
-        # after training shifts are picked - rookie will have 10 shifts (counting meetings)
-        #
-        # not picking in round 1 or 2
-        #
+        training_shifts = test_user.trainings
 
+        if (training_shifts.count == 4)
+          return false if ((round < 4) && (all_shifts.count >= (round * 5) + 2))
+          return true
+        end
 
+        return false if (training_shifts.count == 4) && self.training?
+        return false if (training_shifts.count < 3) && !self.training?
+        return false if (training_shifts.count == 3) && self.training? && all_shifts.count < 8
+        return false if (all_shifts.count == 8) && !self.training?
+        return false if (training_shifts.count == 3) && !self.training? && ((self.shift_date >= ROOKIE_TRAINING_WEEK6) || (self.shift_date < ROOKIE_TRAINING_WEEK4))
+        return false if (training_shifts.count == 3) && self.training? && (self.shift_date < ROOKIE_TRAINING_WEEK6) && (all_shifts.count == 8)
+
+        return false if (training_shifts.count == 0) && (self.shift_date >= ROOKIE_TRAINING_WEEK2)
+        return false if (training_shifts.count == 1) && (self.shift_date >= ROOKIE_TRAINING_WEEK3)
+        return false if (training_shifts.count == 2) && (self.shift_date >= ROOKIE_TRAINING_WEEK4)
+        return false if (training_shifts.count == 3) && (self.shift_date >= ROOKIE_TRAINING_WEEK6) && !self.training?
+
+        training_shifts.each_with_index do |shift, week_number|
+          return false if (self.shift_date < ROOKIE_TRAINING_WEEK2) && (week_number == 0)
+          return false if (self.shift_date < ROOKIE_TRAINING_WEEK3) && (week_number == 1)
+        end
         retval = true
       end
 
@@ -397,6 +383,7 @@ class Shift < ActiveRecord::Base
     return false if self.shift_date < Date.today()
     return false if current_user.id != self.user_id
     return false if self.shift_date <= Date.today + 13.days
+    return false if current_user.rookie? && self.shift_date < ROOKIE_TRAINING_END
     true
   end
 
