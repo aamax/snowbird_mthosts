@@ -35,6 +35,9 @@ namespace :db do
       @trainer = FactoryBot.create(:user, name: 'trainer', start_year: 2005 , active_user: true, confirmed: true)
       @trainer.add_role :trainer
 
+      @driver = FactoryBot.create(:user, name: 'driver', start_year: 2005 , active_user: true, confirmed: true)
+      @driver.add_role :driver
+
       puts User.all.count
 
       User.all.each do |u|

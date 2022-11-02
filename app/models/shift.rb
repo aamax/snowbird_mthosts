@@ -274,7 +274,7 @@ class Shift < ActiveRecord::Base
 
 
         # tour limits - max 7, min 2 during bingo
-        if (round <= 4) && (test_user.tours.count >= 7) && (self.is_tour?)
+        if (round <= 4) && (self.is_tour?) && (test_user.tours.count >= 7)
           return false
         end
         retval = true
@@ -282,7 +282,7 @@ class Shift < ActiveRecord::Base
         training_shifts = test_user.trainings
 
         if (training_shifts.count == 4)
-          return false if ((round < 4) && (all_shifts.count >= (round * 5) + 2))
+          return false if ((round < 4) && (all_shifts.count >= (round * 5) + 9))
           return true
         end
 

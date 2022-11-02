@@ -183,20 +183,18 @@ namespace :db do
     puts "Done adding meetings.  Shift Count: #{Shift.all.count}"
   end
 
-#
-#   desc 'initialize host hauler'
-#   task :initialize_2021host_hauler => :environment do
-#     jc = User.find_by(email: 'jecotterii@gmail.com')
-#     (Date.parse('2021-12-01')..Date.parse('2022-05-30')).each do |dt|
-#       if dt.wednesday? || dt.thursday? || dt.friday? || dt.saturday? || dt.sunday?
-#         HostHauler.add_hauler(dt, jc.id)
-#       else
-#         HostHauler.add_hauler(dt)
-#       end
-#     end
-#     puts 'Done adding initial host hauler dates and seats...'
-#   end
-#
+
+  desc 'initialize host hauler'
+  task :initialize_2022host_hauler => :environment do
+    ActiveRecord::Base.connection.execute("TRUNCATE TABLE riders RESTART IDENTITY;")
+    ActiveRecord::Base.connection.execute("TRUNCATE TABLE host_haulers RESTART IDENTITY;")
+
+    (Date.parse('2022-12-01')..Date.parse('2023-05-30')).each do |dt|
+      HostHauler.add_hauler(dt)
+    end
+    puts 'Done adding initial host hauler dates and seats...'
+  end
+
   desc "populate shifts"
   task :load_2022_shifts => :environment do
     # # 11/30 - 12/16:  5 hosts per day

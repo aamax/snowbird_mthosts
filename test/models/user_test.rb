@@ -78,10 +78,10 @@ class UserTest < ActiveSupport::TestCase
 
 
   describe "seniority" do
-    it "should be Supervisor for John Cotter" do
-      @user.name = 'John Cotter'
-      @user.seniority.must_equal 'Supervisor'
-    end
+    # it "should be Supervisor for John Cotter" do
+    #   @user.name = 'John Cotter'
+    #   @user.seniority.must_equal 'Supervisor'
+    # end
 
     it 'should be Rookie for rookie user' do
       @rookie_user.seniority.must_equal 'Rookie'

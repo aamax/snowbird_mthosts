@@ -36,15 +36,23 @@ class RookieMessageTest < ActiveSupport::TestCase
     shift.user_id = @rookie_user.id
     shift.save
 
-    shift =  Shift.where("short_name = 'T1' and user_id is null").first
+    shift =  Shift.where("short_name = 'T1' and user_id is null and shift_date > '#{shift.shift_date}'").first
     shift.user_id = @rookie_user.id
     shift.save
 
-    shift =  Shift.where("short_name = 'T1' and user_id is null").first
+    shift =  Shift.where("short_name = 'T1' and user_id is null and shift_date > '#{shift.shift_date}'").first
     shift.user_id = @rookie_user.id
     shift.save
 
-    shift =  Shift.where("short_name = 'T1' and user_id is null").first
+    rshift = Shift.where("short_name = 'P1' and shift_date > '#{shift.shift_date}'").first
+    rshift.user_id = @rookie_user.id
+    rshift.save
+
+    rshift = Shift.where("short_name = 'P1' and shift_date > '#{rshift.shift_date}'").first
+    rshift.user_id = @rookie_user.id
+    rshift.save
+
+    shift =  Shift.where("short_name = 'T1' and user_id is null and shift_date > '#{rshift.shift_date}'").first
     shift.user_id = @rookie_user.id
     shift.save
   end
@@ -110,7 +118,7 @@ class RookieMessageTest < ActiveSupport::TestCase
     msgs = @rookie_user.shift_status_message
 
     msgs.include?("You are currently in <strong>round 0</strong>.").must_equal true
-    msgs.include?("You have 4 of 8 shifts selected").must_equal true
+    msgs.include?("You have 3 of 9 shifts selected").must_equal true
     msgs.include?("You need to select a training shift.").must_equal true
   end
 
@@ -132,7 +140,8 @@ class RookieMessageTest < ActiveSupport::TestCase
       num += 1
 
       msgs = @rookie_user.shift_status_message
-      msgs.include?("You have #{@rookie_user.shifts.count} of 8 shifts selected").must_equal true
+
+      msgs.include?("You have #{@rookie_user.shifts.count} of 9 shifts selected").must_equal true
     end
     msgs = @rookie_user.shift_status_message
     msgs.include?('You have selected all the required training shifts.').must_equal true
@@ -147,12 +156,13 @@ class RookieMessageTest < ActiveSupport::TestCase
         @rookie_user.shifts << s
       end
     end
-    @rookie_user.shifts.count.must_equal 13
-    msgs = @rookie_user.shift_status_message
 
+    @rookie_user.shifts.count.must_equal 14
+    msgs = @rookie_user.shift_status_message
     msgs.include?("You have selected all the required training shifts.").must_equal true
     msgs.include?("You are currently in <strong>round 1</strong>.").must_equal true
-    msgs.include?("All required shifts selected for round 1. (13 of 13)").must_equal true
+    msgs.include?("You have selected all the required training shifts.").must_equal true
+    msgs.include?('All required shifts selected for round 1. (14 of 14)').must_equal true
   end
 
   def test_round_two_status_messages
@@ -171,12 +181,12 @@ class RookieMessageTest < ActiveSupport::TestCase
       end
     end
 
-    @rookie_user.shifts.count.must_equal 18
+    @rookie_user.shifts.count.must_equal 19
     msgs = @rookie_user.shift_status_message
 
     msgs.include?("You have selected all the required training shifts.").must_equal true
     msgs.include?("You are currently in <strong>round 2</strong>.").must_equal true
-    msgs.include?("All required shifts selected for round 2. (18 of 18)").must_equal true
+    msgs.include?("All required shifts selected for round 2. (19 of 19)").must_equal true
   end
 
   def test_round_three_status_messages

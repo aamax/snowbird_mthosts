@@ -27,6 +27,7 @@ class ShiftTest < ActiveSupport::TestCase
     @senior_user = User.find_by_name('g1')
     @team_leader = User.find_by_name('teamlead')
     @trainer = User.find_by_name('trainer')
+    @driver = User.find_by_name('driver')
 
     @tl = ShiftType.find_by_short_name('TL')
 

@@ -35,7 +35,7 @@ NON_TOUR_TYPES = %w[C1weekend C2weekend
 
 TRAINING_TYPES = %w[T1 T2 T3 T4]
 
-HAULER_RIDERS = 13 # total without driver
+HAULER_RIDERS = 11 # total without driver
 
 # SHIFT_TARGET = 19
 # A1_COUNT = 7
