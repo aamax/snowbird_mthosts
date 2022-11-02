@@ -249,6 +249,11 @@ class Shift < ActiveRecord::Base
           return true
         end
 
+        # tour limits - max 7, min 2 during bingo
+        if (round <= 4) && (self.is_tour?) && (test_user.tours.count >= 7)
+          return false
+        end
+        
         if test_user.driver? && test_user.driving_this_day?(self.date)
           # during bingo - up to their quota of 20
           # allow to pick shift if they are driving that day
@@ -273,10 +278,6 @@ class Shift < ActiveRecord::Base
         return false if ((round < 4) && (all_shifts.count >= (round * 5) + 2))
 
 
-        # tour limits - max 7, min 2 during bingo
-        if (round <= 4) && (self.is_tour?) && (test_user.tours.count >= 7)
-          return false
-        end
         retval = true
       else
         training_shifts = test_user.trainings

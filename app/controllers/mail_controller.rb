@@ -108,6 +108,8 @@ class MailController < ApplicationController
         users = User.rookies
        when 'SURVEYORS'
         users = User.active_users.with_role(:surveyor)
+      when 'DRIVERS'
+        users = User.active_users.with_role(:driver)
       when 'GROUP1'
         users = User.group1
       when 'GROUP2'
