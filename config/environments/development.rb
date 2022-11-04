@@ -74,6 +74,22 @@ Mthost::Application.configure do
     Bullet.rails_logger = true
   end
 
+  ActionMailer::Base.smtp_settings = {
+    :address => 'smtp.sendgrid.net',
+    :port => '587',
+    :authentication => :plain,
+    #   snowbirdhosts_key
+    # or
+    #   VzyfV6b_TYqKQAzB5eURsQ
+    :user_name => 'snowbirdhosts_key', # Rails.application.credentials.dig(:user_name),
+    :password =>  "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", # Rails.application.credentials.dig(:password),
+    :domain => 'heroku.com',
+    :enable_starttls_auto => true
+  }
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+  config.action_mailer
+
   config.logger = ActiveSupport::Logger.new(config.paths['log'].first, 1, 50.megabytes)
 end
 

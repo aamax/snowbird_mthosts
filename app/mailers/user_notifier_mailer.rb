@@ -1,4 +1,7 @@
-class UserNotifierMailer < ApplicationMailer
+class UserNotifierMailer < Devise::Mailer #ApplicationMailer
+  include Devise::Controllers::UrlHelpers
+  default template_path: 'user_notifier_mailer'
+
   default :from => 'snowbirdhosts@gmail.com'
 
   def send_shift_reminder_email(address)
@@ -12,6 +15,14 @@ class UserNotifierMailer < ApplicationMailer
       format.text { render plain: message }
       format.html { render html: message.html_safe }
     end
+  end
+
+  def reset_password_instructions(user, token, c)
+
+    @user = user
+    @token = token
+    mail( :to => @user.email,
+          :subject => 'Thanks for signing up for our amazing app' )
   end
 end
 

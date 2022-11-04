@@ -82,15 +82,15 @@ Mthost::Application.configure do
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.default :charset => "utf-8"
 
-  config.action_mailer.smtp_settings = {
-      :address        => 'smtp.gmail.com',
-      :port           => '587',
-      :authentication => :plain,
-      :user_name => ENV["GMAIL_USERNAME"],
-      :password => ENV["GMAIL_PASSWORD"],
-      :domain         => 'localhost',
-      :enable_starttls_auto => true
-  }
+  # config.action_mailer.smtp_settings = {
+  #     :address        => 'smtp.gmail.com',
+  #     :port           => '587',
+  #     :authentication => :plain,
+  #     :user_name => ENV["GMAIL_USERNAME"],
+  #     :password => ENV["GMAIL_PASSWORD"],
+  #     :domain         => 'localhost',
+  #     :enable_starttls_auto => true
+  # }
 
   config.paperclip_defaults = {
       :storage => :s3,
@@ -110,16 +110,17 @@ Mthost::Application.configure do
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
 end
 
-#ActionMailer::Base.smtp_settings = {
-#    :address        => 'smtp.gmail.com',
-#    :port           => '587',
-#    :authentication => :plain,
-#    user_name: ENV["GMAIL_USERNAME"],
-#    password: ENV["GMAIL_PASSWORD"],
-#    :domain         => 'localhost',
-#    :enable_starttls_auto => true
-#}
-#ActionMailer::Base.delivery_method = :smtp
-#
-#
-#HOST_SENDER = "snowbirdhosts@gmail.com"
+ActionMailer::Base.smtp_settings = {
+  :address => 'smtp.sendgrid.net',
+  :port => '587',
+  :authentication => :plain,
+#   snowbirdhosts_key
+# or
+#   VzyfV6b_TYqKQAzB5eURsQ
+  :user_name => 'snowbirdhosts_key', # Rails.application.credentials.dig(:user_name),
+  :password =>  "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", # Rails.application.credentials.dig(:password),
+  :domain => 'heroku.com',
+  :enable_starttls_auto => true
+}
+config.action_mailer.delivery_method = :smtp
+config.action_mailer.default_url_options ={:host => 'snowbirdhosts.com', :protocol => 'https'}
