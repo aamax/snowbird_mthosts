@@ -114,10 +114,7 @@ ActionMailer::Base.smtp_settings = {
   :address => 'smtp.sendgrid.net',
   :port => '587',
   :authentication => :plain,
-  #   snowbirdhosts_key
-  # or
-  #   VzyfV6b_TYqKQAzB5eURsQ
-  :user_name => 'snowbirdhosts_key',
+  :user_name => 'snowbird_api_keyvalue',
   :password =>  ENV['SENDGRID_API_KEY'],
   :domain => 'snowbirdhosts.com',
   :enable_starttls_auto => true
