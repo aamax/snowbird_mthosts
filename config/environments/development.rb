@@ -81,9 +81,9 @@ Mthost::Application.configure do
     #   snowbirdhosts_key
     # or
     #   VzyfV6b_TYqKQAzB5eURsQ
-    :user_name => 'snowbirdhosts_key', # Rails.application.credentials.dig(:user_name),
-    :password =>  "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", # Rails.application.credentials.dig(:password),
-    :domain => 'heroku.com',
+    :user_name => 'VzyfV6b_TYqKQAzB5eURsQ',# 'snowbirdhosts_key',
+    :password =>  ENV['SENDGRID_API_KEY'],
+    :domain => 'snowbirdhosts.com',
     :enable_starttls_auto => true
   }
   config.action_mailer.delivery_method = :smtp
