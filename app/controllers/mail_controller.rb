@@ -1,11 +1,11 @@
 class MailController < ApplicationController
 
-  def send_shift_reminder_email
-    emailaddress = 'aamaxworks@gmail.com'
-
-    UserNotifierMailer.send_shift_reminder_email(emailaddress).deliver
-    redirect_to root_path, :notice => "Email Sent to #{emailaddress}"
-  end
+  # def send_shift_reminder_email
+  #   emailaddress = 'aamaxworks@gmail.com'
+  #
+  #   UserNotifierMailer.send_shift_reminder_email(emailaddress).deliver
+  #   redirect_to root_path, :notice => "Email Sent to #{emailaddress}"
+  # end
 
   # select hosts form
   def select_hosts_for_email
@@ -35,11 +35,17 @@ class MailController < ApplicationController
   def deliver_mail
     @useremail = params[:mailmessage][:toaddress]
     @subject = params[:mailmessage][:subject]
-    @fromaddress = current_user.email if current_user #params[:mailmessage][:fromaddress]
+    @fromaddress = 'aamax@rubyhack.com' # current_user.email if current_user #params[:mailmessage][:fromaddress]
     @fromaddress ||= params[:mailmessage][:fromaddress]
-    @message = "Reply To: [#{current_user.name}(#{current_user.email})]<hr/><p>#{params[:mailmessage][:message]}</p>"
+    @message = "FROM: #{current_user.name}(#{current_user.email})\n\n#{params[:mailmessage][:message]}"
 
-    UserNotifierMailer.send_email(@useremail, @fromaddress, @subject, @message).deliver
+    # break @useremail into chunks to try and placate Google...
+    email_array = @useremail.split(',').each_slice(10).to_a
+    email_array.each do |emails|
+      msg = UserMailer.send_email(current_user, emails.join(','), @fromaddress,
+                                  @subject, @message)
+      msg.deliver unless msg.nil?
+    end
 
     flash[:notice] = "Email sent to #{@useremail}..."
     redirect_to(root_path)
@@ -47,6 +53,8 @@ class MailController < ApplicationController
 
   def send_mail
     if params[:address]
+      @email_type = params[:address]
+
       @emailaddress = params[:format].nil? ? params[:address] : "#{params[:address]}.#{params[:format]}"
 
       @title = "Create Email Message"
@@ -61,7 +69,8 @@ class MailController < ApplicationController
         end
       end
     else
-      @emailaddress = get_addresses_from_checkboxes
+      @email_type = "Custom Email Selection"
+        @emailaddress = get_addresses_from_checkboxes
       @title = "Create Email Message"
       if current_user
         @fromaddress = current_user.email

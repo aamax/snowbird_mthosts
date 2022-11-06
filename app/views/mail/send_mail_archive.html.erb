@@ -1,0 +1,60 @@
+<h1>Create Email Message</h1>
+<div id="flash_notice">
+  <div class="alert alert-success">
+    <a class="close" data-dismiss="alert">×</a>
+    Your eMail is being sent.  Please wait...
+  </div>
+</div>
+
+<%= form_for(:mailmessage, :url => deliver_mail_path) do |f| %>
+
+
+  <div class="readonlyfield">
+    <%= f.label "TO:" %>
+    <% if current_user.has_role? :admin %>
+      <%= f.text_area :toaddress, :value => @emailaddress,
+                      :style=>'width: 700px;',
+                      :placeholder => 'Send To' %>
+    <% else %>
+      <%= f.text_area :toaddress, :value => @emailaddress,
+                      :readonly => true,
+                      :style=>'width: 700px;',
+                      :placeholder => 'Send To' %>
+    <% end %>
+  </div>
+
+  <div class="readonlyfield">
+    <%= f.label "FROM" %>
+    <%= f.text_field  :fromaddress,
+                      :value => @fromaddress,
+                      :readonly => true, :placeholder => 'Email From' %>
+  </div>
+
+  <div class="field">
+    <%= f.label "Subject" %>
+    <%= f.text_field :subject, :value => '',
+                     :style=>'width: 600px;', :placeholder => 'Subject' %>
+  </div>
+
+  <div class="messagefield">
+    <%= f.label "MESSAGE" %><br />
+    <%= f.text_area :message,
+                    :rows => 15, :style=>"width: 600px;",
+                    :value => '', :placeholder => 'Message Content' %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit('Send Email', id: 'mail_submit_btn', onclick: 'submitMail()') %>
+  </div>
+
+<% end %>
+<script type="text/javascript">
+    document.getElementById("flash_notice").style.display = "none";
+
+    function submitMail() {
+        var btn = document.getElementById("mail_submit_btn");
+        btn.style.display = "none";
+        var flash = document.getElementById("flash_notice");
+        flash.style.display = "block";
+    };
+</script>

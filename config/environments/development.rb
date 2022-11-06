@@ -28,8 +28,8 @@ Mthost::Application.configure do
     #     :address        => 'smtp.gmail.com',
     #     :port           => '587',
     #     :authentication => :plain,
-    #     :user_name => ENV["GMAIL_USERNAME"],
-    #     :password => ENV["GMAIL_PASSWORD"],
+    #     :user_name => 'aamaxworks@gmail.com', #ENV["GMAIL_USERNAME"],
+    #     :password => 'qdbe kjhj josa lpqr', #ENV["GMAIL_PASSWORD"],
     #     :domain         => 'localhost',
     #     :enable_starttls_auto => true
     # }
@@ -74,18 +74,18 @@ Mthost::Application.configure do
     Bullet.rails_logger = true
   end
 
-  ActionMailer::Base.smtp_settings = {
-    :address => 'smtp.sendgrid.net',
-    :port => '587',
-    :authentication => :plain,
-    :user_name => 'snowbird_api_keyvalue',
-    :password =>  ENV['SENDGRID_API_KEY'],
-    :domain => 'snowbirdhosts.com',
-    :enable_starttls_auto => true
-  }
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
-  config.action_mailer
+  # ActionMailer::Base.smtp_settings = {
+  #   :address => 'smtp.sendgrid.net',
+  #   :port => '587',
+  #   :authentication => :plain,
+  #   :user_name => 'snowbird_api_keyvalue',
+  #   :password =>  ENV['SENDGRID_API_KEY'],
+  #   :domain => 'snowbirdhosts.com',
+  #   :enable_starttls_auto => true
+  # }
+  # config.action_mailer.delivery_method = :smtp
+  # config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+  # config.action_mailer
 
   config.logger = ActiveSupport::Logger.new(config.paths['log'].first, 1, 50.megabytes)
 end

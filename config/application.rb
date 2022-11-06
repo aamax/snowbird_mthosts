@@ -15,6 +15,11 @@ Bundler.require(:default, Rails.env)
 
 module Mthost
   class Application < Rails::Application
+
+    config.action_mailer.delivery_method = :postmark
+    config.action_mailer.postmark_settings = { :api_token => "940d1ffc-eb04-4987-81a0-87dbbb7bcf9e" }
+
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
