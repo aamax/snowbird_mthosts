@@ -420,6 +420,81 @@ class ShiftTest < ActiveSupport::TestCase
     #   # create 6 @tr shifts and pick them.. can pick 5 shifts in rounds 1,2 and 4 in 3
     #
     # end
+    #
+
+    describe 'drivers' do
+      before do
+        setup_vars
+        @sys_config.bingo_start_date = @pre_bingo_date
+        @sys_config.save!
+        Shift.all.each do |s|
+          if s.can_select(@driver, HostUtility.can_select_params_for(@driver))
+            @driver.shifts << s
+            break if @driver.shifts.count >= 20
+          end
+        end
+      end
+
+      it 'cannot pick any shifts without driving shifts prior to bingo' do
+        @driver.shifts.count.must_equal 2
+      end
+
+      it 'can pick a shift on a day driving before bingo starts' do
+        s = Shift.where(short_name: 'P1').first
+        s.can_select(@driver, HostUtility.can_select_params_for(@driver)).must_equal false
+        @hauler = HostHauler.create(driver_id: @driver.id, haul_date: s.shift_date)
+        s.can_select(@driver, HostUtility.can_select_params_for(@driver)).must_equal true
+      end
+
+      it 'can pick some shifts when driving pre bingo and then shift totals for bingo rounds' do
+        shifts = []
+        (1..7).each do |i|
+          s = FactoryBot.create(:shift, shift_date: Date.today + i.days, shift_type_id: @regular_shift_types[0].id)
+          @hauler = HostHauler.create(driver_id: @driver.id, haul_date: s.shift_date)
+          s.can_select(@driver, HostUtility.can_select_params_for(@driver)).must_equal true
+          @driver.shifts << s
+        end
+
+        (8..20).each do |i|
+          s = FactoryBot.create(:shift, shift_date: Date.today + i.days, shift_type_id: @regular_shift_types[0].id)
+          shifts << s
+          s.can_select(@driver, HostUtility.can_select_params_for(@driver)).must_equal false
+        end
+        @driver.shifts.count.must_equal 9
+
+        # prebingo checks done and shifts loaded. switch to round one
+        @sys_config.bingo_start_date = @round1_date
+        @sys_config.save!
+        shifts.each do |s|
+          @driver.shifts << s if s.can_select(@driver, HostUtility.can_select_params_for(@driver)) == true
+        end
+        @driver.shifts.count.must_equal 9 # not able to pick any shifts
+
+        # round 1 done and shifts loaded.  switch to round 2
+        @sys_config.bingo_start_date = @round2_date
+        @sys_config.save!
+        Shift.all.each do |s|
+          @driver.shifts << s if s.can_select(@driver, HostUtility.can_select_params_for(@driver)) == true
+        end
+        @driver.shifts.count.must_equal 12
+
+        # process round 3
+        @sys_config.bingo_start_date = @round3_date
+        @sys_config.save!
+        Shift.all.each do |s|
+          @driver.shifts << s if s.can_select(@driver, HostUtility.can_select_params_for(@driver)) == true
+        end
+        @driver.shifts.count.must_equal 17
+
+        # process round 3
+        @sys_config.bingo_start_date = @round4_date
+        @sys_config.save!
+        Shift.all.each do |s|
+          @driver.shifts << s if s.can_select(@driver, HostUtility.can_select_params_for(@driver)) == true
+        end
+        @driver.shifts.count.must_equal 20
+      end
+    end
 
     describe 'before bingo' do
       describe 'non-rookies' do
@@ -534,7 +609,7 @@ class ShiftTest < ActiveSupport::TestCase
                                      shift_type_id: @regular_shift_types[0].id)
           shift7.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
         end
-
+        
         it 'can pick training shift in week 6' do
           setup_vars
           t1_shift = @training_shifts.first
