@@ -33,19 +33,19 @@
 <td><%= object.trainings.count %></td>
 
 
-<% if (object.ongoing_trainings.count == 0) && !object.rookie? %>
-  <td style="color: red">
-    <strong>
-      <%=  object.ongoing_trainings.count %>
-    </strong>
-  </td>
-<% else %>
-  <td>
-    <%= object.ongoing_trainings.count %>
-  </td>
-<% end %>
+<%# if (object.ongoing_trainings.count == 0) && !object.rookie? %>
+<!--  <td style="color: red">-->
+<!--    <strong>-->
+      <%#=  object.ongoing_trainings.count %>
+<!--    </strong>-->
+<!--  </td>-->
+<%# else %>
+<!--  <td>-->
+    <%#= object.ongoing_trainings.count %>
+<!--  </td>-->
+<%# end %>
 
-<td><%= object.ongoing_training_display %></td>
+<!--<td><%#= object.ongoing_training_display %></td>-->
 
 <td><%= object.notes %></td>
 
