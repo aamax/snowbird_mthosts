@@ -390,37 +390,38 @@ class ShiftTest < ActiveSupport::TestCase
       end
     end
 
-    # describe 'trainers' do
-    #   before do
-    #     setup_vars
-    #     shift = FactoryBot.create(:shift, shift_date: @round1_date + 20.day, shift_type_id: @tr.id)
-    #     shift = FactoryBot.create(:shift, shift_date: @round1_date + 21.day, shift_type_id: @tr.id)
-    #     shift = FactoryBot.create(:shift, shift_date: @round1_date + 22.day, shift_type_id: @tr.id)
-    #     shift = FactoryBot.create(:shift, shift_date: @round1_date + 20.day, shift_type_id: @tr.id)
-    #   end
-    #
-    #   it 'can pick trainer shifts before bingo' do
-    #     @sys_config.bingo_start_date = @pre_bingo_date
-    #     @sys_config.save!
-    #     Shift.all.each do |s|
-    #       if s.can_select(@trainer, HostUtility.can_select_params_for(@trainer))
-    #         @trainer.shifts << s if s.short_name == "TR"
-    #         break if @trainer.shifts.count >= 20
-    #       else
-    #         s.short_name.wont_equal "TR"
-    #       end
-    #     end
-    #
-    #   end
-    #     # TODO: get this shit working!
-    #     #
-    #   # trainer can pick trainer shifts prior to bingo
-    #
-    #   # create 5 @tr shifts and pick them prior to bingo
-    #   # create 6 @tr shifts and pick them.. can pick 5 shifts in rounds 1,2 and 4 in 3
-    #
-    # end
-    #
+    describe 'trainers' do
+      before do
+        setup_vars
+        shift = FactoryBot.create(:shift, shift_date: @round1_date + 20.day, shift_type_id: @tr.id)
+        shift = FactoryBot.create(:shift, shift_date: @round1_date + 21.day, shift_type_id: @tr.id)
+        shift = FactoryBot.create(:shift, shift_date: @round1_date + 22.day, shift_type_id: @tr.id)
+        shift = FactoryBot.create(:shift, shift_date: @round1_date + 20.day, shift_type_id: @tr.id)
+      end
+      focus
+      it 'can pick trainer shifts before bingo' do
+        @sys_config.bingo_start_date = @pre_bingo_date
+        @sys_config.save!
+        Shift.all.each do |s|
+          if s.can_select(@trainer, HostUtility.can_select_params_for(@trainer))
+            s.short_name.must_equal 'TR'
+            @trainer.shifts << s if s.short_name == "TR"
+            break if @trainer.shifts.count >= 20
+          else
+            if s.short_name == 'TR'
+              binding.pry
+            end
+            s.short_name.wont_equal "TR"
+          end
+        end
+        @trainer.shifts.count.must_equal 5
+      end
+
+
+      # create 6 @tr shifts and pick them.. can pick 5 shifts in rounds 1,2 and 4 in 3
+
+    end
+
 
     describe 'drivers' do
       before do
@@ -609,7 +610,7 @@ class ShiftTest < ActiveSupport::TestCase
                                      shift_type_id: @regular_shift_types[0].id)
           shift7.can_select(@rookie_user, HostUtility.can_select_params_for(@rookie_user)).must_equal false
         end
-        
+
         it 'can pick training shift in week 6' do
           setup_vars
           t1_shift = @training_shifts.first
