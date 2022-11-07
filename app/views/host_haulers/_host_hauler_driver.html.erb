@@ -4,8 +4,13 @@
   <% if @driver.nil? %>
     ** UNSET **
   <% else %>
+    <br/>
     <%= @driver.name %>
     <br/>
+    HOME PHONE:
+    <%= @driver.home_phone %><br/>
+    CELL PHONE:
+    <%= @driver.cell_phone %><br/><br/>
     <% if current_user.admin? %>
       <a href="/drop_driver/<%= @selected_hauler.id %>" class='hauler_edit_btn btn btn-danger'>Drop</a>
     <% end %>
