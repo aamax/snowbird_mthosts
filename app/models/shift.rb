@@ -240,6 +240,7 @@ class Shift < ActiveRecord::Base
 
     if self.user_id.nil?
       return true if test_user.admin?
+      return true if test_user.trainer? && self.trainer?
 
       # NOTE: meetings (rookie, all host and mid year) all count as a shift worked
 

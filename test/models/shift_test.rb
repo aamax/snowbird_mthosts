@@ -398,7 +398,7 @@ class ShiftTest < ActiveSupport::TestCase
         shift = FactoryBot.create(:shift, shift_date: @round1_date + 22.day, shift_type_id: @tr.id)
         shift = FactoryBot.create(:shift, shift_date: @round1_date + 20.day, shift_type_id: @tr.id)
       end
-      focus
+
       it 'can pick trainer shifts before bingo' do
         @sys_config.bingo_start_date = @pre_bingo_date
         @sys_config.save!
@@ -414,14 +414,58 @@ class ShiftTest < ActiveSupport::TestCase
             s.short_name.wont_equal "TR"
           end
         end
-        @trainer.shifts.count.must_equal 5
+        @trainer.shifts.count.must_equal 20
       end
 
-
       # create 6 @tr shifts and pick them.. can pick 5 shifts in rounds 1,2 and 4 in 3
+      it 'trainer shifts do not count against bingo quote' do
+        @sys_config.bingo_start_date = @pre_bingo_date
+        @sys_config.save!
+        Shift.all.each do |s|
+          if s.can_select(@trainer, HostUtility.can_select_params_for(@trainer))
+            @trainer.shifts << s
+            break if @trainer.shifts.count >= 6
+          end
+        end
+        @trainer.shifts.count.must_equal 6
 
+        @sys_config.bingo_start_date = @round1_date
+        @sys_config.save!
+
+        Shift.all.each do |s|
+          next if s.short_name == 'TR'
+
+          if s.can_select(@trainer, HostUtility.can_select_params_for(@trainer))
+            @trainer.shifts << s
+          end
+        end
+        @trainer.shifts.count.must_equal 11
+
+        @sys_config.bingo_start_date = @round2_date
+        @sys_config.save!
+
+        Shift.all.each do |s|
+          next if s.short_name == 'TR'
+
+          if s.can_select(@trainer, HostUtility.can_select_params_for(@trainer))
+            @trainer.shifts << s
+          end
+        end
+        @trainer.shifts.count.must_equal 16
+
+        @sys_config.bingo_start_date = @round3_date
+        @sys_config.save!
+
+        Shift.all.each do |s|
+          next if s.short_name == 'TR'
+
+          if s.can_select(@trainer, HostUtility.can_select_params_for(@trainer))
+            @trainer.shifts << s
+          end
+        end
+        @trainer.shifts.count.must_equal 20
+      end
     end
-
 
     describe 'drivers' do
       before do
@@ -985,29 +1029,6 @@ class ShiftTest < ActiveSupport::TestCase
 
     describe 'round 1' do
       describe 'senior' do
-        # focus
-        # it 'trainer shifts do not count against bingo' do
-        #   false.must_equal true
-        # end
-
-
-        # focus
-        # I verified in practice that this works.. but the test does not
-        # it 'ogomt shifts do not count against bingo quota' do
-        #   setup_vars
-        #   run_bingo_shift_max_pick(@round1_sr_date, @senior_user, 1, 7)
-        #
-        #   dt = TrainingDate.create(shift_date: @round1_date + 20.days)
-        #   training = OngoingTraining.create(training_date_id: dt.id)
-        #
-        #   @senior_user.can_select_ongoing_training(@round1_date + 20.days).must_equal true
-        #   @senior_user.ongoing_trainings << training
-        #
-        #   dt = TrainingDate.create(shift_date: @round1_date + 21.days)
-        #   training = OngoingTraining.create()
-        #   @senior_user.can_select_ongoing_training(@round1_date + 21.days).must_equal false
-        # end
-
         it 'senior - round 1 - cannot pick training shifts' do
           setup_vars
           @sys_config.bingo_start_date = @round1_sr_date
