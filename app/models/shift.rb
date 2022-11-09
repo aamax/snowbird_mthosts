@@ -285,6 +285,7 @@ class Shift < ActiveRecord::Base
 
         if (training_shifts.count == 4)
           return false if ((round < 4) && (all_shifts.count >= (round * 5) + 9))
+          return false if self.shift_date <= ROOKIE_TRAINING_END
           return true
         end
 

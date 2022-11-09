@@ -30,11 +30,13 @@ class NonRookieMessageTest < ActiveSupport::TestCase
       end
     end
   end
-
+  focus
   def test_shift_picking_before_round_one
     config = SysConfig.first
     config.bingo_start_date = Date.today + 10.days
     config.save
+
+    puts @group1_user.shift_status_message
 
     @group1_user.shift_status_message.include?("No Selections Until #{HostUtility.date_for_round(@group1_user, 1)}.").must_equal true
     @group2_user.shift_status_message.include?("No Selections Until #{HostUtility.date_for_round(@group2_user, 1)}.").must_equal true
@@ -168,7 +170,7 @@ class NonRookieMessageTest < ActiveSupport::TestCase
   def test_ogomt_shifts_do_not_count_for_bingo
 
   end
-
+  focus
   def test_trainer_shifts_do_not_count_for_bingo
     bingo_date = HostUtility.bingo_start_for_round(@group3_user, 2)
     @sys_config.bingo_start_date = bingo_date
@@ -190,6 +192,8 @@ class NonRookieMessageTest < ActiveSupport::TestCase
     msgs = @group3_user.shift_status_message
 
     msgs.include?("You are currently in <strong>round 2</strong>.").must_equal true
+    puts msgs
+
     msgs.include?("All required shifts selected for round 2. (13 of 12)").must_equal true
     @group3_user.shifts.count.must_equal 13
   end
