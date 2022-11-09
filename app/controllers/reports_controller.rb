@@ -35,6 +35,22 @@ class ReportsController < ApplicationController
         end
         format.xls
       end
+    elsif params[:id] == 'all_host_demographics'
+      @report = 'all_host_demographics'
+      @title = 'All Host Demographics'
+      @hosts = User.all
+
+      respond_to do |format|
+        format.csv do
+          file = CSV.generate do |csv|
+            csv << "Last Name,First Name,Email,Home Phone, Cell Phone".split(',')
+            @hosts.each do |user|
+              csv << "#{user.name},#{user.email}, #{user.home_phone}, #{user.cell_phone}".split(',')
+            end
+          end
+          render text: file
+        end
+      end
     elsif params[:id] == 'shifts_by_host'
       @report = 'shifts_by_host'
       @title = "Shift By User Report"

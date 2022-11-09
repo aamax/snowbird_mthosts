@@ -600,7 +600,7 @@ class User < ActiveRecord::Base
       if !self.rookie?
         case round
           when 0
-            msg << "No Selections Until #{HostConfig.bingo_start_date + day_offset.days}."
+            msg << "No Selections Until #{HostConfig.bingo_start_date + (day_offset - 1).days}."
           when 1..3
             limit = round * 5 + 2
             limit = 20 if limit > 20
