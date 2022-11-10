@@ -21,14 +21,14 @@ class PagesController < ApplicationController
         redirect_to root_path, :alert => "you do not have permission to access this page"
       else
         # get scraped data for snow report etc
-        # require 'open-uri'
+        require 'open-uri'
         # url = 'https://snowbird.com/mountain-report'
         # doc = Nokogiri::HTML(open(url).read)
         # entries = doc.css('.snow-report-current')
         # @update_date = entries.css('.date-display').text
         # conditions = doc.css('.sb-condition-small')
-
-        @mt_conditions = []
+        #
+        # @mt_conditions = []
         #
         # conditions.each do |condition|
         #   @mt_conditions << { label: condition.css('.sb-condition_label').text.strip,
