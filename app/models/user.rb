@@ -603,6 +603,12 @@ class User < ActiveRecord::Base
             msg << "No Selections Until #{HostConfig.bingo_start_date + (day_offset - 1).days}."
           when 1..3
             limit = round * 5 + 2
+
+            if self.trainer? && (limit < 20)
+              trainer_shifts = all_shifts.map(&:short_name).delete_if { |s| s != 'TR'}
+              test_count = all_shifts.count - trainer_shifts.count
+              limit += trainer_shifts.count
+            end
             limit = 20 if limit > 20
 
             if all_shifts.count < limit
