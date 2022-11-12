@@ -80,7 +80,92 @@ class HostHaulerTest < ActiveSupport::TestCase
     end
 
     def test_cannot_ride_if_driving
+      User.delete_all
+      u = User.create(email: "unused_driver@example.com", password: "password",
+                        name: "name1", active_user: true)
+      u.add_role :driver
 
+      h = host_hauler
+      h.haul_date = Date.today()
+      h.driver_id = u.id
+      h.save
+      rider = Rider.new
+      h.riders << rider
+
+      shift = Shift.all.first
+      shift.user_id = u.id
+      shift.save
+
+      rider.can_select_rider(u).must_equal false
     end
+
+    def test_cannot_pick_seat_if_not_working
+      u = User.create(email: "unused_driver@example.com", password: "password",
+                      name: "name1", active_user: true)
+
+      h = host_hauler
+      h.haul_date = Date.today()
+      h.save
+      rider = Rider.new
+      h.riders << rider
+
+      rider.can_select_rider(u).must_equal false
+    end
+
+    def test_can_pick_seat_if_working
+      u = User.create(email: "unused_driver@example.com", password: "password",
+                      name: "name1", active_user: true)
+
+      h = host_hauler
+      h.haul_date = Date.today()
+      h.save
+      rider = Rider.new
+      h.riders << rider
+
+      shift_type = ShiftType.find(2)
+      shift = FactoryBot.create(:shift, shift_date: Date.today(), shift_type_id: shift_type.id)
+      u.shifts << shift
+      rider.can_select_rider(u).must_equal true
+    end
+
+    def test_cannot_pick_seat_if_just_meeting
+      u = User.create(email: "unused_driver@example.com", password: "password",
+                      name: "name1", active_user: true)
+
+      h = host_hauler
+      h.haul_date = Date.today()
+      h.save
+      rider = Rider.new
+      h.riders << rider
+
+      shift_type = ShiftType.find_by(short_name: 'M1')
+      shift = FactoryBot.create(:shift, shift_date: Date.today(), shift_type_id: shift_type.id)
+      u.shifts << shift
+      rider.can_select_rider(u).must_equal false
+    end
+
+    def test_can_pick_seat_if_meeting_and_work
+      u = User.create(email: "unused_driver@example.com", password: "password",
+                      name: "name1", active_user: true)
+
+      h = host_hauler
+      h.haul_date = Date.today()
+      h.save
+      rider = Rider.new
+      h.riders << rider
+
+      shift_type = ShiftType.find_by(short_name: 'M1')
+      shift = FactoryBot.create(:shift, shift_date: Date.today(), shift_type_id: shift_type.id)
+      u.shifts << shift
+
+      rider.can_select_rider(u).must_equal false
+
+      shift_type = ShiftType.find(2)
+      shift = FactoryBot.create(:shift, shift_date: Date.today(), shift_type_id: shift_type.id)
+      u.shifts << shift
+
+      rider.can_select_rider(u).must_equal true
+    end
+
   end
 end

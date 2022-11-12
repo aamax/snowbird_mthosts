@@ -269,7 +269,7 @@ class User < ActiveRecord::Base
       working_shifts = self.shifts
     end
     working_shifts.each do |s|
-      next if s.non_mountain_meeting?
+      next if s.meeting? # s.non_mountain_meeting?
       if s.shift_date == shift_date
         return true
       end

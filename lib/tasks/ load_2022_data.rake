@@ -81,6 +81,15 @@ namespace :db do
     puts "DONE WITH SEASON PREP... 2022"
   end
 
+  desc "load early season 2022 shifts"
+  task :load_2022_early_shifts => :environment do
+    ('2022-11-18'.to_date..'2022-11-29'.to_date).each do |dt|
+      create_disabled_flex_host_day(dt, 4)
+      add_team_leader_shift(dt)
+    end
+
+  end
+
   desc "show system stats for review"
   task :show_system_stats => :environment do
     puts "Active User Count #{User.active_users.count}"
@@ -584,6 +593,30 @@ namespace :db do
 
     for counter in 1..num_shifts
       create_shift('A1', dt)
+    end
+  end
+
+  def create_disabled_flex_host_day(dt, num_shifts)
+    # clear day of shifts
+    Shift.where(shift_date: dt).delete_all
+
+    for counter in 1..num_shifts
+      create_disabled_shift('A1', dt)
+    end
+  end
+
+  def create_disabled_shift(shift_short_name, dt)
+    shift_type_id = ShiftType.find_by(short_name: shift_short_name).id
+    st = {
+      shift_type_id: shift_type_id,
+      shift_status_id: 1,
+      shift_date: dt,
+      disabled: true
+    }
+
+    if !Shift.create(st)
+      puts "ERROR\n    short_name: #{shift_short_name}\n------------\n\n"
+      raise 'error loading shifts'
     end
   end
 

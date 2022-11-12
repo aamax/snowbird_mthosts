@@ -2,7 +2,8 @@ DAYNAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
 
 MEETINGS = { 'M1' => '2022-10-29', 'M2' => '2022-11-05', 'M4' => '2023-02-04' }
 
-HOLIDAYS = [Date.new(2022,12,24),
+HOLIDAYS = [Date.new(2022,11,24),
+            Date.new(2022,12,24),
             Date.new(2022,12,25),
             Date.new(2022,12,31),
             Date.new(2023,1,1),
