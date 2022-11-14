@@ -129,7 +129,7 @@ class UsersController < ApplicationController
     is_conf_page =  (params[:user][:page_type] == 'confirmation_page')
     if is_conf_page && params[:user][:password].blank? && !(current_user.has_role? :admin)
       redirect_to :back, :alert => "You must set your password when confirming your information"
-    elsif is_conf_page && params[:user][:password] == '5teep&Deep' # default password
+    elsif is_conf_page && params[:user][:password] == DEFAULT_PASSWORD
       redirect_to :back, :alert => "You cannot use the default password..."
     else
       params[:user].except!(:page_type)
