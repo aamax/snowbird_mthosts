@@ -1,4 +1,4 @@
-<% if current_user.has_role? :admin %>
+<% if (current_user.has_role? :admin) || (current_user.has_role? :reporting) %>
   <h1><%= @title %> (Number of Active Hosts: <%= @hosts.count %>)</h1>
   <br/>
 

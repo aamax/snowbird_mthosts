@@ -82,6 +82,12 @@ namespace :db do
   end
 
   desc "load early season 2022 shifts"
+  task :add_reporting_role => :environment do
+    u = User.find_by(email: 'aamaxworks@gmail.com')
+    u.add_role :reporting unless u.nil?
+  end
+
+  desc "load early season 2022 shifts"
   task :load_2022_early_shifts => :environment do
     ('2022-11-18'.to_date..'2022-11-29'.to_date).each do |dt|
       create_disabled_flex_host_day(dt, 4)
