@@ -232,7 +232,7 @@ class ReportsController < ApplicationController
     elsif params[:id] == 'extra_shifts_report'
       @report = 'extra_shifts_report'
       @target_hosts = User.active_users.map do |host|
-        if !(host.trainer? || host.ongoing_trainer?) && (host.shifts_for_analysis.count > 20)
+        if !(host.trainer? ) && (host.shifts_for_analysis.count > 20)
           host
         else
           nil
@@ -265,7 +265,35 @@ class ReportsController < ApplicationController
         end
         format.xls
       end
+    elsif params[:id] == 'system_shift_overview'
+      @report = 'system_shift_overview'
+      @hosts = User.includes(:shifts).active_users.order(:name).to_a.delete_if { |u| u.supervisor? || u.is_max? }
+      @all_shifts = Shift.all.count
+      @all_selected_shifts = Shift.where('user_id is not null').count
+      @all_unselected_shifts = Shift.where('user_id is null').count
 
+      @hosts_under_20_shifts = []
+      @hosts_over_20_shifts = []
+      @hosts_less_than_2_tours = []
+      @hosts_more_than_7_tours = []
+      @hosts_missing_holidays = []
+
+      @hosts.each do |host|
+        if host.shifts.count < 20
+          @hosts_under_20_shifts << host
+        elsif host.shifts.count > 20
+          @hosts_over_20_shifts << host
+        end
+        if host.tours.count > 7
+          @hosts_more_than_7_tours << host
+        elsif host.tours.count < 2
+          @hosts_less_than_2_tours << host
+        end
+
+        if !host.has_holiday_shift?
+          @hosts_missing_holidays << host
+        end
+      end
     end
   end
 

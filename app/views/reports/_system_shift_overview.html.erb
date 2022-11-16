@@ -1,0 +1,107 @@
+<% if current_user.has_role? :admin %>
+  <h1><%= @title %> (Number of Active Hosts: <%= @hosts.count %>)</h1>
+  <br/>
+
+  <strong>Total Shifts:</strong> <%= @all_shifts %><br />
+  <strong>Total Assigned:</strong> <%= @all_selected_shifts %><br />
+  <strong>Total Unassigned:</strong> <%= @all_unselected_shifts %><br />
+  <hr/>
+  <br />
+
+  <h3>Hosts Missing Holidays (<%= @hosts_missing_holidays.count %>)</h3>
+  <table class="table table-striped">
+    <tr class="row">
+      <th class="span2">Host Name</th>
+      <th class="span1">Total</th>
+      <th class="span1">Has Holiday</th>
+      <th class="span1">Tours</th>
+      <th class="span1">Team Leader</th>
+      <th class="span1">Trainer</th>
+      <th class="span1">Training</th>
+    </tr>
+    <% @hosts_missing_holidays.each do |auser| %>
+      <tr class="row" >
+        <%= render "reports/user_shift_overview_entry", :object => auser %>
+      </tr>
+    <% end %>
+  </table>
+
+
+  <h3>Hosts Under 20 Shifts (<%= @hosts_under_20_shifts.count %>)</h3>
+  <table class="table table-striped">
+    <tr class="row">
+      <th class="span2">Host Name</th>
+      <th class="span1">Total</th>
+      <th class="span1">Has Holiday</th>
+      <th class="span1">Tours</th>
+      <th class="span1">Team Leader</th>
+      <th class="span1">Trainer</th>
+      <th class="span1">Training</th>
+    </tr>
+    <% @hosts_under_20_shifts.each do |auser| %>
+      <tr class="row" >
+        <%= render "reports/user_shift_overview_entry", :object => auser %>
+      </tr>
+    <% end %>
+  </table>
+
+  <h3>Hosts Over 20 Shifts (<%= @hosts_over_20_shifts.count %>)</h3>
+  <table class="table table-striped">
+    <tr class="row">
+      <th class="span2">Host Name</th>
+      <th class="span1">Total</th>
+      <th class="span1">Has Holiday</th>
+      <th class="span1">Tours</th>
+      <th class="span1">Team Leader</th>
+      <th class="span1">Trainer</th>
+      <th class="span1">Training</th>
+    </tr>
+    <% @hosts_over_20_shifts.each do |auser| %>
+      <tr class="row" >
+        <%= render "reports/user_shift_overview_entry", :object => auser %>
+      </tr>
+    <% end %>
+  </table>
+
+  <h3>Hosts Less Than 2 Tours (<%= @hosts_less_than_2_tours.count %>)</h3>
+  <table class="table table-striped">
+    <tr class="row">
+      <th class="span2">Host Name</th>
+      <th class="span1">Total</th>
+      <th class="span1">Has Holiday</th>
+      <th class="span1">Tours</th>
+      <th class="span1">Team Leader</th>
+      <th class="span1">Trainer</th>
+      <th class="span1">Training</th>
+    </tr>
+    <% @hosts_less_than_2_tours.each do |auser| %>
+      <tr class="row" >
+        <%= render "reports/user_shift_overview_entry", :object => auser %>
+      </tr>
+    <% end %>
+  </table>
+
+  <h3>Hosts More Than 7 Tours (<%= @hosts_more_than_7_tours.count %>)</h3>
+  <table class="table table-striped">
+    <tr class="row">
+      <th class="span2">Host Name</th>
+      <th class="span1">Total</th>
+      <th class="span1">Has Holiday</th>
+      <th class="span1">Tours</th>
+      <th class="span1">Team Leader</th>
+      <th class="span1">Trainer</th>
+      <th class="span1">Training</th>
+    </tr>
+    <% @hosts_more_than_7_tours.each do |auser| %>
+      <tr class="row" >
+        <%= render "reports/user_shift_overview_entry", :object => auser %>
+      </tr>
+    <% end %>
+  </table>
+
+
+<% else %>
+  <h1>You do not have permissions to view this page...</h1>
+  <%= link_to "Click Here to return to home page", root_path, :class=>"btn btn-warning" %>
+<% end %>
+
