@@ -1,11 +1,11 @@
 class MailController < ApplicationController
 
-  # def send_shift_reminder_email
-  #   emailaddress = 'aamaxworks@gmail.com'
-  #
-  #   UserNotifierMailer.send_shift_reminder_email(emailaddress).deliver
-  #   redirect_to root_path, :notice => "Email Sent to #{emailaddress}"
-  # end
+  def send_shift_reminder_email
+    emailaddress = 'aamaxworks@gmail.com'
+
+    UserNotifierMailer.send_shift_reminder_email(emailaddress).deliver
+    redirect_to root_path, :notice => "Email Sent to #{emailaddress}"
+  end
 
   # select hosts form
   def select_hosts_for_email
