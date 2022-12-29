@@ -91,3 +91,6 @@ gem 'capistrano-rbenv', '~> 2.1', '>= 2.1.4'
 # gem 'twitter'
 gem 'sendgrid-ruby'
 # gem 'postmark-rails'
+
+gem 'ed25519', '~> 1.2'
+gem 'bcrypt_pbkdf', '~> 1'

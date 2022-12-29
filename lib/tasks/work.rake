@@ -66,8 +66,8 @@ namespace :work do
         if !hauler.riders.last.nil? && !hauler.riders.last.user_id.nil?
           emails << hauler.riders.last.user.email
         end
-        # hauler.riders.last.destroy
-        break
+        hauler.riders.last.destroy
+
       end
     end
 
