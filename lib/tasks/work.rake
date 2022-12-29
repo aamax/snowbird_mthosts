@@ -59,15 +59,19 @@ namespace :work do
 
   task :fix_haulers => :environment do
     puts "starting..."
-
+    emails = []
     haulers = HostHauler.where("haul_date > ?", Date.today)
     haulers.find_each do |hauler|
-      if (hauler.riders.count >= 14) && hauler.riders.last.user_id.nil?
-        hauler.riders.last.destroy
+      while (hauler.riders.count > 10) #&& hauler.riders.last.user_id.nil?
+        if !hauler.riders.last.nil? && !hauler.riders.last.user_id.nil?
+          emails << hauler.riders.last.user.email
+        end
+        # hauler.riders.last.destroy
+        break
       end
     end
 
-
+    puts emails.uniq!
 
     puts "done... "
   end
