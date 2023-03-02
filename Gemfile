@@ -23,7 +23,8 @@ gem 'activerecord-deprecated_finders'
 
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-gem "pg", "~> 0.20.0" #0.18"   # gem "pg", ">= 0.14.1"
+# gem "pg", "~> 0.20.0" #0.18"   # gem "pg", ">= 0.14.1"
+gem 'pg', '>= 0.18', '< 2.0'
 gem "capybara", ">= 2.0.2", :group => :test
 gem "devise", ">= 2.2.3"
 gem "cancancan"

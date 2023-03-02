@@ -285,7 +285,11 @@ class Shift < ActiveRecord::Base
 
         if (training_shifts.count == 4)
           return false if ((round < 4) && (all_shifts.count >= (round * 5) + 9))
+
+          # this line might be a problem.  if rookie has all training shifts already,
+          #     then they should be able to pick shifts but this prevents it
           return false if self.shift_date <= ROOKIE_TRAINING_END
+
           return true
         end
 
