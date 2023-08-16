@@ -55,7 +55,7 @@ gem 'gon'
 
 
 group :development do
-  gem 'annotate', :git => 'git://github.com/ctran/annotate_models.git'
+  gem 'annotate', :git => 'git://github.com/ctran/annotate_models.git', branch: 'main'
   gem "bullet"
   gem 'letter_opener'
 end
