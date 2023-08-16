@@ -10,6 +10,8 @@ gem 'sass-rails',   '~> 4.0.5'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'uglifier', '>= 1.3.0'
 
+gem "rolify", ">= 3.2.0"
+
 gem 'bootstrap-sass', '~> 2.1.1.0'
 gem 'therubyracer'
 
@@ -27,7 +29,7 @@ gem "pg", "~> 0.20.0" #0.18"   # gem "pg", ">= 0.14.1"
 gem "capybara", ">= 2.0.2", :group => :test
 gem "devise", ">= 2.2.3"
 gem "cancancan"
-gem "rolify", ">= 3.2.0"
+
 gem "figaro", ">= 0.5.3"
 gem "better_errors", ">= 0.6.0", :group => :development
 gem "binding_of_caller", ">= 0.7.1", :group => :development, :platforms => [:mri_19, :rbx]
